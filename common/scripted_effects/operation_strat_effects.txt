@@ -1,0 +1,82 @@
+
+
+update_operation_ai = {
+	# old target is no longer relevant
+	if = {
+		limit = {
+			NOT = { check_variable = { generic_operation_target = 0 } }
+			var:generic_operation_target = {
+				OR = {
+					exists = no
+					has_capitulated = yes
+					is_ally_with = PREV
+				}
+			}
+		}
+		set_variable = { generic_operation_target = 0 }
+	}
+
+
+	# pick an operation target
+	get_highest_scored_country = {
+		scorer = ai_generic_operation_target_scorer
+		var = generic_operation_target
+	}
+	
+	# this variable will be our limiting factor for actually doing operations
+	
+	# check if we have any operatives that are captured
+	# find the captor so they can be rescued
+	set_temp_variable = { captor = 0 }
+	
+	every_operative = {
+		limit = { is_operative_captured = yes }
+		add_to_temp_variable = { min_needed_operative_for_operations = 1 }
+		if = {
+			limit = { check_variable = { captor = 0 } }
+			set_temp_variable = { captor = operative_captor }
+		}
+	}
+	set_variable = { rescue_operative_from = 0 }
+	if = {
+		limit = { NOT = { check_variable = { captor = 0 } } }
+		set_variable = { rescue_operative_from = captor } # used in ai strat generic_operation_ai_rescue
+		add_to_temp_variable = { min_needed_operative_for_operations = 2 }
+	}
+	
+	
+	# if we have too few of operatives clear operative target
+	set_temp_variable = { t = min_needed_operative_for_operations }
+	subtract_from_temp_variable = { t = 2 }
+	if = {
+		limit = { num_of_operatives < t }
+		set_variable = { generic_operation_target = 0 }
+	}
+	
+	if = {
+		# if found a target pick an operation
+		limit = { 
+			NOT = { check_variable = { generic_operation_target = 0 } }
+			# if we are already preparing for current one no need to recalc
+			OR = {
+				check_variable = { generic_operation_type_to_run = 0 }
+				NOT = { 
+					is_preparing_operation = {
+						target = var:generic_operation_target
+						operation = var:generic_operation_type_to_run
+					}
+				}
+			}
+		}
+		
+		if = {
+			limit = { 
+				num_of_operatives > min_needed_operative_for_operations
+			}
+		}	
+		else =
+		{
+			set_variable = { generic_operation_type_to_run = 0 }
+		}
+	}
+}
