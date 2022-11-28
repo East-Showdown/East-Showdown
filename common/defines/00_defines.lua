@@ -652,7 +652,7 @@ NBuildings = {
 	BASE_FACTORY_REPAIR = 0.3,			-- Default repair rate before factories are taken into account
 	BASE_FACTORY_REPAIR_FACTOR = 2.0,	-- Factory speed modifier when repairing.
 	SUPPLY_PORT_LEVEL_THROUGHPUT = 3,   -- supply throughput per level of naval base
-	MAX_SHARED_SLOTS = 25,				-- Max slots shared by factories
+	MAX_SHARED_SLOTS = 50,				-- Max slots shared by factories
 	OWNER_CHANGE_EXTRA_SHARED_SLOTS_FACTOR = 0.5, --Scale factor of extra shared slots when state owner change.
 	DESTRUCTION_COOLDOWN_IN_WAR = 30,	-- Number of days cooldown between removal of buildings in war times
 
