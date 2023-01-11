@@ -44,6 +44,6 @@ tags={
 	"Map"
 	"Utilities"
 }
-picture="blank_map_template_5632x2048.jpg"
+picture="showdown.jpg"
 supported_version="1.12.*"
 remote_file_id="2881149855"
