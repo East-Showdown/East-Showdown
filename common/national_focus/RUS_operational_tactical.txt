@@ -3223,7 +3223,6 @@ focus_tree = {
 		relative_position_id = RUS_march_on_kiev
 		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
 		prerequisite = { focus = RUS_full_scale_invasion focus = RUS_eastern_offensive focus = RUS_offensive_on_kiev focus = RUS_march_on_kiev focus = RUS_double_offensive focus = RUS_northern_offensive focus = RUS_concentrated_attack_on_kyiv }
-		mutually_exclusive = { focus = RUS_leave_kiev }
 		available = {
 			controls_state = 94
 		}
@@ -3241,7 +3240,6 @@ focus_tree = {
 		relative_position_id = RUS_march_on_kiev
 		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
 		prerequisite = { focus = RUS_full_scale_invasion focus = RUS_eastern_offensive focus = RUS_offensive_on_kiev focus = RUS_march_on_kiev focus = RUS_double_offensive focus = RUS_northern_offensive focus = RUS_concentrated_attack_on_kyiv }
-		mutually_exclusive = { focus = RUS_falls_of_kyiv }
 		cancel_if_invalid = yes
 		available = {
 			NOT = {
@@ -3253,6 +3251,9 @@ focus_tree = {
 					var = global.days_since_the_beginning_of_the_word
 					value >29
 				}
+			}
+			NOT = {
+				has_completed_focus = RUS_falls_of_kyiv
 			}
 		}
 		cost = 1
@@ -3266,6 +3267,55 @@ focus_tree = {
 				random_hours = 4
 			}
 			set_global_flag = RUS_leave_from_kiev
+		}
+	}
+	focus = {
+		id = RUS_liberation_of_donbass
+		icon = GFX_victorcorneplod
+		relative_position_id = RUS_surround_the_fortress_cities_of_donbass
+		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		available = {
+			NOT = {
+				UKR = {
+					any_controlled_state = {
+						region = 31
+					}
+				}
+			}
+		}
+		cost = 0.6
+		cancelable = no
+		x = -1
+		y = 2
+		completion_reward={
+			add_war_support = 0.075
+		}
+	}
+	focus = {
+		id = RUS_the_liberation_is_delayed
+		icon = GFX_victorcorneplod
+		relative_position_id = RUS_surround_the_fortress_cities_of_donbass
+		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		available = {
+			NOT = {
+				has_completed_focus = RUS_liberation_of_donbass
+			}
+			custom_trigger_tooltip = {
+				tooltip = the_SMO_takes_more_than_60_days
+				check_variable = {
+					var = global.days_since_the_beginning_of_the_word
+					value >59
+				}
+			}
+		}
+		cost = 0.6
+		cancelable = no
+		x = 1
+		y = 2
+		completion_reward={
+			add_political_power = -15
+			add_war_support = -0.025
+			add_stability = -0.02
 		}
 	}
 }
