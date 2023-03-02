@@ -770,7 +770,6 @@ NMilitary = {
 
 	MIN_SUPPLY_CONSUMPTION = 0.05,					-- minimum value of supply consumption that a unit can get
 
-###########################################################boevka Lancaster poly horst
 
 
 	LAND_COMBAT_ORG_DICE_SIZE = 4,                 -- nr of damage dice
@@ -971,7 +970,7 @@ NMilitary = {
 	PARADROP_PENALTY = -0.3, 						-- Combat penalty when recently paradropped
 	PARADROP_HOURS = 48,							-- time paratroopers suffer penalties in combat
 
-######################################Lancaster fix kak horst
+
 	COMBAT_SUPPLY_LACK_ATTACKER_ATTACK = -0.25,     -- attack combat penalty for attacker if out of supply
 	COMBAT_SUPPLY_LACK_ATTACKER_DEFEND = -0.65,     -- defend combat penalty for attacker if out of supply
 	COMBAT_SUPPLY_LACK_DEFENDER_ATTACK = -0.35,     -- attack combat penalty for defender if out of supply
