@@ -168,6 +168,7 @@ NDiplomacy = {
 PEACE_SCORE_TRANSFERRED_TO_FACTION_LEADER = 0.1, 		-- Part of the peace score transferred from the faction members to the faction leader (if game rule enabled)
 PEACE_SCORE_RESET_LOW_SCORE_THRESHOLD = 0.05,			-- Winners with less than this ratio of war participation will give all their score to other players
 PEACE_SCORE_RESET_LOW_SCORE_MINIMUM_FOR_RECEIVER = 0.1, -- Disable the previous, if no winner has at least this ratio of war participation
+MIN_POLITICAL_POWER_MONTHLY_GAIN_FOR_IMPROVE_RELATIONS = 0.50,	-- If country makes less than this PP per month, they won't improve relations
 
 	PEACE_SCORE_MINOR_BOOST_FRACTION = 0.05,        -- Low-scoring winners are boosted by receiving more of their score earlier. This value, multiplied by the total score distributed this turn, is the minimum score they will receive (up until their total allocated score).
 	-- Example: If 2000 score is distributed to winners this turn and this value is set to 0.05, each winner will receive a minimum of 100 score (clamped by the max score they will receive over the cource of the conference).
@@ -806,7 +807,7 @@ NMilitary = {
 	BASE_CHANCE_TO_AVOID_HIT = 90,                 -- Base chance to avoid hit if defences left.
 	CHANCE_TO_AVOID_HIT_AT_NO_DEF = 60,	           -- chance to avoid hit if no defences left.
 	------Lancaster fix
-	COMBAT_MOVEMENT_SPEED = 0.63,	               -- vanila 0.33 speed reduction base modifier in combat
+	COMBAT_MOVEMENT_SPEED = 0.13,	               -- vanila 0.33 speed reduction base modifier in combat
 	TACTIC_SWAP_FREQUENCEY = 12,                   -- hours between tactic swaps
 	PREFERRED_TACTIC_CHARACTER_SKILL_LEVEL_REQUIRED = 5, -- Which level a field marhal or general has to be before they can pick their preferred tactic
 	COUNTRY_PREFERRED_TACTIC_WEIGHT_FACTOR = 0.25,  -- extra weight multiplier for the country preferred tactic when doing weighted random
