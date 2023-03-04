@@ -1,3 +1,84 @@
+RUS_PVK = {
+	RUS_PMK_siriya = {
+		icon = generic_formable_nations
+		available = {
+		  has_completed_focus = RUS_preparing_for_a_primitive_strike
+
+          original_tag = RUS		  
+		}
+        visible = {
+			
+			original_tag = RUS
+		}
+		complete_effect = {
+            load_oob = "RUS_Vagner_1"
+		}
+		cost = 50
+		fire_only_once = yes
+	}
+	RUS_PMK_Zeki = {
+		icon = generic_formable_nations
+		available = {
+		  OR = {
+				has_completed_focus = RUS_start_a_special_military_operation  
+				has_completed_focus = RUS_declare_war_on_ukraine
+			}
+			original_tag = RUS
+
+		}
+        visible = {
+			
+			original_tag = RUS
+		}
+		
+		remove_effect = {
+            load_oob = "RUS_Vagner_2"
+		}
+		cost = 50
+		fire_only_once = yes
+		days_remove = 14
+	}
+	RUS_PMK_AD = {
+		icon = generic_formable_nations
+		available = {
+		  OR = {
+				has_completed_focus = RUS_start_a_special_military_operation  
+				has_completed_focus = RUS_declare_war_on_ukraine
+			}
+			original_tag = RUS		  
+		}
+        visible = {
+			
+			original_tag = RUS
+		}
+		days_remove = 7
+
+		remove_effect = {
+            load_oob = "RUS_Vagner_3"
+		}
+		cost = 50
+		fire_only_once = yes
+	}
+	RUS_PMK_EXP = {
+		icon = generic_formable_nations
+		available = {
+			original_tag = RUS
+			has_decision = RUS_PMK_siriya
+			has_decision = RUS_PMK_Zeki
+			has_decision = RUS_PMK_AD
+		}
+		visible = {
+			original_tag = RUS
+		}
+		fire_only_once = yes
+		cost = 25
+		days_remove = 7
+		remove_effect = {
+			add_ideas = RUS_PMK_EXP_IDEA
+		}
+	}
+}
+
 RUS_smo = {
     RUS_armored_column = {
 		icon = generic_formable_nations
@@ -37,6 +118,7 @@ RUS_smo = {
 		cost = 50
 	    fire_only_once = yes 
 	}
+
 	RUS_missile_Kyiv = {
 		icon = generic_formable_nations
 		available = {
@@ -46,46 +128,35 @@ RUS_smo = {
 			}
 			 original_tag = RUS
 		} 
+
 		visible = {
-			
 			original_tag = RUS
 		}
-		
-		complete_effect = {
-			target_modifier = {
-				tag = UKR
-				add_stability = -0.03
 
-			}
-		UKR = {	
-			damage_building = {
-            type = infrastructure
-            damage = 1
-			province = 5220
-        } 
-		damage_building = {
-            type = industrial_complex
-            damage = 0.5
-			province = 5220
-        } 
-		damage_building = {
-            type = anti_air_building
-            damage = 0.5
-			province = 5220
-        } 
-		damage_building = {
-            type = arms_factory
-            damage = 0.5
-			province = 5220
-        } 
-		add_stability = -0.03
-		
-		}	
+		target_trigger = {
+			FROM = { tag = UKR }
 		}
-		cost = 20
-		fire_only_once = yes 
 
+		complete_effect = {
+		FROM = {	
+		damage_building = {
+          type = infrastructure
+         damage = 1
+		 state = 94
+        }
+			
+		add_stability = -0.03	
+		}
 	}
+	cost = 20
+		fire_only_once = yes 
+	}
+		
+			
+		
+		
+
+	
 	RUS_landing_Odessa = {
 		icon = generic_formable_nations
 		available = {
@@ -98,26 +169,18 @@ RUS_smo = {
 			
 			original_tag = RUS
 		}
-		target_modifier = { 
-            tag = RUS
-            naval_invasion_prep_speed = 50
-			naval_invasion_penalty = 0.3 
-}
-		days_remove = 30
+		modifier = {
+				naval_invasion_planning_bonus_speed = 0.5
+		        naval_invasion_penalty = -0.3
+	            invasion_preparation = -0.3
+			}
 		complete_effect = {
-		   RUS = { naval_invasion_prep_speed = +50
-			naval_invasion_penalty = 0.3
-			target_modifier = { 
-            tag = RUS
-            naval_invasion_prep_speed = +50
-			naval_invasion_penalty = 0.3 
-} 	        
-		   }
+		        
 		}
 
 		cost = 20
 		fire_only_once = yes 
-
+        days_remove = 30
 	}
 
     RUS_SU_57 = {
@@ -138,7 +201,66 @@ RUS_smo = {
 				amount = 25
 			}
 		}
+		fire_only_once = yes
 		
+	}
+	RUS_Reopening = {
+		icon = generic_formable_nations
+		available = {
+			original_tag = RUS
+			has_completed_focus = RUS_declare_war_on_ukraine
+
+		}
+		visible = {
+			original_tag = RUS
+		}
+		cost = 200
+		days_remove = 30
+		remove_effect = {
+			add_equipment_to_stockpile = {
+				type = t80a_equipment
+				amount = 1000
+
+			}
+			add_equipment_to_stockpile = {
+				type = t72b_equipment
+				amount = 2000
+
+			}
+			add_equipment_to_stockpile = {
+				type = bmp_1_equipment
+				amount = 2500
+
+			}
+			add_equipment_to_stockpile = {
+				type = bmp_2_equipment
+				amount = 1500
+
+			}
+			add_equipment_to_stockpile = {
+				type = fighter_equipment_1
+				amount = 500
+
+			}
+		}
+	}
+	RUS_Mobilisation_AD = {
+       icon = generic_formable_nations
+
+	   available = {
+		original_tag = RUS
+		has_completed_focus = RUS_preparing_for_a_primitive_strike
+	   }
+
+	   visible = {
+		original_tag = RUS
+	   }
+	   cost = 100
+	   complete_effect = {
+		add_manpower = 20000
+		add_ideas = RUS_Mobilisation_AD_IDEA
+	   }
+	   
 	}
 
 	regrouping_of_troops = {
