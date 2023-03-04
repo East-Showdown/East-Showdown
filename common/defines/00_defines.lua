@@ -1143,8 +1143,8 @@ NMilitary = {
 	FUEL_FLOW_PENALTY_FOR_SUPPLY_CHUNK_EDGE_RATIO = 0.5, -- supply flow that is limited by control of incoming edge provinces will have lesser effect on fuel flow
 
 -- Lancaster fix
-	OUT_OF_FUEL_EQUIPMENT_MULT = 0.5,				-- 0.1 vanilla ratio of the stats that you get from equipments that uses fuel and you lack it
-	OUT_OF_FUEL_SPEED_MULT = 0.1,					-- vanilla 0.4 speed mult that armies get when out of fuel
+	OUT_OF_FUEL_EQUIPMENT_MULT = 0.1,				-- 0.1 vanilla ratio of the stats that you get from equipments that uses fuel and you lack it
+	OUT_OF_FUEL_SPEED_MULT = 0.4,					-- vanilla 0.4 speed mult that armies get when out of fuel
 	OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0,		-- xp gain mult from training when a unit is out of fuel
 	FUEL_CAPACITY_DEFAULT_HOURS = 96,				-- 96 vanilla default capacity if not specified
 
