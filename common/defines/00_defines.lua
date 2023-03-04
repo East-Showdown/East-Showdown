@@ -811,7 +811,7 @@ NMilitary = {
 	BASE_CHANCE_TO_AVOID_HIT = 90,                 -- Base chance to avoid hit if defences left.
 	CHANCE_TO_AVOID_HIT_AT_NO_DEF = 60,	           -- chance to avoid hit if no defences left.
 	------Lancaster fix
-	COMBAT_MOVEMENT_SPEED = 0.13,	               -- vanila 0.33 speed reduction base modifier in combat
+	COMBAT_MOVEMENT_SPEED = 0.33,	               -- vanila 0.33 speed reduction base modifier in combat
 	TACTIC_SWAP_FREQUENCEY = 12,                   -- hours between tactic swaps
 	PREFERRED_TACTIC_CHARACTER_SKILL_LEVEL_REQUIRED = 5, -- Which level a field marhal or general has to be before they can pick their preferred tactic
 	COUNTRY_PREFERRED_TACTIC_WEIGHT_FACTOR = 0.25,  -- extra weight multiplier for the country preferred tactic when doing weighted random
@@ -847,7 +847,7 @@ NMilitary = {
 
 
 	------Lancaster fix
-	LAND_SPEED_MODIFIER = 0.1,                    -- vanila 0.5 basic speed control
+	LAND_SPEED_MODIFIER = 0.4,                    -- vanila 0.5 basic speed control скорость дивок
 	RIVER_CROSSING_PENALTY = -0.3,                 -- small river crossing
 	RIVER_CROSSING_PENALTY_LARGE = -0.6,           -- large river crossing
 	RIVER_CROSSING_SPEED_PENALTY = -0.25,           -- small river crossing
@@ -855,9 +855,9 @@ NMilitary = {
 	RIVER_SMALL_START_INDEX = 0,                   -- color indices for rivers
 	RIVER_SMALL_STOP_INDEX = 6,
 	RIVER_LARGE_STOP_INDEX = 11,
-	BASE_FORT_PENALTY = -0.25, 					   -- vanilla -0.15 fort penalty
+	BASE_FORT_PENALTY = -0.15, 					   -- vanilla -0.15 fort penalty
 	MULTIPLE_COMBATS_PENALTY = -0.5,               -- defender penalty if attacked from multiple directions
-	DIG_IN_FACTOR = 0.04,						   --vanila 0.02 bonus factor for each dug-in level
+	DIG_IN_FACTOR = 0.03,						   --vanila 0.02 bonus factor for each dug-in level
 	ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.1, -- XP gain per unit in combat
 	CONSTANT_XP_RATIO_FOR_MULTIPLE_LEADERS_IN_SAME_COMBAT = 0.5, -- if there are multiple leaders in same combat, each one gets thisratio + (1-thisratio)/num leaders. amount of xp each general gets scales 1 0.75 0.66 etc for 1 2 3 generals
 	BASE_LEADER_TRAIT_GAIN_XP = 0.45,			   -- Base xp gain for traits per hour for armies
@@ -870,7 +870,7 @@ NMilitary = {
 	ANTI_AIR_TARGETTING_TO_CHANCE = 0.07,			-- Balancing value to determine the chance of ground AA hitting an attacking airplane, affecting both the effective average damage done by AA to airplanes, and the reduction of damage done by airplanes due to AA support
 	ANTI_AIR_ATTACK_TO_AMOUNT = 0.005,				-- Balancing value to convert equipment stat anti_air_attack to the random % value of airplanes being hit.
 
-	ENCIRCLED_PENALTY = -0.3,                      	-- penalty when completely encircled
+	ENCIRCLED_PENALTY = -0.3,                      	-- penalty when completely encircled когда окружили
 
 	UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0001,
 	UNIT_EXPERIENCE_SCALE = 1.0,
@@ -908,7 +908,7 @@ NMilitary = {
 	EXILE_EQUIPMENT = 1.0,						   -- Amount of equipment to keep
 	EXILE_ORG = 0.0,							   -- Amount of org to keep
 	EXPERIENCE_LOSS_FACTOR = 1.00,                 -- percentage of experienced solders who die when manpower is removed
-	EQUIPMENT_COMBAT_LOSS_FACTOR = 0.90,	 	   -- % was 0.70 (lancaster)of equipment lost to strength ratio in combat, so some % is returned if below 1
+	EQUIPMENT_COMBAT_LOSS_FACTOR = 0.70,	 	   -- % was 0.70 (lancaster)of equipment lost to strength ratio in combat, so some % is returned if below 1
 
 	TRAINING_ATTRITION = 0.05,		  			   -- amount of extra attrition from being in training
 	TRAINING_MIN_STRENGTH = 0.1,					-- if strength is less than this, the unit will pause training until it's been reinforced
