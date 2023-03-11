@@ -753,11 +753,11 @@ NMilitary = {
 	WAR_SCORE_LEND_LEASE_RECEIVED_IC_FACTOR = 0.001,  			-- war score deducted for every IC of lend lease received from allies
 	WAR_SCORE_LEND_LEASE_RECEIVED_FUEL_FACTOR = 0.001, 		-- war score deducted for every 100 units of fuel lend lease received from allies
 
-	CORPS_COMMANDER_DIVISIONS_CAP = 24,			-- how many divisions a corps commander is limited to. 0 = inf, < 0 = blocked
+	CORPS_COMMANDER_DIVISIONS_CAP = 50,			-- how many divisions a corps commander is limited to. 0 = inf, < 0 = blocked
 	DIVISION_SIZE_FOR_XP = 8,                   -- how many battalions should a division have to count as a full divisions when calculating XP stuff
 	CORPS_COMMANDER_ARMIES_CAP = -1,			-- how many armies a corps commander is limited to. 0 = inf, < 0 = blocked
-	FIELD_MARSHAL_DIVISIONS_CAP = 24,			-- how many divisions a field marshall is limited to. 0 = inf, < 0 = blocked
-	FIELD_MARSHAL_ARMIES_CAP = 5,				-- how many armies a field marshall is limited to. 0 = inf, < 0 = blocked
+	FIELD_MARSHAL_DIVISIONS_CAP = 100,			-- how many divisions a field marshall is limited to. 0 = inf, < 0 = blocked
+	FIELD_MARSHAL_ARMIES_CAP = 10,				-- how many armies a field marshall is limited to. 0 = inf, < 0 = blocked
 
 	UNIT_LEADER_GENERATION_CAPITAL_CONTINENT_FACTOR = 100, --Integer factor to multiply manpower.
 
@@ -880,7 +880,7 @@ NMilitary = {
 	TRAINING_EXPERIENCE_SCALE = 62.0,
 	TRAINING_ORG = 0.2,
 	ARMY_EXP_BASE_LEVEL = 1,
-	UNIT_EXP_LEVELS = { 0.1, 0.3, 0.75, 0.9 },		-- Experience needed to progress to the next level
+	UNIT_EXP_LEVELS = { 0.1, 0.3, 0.6, 0.8 },		-- Experience needed to progress to the next level
 	FIELD_EXPERIENCE_SCALE = 0.0015,
 	FIELD_EXPERIENCE_MAX_PER_DAY = 1.2,				-- Most xp you can gain per day
 	EXPEDITIONARY_FIELD_EXPERIENCE_SCALE = 0.3,		-- reduction factor in Xp from expeditionary forces
@@ -1107,8 +1107,8 @@ NMilitary = {
 	NEW_NAVY_LEADER_RANDOM_SKILL_CHANCES = { -- chances to give a random stat skill point for a new admiral
 	},
 
-	UNIT_LEADER_MODIFIER_COOLDOWN_ON_GROUP_CHANGE = 15,		-- time in days for a unit leader to regain its modifiers
-	UNIT_LEADER_ASSIGN_TRAIT_COST = 15.0,					-- cost to assign a new trait to a unit leader
+	UNIT_LEADER_MODIFIER_COOLDOWN_ON_GROUP_CHANGE = 3,		-- time in days for a unit leader to regain its modifiers
+	UNIT_LEADER_ASSIGN_TRAIT_COST = 5.0,					-- cost to assign a new trait to a unit leader
 	ATTACHED_WINGS_ORDER_UPDATE_DAYS = 5,					-- Days untill the attached wing will update the order
 
 	BORDER_WAR_WIN_DAYS_AGAINST_EMPTY_OPPONENTS = 14,		-- border wars will be automatically won if no opponent shows up for this duration
