@@ -1,0 +1,84 @@
+scripted_map_modes = {
+	radiation_level_map_mode = {
+		top = {
+			type = state
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 0.8 }
+					set_temp_variable = {
+						var = tempus
+						value = radiation_var
+					}
+					set_temp_variable = { red = tempus }
+					set_temp_variable = { green = 1.0 }
+					set_temp_variable = { blue = 0.0 }
+					clamp_temp_variable = {
+						var = red
+						min = 0.0
+						max = 1.0
+					}
+					multiply_temp_variable = {
+						var = tempus
+						value = -1.0
+					}
+					add_to_temp_variable = {
+						var = green
+						value = tempus
+					}
+					if = {
+						limit = {
+							check_variable = {
+								var = radiation_var
+								value = 0.95
+								compare = greater_than
+							}
+						}
+						set_temp_variable = {
+							var = tempus2
+							value = radiation_var
+						}
+						multiply_temp_variable = {
+							var = tempus2
+							value = -0.2
+						}
+						add_to_temp_variable = {
+							var = red
+							value = tempus2
+						}
+					}	
+				}
+			}
+
+			thickness = no
+
+			targets = {
+			#	target_array = core_states
+			#	target_array = owned_states
+			#	target_array = controlled_states
+				target_array = global.states
+			}
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.4 }
+				set_temp_variable = { thickness = 10.0 }
+				set_temp_variable = { red = 0.0 }
+				set_temp_variable = { green = 0.0 }
+				set_temp_variable = { blue = 0.0 }
+			}
+
+			thickness = yes
+
+			targets = {
+				targets = global.states
+			}
+		}
+
+		far_text = country
+		near_text = state
+	}
+}
