@@ -162,7 +162,6 @@ NDiplomacy = {
 	BREAKING_GUARANTEE_PENALTY = 0.2,				-- War support penalty for breaking guarantee
 	PEACE_SCORE_SCALE_FACTOR = 1.35,                -- Losers' total value times this factor becomes the default total peace conference score that is distributed to the winners.
 
---------------------Lancaster add
 
 -- WARNING ! if you modify the following values, you should update corresponding loc keys in games_rules_l_english.yml
 PEACE_SCORE_TRANSFERRED_TO_FACTION_LEADER = 0.1, 		-- Part of the peace score transferred from the faction members to the faction leader (if game rule enabled)
@@ -268,7 +267,6 @@ NCountry = {
 	REINFORCEMENT_AIRBASE_PRIORITY_COUNT = 3,
 	REINFORCEMENT_AIRBASE_PRIORITY_DEFAULT = 1,
 
----------------------Lancaster fix
 REINFORCEMENT_DELIVERY_SPEED_MIN = 0.6,			-- The distance from the supply region to capital should affect the speed only a little bit. Main factor for penalty is overcrowded areas, and not the route length.
 REINFORCEMENT_EQUIPMENT_DELIVERY_SPEED = 0.3,	-- Modifier for army equipment reinforcement speed
 REINFORCEMENT_MANPOWER_DELIVERY_SPEED = 10.0,	-- Modifier for army manpower reinforcement delivery speed (travel time)
@@ -762,7 +760,6 @@ NMilitary = {
 	UNIT_LEADER_GENERATION_CAPITAL_CONTINENT_FACTOR = 100, --Integer factor to multiply manpower.
 
 	RECON_SKILL_IMPACT = 5, -- how many skillpoints is a recon advantage worth when picking a tactic.
--- Lancaster кареkтивы 
 	MAX_DIVISION_BRIGADE_WIDTH = 5,			-- Max width of regiments in division designer.
 	MAX_DIVISION_BRIGADE_HEIGHT = 5,		-- Max height of regiments in division designer.
 	MAX_DIVISION_SUPPORT_WIDTH = 1,			-- Max width of support in division designer.
@@ -810,7 +807,6 @@ NMilitary = {
 	RELIABILTY_RECOVERY = 0.1,                     -- factor affecting how much equipment is returned "from the dead"
 	BASE_CHANCE_TO_AVOID_HIT = 90,                 -- Base chance to avoid hit if defences left.
 	CHANCE_TO_AVOID_HIT_AT_NO_DEF = 60,	           -- chance to avoid hit if no defences left.
-	------Lancaster fix
 	COMBAT_MOVEMENT_SPEED = 0.33,	               -- vanila 0.33 speed reduction base modifier in combat
 	TACTIC_SWAP_FREQUENCEY = 12,                   -- hours between tactic swaps
 	PREFERRED_TACTIC_CHARACTER_SKILL_LEVEL_REQUIRED = 5, -- Which level a field marhal or general has to be before they can pick their preferred tactic
@@ -846,7 +842,6 @@ NMilitary = {
 	AVERAGE_SUPPLY_USE_PESSIMISM = 1.5,					-- Multiplier for when AI calculates average supply use of entire army.
 
 
-	------Lancaster fix
 	LAND_SPEED_MODIFIER = 0.4,                    -- vanila 0.5 basic speed control скорость дивок
 	RIVER_CROSSING_PENALTY = -0.3,                 -- small river crossing
 	RIVER_CROSSING_PENALTY_LARGE = -0.6,           -- large river crossing
@@ -1142,7 +1137,6 @@ NMilitary = {
 
 	FUEL_FLOW_PENALTY_FOR_SUPPLY_CHUNK_EDGE_RATIO = 0.5, -- поток питания, ограниченный контролем входящих краевых провинций, будет иметь меньшее влияние на поток топлива
 
--- Lancaster fix топляк
 	OUT_OF_FUEL_EQUIPMENT_MULT = 0.1,				-- 0.1 vanilla ratio of the stats that you get from equipments that uses fuel and you lack it
 	OUT_OF_FUEL_SPEED_MULT = 0.4,					-- vanilla 0.4 speed mult that armies get when out of fuel
 	OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0,		-- xp gain mult from training when a unit is out of fuel
