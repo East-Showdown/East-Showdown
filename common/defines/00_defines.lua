@@ -818,7 +818,7 @@ NMilitary = {
 	AMPHIBIOUS_INVADE_MOVEMENT_COST = 24.0,        -- total progress cost of movement while amphibious invading
 
 	
------supply
+
 	SUPPLY_USE_FACTOR_MOVING = 1.5,                -- Deprecated/Unused
 	SUPPLY_USE_FACTOR_INACTIVE = 0.95,			   -- Deprecated/Unused
 	SUPPLY_GRACE = 72,							   -- troops always carry 3 days of food and supply
@@ -1123,7 +1123,6 @@ NMilitary = {
 	FUEL_PENALTY_START_RATIO = 0.25,				-- ratio of fuel in an army to start getting penalties
 
 	SURPLUS_SUPPLY_RATIO_FOR_ZERO_FUEL_FLOW = 0.5,		-- if a supply chunk has more supply needed than this ratio + 1 compared to its max supply flow, the units inside the chiunk will get no fuel
---------------------------fix топляк
 	ARMY_MAX_FUEL_FLOW_MULT = 2.0,					-- max fuel ratio that an army can get per hour, multiplied by supply situation
 
 	ARMY_FUEL_COST_MULT = 0.5,						-- fuel cost multiplier for all army related stuff
