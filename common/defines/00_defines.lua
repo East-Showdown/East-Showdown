@@ -126,7 +126,7 @@ NDiplomacy = {
 	VOLUNTEERS_PER_TARGET_PROVINCE = 0.05,			-- Each province owned by the target country contributes this amount of volunteers to the limit.
 	VOLUNTEERS_PER_COUNTRY_ARMY = 0.05,				-- Each army unit owned by the source country contributes this amount of volunteers to the limit.
 	VOLUNTEERS_RETURN_EQUIPMENT = 0.95,				-- Returning volunteers keep this much equipment
-	VOLUNTEERS_TRANSFER_SPEED = 14,					-- days to transfer a unit to another nation
+	VOLUNTEERS_TRANSFER_SPEED = 4,					-- days to transfer a unit to another nation
 	VOLUNTEERS_DIVISIONS_REQUIRED = 30,				-- This many divisons are required for the country to be able to send volunteers.
 	TENSION_STATE_VALUE = 2,						-- Tension value gained by annexing one state
 	TENSION_CIVIL_WAR_IMPACT = 0.2,					-- civil war multiplier on tension.
@@ -842,7 +842,7 @@ NMilitary = {
 	AVERAGE_SUPPLY_USE_PESSIMISM = 1.5,					-- Multiplier for when AI calculates average supply use of entire army.
 
 
-	LAND_SPEED_MODIFIER = 0.4,                    -- vanila 0.5 basic speed control скорость дивок
+	LAND_SPEED_MODIFIER = 0.35,                    -- vanila 0.5 basic speed control скорость дивок
 	RIVER_CROSSING_PENALTY = -0.3,                 -- small river crossing
 	RIVER_CROSSING_PENALTY_LARGE = -0.6,           -- large river crossing
 	RIVER_CROSSING_SPEED_PENALTY = -0.25,           -- small river crossing
