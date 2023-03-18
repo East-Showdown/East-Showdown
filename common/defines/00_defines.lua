@@ -842,7 +842,7 @@ NMilitary = {
 	AVERAGE_SUPPLY_USE_PESSIMISM = 1.5,					-- Multiplier for when AI calculates average supply use of entire army.
 
 
-	LAND_SPEED_MODIFIER = 0.35,                    -- vanila 0.5 basic speed control скорость дивок
+	LAND_SPEED_MODIFIER = 0.15,                    -- vanila 0.5 basic speed control скорость дивок
 	RIVER_CROSSING_PENALTY = -0.3,                 -- small river crossing
 	RIVER_CROSSING_PENALTY_LARGE = -0.6,           -- large river crossing
 	RIVER_CROSSING_SPEED_PENALTY = -0.25,           -- small river crossing
@@ -860,7 +860,7 @@ NMilitary = {
 	ENEMY_AIR_SUPERIORITY_IMPACT = -0.35,          -- effect on defense due to enemy air superiorty
 	ENEMY_AIR_SUPERIORITY_DEFENSE = 0.70,	       -- more AA attack will approach this amount of help (diminishing returns)
 	ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112, -- how quickly defense approaches the max impact diminishing returns curve
-	ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.4,     -- vanila 0.3 effect on speed due to enemy air superiority
+	ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.3,     -- vanila 0.3 effect on speed due to enemy air superiority
 
 	ANTI_AIR_TARGETTING_TO_CHANCE = 0.07,			-- Balancing value to determine the chance of ground AA hitting an attacking airplane, affecting both the effective average damage done by AA to airplanes, and the reduction of damage done by airplanes due to AA support
 	ANTI_AIR_ATTACK_TO_AMOUNT = 0.005,				-- Balancing value to convert equipment stat anti_air_attack to the random % value of airplanes being hit.
