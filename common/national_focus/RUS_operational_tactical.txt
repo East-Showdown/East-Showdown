@@ -66,7 +66,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			custom_effect_tooltip = 3_divisions_in_5_regions_in_7_deys
-			increase_escalation_by_2_25 = yes
+			increase_escalation_by_5 = yes
 		}
 	}
 	focus = {
@@ -100,7 +100,7 @@ focus_tree = {
 					random_hours = 3
 				}
 			}
-			increase_escalation_by_2_75 = yes
+			increase_escalation_by_5 = yes
 		}
 	}
 	focus = {
@@ -161,7 +161,7 @@ focus_tree = {
 		x = 0
 		y = 2
 		completion_reward={
-			increase_escalation_by_2 = yes
+			increase_escalation_by_5 = yes
 		}
 	}
 	focus = {
@@ -196,7 +196,7 @@ focus_tree = {
 				tooltip = eslation_at_least_22
 				check_variable = {
 					var = global.escalation
-					value > 22.0
+					value > 14.9
 				}
 			}
 		}
@@ -204,6 +204,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward={
+						increase_escalation_by_5 = yes
 		}
 	}
 	focus = {
@@ -241,7 +242,7 @@ focus_tree = {
 		x = -4
 		y = 1
 		completion_reward={
-			increase_escalation_by_1_75 = yes
+			increase_escalation_by_2_75 = yes
 		}
 	}
 	focus = {
@@ -290,10 +291,10 @@ focus_tree = {
 			activate_mission = increase_the_number_of_troops_on_the_border
 			clr_country_flag = didnt_have_time_to_bring_troops_to_the_border
 			set_country_flag = rus_ai_Increase_the_number_of_troops_on_the_border_with_UKR
-			increase_escalation_by_0_5 = yes
 		}
 		completion_reward = {
 			custom_effect_tooltip = 3_divisions_in_5_regions_in_7_deys
+						increase_escalation_by_4 = yes
 		}
 	}
 	focus = {
@@ -508,12 +509,6 @@ focus_tree = {
 		icon = GFX_RUS_sowing_discontent_in_eastern_ukraine.dds
 		relative_position_id = RUS_send_military_aid_to_the_DPR_and_LPR
 		prerequisite = { focus = RUS_send_military_aid_to_the_DPR_and_LPR focus = RUS_start_a_blockade_of_ukraine }
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = RUS_word_name_not_start
-				has_global_flag = word_name_not_start
-			}
-		}
 		cost = 0.5
 		x = 1
 		y = 1
@@ -531,12 +526,6 @@ focus_tree = {
 		icon = GFX_RUS_start_gathering_of_volunteers
 		relative_position_id = RUS_start_a_blockade_of_ukraine
 		prerequisite = { focus = RUS_start_a_blockade_of_ukraine }
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = RUS_word_name_not_start
-				has_global_flag = word_name_not_start
-			}
-		}
 		cost = 0.5
 		x = -1
 		y = 1
@@ -553,12 +542,6 @@ focus_tree = {
 		icon = GFX_RUS_start_partial_mobilization
 		relative_position_id = RUS_start_gathering_of_volunteers
 		prerequisite = { focus = RUS_start_gathering_of_volunteers }
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = RUS_word_name_not_start
-				has_global_flag = word_name_not_start
-			}
-		}
 		cost = 0.7
 		x = 0
 		y = 1
@@ -582,7 +565,11 @@ focus_tree = {
 		x = -4
 		y = 2
 		completion_reward={
-			increase_escalation_by_2 = yes
+			increase_escalation_by_5 = yes
+			country_event = {
+					id = rus.9
+					days = 10
+                }
 		}
 	}
 	#Offensive from all over Russia and Belarus
@@ -592,15 +579,12 @@ focus_tree = {
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_preparing_for_a_primitive_strike } 
 		prerequisite = { focus = RUS_start_partial_mobilization } 
-		available = {
-			OR = {
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = the_main_plan_has_been_chosen_tt
-						has_country_flag = the_main_plan_has_been_chosen
-					}
-				}
-			}
+		mutually_exclusive = {
+			focus = RUS_offensive_on_kiev
+			focus = RUS_concentrated_attack_on_kyiv
+			focus = RUS_from_border_to_border
+			focus = RUS_offensive_towards_novorossia
+			focus = RUS_send_troops_to_the_republic_of_donbass
 		}
 		cost = 0.5
 		x = -7
@@ -622,30 +606,6 @@ focus_tree = {
 					days = 119
 		    	}
 			}
-			if = {
-				limit = { 
-					NOT = {
-						has_country_flag = the_main_plan_has_been_chosen
-					} 
-				}
-				set_country_flag = main_plan_full_scale_invasion
-			}
-			set_country_flag = the_main_plan_has_been_chosen
-			set_global_flag = BLR_is_preparing_an_attack
-			if = {
-				limit = {
-					country_exists = RBZ
-				}
-				annex_country = {
-					target = RBZ
-				}
-				every_state = {
-					limit = {
-						is_core_of = RBZ
-					}
-					remove_core_of = RBZ
-				}
-			}
 			transfer_state = 398
 			transfer_state = 402
 			transfer_state = 399
@@ -659,15 +619,12 @@ focus_tree = {
 		icon = GFX_RUS_offensive_on_kiev
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_preparing_for_a_primitive_strike }
-		available = {
-			OR = {
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = the_main_plan_has_been_chosen_tt
-						has_country_flag = the_main_plan_has_been_chosen
-					}
-				}
-			}
+		mutually_exclusive = {
+			focus = RUS_full_scale_invasion
+			focus = RUS_concentrated_attack_on_kyiv
+			focus = RUS_from_border_to_border
+			focus = RUS_offensive_towards_novorossia
+			focus = RUS_send_troops_to_the_republic_of_donbass
 		}
 		cost = 0.5
 		x = -4
@@ -689,30 +646,6 @@ focus_tree = {
 					days = 119
 		    	}
 			}
-			if = {
-				limit = { 
-					NOT = {
-						has_country_flag = the_main_plan_has_been_chosen
-					} 
-				}
-				set_country_flag = main_plan_offensive_on_kiev
-				set_global_flag = BLR_is_preparing_an_attack
-			}
-			set_country_flag = the_main_plan_has_been_chosen
-			if = {
-				limit = {
-					country_exists = RBZ
-				}
-				annex_country = {
-					target = RBZ
-				}
-				every_state = {
-					limit = {
-						is_core_of = RBZ
-					}
-					remove_core_of = RBZ
-				}
-			}
 			transfer_state = 398
 			transfer_state = 402
 			transfer_state = 399
@@ -725,15 +658,12 @@ focus_tree = {
 		icon = RUS_concentrated_attack_on_kyiv
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_preparing_for_a_primitive_strike }
-		available = {
-			OR = {
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = the_main_plan_has_been_chosen_tt
-						has_country_flag = the_main_plan_has_been_chosen
-					}
-				}
-			}
+		mutually_exclusive = {
+			focus = RUS_offensive_on_kiev
+			focus = RUS_full_scale_invasion
+			focus = RUS_from_border_to_border
+			focus = RUS_offensive_towards_novorossia
+			focus = RUS_send_troops_to_the_republic_of_donbass
 		}
 		cost = 0.5
 		x = -1
@@ -754,249 +684,41 @@ focus_tree = {
 					id = rus_hidden.2
 					days = 119
 		    	}
-			}
-			if = {
-				limit = { 
-					NOT = {
-						has_country_flag = the_main_plan_has_been_chosen
-					} 
 				}
-				set_country_flag = main_plan_concentrated_attack_on_kyiv
-			}
-			set_country_flag = the_main_plan_has_been_chosen
-			set_global_flag = BLR_is_preparing_an_attack
-			if = {
-				limit = {
-					NOT = {
-						country_exists = RBZ
-					}
-				}
-				set_autonomy = {
-					target = RBZ
-					autonomy_state = part_of_the_federation
-				}
-			}
 			RBZ = {
-				hidden_effect = {
-					RBZ_state_update = yes
-					every_country = {
-						white_peace = RBZ
-					}
-				}
-				if = {
-					limit = {
-						exists = no
-					}
-					set_capital = {
-						state = 272
-						remember_old_capital = no
-					}
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								OR = {
-									controls_state = 56
-									controls_state = 60
-								}
-							}
-						}
-					}
-					transfer_state = 302
-					add_state_core = 302
-				}	
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 57
-							}
-						}
-					}
-					transfer_state = 272
-					add_state_core = 272
-				}	
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 66
-							}
-						}
-					}
-					transfer_state = 306
-					add_state_core = 306
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 72
-							}
-						}
-					}
-					transfer_state = 377
-					add_state_core = 377
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								OR = {
-									controls_state = 72
-									controls_state = 89
-								}
-							}
-						}
-					}
-					transfer_state = 371
-					add_state_core = 371
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								controls_state = 103
-							}
-						}
-					}
-					transfer_state = 336
-					add_state_core = 336
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 100
-									controls_state = 107
-								}
-							}
-						}
-					}
-					transfer_state = 120
-					add_state_core = 120
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 107
-									controls_state = 116
-								}
-							}
-						}
-					}
-					transfer_state = 122
-					add_state_core = 122
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 116
-									controls_state = 125
-								}
-							}
-						}
-					}
-					transfer_state = 117
-					add_state_core = 117
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 125
-									controls_state = 154
-								}
-							}
-						}
-					}
-					transfer_state = 126
-					add_state_core = 126
-				}
-			}
-			if = {
-				limit = {
-					NOT = {
-						RUS = {
-							OR = {
-								controls_state = 100
-								controls_state = 107
-							}
-						}
-					}
-				}
+				transfer_state = 302
+				transfer_state = 272
+				transfer_state = 306
+				transfer_state = 377	
+				transfer_state = 371
+				transfer_state = 336
 				transfer_state = 120
-				add_state_core = 120
-			}
-			if = {
-				limit = {
-					NOT = {
-						RUS = {
-							OR = {
-								controls_state = 107
-								controls_state = 116
-							}
-						}
-					}
-				}
 				transfer_state = 122
-				add_state_core = 122
-			}
-			if = {
-				limit = {
-					NOT = {
-						RUS = {
-							OR = {
-								controls_state = 116
-								controls_state = 125
-							}
-						}
-					}
-				}
-				transfer_state = 117
-				add_state_core = 117
-			}
-			if = {
-				limit = {
-					NOT = {
-						RUS = {
-							OR = {
-								controls_state = 125
-								controls_state = 154
-							}
-						}
-					}
-				}
-				transfer_state = 126
-				add_state_core = 126
-			}
-			transfer_state = 402
-			transfer_state = 399
-			transfer_state = 400
+				transfer_state = 117	
+				transfer_state = 126		
 		}
+		RUS = {
+		transfer_state = 398
+		transfer_state = 402
+		transfer_state = 399
+		transfer_state = 400
+		transfer_state = 401
+		}
+	
 	}
+}
 	#An offensive from Russia's borders to the east
 	focus = {
 		id = RUS_from_border_to_border
 		icon = GFX_RUS_from_border_to_border
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_preparing_for_a_primitive_strike }
-		available = {
-			OR = {
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = the_main_plan_has_been_chosen_tt
-						has_country_flag = the_main_plan_has_been_chosen
-					}
-				}
-			}
+		mutually_exclusive = {
+			focus = RUS_offensive_on_kiev
+			focus = RUS_concentrated_attack_on_kyiv
+			focus = RUS_offensive_towards_novorossia
+			focus = RUS_full_scale_invasion
+			focus = RUS_send_troops_to_the_republic_of_donbass
 		}
 		cost = 0.5
 		x = 1
@@ -1018,29 +740,6 @@ focus_tree = {
 					days = 209
 		    	}
 			}
-			if = {
-				limit = { 
-					NOT = {
-						has_country_flag = the_main_plan_has_been_chosen
-					} 
-				}
-				set_country_flag = main_plan_from_border_to_border
-			}
-			set_country_flag = the_main_plan_has_been_chosen
-			if = {
-				limit = {
-					country_exists = RBZ
-				}
-				annex_country = {
-					target = RBZ
-				}
-				every_state = {
-					limit = {
-						is_core_of = RBZ
-					}
-					remove_core_of = RBZ
-				}
-			}
 		}
 	}
 
@@ -1050,15 +749,12 @@ focus_tree = {
 		icon = GFX_RUS_offensive_towards_novorossia
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_preparing_for_a_primitive_strike }
-		available = {
-			OR = {
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = the_main_plan_has_been_chosen_tt
-						has_country_flag = the_main_plan_has_been_chosen
-					}
-				}
-			}
+		mutually_exclusive = {
+			focus = RUS_offensive_on_kiev
+			focus = RUS_concentrated_attack_on_kyiv
+			focus = RUS_from_border_to_border
+			focus = RUS_full_scale_invasion
+			focus = RUS_send_troops_to_the_republic_of_donbass
 		}
 		cost = 0.5
 		x = 4
@@ -1080,176 +776,27 @@ focus_tree = {
 					days = 209
 		    	}
 			}
-			if = {
-				limit = { 
-					NOT = {
-						has_country_flag = the_main_plan_has_been_chosen
-					} 
-				}
-				set_country_flag = main_plan_offensive_towards_novorossia
-			}
-			set_country_flag = the_main_plan_has_been_chosen
-			if = {
-				limit = {
-					NOT = {
-						country_exists = RBZ
-					}
-				}
-				set_autonomy = {
-					target = RBZ
-					autonomy_state = part_of_the_federation
-				}
-			}
 			RBZ = {
-				hidden_effect = {
-					RBZ_state_update = yes
-					every_country = {
-						white_peace = RBZ
-					}
-				}
-				if = {
-					limit = {
-						exists = no
-					}
-					set_capital = {
-						state = 272
-						remember_old_capital = no
-					}
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								OR = {
-									controls_state = 56
-									controls_state = 60
-								}
-							}
-						}
-					}
-					transfer_state = 302
-					add_state_core = 302
-				}	
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 57
-							}
-						}
-					}
-					transfer_state = 272
-					add_state_core = 272
-				}	
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 66
-							}
-						}
-					}
-					transfer_state = 306
-					add_state_core = 306
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 72
-							}
-						}
-					}
-					transfer_state = 377
-					add_state_core = 377
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								OR = {
-									controls_state = 72
-									controls_state = 89
-								}
-							}
-						}
-					}
-					transfer_state = 371
-					add_state_core = 371
-				}
-			}
-			if = {
-				limit = {
-					126 = {
-						is_controlled_by = RBZ
-					}
-				}
-				transfer_state = 126
-				126 = {
-					remove_core_of = RBZ
-				}
-			}
-			if = {
-				limit = {
-					117 = {
-						is_controlled_by = RBZ
-					}
-				}
-				transfer_state = 117
-				117 = {
-					remove_core_of = RBZ
-				}
-			}
-			if = {
-				limit = {
-					122 = {
-						is_controlled_by = RBZ
-					}
-				}
-				transfer_state = 122
-				122 = {
-					remove_core_of = RBZ
-				}
-			}
-			if = {
-				limit = {
-					120 = {
-						is_controlled_by = RBZ
-					}
-				}
-				transfer_state = 120
-				120 = {
-					remove_core_of = RBZ
-				}
-			}
-			if = {
-				limit = {
-					336 = {
-						is_controlled_by = RBZ
-					}
-				}
-				transfer_state = 336
-				336 = {
-					remove_core_of = RBZ
-				}
-			}
+				transfer_state = 302
+				transfer_state = 272
+				transfer_state = 306
+				transfer_state = 377	
+				transfer_state = 371		
 		}
 	}
+}
 	#Send troops to the Republic of Donbass, and launch an offensive only from their territory, to liberate them
 	focus = {
 		id = RUS_send_troops_to_the_republic_of_donbass
 		icon = GFX_RUS_send_troops_to_the_republic_of_donbass
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_preparing_for_a_primitive_strike }
-		available = {
-			OR = {
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = the_main_plan_has_been_chosen_tt
-						has_country_flag = the_main_plan_has_been_chosen
-					}
-				}
-			}
+		mutually_exclusive = {
+			focus = RUS_offensive_on_kiev
+			focus = RUS_concentrated_attack_on_kyiv
+			focus = RUS_offensive_towards_novorossia
+			focus = RUS_full_scale_invasion
+			focus = RUS_from_border_to_border
 		}
 		cost = 0.5
 		x = 7
@@ -1271,186 +818,36 @@ focus_tree = {
 					days = 209
 		    	}
 			}
-			if = {
-				limit = { 
-					NOT = {
-						has_country_flag = the_main_plan_has_been_chosen
-					} 
-				}
-				set_country_flag = main_plan_send_troops_to_the_republic_of_donbass
-			}
-			set_country_flag = the_main_plan_has_been_chosen
-			if = {
-				limit = {
-					NOT = {
-						country_exists = RBZ
-					}
-				}
-				set_autonomy = {
-					target = RBZ
-					autonomy_state = part_of_the_federation
-				}
-			}
 			RBZ = {
-				hidden_effect = {
-					RBZ_state_update = yes
-					every_country = {
-						white_peace = RBZ
-					}
-				}
-				if = {
-					limit = {
-						exists = no
-					}
-					set_capital = {
-						state = 272
-						remember_old_capital = no
-					}
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								OR = {
-									controls_state = 56
-									controls_state = 60
-								}
-							}
-						}
-					}
-					transfer_state = 302
-					add_state_core = 302
-				}	
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 57
-							}
-						}
-					}
-					transfer_state = 272
-					add_state_core = 272
-				}	
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 66
-							}
-						}
-					}
-					transfer_state = 306
-					add_state_core = 306
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								controls_state = 72
-							}
-						}
-					}
-					transfer_state = 377
-					add_state_core = 377
-				}
-				if = {
-					limit = {
-						RUS = {
-							NOT = {
-								OR = {
-									controls_state = 72
-									controls_state = 89
-								}
-							}
-						}
-					}
-					transfer_state = 371
-					add_state_core = 371
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								controls_state = 103
-							}
-						}
-					}
-					transfer_state = 336
-					add_state_core = 336
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 100
-									controls_state = 107
-								}
-							}
-						}
-					}
-					transfer_state = 120
-					add_state_core = 120
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 107
-									controls_state = 116
-								}
-							}
-						}
-					}
-					transfer_state = 122
-					add_state_core = 122
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 116
-									controls_state = 125
-								}
-							}
-						}
-					}
-					transfer_state = 117
-					add_state_core = 117
-				}
-				if = {
-					limit = {
-						NOT = {
-							RUS = {
-								OR = {
-									controls_state = 125
-									controls_state = 154
-								}
-							}
-						}
-					}
-					transfer_state = 126
-					add_state_core = 126
-				}
-			}
+				transfer_state = 302
+				transfer_state = 272
+				transfer_state = 306
+				transfer_state = 377	
+				transfer_state = 371
+				transfer_state = 336
+				transfer_state = 120
+				transfer_state = 122
+				transfer_state = 117	
+				transfer_state = 126		
 		}
 	}
+}
+
 	focus = {
-		id = RUS_start_a_special_military_operation
+		id = RUS_SMO
 		icon = GFX_RUS_start_a_special_military_operation
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_full_scale_invasion focus = RUS_offensive_on_kiev focus = RUS_concentrated_attack_on_kyiv focus = RUS_from_border_to_border focus = RUS_offensive_towards_novorossia focus = RUS_send_troops_to_the_republic_of_donbass }
 		mutually_exclusive = {
 			focus = RUS_declare_war_on_ukraine
 		}
-		cost = 1.55
-		cancelable = no
-		will_lead_to_war_with = UKR
 		x = 1
 		y = 3
+		cost = 1.55
+		cancelable = no
+		ai_will_do = {
+			factor = 1
+		}
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = eslation_at_least_30
@@ -1460,13 +857,8 @@ focus_tree = {
 				}
 			}
 		}
-		completion_reward={
-			DNR = {
-        complete_national_focus =  DNR_snovavoyna
-      }
-        LNR = {
-        complete_national_focus =  DNR_snovavoyna
-      }	  KAZ = {
+		completion_reward = {
+			KAZ = {
 				add_ideas = {
 					does_not_participate_in_smo_in_ukraine
 				}
@@ -1481,65 +873,32 @@ focus_tree = {
 					does_not_participate_in_smo_in_ukraine
 				}
 			}
-		RUS = {
+					RUS = {
 			add_timed_idea = {
 				idea = RUS_rapid_offensive_3
 				days = 20
 			}
 		}
-		add_ideas = RUS_RUB_1
-
 		hidden_effect = {
             country_event = {
 				id = rus.13
 				days = 7
 			}
-			country_event = {
-				id = rus.15
-				hours = 10
-			}
         }
-        BLR = {
-			country_event = {
-					id = blr.3
-					days = 1
-				}
-			}		
-		declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-			DNR = {
-        declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-          }
-        LNR = {
-        declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-          }
 		country_event = {
 				id = smo.9
 				days = 0
 			}
-			RUS = { add_to_faction = DNR }
-			RUS = { add_to_faction = LNR }
-			news_event = { id = news.6 hours = 6 }
 		}	
-		ai_will_do = {
-			factor = 1
-		}
 	}
+
 	focus = {
 		id = RUS_declare_war_on_ukraine
 		icon = GFX_RUS_start_a_special_military_operation2
 		relative_position_id = RUS_preparing_for_a_primitive_strike
 		prerequisite = { focus = RUS_full_scale_invasion focus = RUS_offensive_on_kiev focus = RUS_concentrated_attack_on_kyiv focus = RUS_from_border_to_border focus = RUS_offensive_towards_novorossia }
 		mutually_exclusive = {
-			focus = RUS_start_a_special_military_operation
+			focus = RUS_SMO
 		}
 		cost = 1.55
 		cancelable = no
@@ -1585,44 +944,11 @@ focus_tree = {
         complete_national_focus =  pdr_toodessa
       }
 		hidden_effect = {
-			BLR = {
-		country_event = {
-				id = blr.3
-				days = 1
-			}
-        }
             country_event = {
 				id = rus.13
 				days = 7
 			}
-			
-			country_event = {
-				id = rus.15
-				hours = 10
-			}
         }
-		declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-			 DNR = {
-        declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-          }
-        LNR = {
-        declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-          }
-        PDR = {
-        declare_war_on = {
-                target = UKR
-                type = annex_everything
-            }
-          }
 			country_event = {
 				id = smo.8
 				days = 0
@@ -1637,7 +963,7 @@ focus_tree = {
 		id = RUS_falls_of_kyiv
 		icon = GFX_RUS_falls_of_kyiv
 		relative_position_id = RUS_declare_war_on_ukraine
-		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		prerequisite = { focus = RUS_SMO focus = RUS_declare_war_on_ukraine }
 		prerequisite = { focus = RUS_full_scale_invasion focus = RUS_offensive_on_kiev focus = RUS_concentrated_attack_on_kyiv }
 		mutually_exclusive = {
 			focus = RUS_leave_kiev
@@ -1661,7 +987,7 @@ focus_tree = {
 		id = RUS_leave_kiev
 		icon = GFX_RUS_leave_kiev
 		relative_position_id = RUS_declare_war_on_ukraine
-		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		prerequisite = { focus = RUS_SMO focus = RUS_declare_war_on_ukraine }
 		prerequisite = { focus = RUS_full_scale_invasion focus = RUS_offensive_on_kiev focus = RUS_concentrated_attack_on_kyiv }
 		mutually_exclusive = {
 			focus = RUS_falls_of_kyiv
@@ -1693,14 +1019,13 @@ focus_tree = {
 				hours = 5
 				random_hours = 4
 			}
-			set_global_flag = RUS_leave_from_kiev
 		}
 	}
 	focus = {
 		id = RUS_liberation_of_donbass
 		icon = GFX_RUS_liberation_of_donbass
-		relative_position_id = RUS_start_a_special_military_operation
-		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		relative_position_id = RUS_SMO
+		prerequisite = { focus = RUS_SMO focus = RUS_declare_war_on_ukraine }
 		mutually_exclusive = {
 			focus = RUS_the_liberation_is_delayed
 		}
@@ -1738,8 +1063,8 @@ focus_tree = {
 	focus = {
 		id = RUS_the_liberation_is_delayed
 		icon = GFX_RUS_the_liberation_is_delayed
-		relative_position_id = RUS_start_a_special_military_operation
-		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		relative_position_id = RUS_SMO
+		prerequisite = { focus = RUS_SMO focus = RUS_declare_war_on_ukraine }
 		mutually_exclusive = {
 			focus = RUS_liberation_of_donbass
 		}
@@ -1784,7 +1109,7 @@ focus_tree = {
 		id = RUS_support_protests
 		icon = GFX_RUS_support_protests
 		relative_position_id = RUS_declare_war_on_ukraine
-		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		prerequisite = { focus = RUS_SMO focus = RUS_declare_war_on_ukraine }
 		mutually_exclusive = {
 			focus = RUS_break_up_protests
 		}
@@ -1800,7 +1125,7 @@ focus_tree = {
 		id = RUS_break_up_protests
 		icon = GFX_RUS_break_up_protests
 		relative_position_id = RUS_declare_war_on_ukraine
-		prerequisite = { focus = RUS_start_a_special_military_operation focus = RUS_declare_war_on_ukraine }
+		prerequisite = { focus = RUS_SMO focus = RUS_declare_war_on_ukraine }
 		mutually_exclusive = {
 			focus = RUS_support_protests
 		}
@@ -1810,14 +1135,6 @@ focus_tree = {
 		x = -6
 		y = 1
 		completion_reward={
-			swap_ideas = {
-				remove_idea = strength_of_opposition_3
-				add_idea = strength_of_opposition_2
-			}
-			add_political_power = 30
-			hidden_effect = {
-				news_event = { id = news.13 hours = 7 }
-			}
 		}
 	}
 	focus = {
@@ -1915,7 +1232,7 @@ focus_tree = {
 		icon = GFX_RUS_escalation_of_conflict
 		available = {
 			OR = {
-				has_completed_focus = RUS_start_a_special_military_operation  
+				has_completed_focus = RUS_SMO  
 				has_completed_focus = RUS_declare_war_on_ukraine
 			}
 			 original_tag = RUS
@@ -2625,7 +1942,7 @@ focus_tree = {
 		relative_position_id = RUS_nato_advance_threat
 		available = {
 			OR = {
-				has_completed_focus = RUS_start_a_special_military_operation  
+				has_completed_focus = RUS_SMO  
 				has_completed_focus = RUS_declare_war_on_ukraine
 			}
 			 original_tag = RUS
