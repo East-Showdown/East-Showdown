@@ -4,7 +4,6 @@ scripted_gui = {
 		window_name = "RUS_SVO_deccat_GUI"
 		#dirty = RUS_SVO_deccat_GUI
 		visible = { always = yes }
-
 		properties = {
 			RUS_SVO_deccat_inner_support_one_progressbar = {
 				frame = RUS_people_support
@@ -66,5 +65,43 @@ scripted_gui = {
 				set_variable = { support_faction_selected = 6 }
 				log = "[?support_faction_selected]"
 			}
+			
+			RUS_SVO_open_staff_gui_button_click = {
+				if = {
+					limit = { NOT = { has_country_flag = SVO_STAFF_WINDOW_OPEN } }
+					set_country_flag = SVO_STAFF_WINDOW_OPEN
+				}
+				else_if = {
+					limit = { has_country_flag = SVO_STAFF_WINDOW_OPEN }
+					clr_country_flag = SVO_STAFF_WINDOW_OPEN
+				}
+			}
 		}
 	}
+	RUS_SVO_window_GUI = {
+		context_type = player_context
+		window_name = "RUS_SVO_general_staff_window"
+
+		visible = {
+			tag = RUS
+			has_country_flag = SVO_STAFF_WINDOW_OPEN
+		}
+		
+		dynamic_lists = {
+			ukraine_map_gridbox = {
+				array = SMO_map_grid_array
+				index = idx
+				value = SMO_map_value
+				entry_container = "SMO_map_entry"
+			}
+		}
+		properties = {
+			SMO_map_state = {
+				image = "GFX_SVO_ukraine_map_state_[?MAR_map_grid_array^idx]"
+				frame = SVO_map_value:state_condition
+				x = SMO_map_x^idx
+				y = SMO_map_y^idx
+			} 
+		}
+	}
+}
