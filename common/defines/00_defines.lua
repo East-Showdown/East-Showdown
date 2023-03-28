@@ -717,7 +717,7 @@ NMilitary = {
 	USE_MULTIPLICATIVE_ORG_LOSS_WHEN_MOVING = true, -- whether to apply org_loss_when_moving modifiers additively or multiplicatively (hardcoded multiplicative pre-2021)
 	HOURLY_ORG_MOVEMENT_IMPACT = -0.2,		--vanila -0.2 how much org is lost every hour while moving an army.
 	ZERO_ORG_MOVEMENT_MODIFIER = -0.8,		-- speed impact at 0 org.
-	INFRA_ORG_IMPACT = 0.5,				-- scale factor of infra on org regain.
+	INFRA_ORG_IMPACT = 0.5,				-- коэффициент масштабирования инфры на орг. рег.
 	ENGAGEMENT_WIDTH_PER_WIDTH = 2.0,	-- how much enemy combat width we are allowed to engage per width of our own
 
 	INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.12,	-- Lancaster fix vanila 0.5 speed penalty per infrastucture below maximum.
@@ -797,7 +797,8 @@ NMilitary = {
 	LAND_COMBAT_COLLATERAL_FORT_FACTOR = 0.005,		-- Factor to scale collateral damage to forts with.
 	LAND_COMBAT_COLLATERAL_INFRA_FACTOR = 0.0022,	-- Factor to scale collateral damage to infra with.
 	LAND_COMBAT_FORT_DAMAGE_CHANCE = 5,				-- chance to get a hit to damage on forts. (out of 100)
-	ATTRITION_DAMAGE_ORG = 0.08,					   -- damage from attrition to Organisation
+---Lancasterfix
+	ATTRITION_DAMAGE_ORG = 0.08,					   -- vanila 0.08 ущерб от истощения Организации
 	ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.1,		   -- Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 	ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.1, -- Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 	ATTRITION_WHILE_MOVING_FACTOR = 1,
@@ -823,7 +824,7 @@ NMilitary = {
 	SUPPLY_USE_FACTOR_INACTIVE = 0.95,			   -- Deprecated/Unused
 	SUPPLY_GRACE = 72,							   -- troops always carry 3 days of food and supply
 	SUPPLY_GRACE_MAX_REDUCE_PER_HOUR = 2,          -- supply grace is not decreased instantly when it is buffed temporarily and buff is removed
-	SUPPLY_ORG_MAX_CAP = 0.35,                     -- Max organization is factored by this if completely out of supply
+	SUPPLY_ORG_MAX_CAP = 0.30,                     -- vanilla 0.35 Максимальная организация учитывается по этому показателю, если полностью отсутствует снабжение
 
 	MAX_OUT_OF_SUPPLY_DAYS = 30, 				   -- how many days of shitty supply until max penalty achieved
 	OUT_OF_SUPPLY_ATTRITION = 0.20,                 -- max attrition when out of supply
@@ -3788,11 +3789,12 @@ NCharacter = {
 NSupply = {
 	MAX_RAILWAY_LEVEL = 5, -- update railway texture as well, each frame corresponds to a level
 
+	-----------------Lancasterfixsupply
 	--defines to calculate the capitals supply. This will be also used for max supply of other nodes depending on how well they are connected to capital. Using the formula:
 	--CapitalSupply = CAPITAL_SUPPLY_BASE + (NumberOfCivilianFactories * CAPITAL_SUPPLY_CIVILIAN_FACTORIES) + (NumberOfMilitaryFactories * CAPITAL_SUPPLY_MILITARY_FACTORIES) + (NumberOfDockyards * CAPITAL_SUPPLY_DOCKYARDS)
-	CAPITAL_SUPPLY_BASE = 5.0, -- base supply for capital
-	CAPITAL_SUPPLY_CIVILIAN_FACTORIES = 0.3, -- supply from one civilian factory
-	CAPITAL_SUPPLY_MILITARY_FACTORIES = 0.6, -- supply from one military factory
+	CAPITAL_SUPPLY_BASE = 7.0, -- vanilla 5.0 base supply for capital
+	CAPITAL_SUPPLY_CIVILIAN_FACTORIES = 0.1, -- vannila 0.3 supply from one civilian factory
+	CAPITAL_SUPPLY_MILITARY_FACTORIES = 0.3, -- vannila 0.6 supply from one military factory
 	CAPITAL_SUPPLY_DOCKYARDS = 0.4, --supply from one naval factory
 
 	-- defines that are used for supply reach for capital
