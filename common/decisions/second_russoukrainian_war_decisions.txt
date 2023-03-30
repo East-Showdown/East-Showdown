@@ -136,6 +136,7 @@ has_war = yes
 				OR = {
 					has_completed_focus = RUS_offensive_on_kiev
 					has_completed_focus = RUS_concentrated_attack_on_kyiv
+					has_completed_focus = RUS_full_scale_invasion
 				}
 			}
 		}	
@@ -145,7 +146,64 @@ has_war = yes
 					days = 30
 				}
 			}
-	}			
+	}	
+
+	evacuate_kyiv = {
+		icon = decision_evacuate_kyiv 
+		cost = 20
+		fire_only_once = yes
+		available = {
+			has_war = yes 
+			RUS = {
+				OR = {
+					has_completed_focus = RUS_offensive_on_kiev
+					has_completed_focus = RUS_concentrated_attack_on_kyiv
+					has_completed_focus = RUS_full_scale_invasion
+				}
+				OR = {
+					controls_state = 68
+					controls_state = 59
+					controls_state = 73
+					controls_state = 83
+					controls_state = 87
+					controls_state = 86
+				}
+			}
+		}	
+			complete_effect = {
+				country_event = {
+					id = ukr.19
+				}
+				add_war_support = -0.09
+				add_stability = 0.07
+			}
+	}
+	
+	return_to_kyiv = {
+		icon = decision_evacuate_kyiv 
+		cost = 20
+		fire_only_once = yes
+		available = {
+			UKR = {
+				OR = {
+					capital_scope = { state = 108 }
+					capital_scope = { state = 187 }
+					capital_scope = { state = 256 }
+				}
+				controls_state = 68
+				controls_state = 59
+				controls_state = 73
+				controls_state = 83
+				controls_state = 87
+				controls_state = 86
+			}
+		}
+		complete_effect = {
+			set_capital = { state = 94 }
+			remove_ideas = kyiv_evacuated
+			add_war_support = 0.15
+		}
+	}
 
 	war_bonds = {
 		icon = decision_icon_war_bonds
@@ -154,7 +212,6 @@ has_war = yes
 		days_re_enable = 300
 		available = {
 			has_war = yes
-
 		}
 		complete_effect = {
 			add_timed_idea = {
