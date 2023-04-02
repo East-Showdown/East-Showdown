@@ -3,7 +3,7 @@ NDefines = {
 NGame = {
 	START_DATE = "2022.1.1.1",
 	END_DATE = "2026.1.1.1",
-	MAP_SCALE_PIXEL_TO_KM = 0.514,					-- Yes, we did the math
+	MAP_SCALE_PIXEL_TO_KM = 0.120,					-- Yes, we did the math
 	SAVE_VERSION = 15,								-- 1.11.0 (Barbarossa)
 	CHECKSUM_SALT = "zwOdv5d9wm9uDSOT",				-- Data to modify generated checksum when game binaries have changed but not any content files.
 	LAG_DAYS_FOR_LOWER_SPEED = 10,					-- Days of client lag for decrease of gamespeed
@@ -720,7 +720,7 @@ NMilitary = {
 	INFRA_ORG_IMPACT = 0.5,				-- коэффициент масштабирования инфры на орг. рег.
 	ENGAGEMENT_WIDTH_PER_WIDTH = 2.0,	-- how much enemy combat width we are allowed to engage per width of our own
 
-	INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.12,	-- Lancaster fix vanila 0.5 speed penalty per infrastucture below maximum.
+	INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.10,	-- Lancaster fix vanila 0.5 speed penalty per infrastucture below maximum.
 
 	VPS_FOR_HISTORY_ENTRY = 3,					-- Minimum VPs required to receive an entry in divisional history
 	VPS_FOR_HIGH_HISTORY_ENTRY = 8,				-- VPs required for high-level history entry
@@ -843,7 +843,7 @@ NMilitary = {
 	AVERAGE_SUPPLY_USE_PESSIMISM = 1.5,					-- Multiplier for when AI calculates average supply use of entire army.
 
 
-	LAND_SPEED_MODIFIER = 0.15,                    -- vanila 0.5 basic speed control скорость дивок
+	LAND_SPEED_MODIFIER = 0.45,                    -- vanila 0.5 basic speed control скорость дивок
 	RIVER_CROSSING_PENALTY = -0.3,                 -- small river crossing
 	RIVER_CROSSING_PENALTY_LARGE = -0.6,           -- large river crossing
 	RIVER_CROSSING_SPEED_PENALTY = -0.25,           -- small river crossing
