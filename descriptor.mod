@@ -43,6 +43,7 @@ replace_path="common/unit_leader"
 replace_path="common/bop"
 replace_path="gfx/interface/equipmentdesigner/graphic_db"
 replace_path="portraits"
+replace_path="common/combat_tactics.txt"
 replace_path="events"
 tags={
 	"Map"
