@@ -1,6 +1,6 @@
 focus_tree = {
 	id = DNR
-	continuous_focus_position = { x = 3190 y = 920 } 
+	continuous_focus_position = { x = 4190 y = 920 } 
 	country = {
 		factor = 0
 		modifier = {
@@ -12,14 +12,130 @@ focus_tree = {
 			tag = LNR
 		}
 	}
-	default = no
-	#Конфискация оружия у населения
 	focus = {
-		id = DNR_konfiskaciyaoruzhiyaunaseleniya
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_konfiskaciyaoruzhiyaunaseleniya
-		x = 1
+		id = DNR_reshaushiigod
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 40
+		y = 0
+		cost = 0.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		completion_reward = {
+			add_political_power = 150
+		}
+	}
+	focus = {
+		id = DNR_tofuture
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 44
 		y = 2
+		cost = 1.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			RUS = {
+				has_completed_focus = RUS_successful_negotiations
+			}
+		}
+		prerequisite = { focus = DNR_reshaushiigod  }
+		mutually_exclusive = { focus = DNR_ojidaemiyishod  }
+		completion_reward = {
+			add_stability = 1.00
+			add_war_support = -1.00
+		}
+	}
+	focus = {
+		id = DNR_zavtra
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 44
+		y = 3
+		cost = 140
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DNR_tofuture  }
+		completion_reward = {
+		}
+	}
+	focus = {
+		id = DNR_ojidaemiyishod
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 36
+		y = 2
+		cost = 1.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			OR {
+				RUS = {
+					has_completed_focus = RUS_conflict_flares_up_again
+				}
+				RUS = {
+					has_completed_focus = RUS_failure_of_negotiations
+				}
+				RUS = {
+					has_completed_focus = RUS_there_will_be_no_peaceful_solution
+				}
+			}
+		}
+		prerequisite = { focus = DNR_reshaushiigod  }
+		mutually_exclusive = { focus = DNR_tofuture  }
+		completion_reward = {
+		}
+	}
+	#Тёмные тучи над Донбассом
+	focus = {
+		id = DNR_tyomnyetuchinaddonbassom
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_tyomnyetuchinaddonbassom
+		x = 36
+		y = 3
+		cost = 0.145
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DNR_ojidaemiyishod  }
+		completion_reward = {
+			country_event = {
+				id = dnr.1
+				days = 0
+			}
+		}
+	}
+	#Усиление Блокпостов
+	focus = {
+		id = DNR_usilenieblokpostov
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_usilenieblokpostov
+		x = 36
+		y = 5
 		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CIVIL_WAR
+		}
+		prerequisite = { focus = DNR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_ideas = DNB_blokposti
+			add_manpower = -5000
+	    }
+	}
+	#Реформа вооруженных сил
+	focus = {
+		id = DNR_reformavoorujennihsil
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_konfiskaciyaoruzhiyaunaseleniya
+		x = 34
+		y = 4
+		cost = 0.8
+		available = {
+			has_war=no
+		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
 		}
@@ -36,100 +152,35 @@ focus_tree = {
 		}
 	}
 
-	#Тёмные тучи над Донбассом
-	focus = {
-		id = DNR_tyomnyetuchinaddonbassom
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_tyomnyetuchinaddonbassom
-		x = 7
-		y = 1
-		cost = 0.145
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		completion_reward = {
-			country_event = {
-				id = dnr.1
-				days = 0
-			}
-		}
-	}
-
 	#За что мы сражаемся?
 	focus = {
 		id = DNR_zachtomysrazhaemsya
 		icon =  GFX_DNR_zachtomysrazhaemsya
-		x = 13
-		y = 2
+		x = 36
+		y = 7
 		cost = 0.8
+		available = {
+			has_war=no
+		}
 		search_filters = {
 			FOCUS_FILTER_WAR_SUPPORT
 		}
-		prerequisite = { focus = DNR_tyomnyetuchinaddonbassom  }
+		prerequisite = { focus = DNR_reformavoorujennihsil focus = DNR_usilenieblokpostov focus = DNR_borbasnavodchikami focus = dnr_evacuation_focus0 }
 		completion_reward = {
 			add_ideas = why_we_fight_focus
 		}
-	}
-
-	#Вооруженные шахтеры
-	focus = {
-		id = DNR_vooruzhennyeshahtery
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_IMAGE_NOT_FOUND
-		x = 3
-		y = 2
-		cost = 0.8
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		prerequisite = { focus = DNR_tyomnyetuchinaddonbassom  }
-		mutually_exclusive = { focus = DNR_konfiskaciyaoruzhiyaunaseleniya  } mutually_exclusive = { focus = DNR_razdatoruzhienaseleniyu  }
-		completion_reward = {
-			add_ideas = DNB_shahteri
-			add_manpower = 50000
-	    }
-    }
-
-	#Раздать оружие населению
-	focus = {
-		id = DNR_razdatoruzhienaseleniyu
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_razdatoruzhienaseleniyu
-		x = 5
-		y = 2
-		cost = 0.8
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		prerequisite = { focus = DNR_tyomnyetuchinaddonbassom  }
-		mutually_exclusive = { focus = DNR_konfiskaciyaoruzhiyaunaseleniya  } mutually_exclusive = { focus = DNR_vooruzhennyeshahtery  }
-		completion_reward = {
-			add_ideas = DNB_opolchenie
-			add_manpower = 100000
-	    }
-	}
-
-	#Усиление Блокпостов
-	focus = {
-		id = DNR_usilenieblokpostov
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_usilenieblokpostov
-		x = 7
-		y = 2
-		cost = 0.8
-		search_filters = {
-			FOCUS_FILTER_SPA_CIVIL_WAR
-		}
-		prerequisite = { focus = DNR_tyomnyetuchinaddonbassom  }
-		completion_reward = {
-			add_ideas = DNB_blokposti
-			add_manpower = -5000
-	    }
 	}
 
 	#Борьба с украинскими диверсантами
 	focus = {
 		id = DNR_borbasukrainskimidiversantami
 		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_borbasukrainskimidiversantami
-		x = 9
-		y = 2
+		x = 38
+		y = 5
 		cost = 1
+		available = {
+			has_war=no
+		}
 		search_filters = {
 			FOCUS_FILTER_SPA_CARLIST_UPRISING
 		}
@@ -143,9 +194,12 @@ focus_tree = {
 	focus = {
 		id = dnr_evacuation_focus0
 		icon =  GFX_dnr_evacuation_focus0
-		x = 11
-		y = 2
+		x = 40
+		y = 5
 		cost = 0.8
+		available = {
+			has_war=no
+		}
 		search_filters = {
 			FOCUS_FILTER_TFV_AUTONOMY
 		}
@@ -160,9 +214,12 @@ focus_tree = {
 	focus = {
 		id = DNR_borbasnavodchikami
 		icon =  GFX_DNR_borbasnavodchikami
-		x = 9
-		y = 3
+		x = 38
+		y = 6
 		cost = 1
+		available = {
+			has_war=no
+		}
 		search_filters = {
 			FOCUS_FILTER_WAR_SUPPORT
 		}
@@ -175,54 +232,125 @@ focus_tree = {
 		}
 	}
 
-	#Народно-освободительная армия Донбасса
+	#Снова война...
 	focus = {
-		id = DNR_narodnoosvoboditelnayaarmiyadonbassa
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_narodnoosvoboditelnayaarmiyadonbassa
-		x = 1
-		y = 5
+		id = DNR_snovavoyna
+		icon =  GFX_DNR_snovavoyna
+		x = 16
+		y = 0
 		cost = 1
-		search_filters = {
-			FOCUS_FILTER_WAR_SUPPORT
+		available = {
+			always=false
 		}
-		prerequisite = { focus = DNR_konfiskaciyaoruzhiyaunaseleniya  } prerequisite = { focus = DNR_snovavoyna  }
-		mutually_exclusive = { focus = DNR_narodiarmiya focus = DNR_vosstanovitnarodnoeopolchenie } 
+		search_filters = {
+			FOCUS_FILTER_SPA_CIVIL_WAR
+		}
 		completion_reward = {
-			swap_ideas = {
-            remove_idea = DNB_profarmy
-            add_idea = DNB_profarmy_2
-			}
+			add_war_support = 0.15
 		}
 	}
 
-	#Народ и армия
+	#Мобилизация
 	focus = {
-		id = DNR_narodiarmiya
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_narodiarmiy
-		x = 3
-		y = 5
+		id = DNR_mobilizaciya
+		icon =  GFX_DNR_mobilizaciya
+		x = 18
+		y = 2
 		cost = 1
 		search_filters = {
-			FOCUS_FILTER_WAR_SUPPORT
+			FOCUS_FILTER_MANPOWER
 		}
-		prerequisite = { focus = DNR_vooruzhennyeshahtery  } prerequisite = { focus = DNR_snovavoyna  }
-		mutually_exclusive = { focus = DNR_narodnoosvoboditelnayaarmiyadonbassa focus = DNR_vosstanovitnarodnoeopolchenie } 
+		prerequisite = { focus = DNR_snovavoyna  }
 		completion_reward = {
-			swap_ideas = {
-            remove_idea = DNB_shahteri
-            add_idea = DNB_shahteri_2
-			}
+			add_war_support = -0.05
+			add_stability = -0.05
 			add_manpower = 25000
 		}
 	}
 
-	#Освобождение республики от оккупации
+	#Вставай, Донбасс!
+	focus = {
+		id = DNR_vstavaydonbass
+		icon = GFX_DNR_vstavaydonbass
+		x = 14
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = DNR_snovavoyna  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = why_we_fight_focus
+            add_idea = why_we_fight_focus_2
+			}
+		}
+
+	}
+
+	#Бастион борьбы с нацизмом
+	focus = {
+		id = DNR_bastionborbysnacizmom
+		icon =  GFX_DNR_bastionborbysnacizmom
+		x = 14
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DNR_snovavoyna  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = why_we_fight_focus_2
+            add_idea = why_we_fight_focus_3
+			}
+		}
+	}
+	
+	#Начало освобождения
+	focus = {
+		id = DNR_startosvobojd
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 12
+		y = 2
+		cost = 1
+		available = {
+			OR {
+				DNR = {
+				controls_state = 237
+				controls_state = 213
+				controls_state = 182
+				controls_state = 165
+				}
+			}
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DNR_snovavoyna  }
+		completion_reward = {
+			add_war_support=0.15
+		}
+	}
+	
+	#Свобода
 	focus = {
 		id = DNR_osvobozhdenierespublikiotokkupacii
 		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_osvobozhdenierespublikiotokkupacii
-		x = 7
+		x = 12
 		y = 6
 		cost = 1
+		available = {
+			DNR = {
+				controls_state = 237
+				controls_state = 213
+				controls_state = 182
+				controls_state = 165
+				controls_state = 189
+				controls_state = 221
+				controls_state = 205
+			}
+		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
 		}
@@ -230,6 +358,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_stability = 0.15
+			add_war_support=-0.2
 		}
 		
 	}
@@ -238,7 +367,7 @@ focus_tree = {
 	focus = {
 		id = DNR_ochistitumylyudeyotbanderovskoypropagandy
 		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_ochistitumylyudeyotbanderovskoypropagandy
-		x = 7
+		x = 14
 		y = 7
 		cost = 1
 		available = {
@@ -247,12 +376,6 @@ focus_tree = {
 			controls_state = 213
 			controls_state = 182
 			controls_state = 165
-		}
-		    LNR = {
-			controls_state = 154
-			controls_state = 145
-			controls_state = 116
-			controls_state = 125
 		}
 		}
 		search_filters = {
@@ -272,18 +395,6 @@ focus_tree = {
 			165 = {
 			add_core_of = DNR
 			}
-			154 = {
-			add_core_of = LNR
-			}
-                145 = {
-			add_core_of = LNR
-			}
-			    116 = {
-			add_core_of = LNR
-			}
-			125 = {
-			add_core_of = LNR
-			}
 		}
 	}
 
@@ -291,7 +402,7 @@ focus_tree = {
 	focus = {
 		id = DNR_mobilizaciyanaosvobozhdennyhterritoriyah
 		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_mobilizaciyanaosvobozhdennyhterritoriyah
-		x = 7
+		x = 14
 		y = 8
 		cost = 1
 		search_filters = {
@@ -300,7 +411,7 @@ focus_tree = {
 		prerequisite = { focus = DNR_ochistitumylyudeyotbanderovskoypropagandy  }
 		completion_reward = {
 			add_manpower = 25000
-			add_stability = -0.05
+			add_stability = -0.1
 		}
 	}
 
@@ -308,7 +419,7 @@ focus_tree = {
 	focus = {
 		id = DNR_vosstanovleniedonbassa
 		icon = GFX_DNR_vosstanovleniedonbassa
-		x = 4
+		x = 10
 		y = 7
 		cost = 1
 		search_filters = {
@@ -323,108 +434,11 @@ focus_tree = {
 		}
 	}
 
-
-	#Восстановить народное ополчение
-	focus = {
-		id = DNR_vosstanovitnarodnoeopolchenie
-		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_vosstanovitnarodnoeopolchenie
-		x = 5
-		y = 5
-		cost = 1
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		prerequisite = { focus = DNR_razdatoruzhienaseleniyu  } prerequisite = { focus = DNR_snovavoyna  }
-		mutually_exclusive = { focus = DNR_narodnoosvoboditelnayaarmiyadonbassa  } mutually_exclusive = { focus = DNR_narodiarmiya  }
-		completion_reward = {
-			swap_ideas = {
-            remove_idea = DNB_opolchenie
-            add_idea = DNB_opolchenie_2
-			}
-			add_manpower = 50000
-		}
-	}
-
-	#Снова война...
-	focus = {
-		id = DNR_snovavoyna
-		icon =  GFX_DNR_snovavoyna
-		x = 7
-		y = 4
-		cost = 1
-		available = {
-			controls_state = 390
-		}
-		search_filters = {
-			FOCUS_FILTER_SPA_CIVIL_WAR
-		}
-		completion_reward = {
-			add_war_support = 0.15
-		}
-	}
-
-	#Мобилизация
-	focus = {
-		id = DNR_mobilizaciya
-		icon =  GFX_DNR_mobilizaciya
-		x = 12
-		y = 5
-		cost = 1
-		search_filters = {
-			FOCUS_FILTER_MANPOWER
-		}
-		prerequisite = { focus = DNR_snovavoyna  }
-		completion_reward = {
-			add_war_support = -0.05
-			add_stability = -0.05
-			add_manpower = 25000
-		}
-	}
-
-	#Вставай, Донбасс!
-	focus = {
-		id = DNR_vstavaydonbass
-		icon = GFX_DNR_vstavaydonbass
-		x = 12
-		y = 6
-		cost = 1
-		search_filters = {
-			FOCUS_FILTER_WAR_SUPPORT
-		}
-		prerequisite = { focus = DNR_zachtomysrazhaemsya  } prerequisite = { focus = DNR_mobilizaciya  }
-		completion_reward = {
-			swap_ideas = {
-            remove_idea = why_we_fight_focus
-            add_idea = why_we_fight_focus_2
-			}
-		}
-
-	}
-
-	#Бастион борьбы с нацизмом
-	focus = {
-		id = DNR_bastionborbysnacizmom
-		icon =  GFX_DNR_bastionborbysnacizmom
-		x = 12
-		y = 7
-		cost = 1
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		prerequisite = { focus = DNR_vstavaydonbass  }
-		completion_reward = {
-			swap_ideas = {
-            remove_idea = why_we_fight_focus_2
-            add_idea = why_we_fight_focus_3
-			}
-		}
-	}
-
 	#Общественные работы
 	focus = {
 		id = DNR_obshchestvennyeraboty
 		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_obshchestvennyeraboty
-		x = 4
+		x = 10
 		y = 9
 		cost = 1
 		search_filters = {
@@ -440,7 +454,7 @@ focus_tree = {
 	focus = {
 		id = DNR_privlechenievolontyorovizrossii
 		icon =  GFX_IMAGE_NOT_FOUND #GFX_DNR_privlechenievolontyorovizrossii
-		x = 4
+		x = 10
 		y = 8
 		cost = 1
 		search_filters = {
@@ -452,7 +466,9 @@ focus_tree = {
             remove_idea = DNB_donbass_in_ruins_2
             add_idea = DNB_donbass_in_ruins_3
 			}
+			add_autonomy_score = {
+				value = -30
+			}
 		}
-
-}
+	}
 }
