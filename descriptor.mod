@@ -39,6 +39,7 @@ replace_path="common/units/names_railway_guns"
 replace_path="common/units/names_ships"
 replace_path="common/units/codenames_operatives"
 replace_path="common/unit_leader"
+replace_path="common/combat_tactics.txt"
 replace_path="events"
 tags={
 	"Map"
