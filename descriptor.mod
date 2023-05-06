@@ -49,6 +49,8 @@ replace_path="interface/countrytechtreeview.gui"
 replace_path="portraits"
 replace_path="common/combat_tactics.txt"
 replace_path="events"
+replace_path="common/technologies" 
+replace_path="common/units/equipment"
 tags={
 	"Map"
 	"Utilities"
