@@ -1,12 +1,24 @@
 add_namespace = blr
 add_namespace = blr_hidden
 
-#Arrest the Kostusev(Суд Гриши Костусева)
+#Talk With Putin
 country_event = {
 	id = blr.1
 	title = blr.1.t
     desc = blr.1.desc
-
+	is_triggered_only = yes
+    fire_only_once = yes
+	
+	option = {
+		name = blr.1.a
+		
+	}
+}
+#Kostusev
+country_event = {
+	id = blr.2
+	title = blr.2.t
+    desc = blr.2.desc
     fire_only_once = yes
 
 	trigger = {
@@ -17,7 +29,7 @@ country_event = {
 	}
 	
 	option = {
-		name = blr.1.a
+		name = blr.2.a
 		remove_country_leader_role = {
 			character = BLR_kostusev
 			ideology = nationalism
@@ -38,86 +50,72 @@ country_event = {
 		}
 	}
 }
-
-#Status on 2022 BLR(Статус 2022)
-country_event = {
-	id = blr.2
-	title = blr.2.t
-    desc = blr.2.desc
-
-    fire_only_once = yes
-	is_triggered_only = yes
-
-	option = {
-		name = blr.2.a
-	    add_political_power = 10
-	}
-}
-
-#Fire in the skies BLR(СВО в Беларуси)
+#Third Referendum
 country_event = {
 	id = blr.3
 	title = blr.3.t
     desc = blr.3.desc
-
-    fire_only_once = yes
 	is_triggered_only = yes
-
+    fire_only_once = yes
+	
 	option = {
-		name = blr.3.b
-		complete_national_focus =  BLR_support_russia
-	}
-
-	option = {
-		name = blr.3.c
-		complete_national_focus =  BLR_stay_neutrality
+		name = blr.3.a
+		add_stability = 0.2
+		swap_ideas = {
+			remove_idea = BLR_inefficient_state_capitalism_1
+			add_idea = BLR_inefficient_state_capitalism_2
+		}
 	}
 }
-
-#No War(Нет Войны..)
+#SMO
 country_event = {
 	id = blr.4
 	title = blr.4.t
-	desc = blr.4.desc
-
+    desc = blr.4.desc
     fire_only_once = yes
-	is_triggered_only = yes
-
+	trigger = {
+		RUS = {
+			has_war_with = UKR
+		}
+	}
 	option = {
 		name = blr.4.a
+		load_focus_tree = BLR_tree
+		complete_national_focus = BLR_SMO
+		add_manpower = 70000
+		
 	}
 }
-
-#Morale Help To Russia(Моральная Поддержка от Лукашика)
+#Embargo
 country_event = {
 	id = blr.5
 	title = blr.5.t
-	desc = blr.5.desc
-
+    desc = blr.5.desc
     fire_only_once = yes
-	is_triggered_only = yes
-	
+	trigger = {
+		RUS = {
+			has_war_with = UKR
+		}
+	}
 	option = {
 		name = blr.5.a
+		var:countries = {
+			send_embargo = BLR
+		}
 	}
-	
 }
-
-#Antiwar Mittings(Антивоенные Митинги)
+#Volunteers
 country_event = {
 	id = blr.6
 	title = blr.6.t
-	desc = blr.6.desc
-
+    desc = blr.6.desc
     fire_only_once = yes
 	is_triggered_only = yes
 
 	option = {
 		name = blr.6.a
-		add_to_variable = {
-			var = BLR_opposition_activity_var
-			value = 1.5
+		RUS = {
+			add_manpower = 233
 		}
-		update_BLR_opposition_activity_var_effects = yes
 	}
 }
