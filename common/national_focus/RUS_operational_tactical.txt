@@ -33,6 +33,12 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward={
+		        set_power_balance = {
+                                        id = RUS_power_balance
+                                        left_side = default_left_side
+                                        right_side = default_right_side
+                                        set_value = 0
+                        }
 			country_event = {
 				id = smo.2
 				days = 0
@@ -115,25 +121,18 @@ focus_tree = {
 		x = 6
 		y = 1
 		completion_reward={
-			PDR = {
-        complete_national_focus =  pdr_statusk
-      }
-			NTO = {
+			RUS = {
 				country_event = {
-				  id = negotiations.2
-				  days = 1
-				  random_days = 2
-				  hours = 2
-				  random_hours = 12
+				  id = rus.22
+				  days = 0
+				}
+			}
+			hidden_effect = {
+			    NTO = {
+				    complete_national_focus =  nto_Negotiations_Russia
 				}
 			}
 			reduce_escalation_by_0_75 = yes
-			hidden_effect = {
-				news_event = {
-					id = news.49 
-					days = 0
-				}
-			}
 		}
 	}
 	focus = {
@@ -234,6 +233,9 @@ focus_tree = {
 		completion_reward={
 			clr_country_flag = rus_ai_Increase_the_number_of_troops_on_the_border_with_UKR
 			reduce_escalation_by_5_5 = yes
+			PDR = {
+        		complete_national_focus =  pdr_statusk
+      		}
 		}
 	}
 	focus = {
@@ -317,9 +319,11 @@ focus_tree = {
 		completion_reward={
 			add_war_support = 0.075
 			increase_escalation_by_5 = yes
-			PDR = {
-        complete_national_focus =  pdr_comingwar
-      }
+			hidden_effect = {
+			    NTO = {
+				    complete_national_focus =  nto_preparing_inevitable
+				}
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -583,6 +587,9 @@ focus_tree = {
 			hidden_effect = {
 				news_event = { id = news.16 days = 3 }
 			}
+			PDR = {
+                complete_national_focus =  pdr_comingwar
+            }
 		}
 	}
 	#Offensive from all over Russia and Belarus
@@ -871,7 +878,7 @@ focus_tree = {
         complete_national_focus =  DNR_snovavoyna
       }
         LNR = {
-        complete_national_focus =  DNR_snovavoyna
+        complete_national_focus =  LNR_snovavoyna
       }
 		hidden_effect = {
             country_event = {
@@ -937,7 +944,7 @@ focus_tree = {
 		add_ideas = NTO_volunteers
 	  }
 	  PDR = {
-        complete_national_focus =  pdr_toodessa
+        complete_national_focus =  pdr_warstarted
       }
 		hidden_effect = {
             country_event = {
@@ -951,7 +958,6 @@ focus_tree = {
 			}
 			RUS = { add_to_faction = DNR }
 			RUS = { add_to_faction = LNR }
-			RUS = { add_to_faction = PDR }
 		}
 	}
 	focus = {
@@ -1112,7 +1118,7 @@ focus_tree = {
 			controls_state = 390
 		}
 		cost = 2
-		x = -12
+		x = -15
 		y = 1
 		completion_reward={
 			
@@ -1130,7 +1136,7 @@ focus_tree = {
 			has_government = neutrality
 		}
 		cost = 2
-		x = -6
+		x = -8
 		y = 1
 		completion_reward={
 			country_event = {
@@ -1183,7 +1189,7 @@ focus_tree = {
 		available = {
 		}
 		cost = 2
-		x = 0
+		x = -1
 		y = 1
 		completion_reward={
 			country_event = {
@@ -1201,7 +1207,7 @@ focus_tree = {
 		available = {
 		}
 		cost = 3
-		x = 2
+		x = 1
 		y = 1
 		completion_reward={
 			add_timed_idea = {
@@ -1210,13 +1216,30 @@ focus_tree = {
 			}
 		}
 	}
-
+    focus = {
+		id = RUS_vashniy_razgovory
+		icon = GFX_RUS_vashniy_razgovory
+		relative_position_id = RUS_break_up_protests
+		prerequisite = { focus = RUS_z }
+		prerequisite = { focus = RUS_tv_propaganda }
+		available = {
+		}
+		cost = 2
+		x = 2
+		y = 2
+		completion_reward={
+			add_war_support = 0.05
+			add_stability = 0.02
+			add_political_power = 60
+		}
+	}
 	focus = {
 		id = RUS_appeal_to_images_of_the_past
 		icon = GFX_RUS_appeal_to_images_of_the_past
 		relative_position_id = RUS_z
 		prerequisite = { focus = RUS_law_on_discrediting_russian_armed_forces}
 		prerequisite = { focus = RUS_pay_compensation_to_families_of_deceased}
+		prerequisite = { focus = RUS_vashniy_razgovory}
 		available = {
 		}
 		cost = 3
@@ -2729,13 +2752,6 @@ focus_tree = {
 					days = 10
 					scope = RUS
 			    } 
-			}
-			165 = {
-				add_dynamic_modifier = {
-					modifier = RUS_offensive_modifier
-					days = 15
-					scope = RUS
-			    }
 			}
 			145 = {
 				add_dynamic_modifier = {

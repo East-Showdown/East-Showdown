@@ -76,6 +76,10 @@ RUS_PVK = {
 			hidden_effect = {
 				load_oob = "RUS_Vagner_1"
 				set_country_flag = PMK_siriya
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}	
 			}
 		}
 	}
@@ -104,6 +108,10 @@ RUS_PVK = {
 			hidden_effect = {
 				load_oob = "RUS_Vagner_2"
 				set_country_flag = PMK_zeki
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}	
 			}
 	    }
 	}
@@ -133,6 +141,10 @@ RUS_PVK = {
 				load_oob = "RUS_Vagner_3"
 				add_ideas = idea_RUS_PMC_WAGNER
 				set_country_flag = PMK_AD
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.1
+				}	
 			}
 		}
 	}
@@ -170,6 +182,10 @@ RUS_PVK = {
 				add_ideas = RUS_PMK_EXP_IDEA
 				recruit_character = evgeniy_prigozhin
 				set_country_flag = PMK_EXP
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}	
 			}
 		}
 	}
@@ -205,6 +221,10 @@ RUS_PVK = {
 			custom_effect_tooltip = CustomPMCWAGNER5
 			hidden_effect = {
 				add_manpower = 5000
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}	
 			}
 		}
 	}
@@ -243,6 +263,10 @@ RUS_PVK = {
 		remove_effect = {
 			custom_effect_tooltip = CustomPMCWAGNER6
 			hidden_effect = {
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}	
 				add_war_support = 0.05
 				add_ideas = idea_RUS_PMC_WAGNER_CENTRE1
 			}
@@ -261,8 +285,8 @@ RUS_PVK = {
 		}
 
 		available = {
-			original_tag = RUS
-			has_war = yes
+			has_war_with = UKR
+			has_completed_focus = RUS_offensive_in_the_donbass
 			OR = {
 				divisions_in_border_state = {
 					size > 9
@@ -285,16 +309,63 @@ RUS_PVK = {
 			165 = {
 				add_dynamic_modifier = {
 					modifier = RUS_bakhmut_offensive_modifier
-					days = 60
+					days = 90
 					scope = RUS
-				}
+				}		
 			}
+            hidden_effect = {
+			    RUS = {
+					set_country_flag = RUS_bakhmut_ammunition_problem_flag
+				}	
+			}	
 		}
-
 		cancel_trigger = {
 			controls_state = 165
 		}
-	}	
+	}
+
+	bakhmut_ammunition_problem = {
+		icon = generic_formable_nations
+		is_good = no
+		days_mission_timeout = 90
+		fire_only_once = yes
+		activation = {
+			has_country_flag = RUS_bakhmut_ammunition_problem_flag
+		}
+		available = {
+			UKR = {
+				NOT = {
+					controls_state = 165
+				}
+			}
+		}
+		complete_effect = {
+			add_stability = 0.05
+			add_war_support = 0.05
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.1
+			}	
+		}
+		timeout_effect = {
+			165 = {
+				add_dynamic_modifier = {
+				    scope = RUS
+					modifier = RUS_bakhmut_ammunition_problem_modifier
+				}
+			}	
+			RUS = {
+				country_event = {
+					id = rus.28
+					days = 0
+				}
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.1
+			}	
+	    }
+    }
 }
 
 RUS_CMA = {
@@ -1204,7 +1275,7 @@ RUS_smo = {
 		}
 	}
 }
-}
+
 
 RUS_political_decisions = {
     RUS_brifing_minoborony = {
