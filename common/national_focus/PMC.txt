@@ -11,52 +11,66 @@ focus_tree = {
 	focus = {
 		id = PMC_utkin_orchestra
 		icon = GFX_wagner_orchestre
-		cost = 10,00
+		cost = 2
 		x = 14
 		y = 0
+		completion_reward = {
+			add_political_power = 25
+			add_war_support = 0.1
+		}
 
 	}
 	focus = {
 		id = PMC_africa
-		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		icon = GFX_wagner_africa
+		cost = 2
 		prerequisite = {
 			focus = PMC_utkin_orchestra
 		}
 		x = 12
 		y = 1
+		completion_reward = {
+			add_war_support = 0.1
+			add_political_power = 25
+		}
 
 	}
 	focus = {
 		id = PMC_council
-		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		icon = GFX_PMC_council
+		cost = 2
 		prerequisite = {
 			focus = PMC_utkin_orchestra
 		}
 		x = 14
 		y = 1
+		completion_reward = {
+			add_ideas = PMC_council_idea
+			add_political_power = 25
+			add_war_support = 0.1
+			add_stability = 0.05
+		}
 
 	}
 	focus = {
 		id = PMC_slavic_corps
-		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
-		prerequisite = {
-			focus = PMC_utkin_orchestra
-			focus = PMC_utkin_orchestra
-		}
+		icon = GFX_slavic_corps
+		cost = 2
 		prerequisite = {
 			focus = PMC_utkin_orchestra
 		}
 		x = 16
 		y = 1
-
+		completion_reward = {
+			add_war_support = 0.1
+			add_political_power = 25
+			army_experience = 30
+		}
 	}
 	focus = {
 		id = PMC_smo
-		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		icon = GFX_PMC_SMO
+		cost = 1
 		prerequisite = {
 			focus = PMC_council
 		}
@@ -66,6 +80,18 @@ focus_tree = {
 		prerequisite = {
 			focus = PMC_africa
 		}
+		available = {
+			RUS = {
+				has_war_with = UKR
+			}
+		}
+		completion_reward = {
+			add_political_power = 100
+			add_war_support = 0.2
+			declare_war_on = {
+				target = UKR
+			}
+		}
 		x = 14
 		y = 2
 
@@ -73,9 +99,25 @@ focus_tree = {
 	focus = {
 		id = PMC_troops_transfer
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 1
 		prerequisite = {
 			focus = PMC_smo
+		}
+		completion_reward = {
+			custom_effect_tooltip = CustomPMCWAGNER1
+			hidden_effect = {
+				load_oob = "PMC_Wagner_1"
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}
+				add_power_balance_value = {
+					id = PMC_power_balance
+					value = -0.05
+				}	
+			}
+			add_war_support = 0.1
+			add_manpower = 5000
 		}
 		x = 13
 		y = 3
@@ -84,9 +126,12 @@ focus_tree = {
 	focus = {
 		id = PMC_ad_campaign
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 2
 		prerequisite = {
 			focus = PMC_smo
+		}
+		completion_reward = {
+			add_stability = 0.1
 		}
 		x = 15
 		y = 3
@@ -109,7 +154,7 @@ focus_tree = {
 	focus = {
 		id = PMC_donbass_concentrate
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 2
 		prerequisite = {
 			focus = PMC_cooperation_with_rf
 		}
@@ -118,28 +163,119 @@ focus_tree = {
 		}
 		x = 15
 		y = 5
-
+		available = {
+			OR = {
+				divisions_in_state = {
+					size > 5
+					state = 165
+				}
+				divisions_in_state = {
+					size > 5
+					state = 189
+				}
+				divisions_in_state = {
+					size > 5
+					state = 205
+				}
+			}
+		}
 	}
+
 	focus = {
 		id = PMC_bakhmut
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 2
 		prerequisite = {
 			focus = PMC_donbass_concentrate
 		}
 		x = 15
 		y = 6
-
+		available = {
+			OR = {
+				divisions_in_border_state = {
+					size > 5
+					state = 189
+					border_state = 165
+				} 
+				divisions_in_border_state = {
+					size > 5
+					state = 145
+					border_state = 165
+				}
+				divisions_in_state = {
+					size > 5
+					state = 165
+				}
+			}
+		}
+		completion_reward = {	
+			165 = {
+				add_dynamic_modifier = {
+					modifier = RUS_bakhmut_offensive_modifier
+					days = 180
+					scope = PMC
+				}		
+			}
+		}
+		cancel = {
+			RUS = {
+				controls_state = 165
+			}
+		}
 	}
+
 	focus = {
 		id = PMC_prigozhin_line
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 2
 		prerequisite = {
 			focus = PMC_donbass_concentrate
 		}
 		x = 17
 		y = 6
+		available = {
+			RUS = {
+				controls_state = 145
+				controls_state = 165
+				controls_state = 154
+			}
+		}
+		completion_reward = {
+			custom_effect_tooltip = PRIGOZHIN_LINE1
+			hidden_effect = {
+				165 = {
+					add_building_construction = { type = bunker province = 18300 level = 2 }
+					add_building_construction = { type = bunker province = 18307 level = 2 }
+					add_building_construction = { type = bunker province = 18134 level = 2 }			
+				}	
+				145 = {
+					add_building_construction = { type = bunker province = 15717 level = 2 }
+					add_building_construction = { type = bunker province = 11274 level = 2 }
+					add_building_construction = { type = bunker province = 2605 level = 2 }
+					add_building_construction = { type = bunker province = 8899 level = 2 }
+					add_building_construction = { type = bunker province = 12133 level = 2 }
+					add_building_construction = { type = bunker province = 18657 level = 2 }
+					add_building_construction = { type = bunker province = 18656 level = 2 }
+					add_building_construction = { type = bunker province = 18653 level = 2 }
+					add_building_construction = { type = bunker province = 18660 level = 2 }
+					add_building_construction = { type = bunker province = 18659 level = 2 }
+					add_building_construction = { type = bunker province = 18658 level = 2 }
+					add_building_construction = { type = bunker province = 18143 level = 2 }
+					add_building_construction = { type = bunker province = 18643 level = 2 }
+				}
+				154 = {
+					add_building_construction = { type = bunker province = 15613 level = 2 }
+					add_building_construction = { type = bunker province = 8898 level = 2 }
+					add_building_construction = { type = bunker province = 7749 level = 2 }
+					add_building_construction = { type = bunker province = 18711 level = 2 }
+					add_building_construction = { type = bunker province = 10800 level = 2 }
+					add_building_construction = { type = bunker province = 18519 level = 2 }
+					add_building_construction = { type = bunker province = 18712 level = 2 }
+					add_building_construction = { type = bunker province = 18713 level = 2 }
+					add_building_construction = { type = bunker province = 18714 level = 2 }
+				}	
+			}
+		}
 
 	}
 	focus = {
@@ -170,9 +306,24 @@ focus_tree = {
 	focus = {
 		id = PMC_recruitment_buildings
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 3
 		prerequisite = {
 			focus = PMC_ad_campaign
+		}
+		completion_reward = {
+			custom_effect_tooltip = CustomPMCWAGNER3
+			hidden_effect = {
+				add_manpower = 2500
+				load_oob = "PMC_Wagner_3"
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.1
+				}
+				add_power_balance_value = {
+					id = PMC_power_balance
+					value = -0.1
+				}		
+			}
 		}
 		x = 22
 		y = 4
@@ -223,18 +374,33 @@ focus_tree = {
 	focus = {
 		id = PMC_centre
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 2
 		prerequisite = {
 			focus = PMC_sac
 		}
 		x = 21
 		y = 7
+		completion_reward = {
+			custom_effect_tooltip = CustomPMCWAGNER6
+			hidden_effect = {
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.1
+				}
+				add_power_balance_value = {
+					id = PMC_power_balance
+					value = -0.1
+				}		
+				add_war_support = 0.05
+				add_ideas = idea_RUS_PMC_WAGNER_CENTRE1
+			}
+		}
 
 	}
 	focus = {
 		id = PMC_kyiv_concentrate
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 2
 		prerequisite = {
 			focus = PMC_cooperation_with_rf
 		}
@@ -282,9 +448,22 @@ focus_tree = {
 	focus = {
 		id = PMC_prisoner_recruitment
 		icon = GFX_IMAGE_NOT_FOUND
-		cost = 10,00
+		cost = 3
 		prerequisite = {
 			focus = PMC_recruitment_buildings
+		}
+		completion_reward = {
+			hidden_effect = {
+				load_oob = "PMC_Wagner_2"
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.15
+				}
+				add_power_balance_value = {
+					id = PMC_power_balance
+					value = -0.15
+				}		
+			}
 		}
 		x = 24
 		y = 5
