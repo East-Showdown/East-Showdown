@@ -12,6 +12,7 @@ RUS_CMA = {
 				amount = 4
 				controls_state = 264
 				controls_state = 240
+				controls_state = 413
 				controls_state = 262
 				controls_state = 251
 				controls_state = 246
@@ -46,6 +47,16 @@ RUS_CMA = {
 					}
 				}
 				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 413
+					}
+				}
+				413 = {
 					add_compliance = 5
 				}
 			}
@@ -118,6 +129,7 @@ RUS_CMA = {
 				amount = 4
 				controls_state = 264
 				controls_state = 240
+				controls_state = 413
 				controls_state = 262
 				controls_state = 251
 				controls_state = 246
@@ -150,6 +162,16 @@ RUS_CMA = {
 					}
 				}
 				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 413
+					}
+				}
+				413 = {
 					add_compliance = 5
 				}
 			}
@@ -233,6 +255,7 @@ RUS_CMA = {
 				amount = 4
 				controls_state = 264
 				controls_state = 240
+				controls_state = 413
 				controls_state = 262
 				controls_state = 251
 				controls_state = 246
@@ -265,6 +288,16 @@ RUS_CMA = {
 					}
 				}
 				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 413
+					}
+				}
+				413 = {
 					add_compliance = 5
 				}
 			}
@@ -346,6 +379,7 @@ RUS_CMA = {
 				amount = 4
 				controls_state = 264
 				controls_state = 240
+				controls_state = 413
 				controls_state = 262
 				controls_state = 251
 				controls_state = 246
@@ -378,6 +412,16 @@ RUS_CMA = {
 					}
 				}
 				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 413
+					}
+				}
+				413 = {
 					add_compliance = 5
 				}
 			}
@@ -455,6 +499,7 @@ RUS_CMA = {
 			controls_state = 253
 			controls_state = 231
 			has_full_control_of_state = 240
+			has_full_control_of_state = 413
 			has_full_control_of_state = 251
 			has_full_control_of_state = 262
 			has_full_control_of_state = 264
@@ -1334,7 +1379,10 @@ RUS_smo = {
 			army_experience = 15
 		}
 	}
+	
+}
 
+RUS_MOA = {
 	RUS_form_moa = {
 		icon = generic_formable_nations
 
@@ -1342,10 +1390,10 @@ RUS_smo = {
 		cost = 25
 
 		available = {
-			date > 2022.1.12
 			RUS = {
 			    has_war_with = UKR
-                all_controlled_state = 240
+                controls_state = 240
+                controls_state = 413
 			}
 		}
 
@@ -1354,17 +1402,61 @@ RUS_smo = {
 		}
 
 		complete_effect = {
-			load_focus_tree = {
-                tree = RUS_moa_focustree
-                keep_completed = yes
-            }
+			custom_effect_tooltip = moa_tooltip_form
+			country_event = {
+				id = rus.moaform
+				days = 0
+			}
+			hidden_effect = {
+			MOA = {
+				add_state_core = 413
+				set_state_owner	= 413
+				set_state_controller = 413
+			}	
+			MOA = {
+				add_ideas = {
+					extensive_conscription
+					low_economic_mobilisation
+					unrecognised_state
+				}
+			
+				add_opinion_modifier = {
+					target = UKR
+					modifier = hostile_status
+				}
+			
+				add_opinion_modifier = {
+					target = RUS
+					modifier = mother_russia
+				}
+			}
+			set_autonomy = {
+				target = MOA
+				autonomous_state = autonomy_integrated_puppet
+			}
+			MOA = {
+				set_popularities = {
+						democratic = 0
+						communism = 0
+						fascism = 0
+						neutrality = 100
+					}
+					
+					set_politics = {
+						ruling_party = neutrality
+						last_election = "2021.11.8"
+						election_frequency = 48
+						elections_allowed = No
+					}
+			}
+		}
         }
 	}
-	
 }
 
 
 RUS_political_decisions = {
+
     RUS_brifing_minoborony = {
 		icon = generic_formable_nations
 		
@@ -1566,4 +1658,167 @@ RUS_political_decisions = {
 		    }  
 		}
     }
+}
+
+MOA_main = {
+	moa_puski_postavki = {	
+		activation = {
+			has_completed_focus = MOA_zapros_postavok
+			NOT = {
+				has_completed_focus = MOA_pobeda
+			}
+		}
+		available = {
+			has_completed_focus = MOA_pobeda
+		}
+		icon = generic_formable_nations  
+		fire_only_once = no
+		days_mission_timeout = 20 
+		timeout_effect = {
+			add_equipment_to_stockpile = {
+				type = bronemashina2_chassis
+				variant_name = "\"Тигр\""
+				amount = 25
+				producer = RUS
+			} 
+			add_equipment_to_stockpile = {
+				type = engineering_equipment_0	
+				amount = 10
+				producer = RUS
+			} 
+			add_equipment_to_stockpile = {
+				type = AMV_equipment_0	
+				amount = 25
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_2	
+				amount = 500
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_anti_tank_equipment_1	
+				amount = 80
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_anti_air_equipment_1	
+				amount = 40
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = mortar_1_eq	
+				amount = 30
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = atgm_2_eq	
+				amount = 30
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment_1	
+				amount = 10
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1	
+				amount = 80
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment_1	
+				amount = 1
+				producer = RUS
+			}
+		}
+	}
+	moa_trophei_dec = {	
+		activation = {
+			has_completed_focus = MOA_trophei
+			NOT = {
+				has_completed_focus = MOA_pobeda
+			}
+		}
+		available = {
+			has_completed_focus = MOA_pobeda
+		}
+		icon = generic_formable_nations  
+		fire_only_once = no
+		days_mission_timeout = 20 
+		timeout_effect = {
+			add_equipment_to_stockpile = {
+				type = bronemashina1_chassis
+				variant_name = "M1025 HMMWV"
+				amount = 3
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = bronemashina2_chassis
+				variant_name = "M1145 HMMWV"
+				amount = 2
+				producer = NTO
+			} 
+			add_equipment_to_stockpile = {
+				type = nto_infantry_equipment_2
+				amount = 75
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_anti_tank_equipment_1	
+				amount = 10
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_anti_air_equipment_1	
+				amount = 6
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = mortar_1_eq	
+				amount = 4
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = atgm_2_eq	
+				amount = 5
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment_1	
+				amount = 1
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1	
+				amount = 10
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = leopard2_chassis
+				variant_name = "Leopard 2A4"
+				amount = 2
+				producer = NTO
+			} 
+			add_equipment_to_stockpile = {
+				type = leopard2_chassis
+				variant_name = "Leopard 2A6"
+				amount = 1
+				producer = NTO
+			} 
+			add_equipment_to_stockpile = {
+				type = nto_bmp3_chassis
+				variant_name = "M2A2"
+				amount = 3
+				producer = NTO
+			} 
+			add_equipment_to_stockpile = {
+				type = nto_bmp1_chassis
+				variant_name = "Marder 1A2"
+				amount = 2
+				producer = NTO
+			} 
+			
+		}
+	}
 }
