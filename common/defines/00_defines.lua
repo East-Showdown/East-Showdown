@@ -799,8 +799,8 @@ NMilitary = {
 	LAND_COMBAT_FORT_DAMAGE_CHANCE = 5,				-- chance to get a hit to damage on forts. (out of 100)
 ---Lancasterfix
 	ATTRITION_DAMAGE_ORG = 0.08,					   -- vanila 0.08 ущерб от истощения Организации
-	ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.1,		   -- Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
-	ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.1, -- Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
+	ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.03,		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
+	ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.03, -- #0.1  Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 	ATTRITION_WHILE_MOVING_FACTOR = 1,
 	RELIABILITY_ORG_REGAIN = -0.3,                 -- how much reliability affects org regain
 	RELIABILITY_ORG_MOVING = -1.0,                 -- how much reliability affects org loss on moving
@@ -826,7 +826,7 @@ NMilitary = {
 	SUPPLY_GRACE_MAX_REDUCE_PER_HOUR = 2,          -- supply grace is not decreased instantly when it is buffed temporarily and buff is removed
 	SUPPLY_ORG_MAX_CAP = 0.30,                     -- vanilla 0.35 Максимальная организация учитывается по этому показателю, если полностью отсутствует снабжение
 
-	MAX_OUT_OF_SUPPLY_DAYS = 30, 				   -- how many days of shitty supply until max penalty achieved
+	MAX_OUT_OF_SUPPLY_DAYS = 20, 				   -- #was 30 how many days of shitty supply until max penalty achieved
 	OUT_OF_SUPPLY_ATTRITION = 0.20,                 -- max attrition when out of supply
 	OUT_OF_SUPPLY_SPEED = -0.8,                    -- max speed reduction from supply
 	NON_CORE_SUPPLY_SPEED = -0.5,				   -- we are not running on our own VP supply so need to steal stuff along the way
@@ -854,11 +854,11 @@ NMilitary = {
 	BASE_FORT_PENALTY = -0.15, 					   -- vanilla -0.15 fort penalty
 	MULTIPLE_COMBATS_PENALTY = -0.5,               -- defender penalty if attacked from multiple directions
 	DIG_IN_FACTOR = 0.03,						   --vanila 0.02 bonus factor for each dug-in level
-	ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.1, -- XP gain per unit in combat
+	ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.25, -- #was 0.1 XP gain per unit in combat
 	CONSTANT_XP_RATIO_FOR_MULTIPLE_LEADERS_IN_SAME_COMBAT = 0.5, -- if there are multiple leaders in same combat, each one gets thisratio + (1-thisratio)/num leaders. amount of xp each general gets scales 1 0.75 0.66 etc for 1 2 3 generals
 	BASE_LEADER_TRAIT_GAIN_XP = 0.45,			   -- Base xp gain for traits per hour for armies
 	MAX_NUM_TRAITS = -1,						   -- cant have more, -1 to disable
-	ENEMY_AIR_SUPERIORITY_IMPACT = -0.35,          -- effect on defense due to enemy air superiorty
+	ENEMY_AIR_SUPERIORITY_IMPACT = -0.6,          -- #was -0.35 effect on defense due to enemy air superiorty
 	ENEMY_AIR_SUPERIORITY_DEFENSE = 0.20,	       -- more AA attack will approach this amount of help (diminishing returns)
 	ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112, -- how quickly defense approaches the max impact diminishing returns curve
 	ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.3,     -- vanila 0.3 effect on speed due to enemy air superiority
@@ -866,7 +866,7 @@ NMilitary = {
 	ANTI_AIR_TARGETTING_TO_CHANCE = 0.02,			-- Balancing value to determine the chance of ground AA hitting an attacking airplane, affecting both the effective average damage done by AA to airplanes, and the reduction of damage done by airplanes due to AA support
 	ANTI_AIR_ATTACK_TO_AMOUNT = 0.005,				-- Balancing value to convert equipment stat anti_air_attack to the random % value of airplanes being hit.
 
-	ENCIRCLED_PENALTY = -0.3,                      	-- penalty when completely encircled когда окружили
+	ENCIRCLED_PENALTY = -0.75,                      	-- #was -0.3 penalty when completely encircled когда окружили
 
 	UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0001,
 	UNIT_EXPERIENCE_SCALE = 1.0,
@@ -3792,17 +3792,17 @@ NSupply = {
 	-----------------Lancasterfixsupply
 	--defines to calculate the capitals supply. This will be also used for max supply of other nodes depending on how well they are connected to capital. Using the formula:
 	--CapitalSupply = CAPITAL_SUPPLY_BASE + (NumberOfCivilianFactories * CAPITAL_SUPPLY_CIVILIAN_FACTORIES) + (NumberOfMilitaryFactories * CAPITAL_SUPPLY_MILITARY_FACTORIES) + (NumberOfDockyards * CAPITAL_SUPPLY_DOCKYARDS)
-	CAPITAL_SUPPLY_BASE = 7.0, -- vanilla 5.0 base supply for capital
-	CAPITAL_SUPPLY_CIVILIAN_FACTORIES = 0.1, -- vannila 0.3 supply from one civilian factory
-	CAPITAL_SUPPLY_MILITARY_FACTORIES = 0.3, -- vannila 0.6 supply from one military factory
-	CAPITAL_SUPPLY_DOCKYARDS = 0.4, --supply from one naval factory
+	CAPITAL_SUPPLY_BASE = 10.0, -- vanilla 5.0 base supply for capital
+	CAPITAL_SUPPLY_CIVILIAN_FACTORIES = 0.5, -- vannila 0.3 supply from one civilian factory #
+	CAPITAL_SUPPLY_MILITARY_FACTORIES = 0.8, -- vannila 0.6 supply from one military factory
+	CAPITAL_SUPPLY_DOCKYARDS = 0.65, -- #was 0.4 supply from one naval factory
 
 	-- defines that are used for supply reach for capital
 	-- supply flow will start from INITIAL_SUPPLY_FLOW and will be reduced by a penalty on each province it travels (which depends on how far we are from our origin, terrain etc)
 	-- a supply reach >= 1.0 considered "perfect" and will be able to fully support units on that particular province (assuming you are not over capacity)
-	CAPITAL_INITIAL_SUPPLY_FLOW = 5.0, -- starting supply from
-	CAPITAL_STARTING_PENALTY_PER_PROVINCE = 0.5, -- starting penalty that will be added as supply moves away from its origin (modified by stuff like terrain)
-	CAPITAL_ADDED_PENALTY_PER_PROVINCE = 1.2, -- added penalty as we move away from origin
+	CAPITAL_INITIAL_SUPPLY_FLOW = 6.0, -- #was 5.0 starting supply from
+	CAPITAL_STARTING_PENALTY_PER_PROVINCE = 0.25, --#was 0.5  starting penalty that will be added as supply moves away from its origin (modified by stuff like terrain)
+	CAPITAL_ADDED_PENALTY_PER_PROVINCE = 0.65, -- #was 1.2 added penalty as we move away from origin
 
 	-- defines that are used for supply reach for built nodes
 	NODE_INITIAL_SUPPLY_FLOW = 2.8,
@@ -3854,33 +3854,33 @@ NSupply = {
 
 
 	-- used for calculating "flow" for railways.
-	RAILWAY_BASE_FLOW = 10.0, 		-- how much base flow railway gives when a node connected to its capital/a naval node by a railway
-	RAILWAY_FLOW_PER_LEVEL = 5.0, 	-- how much additional flow a railway level gives
-	RAILWAY_FLOW_PENALTY_PER_DAMAGED = 5.0, -- penalty to flow per damaged railway
-	RAILWAY_MIN_FLOW = 5.0, 		-- minimum railway flow can be reduced to
+	RAILWAY_BASE_FLOW = 15.0, 		-- #was 10.0 how much base flow railway gives when a node connected to its capital/a naval node by a railway
+	RAILWAY_FLOW_PER_LEVEL = 10.0, 	--  #was 10.0 how much additional flow a railway level gives
+	RAILWAY_FLOW_PENALTY_PER_DAMAGED = 10.5,  --   #was 5.0 penalty to flow per damaged railway
+	RAILWAY_MIN_FLOW = 2.5, 		-- #was 5.0 	minimum railway flow can be reduced to
 
 	-- used for calculating "flow" from a naval node to another naval node when it is connected via a convoy route
 	-- NAVAL_BASE_MAX_SUPPLY_FLOW_FACTOR = 0.9, -- flow of the parent node is factored to this ratio (so at most it can transfer parent naval node flow * this define)
-	NAVAL_BASE_FLOW = 5.0, -- max output/input of a naval node is limited by this base value + additional ratio for each level
-	NAVAL_FLOW_PER_LEVEL = 3.0, -- max output/input of a naval node is limited by previous base value + this define per its level
+	NAVAL_BASE_FLOW = 10.0, -- was 5.0 max output/input of a naval node is limited by this base value + additional ratio for each level
+	NAVAL_FLOW_PER_LEVEL = 6.0, -- was 3.0 max output/input of a naval node is limited by previous base value + this define per its level
 
 	SUPPLY_NODE_MIN_SUPPLY_THRESHOLD = 1.0, -- if supply of a node is below this value it will be set to 0 -- Currently unused? This should happen when enough damage occurs
 
-	INFRA_TO_SUPPLY = 0.3,							-- each level of infra gives this many supply
+	INFRA_TO_SUPPLY = 0.5,							-- was 0.3 each level of infra gives this many supply
 	VP_TO_SUPPLY_BASE = 0.2,							-- Bonus to supply from a VP, no matter the level
 	VP_TO_SUPPLY_BONUS_CONVERSION = 0.05,			-- Bonus to supply local supplies from Victory Points, multiplied by this aspect and rounded to closest integer
-	SUPPLY_FROM_DAMAGED_INFRA = 0.15,                -- damaged infrastructure counts as this in supply calcs
-	SUPPLY_BASE_MULT = 0.2,							-- multiplier on supply base values
-	SUPPLY_DISRUPTION_DAILY_RECOVERY = 1.5,		-- every day nodes recover this much of their accumulated disruption.
+	SUPPLY_FROM_DAMAGED_INFRA = 0.3,                -- was 0.15 damaged infrastructure counts as this in supply calcs
+	SUPPLY_BASE_MULT = 0.1,							-- was 0.2 multiplier on supply base values
+	SUPPLY_DISRUPTION_DAILY_RECOVERY = 2.0,		-- was 1.5 every day nodes recover this much of their accumulated disruption.
 
 	RAILWAY_CONVERSION_COOLDOWN = 3, -- railways will be put on cooldown when they are captured by enemy and will not be usable during the cooldown
 	RAILWAY_CONVERSION_COOLDOWN_CORE = 5,
 	RAILWAY_CONVERSION_COOLDOWN_CIVILWAR = 0,
 
 	DEFAULT_STARTING_TRUCK_RATIO = 1.5, -- countries get this ratio of starting truck in their buffers compared to their need
-	DEFAULT_STARTING_TRAIN_RATIO = 1, -- countries get this ratio of starting trains in their buffers compared to their need
+	DEFAULT_STARTING_TRAIN_RATIO = 1.5, -- #was 1.0 countries get this ratio of starting trains in their buffers compared to their need
 
-	SUPPLY_POINTS_PER_TRAIN = 1.0,  -- old default 1.25 -- Amount of supply that can fit in a train. (Trains distribute supply from capital to a supply node.)
+	SUPPLY_POINTS_PER_TRAIN = 1.8,  -- old default 1.25 -- Amount of supply that can fit in a train. (Trains distribute supply from capital to a supply node.)
 	NUM_RAILWAYS_TRAIN_FACTOR = 0.03, -- the train usage is scaled by railway distance between the supply node and the capital multiplied by this factor
 
 	BASE_SUPPLY_MULT_FOR_TRUCK_DEFAULT_BUFFER = 1.0,  -- initial value for wanted buffers over potential truck usage
