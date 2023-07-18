@@ -713,14 +713,14 @@ NMilitary = {
 		600.0,
 		1000.0,
 	},
------------------------------fixlancaster
+-----------------------------
 	USE_MULTIPLICATIVE_ORG_LOSS_WHEN_MOVING = true, -- whether to apply org_loss_when_moving modifiers additively or multiplicatively (hardcoded multiplicative pre-2021)
 	HOURLY_ORG_MOVEMENT_IMPACT = -0.2,		--vanila -0.2 how much org is lost every hour while moving an army.
 	ZERO_ORG_MOVEMENT_MODIFIER = -0.8,		-- speed impact at 0 org.
 	INFRA_ORG_IMPACT = 0.5,				-- коэффициент масштабирования инфры на орг. рег.
 	ENGAGEMENT_WIDTH_PER_WIDTH = 2.0,	-- how much enemy combat width we are allowed to engage per width of our own
 
-	INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.10,	-- Lancaster fix vanila 0.5 speed penalty per infrastucture below maximum.
+	INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.10,	-- Lancaster шакал vanila 0.5 speed penalty per infrastucture below maximum.
 
 	VPS_FOR_HISTORY_ENTRY = 3,					-- Minimum VPs required to receive an entry in divisional history
 	VPS_FOR_HIGH_HISTORY_ENTRY = 8,				-- VPs required for high-level history entry
@@ -797,7 +797,7 @@ NMilitary = {
 	LAND_COMBAT_COLLATERAL_FORT_FACTOR = 0.005,		-- Factor to scale collateral damage to forts with.
 	LAND_COMBAT_COLLATERAL_INFRA_FACTOR = 0.0022,	-- Factor to scale collateral damage to infra with.
 	LAND_COMBAT_FORT_DAMAGE_CHANCE = 5,				-- chance to get a hit to damage on forts. (out of 100)
----Lancasterfix
+	
 	ATTRITION_DAMAGE_ORG = 0.08,					   -- vanila 0.08 ущерб от истощения Организации
 	ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.025,		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 	ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.025, -- #0.1  Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
@@ -3789,7 +3789,7 @@ NCharacter = {
 NSupply = {
 	MAX_RAILWAY_LEVEL = 5, -- update railway texture as well, each frame corresponds to a level
 
-	-----------------Lancasterfixsupply
+	-----------------supply
 	--defines to calculate the capitals supply. This will be also used for max supply of other nodes depending on how well they are connected to capital. Using the formula:
 	--CapitalSupply = CAPITAL_SUPPLY_BASE + (NumberOfCivilianFactories * CAPITAL_SUPPLY_CIVILIAN_FACTORIES) + (NumberOfMilitaryFactories * CAPITAL_SUPPLY_MILITARY_FACTORIES) + (NumberOfDockyards * CAPITAL_SUPPLY_DOCKYARDS)
 	CAPITAL_SUPPLY_BASE = 10.0, -- vanilla 5.0 base supply for capital
@@ -3837,7 +3837,7 @@ NSupply = {
 	FLOATING_HARBOR_DECAY_NO_CONTROL_PENALTY = 1.0, -- If adjacent land province is not held, change decay rate by this many "hours" per hour
 
 	SUPPLY_FLOW_DROP_REDUCTION_AT_MAX_INFRA = 0.30, -- max infrastructure level will reduce the supply flow drop off by this ratio
-	SUPPLY_FLOW_PENALTY_CROSSING_RIVERS = 0.20, -- crossing rivers introduces additional penalty
+	SUPPLY_FLOW_PENALTY_CROSSING_RIVERS = 0.40, -- #was 0.20 crossing rivers introduces additional penalty
 
 	 -- node flow terrain falloff is scaled by logistics curve based on distance(d) (scalar / (1+e^(-k(d-midpoint))))
 	SUPPLY_FLOW_DIST_LOGISTICS_FALLOFF_K = 1.3, -- How steep the curve is
