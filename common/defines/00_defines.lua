@@ -799,8 +799,8 @@ NMilitary = {
 	LAND_COMBAT_FORT_DAMAGE_CHANCE = 5,				-- chance to get a hit to damage on forts. (out of 100)
 ---Lancasterfix
 	ATTRITION_DAMAGE_ORG = 0.08,					   -- vanila 0.08 ущерб от истощения Организации
-	ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.03,		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
-	ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.03, -- #0.1  Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
+	ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.025,		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
+	ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.025, -- #0.1  Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 	ATTRITION_WHILE_MOVING_FACTOR = 1,
 	RELIABILITY_ORG_REGAIN = -0.3,                 -- how much reliability affects org regain
 	RELIABILITY_ORG_MOVING = -1.0,                 -- how much reliability affects org loss on moving
@@ -3800,19 +3800,19 @@ NSupply = {
 	-- defines that are used for supply reach for capital
 	-- supply flow will start from INITIAL_SUPPLY_FLOW and will be reduced by a penalty on each province it travels (which depends on how far we are from our origin, terrain etc)
 	-- a supply reach >= 1.0 considered "perfect" and will be able to fully support units on that particular province (assuming you are not over capacity)
-	CAPITAL_INITIAL_SUPPLY_FLOW = 6.0, -- #was 5.0 starting supply from
-	CAPITAL_STARTING_PENALTY_PER_PROVINCE = 0.25, --#was 0.5  starting penalty that will be added as supply moves away from its origin (modified by stuff like terrain)
-	CAPITAL_ADDED_PENALTY_PER_PROVINCE = 0.65, -- #was 1.2 added penalty as we move away from origin
+	CAPITAL_INITIAL_SUPPLY_FLOW = 7.0, -- #was 5.0 starting supply from
+	CAPITAL_STARTING_PENALTY_PER_PROVINCE = 0.65, --#was 0.5  starting penalty that will be added as supply moves away from its origin (modified by stuff like terrain)
+	CAPITAL_ADDED_PENALTY_PER_PROVINCE = 0.7, -- #was 1.2 added penalty as we move away from origin
 
 	-- defines that are used for supply reach for built nodes
-	NODE_INITIAL_SUPPLY_FLOW = 2.8,
-	NODE_STARTING_PENALTY_PER_PROVINCE = 0.50,
-	NODE_ADDED_PENALTY_PER_PROVINCE = 0.70,
+	NODE_INITIAL_SUPPLY_FLOW = 4.5, -- #was 2.8
+	NODE_STARTING_PENALTY_PER_PROVINCE = 0.4, -- #was 0.50
+	NODE_ADDED_PENALTY_PER_PROVINCE = 0.40,  -- #was 0.70
 
 	-- defines that are used for supply reach for dockyards
-	NAVAL_BASE_INITIAL_SUPPLY_FLOW = 3.3,
-	NAVAL_BASE_STARTING_PENALTY_PER_PROVINCE = 0.84,
-	NAVAL_BASE_ADDED_PENALTY_PER_PROVINCE = 1.1,
+	NAVAL_BASE_INITIAL_SUPPLY_FLOW = 6.0, -- #was 3.3
+	NAVAL_BASE_STARTING_PENALTY_PER_PROVINCE = 0.55, -- #was 0.84
+	NAVAL_BASE_ADDED_PENALTY_PER_PROVINCE = 1.1, -- #was 1.1
 
 	-- Node Flow (i.e. province caps) increase by this amount per railway level of the node's bottleneck
 	NODE_FLOW_BONUS_PER_RAIL_LEVEL = 0.34,
@@ -3866,10 +3866,10 @@ NSupply = {
 
 	SUPPLY_NODE_MIN_SUPPLY_THRESHOLD = 1.0, -- if supply of a node is below this value it will be set to 0 -- Currently unused? This should happen when enough damage occurs
 
-	INFRA_TO_SUPPLY = 0.5,							-- was 0.3 each level of infra gives this many supply
+	INFRA_TO_SUPPLY = 0.8,							-- was 0.3 each level of infra gives this many supply
 	VP_TO_SUPPLY_BASE = 0.2,							-- Bonus to supply from a VP, no matter the level
 	VP_TO_SUPPLY_BONUS_CONVERSION = 0.05,			-- Bonus to supply local supplies from Victory Points, multiplied by this aspect and rounded to closest integer
-	SUPPLY_FROM_DAMAGED_INFRA = 0.3,                -- was 0.15 damaged infrastructure counts as this in supply calcs
+	SUPPLY_FROM_DAMAGED_INFRA = 0.4,                -- was 0.15 damaged infrastructure counts as this in supply calcs
 	SUPPLY_BASE_MULT = 0.1,							-- was 0.2 multiplier on supply base values
 	SUPPLY_DISRUPTION_DAILY_RECOVERY = 2.0,		-- was 1.5 every day nodes recover this much of their accumulated disruption.
 
