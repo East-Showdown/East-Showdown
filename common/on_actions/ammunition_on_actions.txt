@@ -1,0 +1,214 @@
+on_actions = {
+
+	on_startup = {
+		effect = {
+			
+		}
+	}
+
+	on_daily = {
+		effect = {
+
+
+			#### daily consumption
+
+			set_variable = { ammunition_consumption = 0 }
+
+			set_variable = { infantry_consumption = num_battalions_with_type@infantry }
+			multiply_variable = { infantry_consumption = 0.01 }
+			set_variable = { artillery_consumption = num_battalions_with_type@artillery }
+			multiply_variable = { artillery_consumption = 0.1 }
+			set_variable = { light_consumption = num_battalions_with_type@light_armor }
+			multiply_variable = { light_consumption = 0.04 }
+			set_variable = { medium_consumption = num_battalions_with_type@medium_armor }
+			multiply_variable = { medium_consumption = 0.06 }
+			set_variable = { heavy_consumption = num_battalions_with_type@heavy_armor }
+			multiply_variable = { heavy_consumption = 0.08 }
+			set_variable = { remaining_consumption = num_battalions }
+			subtract_from_variable = { remaining_consumption = num_battalions_with_type@infantry }
+			subtract_from_variable = { remaining_consumption = num_battalions_with_type@artillery }
+			subtract_from_variable = { remaining_consumption = num_battalions_with_type@light_armor }
+			subtract_from_variable = { remaining_consumption = num_battalions_with_type@medium_armor }
+			subtract_from_variable = { remaining_consumption = num_battalions_with_type@heavy_armor }
+			multiply_variable = { remaining_consumption = 0.02 }
+
+			set_variable = { potential_consumption = 0 }
+			add_to_variable = { potential_consumption = infantry_consumption }
+			add_to_variable = { potential_consumption = artillery_consumption }
+			add_to_variable = { potential_consumption = light_consumption }
+			add_to_variable = { potential_consumption = medium_consumption }
+			add_to_variable = { potential_consumption = heavy_consumption }
+			add_to_variable = { potential_consumption = remaining_consumption }
+			set_variable = { potential_consumption_max = potential_consumption }
+			multiply_variable = { potential_consumption_max = 1.5 }
+			divide_variable = { potential_consumption = num_divisions }
+
+			set_variable = { commanded_divisions = 0 }
+			set_variable = { divisions_in_offensive_combat = 0 }
+			set_variable = { divisions_in_defensive_combat = 0 }
+			every_army_leader = {
+				limit = {
+					is_leading_army_group = no
+				}
+				add_to_variable = { ROOT.commanded_divisions = num_units }
+				add_to_variable = { ROOT.divisions_in_offensive_combat = num_units_offensive_combats }
+				add_to_variable = { ROOT.divisions_in_defensive_combat = num_units_defensive_combats }
+			}
+
+
+			#### leaderless consumption
+			set_variable = { divisions_without_leadership = num_divisions }
+			subtract_from_variable = { divisions_without_leadership = commanded_divisions }
+			multiply_variable = { divisions_without_leadership = potential_consumption }
+			multiply_variable = { divisions_without_leadership = 1 }
+
+			#### offensive units consumption
+			multiply_variable = { divisions_in_offensive_combat = potential_consumption }
+			multiply_variable = { divisions_in_offensive_combat = 1.5 }
+
+			#### offensive units consumption
+			multiply_variable = { divisions_in_defensive_combat = potential_consumption }
+			multiply_variable = { divisions_in_defensive_combat = 0.75 }
+
+			set_variable = { daily_ammo_need = divisions_without_leadership }
+			add_to_variable = { daily_ammo_need = divisions_in_offensive_combat }
+			add_to_variable = { daily_ammo_need = divisions_in_defensive_combat }
+			clamp_variable = { 
+				var = daily_ammo_need 
+				min = 0
+			}
+
+
+			subtract_from_variable = { ammunition_variable = daily_ammo_need }
+
+
+			################## end daily consumption
+
+
+
+
+			#### daily addition
+
+			set_variable = { ammunition_daily = 0 }
+
+			# base gain
+			set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+			divide_variable = { modifier_gain = 1000 }
+			add_to_variable = { ammunition_daily = modifier_gain }
+
+			# factor
+			set_variable = { ammunition_factor_calc = 1 }
+			add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+			clamp_variable = { 
+				var = ammunition_factor_calc 
+				min = 0 
+				#max = 0
+			}
+
+			multiply_variable = { ammunition_daily = ammunition_factor_calc }
+
+
+			add_to_variable = { ammunition_variable = ammunition_daily }
+
+			################## end daily addition
+
+
+
+			set_variable = { ammunition_balance = ammunition_daily }
+			subtract_from_variable = { ammunition_balance = daily_ammo_need }
+			set_variable = { ammunition_balance_int = ammunition_balance }
+			if = {
+				limit = {
+					check_variable = { ammunition_balance < 0 }
+				}
+				multiply_variable = { ammunition_balance_int = -1 }
+			}
+
+
+
+			set_variable = { ammunition_max = 0 }
+			add_to_variable = { ammunition_max = owned_controlled_states }
+			multiply_variable = { ammunition_max = 10 }
+			set_variable = { ammunition_storage = modifier@ammunition_capacity_k }
+			add_to_variable = { ammunition_max = ammunition_storage }
+
+			clamp_variable = { 
+				var = ammunition_variable 
+				min = 0 
+				max = ammunition_max
+			}
+
+
+
+
+			set_variable = { ammunition_penalty = daily_ammo_need }
+			subtract_from_variable = { ammunition_penalty = ammunition_daily }
+			divide_variable = { ammunition_penalty = daily_ammo_need }
+			multiply_variable = { ammunition_penalty = -1 }
+			if = {
+				limit = {
+					check_variable = { ammunition_balance < 0 }
+					check_variable = { ammunition_variable < ammunition_balance_int }
+					NOT = {
+						has_dynamic_modifier = { modifier = ammunition_effects }
+					}
+				}
+				add_dynamic_modifier = { modifier = ammunition_effects }
+			}
+
+
+			##### interface
+
+			set_variable = { ammo_h = ammunition_variable }
+			multiply_variable = { ammo_h = 1000 }
+
+			set_variable = { ammo_daily_h = ammunition_daily }
+			multiply_variable = { ammo_daily_h = 1000 }
+
+			set_variable = { ammo_need_h = daily_ammo_need }
+			multiply_variable = { ammo_need_h = 1000 }
+
+			set_variable = { potential_need_h = potential_consumption_max }
+			multiply_variable = { potential_need_h = 1000 }
+
+			set_variable = { ammunition_max_h = ammunition_max }
+			multiply_variable = { ammunition_max_h = 1000 }
+
+			set_variable = { potential_consumption_h = potential_consumption_max }
+			multiply_variable = { potential_consumption_h = 1000 }
+
+			set_variable = { ammo_ratio_var = ammunition_variable }
+			divide_variable = { ammo_ratio_var = ammunition_max }
+			multiply_variable = { ammo_ratio_var = 100 }
+
+			set_variable = { ammo_days_to_full = ammunition_max }
+			subtract_from_variable = { ammo_days_to_full = ammunition_variable }
+			divide_variable = { ammo_days_to_full = ammunition_balance }
+
+			set_variable = { ammo_days_to_empty = ammunition_variable }
+			divide_variable = { ammo_days_to_empty = ammunition_balance }
+			multiply_variable = { ammo_days_to_empty = -1 }
+
+			if = {
+				limit = {
+					check_variable = { ammunition_balance > 0 }
+				}
+				set_variable = { ammo_frame_var = 2 }
+			}
+			if = {
+				limit = {
+					check_variable = { ammunition_variable = ammunition_max }
+				}
+				set_variable = { ammo_frame_var = 1 }
+			}
+			if = {
+				limit = {
+					check_variable = { ammunition_balance < 0 }
+				}
+				set_variable = { ammo_frame_var = 3 }
+			}
+
+		}
+	}
+
+}
