@@ -868,7 +868,7 @@ NMilitary = {
 
 	ENCIRCLED_PENALTY = -0.75,                      	-- #was -0.3 penalty when completely encircled когда окружили
 
-	UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0001,
+	UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.001,
 	UNIT_EXPERIENCE_SCALE = 1.0,
 	UNIT_EXPERIENCE_PER_TRAINING_DAY = 0.0015,
 	TRAINING_MAX_LEVEL = 2,
