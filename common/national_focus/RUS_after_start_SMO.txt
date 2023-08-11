@@ -272,6 +272,7 @@ focus_tree = {
 		x = 22
 		y = 2
 		completion_reward = {
+			add_ideas = society_low
 			add_political_power = -15
 			add_war_support = -0.025
 			add_stability = -0.02
@@ -1492,8 +1493,8 @@ focus_tree = {
 		id = RUS_point_strikes
 		icon = GFX_RUS_point_strikes
 		cost = 0.2
-		x = 20
-		y = 4
+		x = 18
+		y = 3
 		completion_reward = {
 			94 = {
 				damage_building = {
@@ -1610,6 +1611,72 @@ focus_tree = {
 		}
 	}
 	focus = {
+	    id = RUS_advance_to_melitopol
+		icon = GFX_RUS_advance_to_zaporozhye
+		prerequisite = {
+			focus = RUS_point_strikes
+		}
+		available = {
+			OR = {
+				divisions_in_state = {
+					size > 5
+					state = 251
+				}
+			}
+		}
+		bypass = {
+			controls_state = 246
+		}
+		cost = 0.5
+		x = 18
+		y = 4
+		completion_reward = {
+			246 = {
+				add_dynamic_modifier = {
+					modifier = RUS_offensive_modifier
+					days = 20
+					scope = RUS
+				}
+			}
+		}
+	}
+	focus = {
+		id = RUS_advance_to_zaporozhye
+		icon = GFX_RUS_advance_to_zaporozhye
+		prerequisite = {
+			focus = RUS_advance_to_melitopol
+		}
+		available = {
+		  controls_state = 246
+		}
+		cost = 0.5
+		x = 18
+		y = 5
+		completion_reward = {
+			226 = {
+				add_dynamic_modifier = {
+					modifier = RUS_offensive_modifier
+					days = 30
+					scope = RUS
+				}
+			}
+			223 = {
+				add_dynamic_modifier = {
+					modifier = RUS_offensive_modifier
+					days = 30
+					scope = RUS
+				}
+			}
+			242 = {
+				add_dynamic_modifier = {
+					modifier = RUS_offensive_modifier
+					days = 30
+					scope = RUS
+				}
+			}
+		}
+	}
+	focus = {
 		id = RUS_advance_to_kherson
 		icon = GFX_RUS_advance_to_kherson
 		prerequisite = {
@@ -1640,7 +1707,7 @@ focus_tree = {
 			controls_state = 253
 		}
 		cost = 0.5
-		x = 18
+		x = 16
 		y = 5
 		completion_reward = {
 			264 = {
@@ -1867,9 +1934,10 @@ focus_tree = {
 		icon = GFX_RUS_civil-military_administrations
 		prerequisite = {
 			focus = RUS_advance_to_kherson
+			focus = RUS_advance_to_zaporozhye
 		}
 		cost = 2
-		x = 18
+		x = 17
 		y = 6
 		completion_reward = {
 			custom_effect_tooltip = otkritie_resheny_VGA
@@ -1937,6 +2005,7 @@ focus_tree = {
 		x = 20
 		y = 7
 		completion_reward = {
+			add_ideas = society_very_high
 			182 = {
 				add_dynamic_modifier = {
 					modifier = RUS_offensive_modifier
@@ -2065,7 +2134,36 @@ focus_tree = {
 		completion_reward = {
 		}
 	}
+	###### RUS Wagner
+	focus = {
+		id = RUS_war_with_nato
+		icon = GFX_RUS_war_with_nato
+		available = {
+			NOT = {
+				has_war_with = NTO
+			}
+			UKR = {
+				OR = {
+					exists = no
+					is_puppet = yes
+				}
+			}
+		}
+		cost = 3
+		x = 12
+		y = 13
+		completion_reward = {
+			declare_war_on = {
+				target = NTO
+				type = annex_everything
+			}
+		}
+		allow_branch = {
+			has_global_flag = RUS_Wagner_victory
+		}
+	}
 }
+
 
 focus_tree = {
 	id = RUS_recognition_of_the_DPR_and_LPR_tree

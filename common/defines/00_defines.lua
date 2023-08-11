@@ -656,10 +656,10 @@ NBuildings = {
 	AIRBASE_CAPACITY_MULT = 200,		-- Each level of airbase building multiplied by this, gives capacity (max operational value). Value is int. 1 for each airplane.
 	ROCKETSITE_CAPACITY_MULT = 100,		-- Each level of rocketsite building multiplied by this, gives capacity (max operational value). Value is int. 1 for each rocket.
 	NAVALBASE_REPAIR_MULT = 0.05,		-- Each level of navalbase building repairs X strength and can repair as many ships as its level
-	RADAR_RANGE_BASE = 20,				-- Radar range base, first level radar will be this + min, best radar will be this + max
-	RADAR_RANGE_MIN = 20,				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
-	RADAR_RANGE_MAX = 200,				-- Range is interpolated between building levels 1-15.
-	RADAR_INTEL_EFFECT = 40,			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars, then the value sums up.
+	RADAR_RANGE_BASE = 350,				-- Radar range base, first level radar will be this + min, best radar will be this + max
+	RADAR_RANGE_MIN = 350,				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
+	RADAR_RANGE_MAX = 1050,				-- Range is interpolated between building levels 1-15.
+	RADAR_INTEL_EFFECT = 100,			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars, then the value sums up.
 	SABOTAGE_FACTORY_DAMAGE = 100.0,		-- How much damage takes a factory building in sabotage when state is occupied. Damage is mult by (1 + resistance strength), i.e. up to 2 x base value.
 	BASE_FACTORY_REPAIR = 0.3,			-- Default repair rate before factories are taken into account
 	BASE_FACTORY_REPAIR_FACTOR = 2.0,	-- Factory speed modifier when repairing.
@@ -868,7 +868,7 @@ NMilitary = {
 
 	ENCIRCLED_PENALTY = -0.75,                      	-- #was -0.3 penalty when completely encircled когда окружили
 
-	UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0001,
+	UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.001,
 	UNIT_EXPERIENCE_SCALE = 1.0,
 	UNIT_EXPERIENCE_PER_TRAINING_DAY = 0.0015,
 	TRAINING_MAX_LEVEL = 2,
