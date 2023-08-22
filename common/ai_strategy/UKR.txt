@@ -1,38 +1,42 @@
-#We do not need to defend territories that are not attacked by the enemy
-UKR_do_not_attack_the_territory_of_the_russia = {
-	allowed = {
-		original_tag = UKR
-	}
-	enable = {
-		always = yes
-	}
-	abort = {
-		always = no
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = RBZ
-		value = -200
-	}
-}
-
+# Подготовка к войне с РФ
 UKR_wait_the_smo = {
 	allowed = {
 		original_tag = UKR
 	}
 	enable = {
-		has_completed_focus = UKR_soon_war
+		NOT = {
+			has_war_with = RUS
+		}
 	}
-	abort = {
-		has_war_with = RUS
-	}
+	abort_when_not_enabled = yes
 	ai_strategy = {
 		type = prepare_for_war
 		id = RUS
 		value = 150
 	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		value = 8
+		id = 289
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		value = 8
+		id = 251
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		value = 11
+		id = 240
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		value = 11
+		id = 264
+	}
 }
 
+# русы покинули Киев
 UKR_counteroffensive = {
 	allowed = {
 		original_tag = UKR
@@ -47,87 +51,55 @@ UKR_counteroffensive = {
 	}
 	ai_strategy = {
 		type = front_control
-		tag = RUS
-		ratio = 0.1
+		strategic_region = 23
+		strategic_region = 26
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		manual_attack = no
 	}
 }
 
+# Введение войны
 UKR_war = {
 	allowed = {
 		original_tag = UKR
 	}
 	enable = {
 		has_war_with = RUS
-		date < 2022.5.1
 	}
-    
-	abort_when_not_enabled = yes
-	
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = RUS
-		value = 50
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = DNR
-		value = 25
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = LNR
-		value = 25
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 28  
-		value = -20
+		ordertype = front
+		execution_type = rush
+		manual_attack = yes # !!!
 	}
 }
 
-UKR_war_2 = {
-	allowed = {
-		original_tag = UKR
-	}
-	enable = {
-		has_war_with = RUS
-		date > 2022.5.5
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = RUS
-		value = 60
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = DNR
-		value = 10
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = LNR
-		value = 10
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 28  
-		value = -20
-	}
-}
-
-UKR_do_not_attack_the_territory_of_the_BLR = {
+# Не защищать границу с картошкой, пограничниками РФ и союзниками
+# Попытка убрать гарнизон
+UKR_do_not_attack_the_territory_of_allies= {
 	allowed = {
 		original_tag = UKR
 	}
 	enable = {
 		always = yes
 	}
+	abort = {
+		always = no
+	}
+	ai_strategy = {
+		type = garrison
+		value = -200
+	}
 	ai_strategy = {
 		type = front_unit_request
 		tag = BLR
+		value = -200
+	}
+	ai_strategy = {
+		type = front_unit_request
+		tag = RBZ
 		value = -200
 	}
 	ai_strategy = {
