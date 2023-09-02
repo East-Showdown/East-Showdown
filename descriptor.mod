@@ -51,6 +51,7 @@ replace_path="common/combat_tactics.txt"
 replace_path="events"
 replace_path="common/technologies" 
 replace_path="common/units/equipment"
+replace_path="gfx/loadingscreens"
 tags={
 	"Map"
 	"Utilities"
