@@ -1,4 +1,4 @@
-name="ukraine"
+name="East Showdown"
 replace_path="history/countries"
 replace_path="history/states"
 replace_path="history/general"
@@ -58,4 +58,4 @@ tags={
 }
 picture="showdown.jpg"
 supported_version="1.12.*"
-remote_file_id="2881149855"
+remote_file_id="2948642461"
