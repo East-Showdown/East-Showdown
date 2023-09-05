@@ -1,4 +1,4 @@
-name="ukraine"
+name="East Showdown"
 replace_path="history/countries"
 replace_path="history/states"
 replace_path="history/general"
@@ -51,10 +51,11 @@ replace_path="common/combat_tactics.txt"
 replace_path="events"
 replace_path="common/technologies" 
 replace_path="common/units/equipment"
+replace_path="gfx/loadingscreens"
 tags={
 	"Map"
 	"Utilities"
 }
 picture="showdown.jpg"
 supported_version="1.12.*"
-remote_file_id="2881149855"
+remote_file_id="2948642461"
