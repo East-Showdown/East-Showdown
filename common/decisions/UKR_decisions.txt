@@ -38,6 +38,85 @@ UKR_Lend_leas1_category = {
 			}
 		}
 	}
+	UKR_order_ammo_in_Ukraine = {
+		icon = decision_category_generic_arms_trade
+		fire_only_once = no
+		available = {
+			has_completed_focus = UKR_large_batch_of_small_arms
+		}
+		#  visible = {
+		#     UKR_can_sell_weapons_trigger = yes
+		# }
+		days_remove = 30
+		cost = 9
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				has_equipment = {
+					infantry_equipment < 1
+				}
+				factor = 50
+			}
+			modifier = {
+				has_manpower < 10000
+				factor = 0				#need to up conscription laws
+			}
+		}
+		complete_effect = {
+			UKR = {
+				add_offsite_building = {
+					type = industrial_complex
+					level = 1
+				}
+			}
+		}
+		remove_effect = {
+			UKR = {
+			set_variable = { ammunition_daily = 200 }
+
+			# base gain
+			set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+			divide_variable = { modifier_gain = 1000 }
+			add_to_variable = { ammunition_daily = modifier_gain }
+
+			# factor
+			set_variable = { ammunition_factor_calc = 1 }
+			add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+			clamp_variable = { 
+				var = ammunition_factor_calc 
+				min = 0 
+				#max = 0
+			}
+
+			multiply_variable = { ammunition_daily = ammunition_factor_calc }
+
+
+			add_to_variable = { ammunition_variable = ammunition_daily }
+		    }
+		    NTO = {
+			set_variable = { ammunition_daily = -200 }
+
+			# base gain
+			set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+			divide_variable = { modifier_gain = 1000 }
+			add_to_variable = { ammunition_daily = modifier_gain }
+
+			# factor
+			set_variable = { ammunition_factor_calc = 1 }
+			add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+			clamp_variable = { 
+				var = ammunition_factor_calc 
+				min = 0 
+				#max = 0
+			}
+
+			multiply_variable = { ammunition_daily = ammunition_factor_calc }
+
+
+			add_to_variable = { ammunition_variable = ammunition_daily }
+		    }
+	   }
+   }
 	UKR_order_tanks_in_Ukraine = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
