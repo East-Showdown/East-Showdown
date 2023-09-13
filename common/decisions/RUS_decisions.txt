@@ -2379,4 +2379,82 @@ RUS_Mobilization_decisions = {
 			increase_escalation_by_2 = yes
 		}
 	}
+
+	RUS_Partial_mobilization = {
+		icon = generic_formable_nations
+
+		fire_only_once = yes 
+		days_remove = 65 #Time to Mobilization 
+		cost = 50
+
+		available = {
+			has_war_with = UKR
+			UKR = {
+				surrender_progress < 0.5
+			}
+			original_tag = RUS
+			date > 2022.9.20
+			
+			custom_trigger_tooltip = {
+				tooltip = eslation_at_least_50
+				check_variable = {
+					var = global.escalation
+					value > 49.9
+				}
+			}
+			}
+		
+		complete_effect = {
+			add_stability = -0.01
+			add_war_support = -0.01
+			add_manpower = 10000
+			increase_escalation_by_10 = yes
+			custom_effect_tooltip = first_mobiks_tt
+			swap_ideas = {
+				remove_idea = limited_conscription
+				add_idea = extensive_conscription
+			}
+			swap_ideas = {
+				remove_idea = society_medium
+				add_idea = society_low
+			}
+			if = {
+				limit = {  
+					RUS = {
+						has_idea = civilian_economy
+					}
+					 
+				}
+				swap_ideas = {
+					remove_idea = civilian_economy
+					add_idea = partial_economic_mobilisation
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						has_idea = low_economic_mobilisation
+					}
+				 }
+				 swap_ideas = {
+					remove_idea = low_economic_mobilisation
+					add_idea = partial_economic_mobilisation
+				}
+			}
+			hidden_effect = {
+				load_oob = first_mobiks #To keep the front from collapsing xD
+				set_country_flag = Russian_partial_mobilization
+				news_event = super.7 #superevent
+			}
+		}	
+		
+		remove_effect = {
+			custom_effect_tooltip = real_mobiks_tt
+			add_manpower = 50000
+			hidden_effect = { 
+				load_oob = full_mobik  
+			}
+		}
+		
+	}
 }
