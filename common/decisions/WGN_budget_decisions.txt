@@ -45,6 +45,47 @@ WGN_budget_category = {
 		}
 	}
 
+	WGN_get_ammo = {
+		activation = {
+			has_completed_focus = WGN_smo
+			original_tag = WGN
+			NOT = {
+				has_global_flag = WGN_march_flag
+			}
+		}
+		available = {
+			NOT = {
+				has_completed_focus = WGN_smo
+			}
+		}
+		icon = generic_formable_nations  
+		fire_only_once = no
+		days_mission_timeout = 30
+		timeout_effect = {
+			custom_effect_tooltip = WGN_ammo_add_1
+			set_variable = { ammunition_daily = 50 }
+
+			# base gain
+			set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+			divide_variable = { modifier_gain = 1000 }
+			add_to_variable = { ammunition_daily = modifier_gain }
+
+			# factor
+			set_variable = { ammunition_factor_calc = 1 }
+			add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+			clamp_variable = { 
+				var = ammunition_factor_calc 
+				min = 0 
+				#max = 0
+			}
+
+			multiply_variable = { ammunition_daily = ammunition_factor_calc }
+
+
+			add_to_variable = { ammunition_variable = ammunition_daily }
+		}
+	}
+
 	WGN_buy_oil = {
 		icon = generic_formable_nations
         cost = 50

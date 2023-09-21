@@ -320,6 +320,31 @@ country_event = {
 	picture = GFX_country_event_009
 	fire_only_once = yes
 	is_triggered_only = yes
+
+	immediate = {
+        
+		set_variable = { ammunition_daily = 100 }
+	
+				# base gain
+				set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+				divide_variable = { modifier_gain = 1000 }
+				add_to_variable = { ammunition_daily = modifier_gain }
+	
+				# factor
+				set_variable = { ammunition_factor_calc = 1 }
+				add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+				clamp_variable = { 
+					var = ammunition_factor_calc 
+					min = 0 
+					#max = 0
+				}
+	
+				multiply_variable = { ammunition_daily = ammunition_factor_calc }
+	
+	
+				add_to_variable = { ammunition_variable = ammunition_daily }
+			}
+
 	option = {
 		name = WGN.10.a
 		complete_national_focus = WGN_utkin_orchestra
@@ -414,6 +439,7 @@ country_event = {
 		}
 		custom_effect_tooltip = WGN_Prigoshin_F
 		hidden_effect = {
+		    set_country_flag = WGN_death_prigozhin_utkin
 		    country_event = {
 				id = super.5
 				hours = 3
