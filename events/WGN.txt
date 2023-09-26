@@ -320,6 +320,31 @@ country_event = {
 	picture = GFX_country_event_009
 	fire_only_once = yes
 	is_triggered_only = yes
+
+	immediate = {
+        
+		set_variable = { ammunition_daily = 100 }
+	
+				# base gain
+				set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+				divide_variable = { modifier_gain = 1000 }
+				add_to_variable = { ammunition_daily = modifier_gain }
+	
+				# factor
+				set_variable = { ammunition_factor_calc = 1 }
+				add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+				clamp_variable = { 
+					var = ammunition_factor_calc 
+					min = 0 
+					#max = 0
+				}
+	
+				multiply_variable = { ammunition_daily = ammunition_factor_calc }
+	
+	
+				add_to_variable = { ammunition_variable = ammunition_daily }
+			}
+
 	option = {
 		name = WGN.10.a
 		complete_national_focus = WGN_utkin_orchestra
@@ -414,9 +439,14 @@ country_event = {
 		}
 		custom_effect_tooltip = WGN_Prigoshin_F
 		hidden_effect = {
+		    set_country_flag = WGN_death_prigozhin_utkin
 		    country_event = {
 				id = super.5
 				hours = 3
+			}
+			country_event = {
+				id = WGN.16
+				days = 3
 			}
 			evgeniy_prigozhin = {
 				retire = yes
@@ -450,6 +480,66 @@ country_event = {
 		news_event = {
 			id = news.133
 			hours = 2
+		}
+	}
+}
+
+#Новый глава ЧВК
+country_event = {
+	id = WGN.16
+	title = WGN.16.t
+	desc = WGN.16.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.16.a
+		custom_effect_tooltip = WGN_anton_elizarov_power
+		hidden_effect = {
+		    set_politics = {
+				ruling_party = neutrality
+			}
+			set_popularities = {  democratic = 0  neutrality = 50  fascism = 50  communism = 0 }
+			promote_character = {  character = anton_elizarov  ideology = wgn_n }
+			anton_elizarov = {
+				promote_leader = yes
+				remove_trait = {
+					trait = wgn_commander
+				}
+				add_trait = {
+					trait = wgn_leader
+				}
+			}
+		}
+		add_stability = 0.1
+	}
+	option = {
+		name = WGN.16.b
+		add_political_power = 40
+		add_stability = -0.05
+	}
+	option = {
+		name = WGN.16.c
+		custom_effect_tooltip = WGN_end_PMC_Wagner
+		hidden_effect = {
+		    if = {
+			    limit = {
+				    WGN = {
+					    controls_province = 3040
+				    }
+		        }
+			    RUS = {
+				    annex_country = {
+					    target = WGN
+				    }
+			    }
+	        }
+		    else = {
+			    BLR = {
+				    annex_country = {
+					    target = WGN
+				    }
+			    }
+		    }
 		}
 	}
 }
