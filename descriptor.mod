@@ -1,4 +1,4 @@
-name="East Showdown"
+name="EAST SHOWDOWN [ KISHKI EDITION ]"
 replace_path="history/countries"
 replace_path="history/states"
 replace_path="history/general"
