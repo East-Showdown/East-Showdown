@@ -52,6 +52,8 @@ replace_path="events"
 replace_path="common/technologies" 
 replace_path="common/units/equipment"
 replace_path="gfx/loadingscreens"
+replace_path="common/peace_conference/ai_peace"
+replace_path="common/peace_conference/cost_modifiers"
 tags={
 	"Map"
 	"Utilities"
