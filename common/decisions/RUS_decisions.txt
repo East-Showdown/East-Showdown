@@ -1254,6 +1254,7 @@ RUS_smo = {
 		}
 		remove_effect = {
 			remove_ideas = RUS_SMO_conscripts_front
+			set_country_flag = RUS_return_conscripts_cf
 		}
 
 	}
@@ -1284,7 +1285,7 @@ RUS_smo = {
 	}
 	RUS_kiev = {
 		icon = generic_formable_nations
-		days_mission_timeout = 60
+		days_mission_timeout = 36
 		is_good = no
 		
 		allowed = {
@@ -1477,7 +1478,46 @@ RUS_amphibious_operations = {
 			}
 		}
 	}
-	
+	RUS_landing_zmiiniy = {
+		icon = generic_formable_nations
+
+		fire_only_once = yes 
+		cost = 40
+		
+		ai_will_do = {
+	    	factor = 100
+        }
+
+		available = {
+			RUS = {
+               has_war_with = UKR
+            }
+			custom_trigger_tooltip = {
+				tooltip = gostomel_desant_2_tt
+				OR = {
+					has_country_flag = {
+			            flag = RUS_start_SMO
+			            days < 10
+		            }
+					has_country_flag = {
+			            flag = RUS_start_war
+			            days < 10
+		            }
+				}
+			}
+		} 
+
+		visible = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			country_event = {
+				id = rus.21
+				hours = 3
+			}
+		}
+	}
 	RUS_landing_Herson = {
 		icon = generic_formable_nations
 
@@ -1530,7 +1570,10 @@ RUS_amphibious_operations = {
 
 		available = {
 			RUS = {
-               has_war_with = UKR
+                has_war_with = UKR
+			    NOT = {
+				    controls_state = 242
+			    }
             }
 			custom_trigger_tooltip = {
 				tooltip = Herson_desant_2_tt
@@ -1555,6 +1598,12 @@ RUS_amphibious_operations = {
 			custom_effect_tooltip = berdyansk_desant_tt
 			hidden_effect = {
 				load_oob = RUS_berdyansk_desant
+				UKR = {
+					country_event = {
+						id = ukr.49
+						hours = 3
+					}
+				}
 			}
 		}
 	}
@@ -2404,9 +2453,33 @@ RUS_Mobilization_decisions = {
 				remove_idea = limited_conscription
 				add_idea = extensive_conscription
 			}
-			swap_ideas = {
-				remove_idea = society_medium
-				add_idea = society_low
+			if = {
+				limit = {
+					RUS = {
+					    OR = {
+						    has_idea = society_very_high
+					        has_idea = society_high
+							has_idea = society_medium
+						}
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_medium
+					add_idea = society_low
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+					    OR = {
+						    has_idea = society_low
+						}
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_low
+					add_idea = society_very_low
+				}
 			}
 			if = {
 				limit = {  
@@ -2455,6 +2528,10 @@ RUS_information_war = {
 		fire_only_once = no
 		days_re_enable = 20
 		cost = 50
+		
+		ai_will_do = {
+	    	factor = 15
+        }
 
 		available = {
 			original_tag = RUS
@@ -2478,6 +2555,10 @@ RUS_information_war = {
 		fire_only_once = no
 		days_re_enable = 31
 		cost = 55
+		
+		ai_will_do = {
+	    	factor = 15
+        }
 
 		available = {
 			original_tag = RUS
@@ -2514,6 +2595,10 @@ RUS_information_war = {
 		days_re_enable = 15
 		days_remove = 2
 		cost = 55
+		
+		ai_will_do = {
+	    	factor = 15
+        }
 
 		available = {
 			original_tag = RUS
@@ -2538,6 +2623,10 @@ RUS_information_war = {
 		days_re_enable = 50
 		days_remove = 15
 		cost = 50
+		
+		ai_will_do = {
+	    	factor = 15
+        }
 
 		available = {
 			original_tag = RUS
@@ -2564,6 +2653,10 @@ RUS_information_war = {
 		fire_only_once = no
 		days_re_enable = 60
 		cost = 90
+		
+		ai_will_do = {
+	    	factor = 20
+        }
 
 		visible = {
 	       original_tag = RUS
@@ -2587,6 +2680,10 @@ RUS_information_war = {
 		
 		fire_only_once = yes
 		cost = 50
+		
+		ai_will_do = {
+	    	factor = 20
+        }
 
 		visible = {
 	       original_tag = RUS
@@ -2605,11 +2702,42 @@ RUS_information_war = {
 			}
 		}	
 	}
-	RUS_Accuse_Ukraine_sabotage = {
+	RUS_address_the_united_nations = {
+		icon = RUS_discrediting_Ukraine
+
+		cost = 85
+		days_re_enable = 50
+		
+		ai_will_do = {
+	    	factor = 15
+        }
+
+		available = {
+			original_tag = RUS
+		}
+		
+		visible = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			add_stability = 0.05
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 1.5
+				tooltip = IW_1_5_var_add_tt
+			}
+		}
+	}
+	RUS_lay_down_your_weapons = {
 		icon = RUS_discrediting_Ukraine
 		
 		fire_only_once = yes
 		cost = 60
+		
+		ai_will_do = {
+	    	factor = 20
+        }
 
 		visible = {
 	       original_tag = RUS
@@ -2620,19 +2748,61 @@ RUS_information_war = {
 		}
 		
 		complete_effect = {
-		    add_war_support = 0.03
+		    UKR = {
+				add_war_support = -0.03
+			}
 			add_to_variable = {	
 				var = global.rus_information_war_var_sum
 				value = 1
 				tooltip = IW_1_var_add_tt
 			}
+			hidden_effect = {
+				random_list = {
+			        70 = { }
+			        15 = { country_event = { id = re_event_r.7 days = 3 } }
+					15 = { country_event = { id = re_event_r.8 days = 4 } }
+	            }
+			}
 		}	
+	}
+	RUS_Ukraine_crimes_international_level = {
+		icon = RUS_discrediting_Ukraine
+
+		fire_only_once = no
+		days_re_enable = 60
+		cost = 100
+		
+		ai_will_do = {
+	    	factor = 15
+        }
+
+		available = {
+			original_tag = RUS
+		}
+
+		visible = {
+			original_tag = RUS
+			has_completed_focus = RUS_information_front
+		}
+		
+		complete_effect = {
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 1.5
+				tooltip = IW_1_5_var_add_tt
+			}
+			increase_escalation_by_1 = yes
+		}
 	}
 	RUS_brifing_minoborony = {
 		icon = RUS_discrediting_Ukraine
 		
 		cost = 90
 		fire_only_once = yes
+		
+		ai_will_do = {
+	    	factor = 30
+        }
 
 		visible = {
 	       original_tag = RUS
@@ -2662,6 +2832,10 @@ RUS_information_war = {
 		days_re_enable = 30
 		days_remove = 4
 		cost = 70
+		
+		ai_will_do = {
+	    	factor = 15
+        }
 
 		available = {
 			original_tag = RUS
@@ -2697,6 +2871,10 @@ RUS_information_war = {
 		fire_only_once = no
 		days_re_enable = 35
 		cost = 100
+		
+		ai_will_do = {
+	    	factor = 10
+        }
 
 		available = {
 			original_tag = RUS
