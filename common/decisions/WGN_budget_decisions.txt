@@ -715,6 +715,53 @@ WGN_budget_category = {
 			}
 		}
 	}
+	WGN_buy_ammunition = {
+		icon = generic_formable_nations
+        cost = 10
+        days_remove = 20
+		ai_will_do = {
+			factor = 50
+		}
+
+		available = {
+			original_tag = WGN
+			check_variable = {
+				var = WGN_budget_var
+				value = 300
+				compare = greater_than_or_equals
+			}
+	    }
+		complete_effect = {
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 300
+				tooltip = WGN_budget_var_remove9
+			}
+		}
+		remove_effect = {
+		    custom_effect_tooltip = WGN_ammo_add_2
+			set_variable = { ammunition_daily = 10 }
+
+			# base gain
+			set_variable = { modifier_gain = modifier@daily_ammunition_gain }
+			divide_variable = { modifier_gain = 1000 }
+			add_to_variable = { ammunition_daily = modifier_gain }
+
+			# factor
+			set_variable = { ammunition_factor_calc = 1 }
+			add_to_variable = { ammunition_factor_calc = modifier@ammunition_factor }
+			clamp_variable = { 
+				var = ammunition_factor_calc 
+				min = 0 
+				#max = 0
+			}
+
+			multiply_variable = { ammunition_daily = ammunition_factor_calc }
+
+
+			add_to_variable = { ammunition_variable = ammunition_daily }
+		}
+	}
 
 	WGN_buy_su25 = {
 		icon = generic_formable_nations
