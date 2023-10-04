@@ -40,15 +40,43 @@ UKR_Lend_leas1_category = {
 	}
 	UKR_order_ammo_in_Ukraine = {
 		icon = decision_category_generic_arms_trade
+		days_remove = 30
+		cost = 9
 		fire_only_once = no
+
 		available = {
 			has_completed_focus = UKR_large_batch_of_small_arms
+			custom_trigger_tooltip = {
+				tooltip = UKR_nato_have_ammo
+				limit = {
+					#Высчитываем, сколько место осталось у Украины на складах
+					set_temp_variable = { ammo_needed = ammunition_free_space }
+					
+					#Ограничиваем максимумом в 200к
+					clamp_temp_variable = {
+						var = ammo_needed
+						min = 0
+						max = 200
+					}
+					
+					NTO = {
+						check_variable = { ammunition_variable > ammo_needed }
+					}
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = UKR_nato_have_enough_ammo
+				limit = {
+					NTO = {
+						check_variable = { ammunition_variable > 200 }
+					}
+				}
+			}
 		}
 		#  visible = {
 		#     UKR_can_sell_weapons_trigger = yes
 		# }
-		days_remove = 30
-		cost = 9
+		
 		ai_will_do = {
 			factor = 10
 			modifier = {
@@ -65,13 +93,23 @@ UKR_Lend_leas1_category = {
 		complete_effect = {
 		}
 		remove_effect = {
-			custom_effect_tooltip = UKR_ammo_tooltip_tt
-			UKR = {
-				add_to_variable = { ammunition_variable = 200 }
+			#Высчитываем, сколько место осталось у Украины на складах
+			set_temp_variable = { ammo_needed = ammunition_free_space }
+
+			#Ограничиваем максимумом в 200к
+			clamp_temp_variable = {
+			  var = ammo_needed
+			  min = 0
+			  max = 200
 			}
+			
+			#Передаём боеприпасы
+			add_to_variable = { ammunition_variable = ammo_needed }
 			NTO = {
-				add_to_variable = { ammunition_variable = -200 }
-		    }
+				subtract_from_variable = { ammunition_variable = ammo_needed }
+			}
+			
+			custom_effect_tooltip = UKR_ammo_supply_from_nato_tt
 		}
 	}
 	UKR_order_tanks_in_Ukraine = {
