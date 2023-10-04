@@ -1,4 +1,19 @@
 debug_category = {
+	
+	#Russia
+	RUS_load_second_focus_tree = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			original_tag = RUS
+		}
+		complete_effect = {
+			load_focus_tree = RUS_operational_tactical_after_SMO
+		}
+	}
+
+	#Wagner
+
 	wgnloadfocustree = {
 		icon = generic_formable_nations
 
@@ -11,8 +26,259 @@ debug_category = {
 			load_focus_tree = WGN_2
 		}
 	}
+	WGN_shell_hunger_flag_descision = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			set_global_flag = WGN_shell_hunger_flag
+		}
+	}
+	WGN_shell_hunger_flag_end_descision = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			clr_global_flag = WGN_shell_hunger_flag
+		}
+	}
+	WGN_loss_ammo = {
+		icon = generic_formable_nations 
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			set_variable = { ammunition_variable = 0 }
+		}
+	}
+	WGN_have_ammo = {
+		icon = generic_formable_nations 
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			set_variable = { ammunition_variable = 10000000 }
+		}
+	}
+	RUS_loss_ammo = {
+		icon = generic_formable_nations 
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			RUS = {
+				set_variable = { ammunition_variable = 0 }
+			}
+		}
+	} 
+	RUS_have_ammo = {
+		icon = generic_formable_nations 
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			RUS = {
+				set_variable = { ammunition_variable = 1000000 }
+			}
+		}
+	}
+	WGN_get_ammo = {
+	
+		icon = generic_formable_nations 
+		fire_only_once = no
+		days_mission_timeout = 3
+		
+		activation = {
+			original_tag = WGN
+			NOT = {
+				has_global_flag = WGN_shell_hunger_flag
+			}
+			
+			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у Вагнера
+				limit = {
+					#Высчитываем, сколько место осталось у Вагнера на складах
+					set_temp_variable = { ammo_needed = ammunition_free_space }
+					
+					#Ограничиваем максимумом в 50к
+					clamp_temp_variable = {
+						var = ammo_needed
+						min = 0
+						max = 50
+					}
+					
+					#У РФ должно быть в 10 раз больше боеприпасов, чем у Вагнера свободно
+					multiply_variable = {
+						var = ammo_needed
+						value = 10
+					}
+					
+					RUS = {
+						check_variable = { ammunition_variable > ammo_needed }
+					}
+				}
+			}
+		}
+		
+		available = {
+			OR = {
+				has_global_flag = WGN_shell_hunger_flag
+				NOT = {
+					custom_trigger_tooltip = {
+						tooltip = WGN_russia_have_ammo
+						limit = {
+							#Высчитываем, сколько место осталось у Вагнера на складах
+							set_temp_variable = { ammo_needed = ammunition_free_space }
+							
+							#Ограничиваем максимумом в 50к
+							clamp_temp_variable = {
+								var = ammo_needed
+								min = 0
+								max = 50
+							}
+							
+							#У РФ должно быть в 10 раз больше боеприпасов, чем у Вагнера свободно
+							multiply_variable = {
+								var = ammo_needed
+								value = 10
+							}
+							
+							RUS = {
+								check_variable = { ammunition_variable < ammo_needed }
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		timeout_effect = {
+			#Высчитываем, сколько место осталось у Вагнера на складах
+			set_temp_variable = { ammo_needed = ammunition_free_space }
+
+			#Ограничиваем максимумом в 50к
+			clamp_temp_variable = {
+			  var = ammo_needed
+			  min = 0
+			  max = 50
+			}
+			
+			#Передаём боеприпасы
+			add_to_variable = { ammunition_variable = ammo_needed }
+			RUS = {
+				subtract_from_variable = { ammunition_variable = ammo_needed }
+			}
+			
+			custom_effect_tooltip = WGN_ammunition_supply_every_month
+		}
+	}
+	WGN_get_ammo_low = {
+		activation = {
+			original_tag = WGN
+			has_global_flag = WGN_shell_hunger_flag
+			NOT = {
+				has_war_with = RUS
+			}
+			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у Вагнера
+				limit = {
+					#Высчитываем, сколько место осталось у Вагнера на складах
+					set_temp_variable = { ammo_needed = ammunition_free_space }
+					
+					#Ограничиваем максимумом в 50к
+					clamp_temp_variable = {
+						var = ammo_needed
+						min = 0
+						max = 10
+					}
+					
+					#У РФ должно быть в 10 раз больше боеприпасов, чем у Вагнера свободно
+					multiply_variable = {
+						var = ammo_needed
+						value = 10
+					}
+					
+					RUS = {
+						check_variable = { ammunition_variable > ammo_needed }
+					}
+				}
+			}
+		}
+	
+		available = {
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = WGN_shell_hunger_end_tt
+					NOT = {
+						has_global_flag = WGN_shell_hunger_flag
+					}
+					
+				}
+				NOT = {
+					custom_trigger_tooltip = {
+						tooltip = WGN_russia_have_ammo
+						limit = {
+							#Высчитываем, сколько место осталось у Вагнера на складах
+							set_temp_variable = { ammo_needed = ammunition_free_space }
+							
+							#Ограничиваем максимумом в 50к
+							clamp_temp_variable = {
+								var = ammo_needed
+								min = 0
+								max = 10
+							}
+							
+							#У РФ должно быть в 10 раз больше боеприпасов, чем у Вагнера свободно
+							multiply_variable = {
+								var = ammo_needed
+								value = 10
+							}
+							
+							RUS = {
+								check_variable = { ammunition_variable < ammo_needed }
+							}
+						}
+					}
+				}
+			}
+		}
+		icon = generic_formable_nations  
+		fire_only_once = no
+		days_mission_timeout = 3
+		timeout_effect = {
+			#Высчитываем, сколько место осталось у Вагнера на складах
+			set_temp_variable = { ammo_needed = ammunition_free_space }
+
+			#Ограничиваем максимумом в 50к
+			clamp_temp_variable = {
+			  var = ammo_needed
+			  min = 0
+			  max = 10
+			}
+			
+			#Передаём боеприпасы
+			add_to_variable = { ammunition_variable = ammo_needed }
+			RUS = {
+				subtract_from_variable = { ammunition_variable = ammo_needed }
+			}
+			
+			custom_effect_tooltip = WGN_ammunition_supply_every_month
+		}
+	}
+
+	#What
+
 	exit_the_game = {
 	}
+
+	#All
+
 	create_peoples_republics = {
 		fire_only_once = no
 		visible = {

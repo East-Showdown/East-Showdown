@@ -66,7 +66,7 @@ NDefines.NAI.DIVISION_DESIGN_COMBAT_WIDTH_TARGET_WEIGHT = -10000 -- -200	       
 
 NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.25 --0.1
 NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 365 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
-NDefines.NAI.DIVISION_MATCH_ROLE_BOOST_FACTOR = 0.6 --1.2                 -- When finding closest matching existing template to a target template, boost the score by this much if the template also has the correct role
+NDefines.NAI.DIVISION_MATCH_ROLE_BOOST_FACTOR = 1.0 --1.2                 -- When finding closest matching existing template to a target template, boost the score by this much if the template also has the correct role
 
 --------------------------------------------------------------------------------------------------------------
 -- DIVISION PRODUCTION
