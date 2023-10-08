@@ -58,6 +58,8 @@ replace_path="gfx/flags"
 replace_path="gfx/flags/medium"
 replace_path="gfx/flags/small"
 replace_path="music"
+replace_path="music/hoi3"
+replace_path="music/hoi2"
 tags={
 	"Map"
 	"Military"
