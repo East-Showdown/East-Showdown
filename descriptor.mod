@@ -60,6 +60,7 @@ replace_path="gfx/flags/small"
 replace_path="music"
 replace_path="music/hoi3"
 replace_path="music/hoi2"
+replace_path="common/military_industrial_organization/organizations"
 tags={
 	"Map"
 	"Military"
