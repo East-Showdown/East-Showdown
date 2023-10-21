@@ -1,0 +1,269 @@
+scripted_gui = {
+	more_mapmodes_map_mode_window = {
+		context_type = player_context
+
+		window_name = "more_mapmodes_map_mode_window"
+		parent_window_token = top_bar
+
+		mapmode = more_mapmodes_anti_air_map_mode
+		mapmode = more_mapmodes_air_base_map_mode
+
+		visible = {
+			is_ai = no
+		}
+
+		effects = {
+			button_click = {
+				if = {
+					limit = {
+						has_country_flag = disable_more_mapmodes_map_mode_mapicons
+					}
+					clr_country_flag = disable_more_mapmodes_map_mode_mapicons
+				}
+				else = {
+					set_country_flag = disable_more_mapmodes_map_mode_mapicons
+				}
+			}
+		}
+
+		triggers = {
+			button_visible = {
+				if = {
+					limit = {
+						has_country_flag = disable_more_mapmodes_map_mode_mapicons
+					}
+					set_temp_variable = { button_frame = 1 }
+				}
+				else = {
+					set_temp_variable = { button_frame = 2 }
+				}
+			}
+		}
+
+		properties = {
+			button = {
+				frame = button_frame
+			}
+		}
+	}
+
+	more_mapmodes_anti_air_map_mode_mapicons_window = {
+		context_type = state_mapicon
+
+		window_name = "more_mapmodes_anti_air_map_mode_mapicons_window"
+		mapmode = more_mapmodes_anti_air_map_mode
+
+		visible = {
+			ROOT = {
+				is_ai = no
+				NOT = { has_country_flag = disable_more_mapmodes_map_mode_mapicons }
+			}
+		}
+
+		mapicon_targets = {
+			target_array = global.states
+			target_trigger = {
+				FROM = {
+					OR = {
+						is_controlled_by = ROOT
+						CONTROLLER = {
+							OR = {
+								has_war_with = ROOT
+								is_ally_with = ROOT
+							}
+						}
+					}
+					anti_air_building > 0
+				}
+			}
+		}
+	}
+
+	more_mapmodes_air_base_map_mode_mapicons_window = {
+		context_type = state_mapicon
+
+		window_name = "more_mapmodes_air_base_map_mode_mapicons_window"
+		mapmode = more_mapmodes_air_base_map_mode
+
+		visible = {
+			ROOT = {
+				is_ai = no
+				NOT = { has_country_flag = disable_more_mapmodes_map_mode_mapicons }
+			}
+		}
+
+		mapicon_targets = {
+			target_array = global.states
+			target_trigger = {
+				FROM = {
+					OR = {
+						is_controlled_by = ROOT
+						CONTROLLER = {
+							OR = {
+								has_war_with = ROOT
+								is_ally_with = ROOT
+							}
+						}
+					}
+					air_base > 0
+				}
+			}
+		}
+	}
+
+	more_mapmodes_country_map_mode_window = {
+		context_type = player_context
+
+		window_name = "more_mapmodes_country_map_mode_window"
+		parent_window_token = top_bar
+
+		mapmode = more_mapmodes_guarantees_map_mode
+		mapmode = more_mapmodes_subjects_map_mode
+
+		visible = {
+			is_ai = no
+			var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
+				set_temp_variable = { temp_target = THIS.id }
+			}
+		}
+
+		effects = {
+			button_click = {
+				if = {
+					limit = {
+						has_variable = show_more_mapmodes_country_map_mode_list_window
+					}
+					clear_variable = show_more_mapmodes_country_map_mode_list_window
+				}
+				else = {
+					set_variable = { show_more_mapmodes_country_map_mode_list_window = 1 }
+				}
+			}
+			button_right_click = {
+				clear_variable = more_mapmodes_country_map_mode_target
+				force_update_map_mode = {
+					limit = {
+						tag = ROOT
+					}
+					mapmode = more_mapmodes_guarantees_map_mode
+				}
+				force_update_map_mode = {
+					limit = {
+						tag = ROOT
+					}
+					mapmode = more_mapmodes_subjects_map_mode
+				}
+			}
+		}
+	}
+
+	more_mapmodes_country_map_mode_list_window = {
+		context_type = player_context
+
+		window_name = "more_mapmodes_country_map_mode_list_window"
+		parent_window_name = "more_mapmodes_country_map_mode_window_instance"
+
+		mapmode = more_mapmodes_guarantees_map_mode
+		mapmode = more_mapmodes_subjects_map_mode
+
+		visible = {
+			is_ai = no
+			has_variable = show_more_mapmodes_country_map_mode_list_window
+		}
+
+		effects = {
+			close_button_click = {
+				clear_variable = show_more_mapmodes_country_map_mode_list_window
+			}
+			entry_button_click = {
+				if = {
+					limit = {
+						tag = ROOT
+					}
+					clear_variable = more_mapmodes_country_map_mode_target
+				}
+				else = {
+					ROOT = { set_variable = { more_mapmodes_country_map_mode_target = PREV.id } }
+				}
+				ROOT = {
+					force_update_map_mode = {
+						limit = {
+							tag = ROOT
+						}
+						mapmode = more_mapmodes_guarantees_map_mode
+					}
+					force_update_map_mode = {
+						limit = {
+							tag = ROOT
+						}
+						mapmode = more_mapmodes_subjects_map_mode
+					}
+					clear_variable = show_more_mapmodes_country_map_mode_list_window
+				}
+			}
+		}
+
+		dynamic_lists = {
+			more_mapmodes_country_map_mode_country_list_gridbox = {
+				array = global.countries
+				entry_container = "[This.GetMoreMapModesCountryMapModeCountryListEntryContainer]"
+				change_scope = yes
+			}
+		}
+	}
+
+	more_mapmodes_country_map_mode_mapicons_window = {
+		context_type = country_mapicon
+
+		window_name = "more_mapmodes_country_map_mode_mapicons_window"
+		mapmode = more_mapmodes_guarantees_map_mode
+		mapmode = more_mapmodes_subjects_map_mode
+
+		visible = {
+			ROOT = {
+				is_ai = no
+			}
+		}
+
+		effects = {
+			button_click = {
+				if = {
+					limit = {
+						tag = ROOT
+					}
+					clear_variable = more_mapmodes_country_map_mode_target
+				}
+				else = {
+					ROOT = { set_variable = { more_mapmodes_country_map_mode_target = PREV.id } }
+				}
+				ROOT = {
+					force_update_map_mode = {
+						limit = {
+							tag = ROOT
+						}
+						mapmode = more_mapmodes_guarantees_map_mode
+					}
+					force_update_map_mode = {
+						limit = {
+							tag = ROOT
+						}
+						mapmode = more_mapmodes_subjects_map_mode
+					}
+					clear_variable = show_more_mapmodes_country_map_mode_list_window
+				}
+			}
+		}
+
+		triggers = {
+			button_visible = {
+				ROOT = {
+					NOT = { check_variable = { more_mapmodes_country_map_mode_target = PREV.id } }
+				}
+				OR = {
+					NOT = { tag = ROOT }
+					ROOT = { has_variable = more_mapmodes_country_map_mode_target }
+				}
+			}
+		}
+	}
+}
