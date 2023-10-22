@@ -220,4 +220,1127 @@ scripted_map_modes = {
 		update_daily = yes
 
 	}
+	more_mapmodes_core_map_mode = {
+		top = {
+			type = state
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					if = {
+						limit = {
+							is_core_of = ROOT
+						}
+						if = {
+							limit = {
+								is_controlled_by = ROOT
+							}
+							set_temp_variable = { red = 0.0 }
+							set_temp_variable = { green = 0.5 }
+							set_temp_variable = { blue = 0.0 }
+						}
+						else_if = {
+							limit = {
+								is_owned_by = ROOT
+							}
+							set_temp_variable = { red = 0.7 }
+							set_temp_variable = { green = 0.0 }
+							set_temp_variable = { blue = 0.0 }
+						}
+						else = {
+							set_temp_variable = { red = 0.67 }
+							set_temp_variable = { green = 1.0 }
+							set_temp_variable = { blue = 0.67 }
+							set_temp_variable = { alpha = 0.5 }
+						}
+					}
+					else_if = {
+						limit = {
+							is_owned_by = ROOT
+						}
+						if = {
+							limit = {
+								is_controlled_by = ROOT
+							}
+							set_temp_variable = { red = 0.0 }
+							set_temp_variable = { green = 1.0 }
+							set_temp_variable = { blue = 0.0 }
+						}
+						else = {
+							set_temp_variable = { red = 1.0 }
+							set_temp_variable = { green = 0.0 }
+							set_temp_variable = { blue = 0.0 }
+						}
+					}
+					else_if = {
+						limit = {
+							is_claimed_by = ROOT
+						}
+						if = {
+							limit = {
+								is_controlled_by = ROOT
+							}
+							set_temp_variable = { red = 0.0 }
+							set_temp_variable = { green = 0.67 }
+							set_temp_variable = { blue = 1.0 }
+						}
+						else = {
+							set_temp_variable = { red = 1.0 }
+							set_temp_variable = { green = 0.67 }
+							set_temp_variable = { blue = 1.0 }
+							set_temp_variable = { alpha = 0.5 }
+						}
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = no
+
+			targets = {
+			#	target_array = core_states
+			#	target_array = owned_states
+			#	target_array = controlled_states
+				target_array = global.states
+				target_trigger = {
+					FROM = {
+						OR = {
+							is_owned_by = ROOT
+							is_controlled_by = ROOT
+							is_core_of = ROOT
+							is_claimed_by = ROOT
+						}
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.4 }
+				set_temp_variable = { thickness = 10.0 }
+				set_temp_variable = { red = 0.0 }
+				set_temp_variable = { green = 0.0 }
+				set_temp_variable = { blue = 0.0 }
+			}
+
+			thickness = yes
+
+			targets = {
+				targets = { ROOT }
+			}
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = no
+	}
+
+	more_mapmodes_caused_world_tension_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { temp = has_added_tension_amount }
+					divide_temp_variable = { temp = 100 }
+					subtract_from_temp_variable = { temp = 1 }
+					multiply_temp_variable = { temp = -1 }
+					clamp_temp_variable = {
+						var = temp
+						min = 0
+						max = 1
+					}
+					set_temp_variable = { red = 1.0 }
+					set_temp_variable = { green = temp }
+					set_temp_variable = { blue = temp }
+				}
+			}
+
+			thickness = no
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.2 }
+				set_temp_variable = { thickness = 1.0 }
+				set_temp_variable = { red = 0.33 }
+				set_temp_variable = { green = 0.33 }
+				set_temp_variable = { blue = 0.33 }
+			}
+
+			thickness = yes
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_stability_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							has_stability > 0.99
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_stability > 0.74
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_stability > 0.49
+						}
+						set_temp_variable = { red = 0.9 }
+						set_temp_variable = { green = 0.9 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_stability > 0.32
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.59 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_stability > 0.24
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.31 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = none
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_war_support_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							has_war_support > 0.99
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_war_support > 0.74
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_war_support > 0.49
+						}
+						set_temp_variable = { red = 0.9 }
+						set_temp_variable = { green = 0.9 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_war_support > 0.32
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.59 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							has_war_support > 0.24
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.31 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = none
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_war_goals_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							tag = ROOT
+						}
+						set_temp_variable = { red = 0.08 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.17 }
+					}
+					else_if = {
+						limit = {
+							has_wargoal_against = ROOT
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = yes
+
+			targets = {
+				target_array = global.countries
+				target_trigger = {
+					FROM = {
+						OR = {
+							tag = ROOT
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.2 }
+				set_temp_variable = { thickness = 1.0 }
+				set_temp_variable = { red = 0.33 }
+				set_temp_variable = { green = 0.33 }
+				set_temp_variable = { blue = 0.33 }
+			}
+
+			thickness = yes
+
+			targets = {
+				target_array = global.countries
+				target_trigger = {
+					FROM = {
+						OR = {
+							tag = ROOT
+							has_wargoal_against = ROOT
+							is_justifying_wargoal_against = ROOT
+						}
+					}
+				}
+			}
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_anti_air_map_mode = {
+		top = {
+			type = state
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					if = {
+						limit = {
+							anti_air_building > 4
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							anti_air_building > 3
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							anti_air_building > 2
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							anti_air_building > 1
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.59 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							anti_air_building > 0
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.31 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = no
+
+			targets = {
+				target_array = global.states
+				target_trigger = {
+					FROM = {
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									has_war_with = ROOT
+									is_ally_with = ROOT
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.25 }
+				set_temp_variable = { thickness = 10.0 }
+				set_temp_variable = { red = 0.0 }
+				set_temp_variable = { green = 0.0 }
+				set_temp_variable = { blue = 0.0 }
+			}
+
+			thickness = yes
+
+			targets = {
+				targets = { ROOT }
+				target_array = allies
+				target_array = enemies
+			}
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_air_base_map_mode = {
+		top = {
+			type = state
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					if = {
+						limit = {
+							air_base > 8
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							air_base > 6
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							air_base > 4
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							air_base > 2
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.59 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							air_base > 0
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.31 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = no
+
+			targets = {
+				target_array = global.states
+				target_trigger = {
+					FROM = {
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									has_war_with = ROOT
+									is_ally_with = ROOT
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.25 }
+				set_temp_variable = { thickness = 10.0 }
+				set_temp_variable = { red = 0.0 }
+				set_temp_variable = { green = 0.0 }
+				set_temp_variable = { blue = 0.0 }
+			}
+
+			thickness = yes
+
+			targets = {
+				targets = { ROOT }
+				target_array = allies
+				target_array = enemies
+			}
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_technologies_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				any_country = {
+					all_other_country = {
+						NOT = { check_variable = { num_researched_technologies > PREV.num_researched_technologies } }
+					}
+					set_temp_variable = { num_max_tech = num_researched_technologies }
+				}
+				set_temp_variable = { num_max_tech_minus_1 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_1 = 0.9 }
+				round_temp_variable = num_max_tech_minus_1
+				set_temp_variable = { num_max_tech_minus_2 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_2 = 0.8 }
+				round_temp_variable = num_max_tech_minus_2
+				set_temp_variable = { num_max_tech_minus_3 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_3 = 0.7 }
+				round_temp_variable = num_max_tech_minus_3
+				set_temp_variable = { num_max_tech_minus_4 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_4 = 0.6 }
+				round_temp_variable = num_max_tech_minus_4
+				set_temp_variable = { num_max_tech_minus_5 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_5 = 0.5 }
+				round_temp_variable = num_max_tech_minus_5
+				set_temp_variable = { num_max_tech_minus_6 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_6 = 0.4 }
+				round_temp_variable = num_max_tech_minus_6
+				set_temp_variable = { num_max_tech_minus_7 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_7 = 0.3 }
+				round_temp_variable = num_max_tech_minus_7
+				set_temp_variable = { num_max_tech_minus_8 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_8 = 0.2 }
+				round_temp_variable = num_max_tech_minus_8
+				set_temp_variable = { num_max_tech_minus_9 = num_max_tech }
+				multiply_temp_variable = { num_max_tech_minus_9 = 0.1 }
+				round_temp_variable = num_max_tech_minus_9
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							check_variable = { num_researched_technologies = num_max_tech }
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.0 }
+						if = {
+							limit = {
+								all_other_country = {
+									check_variable = { num_researched_technologies < PREV.num_researched_technologies }
+								}
+							}
+							set_temp_variable = { highlighted = 1.0 }
+						}
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_1 } }
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.75 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_2 } }
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_3 } }
+						}
+						set_temp_variable = { red = 0.5 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_4 } }
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_5 } }
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_6 } }
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.6 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_7 } }
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.4 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_8 } }
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.25 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else_if = {
+						limit = {
+							NOT = { check_variable = { num_researched_technologies < num_max_tech_minus_9 } }
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.1 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = none
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_intervention_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							tag = ROOT
+						}
+						set_temp_variable = { red = 0.08 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.17 }
+					}
+					else_if = {
+						limit = {
+							received_expeditionary_forces = {
+								sender = ROOT
+								value > 0
+							}
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 1.0 }
+					}
+					else_if = {
+						limit = {
+							ROOT = {
+								received_expeditionary_forces = {
+									sender = PREV
+									value > 0
+								}
+							}
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.2 }
+						set_temp_variable = { blue = 0.8 }
+					}
+					else_if = {
+						limit = {
+							OR = {
+								has_volunteers_amount_from = {
+									tag = ROOT
+									count > 0
+								}
+								ROOT = {
+									has_volunteers_amount_from = {
+										tag = PREV
+										count > 0
+									}
+								}
+							}
+						}
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.9 }
+						set_temp_variable = { blue = 1.0 }
+					}
+				}
+			}
+
+			targets = {
+				target_array = global.countries
+				target_trigger = {
+					FROM = {
+						OR = {
+							tag = ROOT
+							received_expeditionary_forces = {
+								sender = ROOT
+								value > 0
+							}
+							ROOT = {
+								received_expeditionary_forces = {
+									sender = PREV
+									value > 0
+								}
+							}
+							has_volunteers_amount_from = {
+								tag = ROOT
+								count > 0
+							}
+							ROOT = {
+								has_volunteers_amount_from = {
+									tag = PREV
+									count > 0
+								}
+							}
+						}
+					}
+				}
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 10.0 }
+					set_temp_variable = { red = 0.0 }
+					set_temp_variable = { green = 0.0 }
+					set_temp_variable = { blue = 1.0 }
+				}
+			}
+
+			targets = {
+				target_array = allies
+				target_trigger = {
+					received_expeditionary_forces = {
+						sender = FROM
+						value > 0
+					}
+				}
+			}
+
+			thickness = yes
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_majors_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 10.0 }
+					set_temp_variable = { highlighted = 1.0 }
+					set_temp_variable = { red = 1.0 }
+					set_temp_variable = { green = 0.8 }
+					set_temp_variable = { blue = 0.0 }
+				}
+			}
+
+			targets = {
+				target_array = global.majors
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = game_map_mode_country
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_world_war_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							has_war = yes
+						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 1.0 }
+						set_temp_variable = { blue = 0.0 }
+					}
+				}
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				set_temp_variable = { alpha = 0.2 }
+				set_temp_variable = { thickness = 1.0 }
+				set_temp_variable = { red = 0.33 }
+				set_temp_variable = { green = 0.33 }
+				set_temp_variable = { blue = 0.33 }
+			}
+
+			thickness = yes
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = no
+	}
+
+	more_mapmodes_spymasters_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					set_temp_variable = { red = 0.5 }
+					set_temp_variable = { green = 0.0 }
+					set_temp_variable = { blue = 0.7 }
+				}
+			}
+
+			thickness = yes
+
+			targets = {
+				target_array = global.countries
+				target_trigger = {
+					FROM = {
+						is_spymaster = yes
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = country
+
+			color = {
+				FROM = {
+					set_temp_variable = { alpha = 0.1 }
+					set_temp_variable = { thickness = 1.0 }
+					set_temp_variable = { red = 0.8 }
+					set_temp_variable = { green = 0.8 }
+					set_temp_variable = { blue = 0.8 }
+				}
+			}
+
+			thickness = yes
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_guarantees_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							tag = FROM
+						}
+						set_temp_variable = { red = 0.08 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.17 }
+					}
+					else_if = {
+						limit = {
+							has_guaranteed = FROM
+						}
+						set_temp_variable = { red = 0.9 }
+						set_temp_variable = { green = 0.9 }
+						set_temp_variable = { blue = 0.0 }
+					}
+					else = {
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.5 }
+						set_temp_variable = { blue = 0.9 }
+					}
+				}
+			}
+
+			thickness = yes
+
+			targets = {
+				target_array = global.countries
+				target_trigger = {
+					var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
+						OR = {
+							tag = FROM
+							is_guaranteed_by = FROM
+							has_guaranteed = FROM
+						}
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = none
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+	more_mapmodes_subjects_map_mode = {
+		top = {
+			type = country
+
+			color = {
+				var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
+					set_temp_variable = { alpha = 1.0 }
+					set_temp_variable = { thickness = 1.0 }
+					if = {
+						limit = {
+							tag = FROM
+						}
+						set_temp_variable = { red = 0.08 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.17 }
+					}
+					else_if = {
+						limit = {
+							is_subject_of = FROM
+						}
+						set_temp_variable = { red = 0.2 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.8 }
+					}
+					else_if = {
+						limit = {
+							FROM = { is_subject_of = PREV }
+						}
+						set_temp_variable = { red = 0.2 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.6 }
+					}
+					else = {
+						set_temp_variable = { red = 0.6 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.6 }
+					}
+				}
+			}
+
+			thickness = yes
+
+			targets = {
+				target_array = global.countries
+				target_trigger = {
+					var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
+						OR = {
+							tag = FROM
+							is_subject_of = FROM
+							FROM = { is_subject_of = PREV }
+							AND = {
+								is_subject = yes
+								OVERLORD = {
+									FROM = { is_subject_of = PREV }
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		bottom = {
+			type = none
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
 }
