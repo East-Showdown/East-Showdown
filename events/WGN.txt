@@ -465,7 +465,7 @@ country_event = {
 		}
 		news_event = {
 			id = news.132
-			hours = 1
+			hours = 4
 		}
 		custom_effect_tooltip = WGN_Prigoshin_F
 		hidden_effect = {
@@ -530,6 +530,14 @@ country_event = {
 	desc = WGN.16.d
 	fire_only_once = yes
 	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+		    country_event = {
+				id = WGN.19
+				days = 36
+			}
+		}
+	}
 	option = {
 		name = WGN.16.a
 		custom_effect_tooltip = WGN_anton_elizarov_power
@@ -538,7 +546,13 @@ country_event = {
 				ruling_party = neutrality
 			}
 			set_popularities = {  democratic = 0  neutrality = 50  fascism = 50  communism = 0 }
-			promote_character = {  character = anton_elizarov  ideology = wgn_n }
+			add_country_leader_role = {
+				character = anton_elizarov
+				promote_leader = yes
+				country_leader = {
+					ideology = wgn_n
+				}
+			}
 			anton_elizarov = {
 				promote_leader = yes
 				remove_trait = {
@@ -627,5 +641,67 @@ country_event = {
 			targeted_alliance = RUS
 			enemy = UKR
 		}
+	}
+}
+
+#Сын Пригожина
+country_event = {
+	id = WGN.19
+	title = WGN.19.t
+	desc = WGN.19.d
+	picture = GFX_country_event_054
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.19.a
+		add_political_power = 100
+		add_stability = 0.1
+		add_war_support = 0.15
+		custom_effect_tooltip = WGN_son_Prigoshin
+		hidden_effect = {
+		    anton_elizarov = {
+			    remove_country_leader_role = {  ideology = wgn_n }
+			}
+			council_commanders_PMC = {
+			    remove_country_leader_role = {  ideology = wgn_d }
+				remove_country_leader_role = {  ideology = wgn }
+				remove_country_leader_role = {  ideology = wgn_c }
+				remove_country_leader_role = {  ideology = wgn_n }
+			}
+		    set_politics = {
+			    ruling_party = fascism
+			}
+			set_popularities = {  democratic = 0  neutrality = 0  fascism = 100  communism = 0 }
+			promote_character = {  character = pavel_prigozhin  ideology = wgn }
+			add_field_marshal_role = {
+			    Character = pavel_prigozhin
+				traits = { desert_fox wgn_leader }
+				skill = 1
+				attack_skill = 2
+				defense_skill = 1
+				planning_skill = 1
+				logistics_skill = 3
+			}
+			if = {
+			    limit = {
+					anton_elizarov = {
+						has_trait = wgn_leader
+			        }
+				}
+				anton_elizarov = {
+				    demote_leader = yes
+					remove_trait = {
+						trait = wgn_leader
+					}
+					add_trait = {
+						trait = wgn_commander
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = WGN.19.b
+		add_political_power = -30
 	}
 }
