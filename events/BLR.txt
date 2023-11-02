@@ -877,10 +877,6 @@ country_event = {
     desc = blr.3.desc
 	is_triggered_only = yes
     fire_only_once = yes
-
-	trigger = {
-		tag = BLR
-	}
 	
 	option = {
 		name = blr.3.a
@@ -894,6 +890,58 @@ country_event = {
 			country_leader = {
 				ideology = nationalism
 				traits = {  }
+			}
+		}
+	}
+}
+#Civil War
+country_event = {
+	id = blr.4
+	title = blr.4.t
+    desc = blr.4.desc
+	is_triggered_only = yes
+    fire_only_once = yes
+	option = {
+		name = blr.4.a
+	}
+	immediate = {
+		hidden_effect = {
+			BPR = {
+				set_capital = { state = 49 }
+				set_province_controller = 2444
+			}
+			49 = {
+				set_state_owner_to = BPR
+			}
+			BLR = {
+				every_core_state = {
+					add_core_of = BPR	
+				}
+			}
+			if = {
+				limit = { has_completed_focus = BLR_leave_third_sector_away }
+				BPR = {
+					load_oob = BPR_third_sector
+				}
+			}
+			BPR = {
+				declare_war_on = {
+					target = BLR
+					type = civil_war
+				}
+				add_civil_war_target = BLR
+			}
+			BPR = {
+				load_focus_tree = BPR_tree
+				change_tag_from = BLR
+			}
+			set_nationality = {
+				target_country = BPR
+				character = BLR_svetlana_tikhanovskaya
+			}
+			
+			BLR_svetlana_tikhanovskaya = {
+				promote_character = yes
 			}
 		}
 	}
