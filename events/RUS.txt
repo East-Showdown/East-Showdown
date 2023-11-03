@@ -2,20 +2,10 @@ add_namespace = rus
 add_namespace = rus_hidden
 add_namespace = moa
 add_namespace = putin_mission
-
-  _____  _    _ _______ _____ _   _    __  __ _____  _____ _____ _____ ____  _   _  _____ 
- |  __ \| |  | |__   __|_   _| \ | |  |  \/  |_   _|/ ____/ ____|_   _/ __ \| \ | |/ ____|
- | |__) | |  | |  | |    | | |  \| |  | \  / | | | | (___| (___   | || |  | |  \| | (___  
- |  ___/| |  | |  | |    | | | . ` |  |  |\/| | | |  \___ \\___ \  | || |  | | . ` |\___ \ 
- | |    | |__| |  | |   _| |_| |\  |  | |  | |_| |_ ____) |___) |_| || |__| | |\  |____) |
- |_|     \____/   |_|  |_____|_| \_|  |_|  |_|_____|_____/_____/|_____\____/|_| \_|_____/ 
-                                                                                         
-
 unit_leader_event = { #the month invasion plan 
 	id = putin_mission.1
 	title = putin_mission.1.t
 	desc = putin_mission.1.desc
-
 	is_triggered_only = yes
 
 	fire_only_once = yes
@@ -27,6 +17,7 @@ unit_leader_event = { #the month invasion plan
 	option = { #yes bro
 		name = putin_mission.1.a
 		activate_mission = RUS_month_invasion_plan
+        #activate_mission = RUS_imminent_purge
 	}
 }
 
@@ -54,14 +45,122 @@ unit_leader_event = { # fails to conquer ukraine in a month
 		name = putin_mission.2.c
 	}
 }
-  ______ _   _ _____      ____  ______   __  __ _____  _____ _____ _____ ____  _   _  _____ 
- |  ____| \ | |  __ \    / __ \|  ____| |  \/  |_   _|/ ____/ ____|_   _/ __ \| \ | |/ ____|
- | |__  |  \| | |  | |  | |  | | |__    | \  / | | | | (___| (___   | || |  | |  \| | (___  
- |  __| | . ` | |  | |  | |  | |  __|   | |\/| | | |  \___ \\___ \  | || |  | | . ` |\___ \ 
- | |____| |\  | |__| |  | |__| | |      | |  | |_| |_ ____) |___) |_| || |__| | |\  |____) |
- |______|_| \_|_____/    \____/|_|      |_|  |_|_____|_____/_____/|_____\____/|_| \_|_____/ 
+unit_leader_event = { # putin purges Sergey Surovikin for supporting wagner
+	id = putin_mission.3
+	title = putin_mission.3.t
+	desc = putin_mission.3.desc
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	inmediate = {
+			activate_mission = 2nd_purge
+	}
+
+	option = { # DIE!
+		name = putin_mission.3.a
+		ai_chance = {	base = 10	}
+		custom_effect_tooltip = SOV_characters_will_be_purged_tt
+		retire_character = sergei_syrovikin
+	}
+	option = { # LET HIM LIVE
+		name = putin_mission.3.b
+		add_power_balance_value = {
+		id = RUS_power_balance
+		value = -0.2
+		}
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.2
+			add_political_power = -90
+		}
+	}
+}
 
 
+
+unit_leader_event = { # putin begins purge of generals
+        id = putin_mission.4
+        title = putin_mission.4.t
+        desc = putin_mission.4.desc
+
+        fire_only_once = yes
+        is_triggered_only = yes
+
+        option = { # ok
+              name = putin_mission.4.a
+              ai_chance = {
+                      base = 10
+              }
+              activate_mission = first_purge
+        }
+}
+
+unit_leader_event = { # Vladimir Anotolievich kochetkov accused of incompetence
+        id = putin_mission.5
+        title = putin_mission.5.t
+        desc = putin_mission.5.desc
+
+        is_triggered_only = yes
+        fire_only_once = yes
+
+        inmediate = {
+              activate_mission = 3rd_purge
+        }
+
+        option = { # OUT!
+              name = putin_mission.5.a
+              ai_chance = {
+                      base = 10
+              }
+              custom_effect_tooltip = SOV_characters_will_be_purged_tt
+              retire_character = vladimir_anatolievich_kochetkov
+              
+        }
+
+        option = { # STAY
+              name = putin_mission.5.b
+              add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.2
+	      }
+	      add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.2
+              }
+              add_political_power = -90
+        }
+}
+
+country_event = { # news reporter questions russia's strength
+        id = putin_mission.6
+        title = putin_mission.6.t
+        desc = putin_mission.6.desc
+        fire_only_once = yes
+        is_triggered_only = yes
+
+        option = { # SEND HIM TO WORK IN THE FIELDS
+                name = putin_mission.6.a
+                add_political_power = -60
+        }
+
+        option = { # LET HIM LIVE
+                 name = putin_mission.6.b
+                 add_popularity = {
+                      ideology = neutrality
+                      popularity = -0.03
+                 }
+                 add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.03
+	        }
+	        add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.05
+                }
+                add_stability = -0.03
+        }
+}
 
 #Armaty tipo tanki you
 country_event = {
@@ -89,39 +188,12 @@ country_event = {
 
 #Zhirik's death(F)
 country_event = {
-	id = rus_hidden.1
-	title = rus_hidden.1.t
-	desc = rus_hidden.1.d
-	fire_only_once = yes
-	hidden = yes
-	trigger = {
-		tag = RUS
-	}
-	mean_time_to_happen = {
-		days = 1
-	}
-	immediate = {
-		RUS = {
-			country_event = {
-				id = rus.2
-				days = 94
-			}
-		}
-	}
-	option = {
-		name = rus_hidden.1.a
-	}
-}
-
-country_event = {
 	id = rus.2
 	title = rus.2.t
 	desc = rus.2.desc
+	picture = GFX_country_event_037
 	is_triggered_only = yes
 	fire_only_once = yes
-	mean_time_to_happen = {
-		days = 1
-	}
 	#We will remember him as a true patriot
 	option = {
 		name = rus.2.a
@@ -246,672 +318,108 @@ country_event = {
 	id = rus.11
 	title = rus.11.t
 	desc = rus.11.desc
+	picture = GFX_country_event_043
 	is_triggered_only = yes
 	fire_only_once = yes
 	timeout_days = 3
 	#Retreat from the north
 	option = {
 		name = rus.11.a
-		add_political_power = -20
-		398 = {
-			transfer_state_to = BLR
-		}
-		402 = {
-			transfer_state_to = BLR
-		}
-		399 = {
-			transfer_state_to = BLR
-		}
-		400 = {
-			transfer_state_to = BLR
-		}
-		401 = {
-			transfer_state_to = BLR
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 104
-				}
-			}
-			104 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 86
-				}
-			}
-			86 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 73
-				}
-			}
-			73 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 68
-				}
-			}
-			68 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 95
-				}
-			}
-			95 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 67
-				}
-			}
-			67 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 65
-				}
-			}
-			65 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 87
-				}
-			}
-			87 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 83
-				}
-			}
-			83 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 59
-				}
-			}
-			59 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 69
-				}
-			}
-			69 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 80
-				}
-			}
-			80 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 60
-				}
-			}
-			60 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 56
-				}
-			}
-			56 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 57
-				}
-			}
-			57 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 66
-				}
-			}
-			66 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 82
-				}
-			}
-			82 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 72
-				}
-			}
-			72 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 89
-				}
-			}
-			89 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		diplomatic_relation = {
-			country = RBZ
-			relation = military_access
-			active = yes
-		}
+		custom_effect_tooltip = RUS_leave_kiev_ce_tt
+		add_political_power = -50
+		add_war_support = -0.1
+		add_stability = -0.05
 		news_event = {
 			id = news.9
-			days = 1
+			hours = 4
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					RUS = {
+					    has_idea = society_very_high
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_very_high
+					add_idea = society_high
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+					    has_idea = society_high
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_high
+					add_idea = society_medium
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+					    has_idea = society_medium
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_medium
+					add_idea = society_low
+				}
+			}
+			else = {
+			    swap_ideas = {
+					remove_idea = society_low
+					add_idea = society_very_low
+				}
+			}
+			country_event = {
+				id = super.9
+				hours = 6
+			}
 		}
 	}
 	option = {
 		name = rus.11.b
-		add_political_power = -20
-		398 = {
-			transfer_state_to = BLR
-		}
-		402 = {
-			transfer_state_to = BLR
-		}
-		399 = {
-			transfer_state_to = BLR
-		}
-		400 = {
-			transfer_state_to = BLR
-		}
-		401 = {
-			transfer_state_to = BLR
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 104
-				}
-			}
-			104 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 86
-				}
-			}
-			86 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 73
-				}
-			}
-			73 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 68
-				}
-			}
-			68 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 95
-				}
-			}
-			95 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 67
-				}
-			}
-			67 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 65
-				}
-			}
-			65 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 87
-				}
-			}
-			87 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 83
-				}
-			}
-			83 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 59
-				}
-			}
-			59 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 69
-				}
-			}
-			69 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 80
-				}
-			}
-			80 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 60
-				}
-			}
-			60 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 56
-				}
-			}
-			56 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 57
-				}
-			}
-			57 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 66
-				}
-			}
-			66 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 82
-				}
-			}
-			82 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 72
-				}
-			}
-			72 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		if = {
-			limit = {
-				RUS = {
-					controls_state = 89
-				}
-			}
-			89 = {
-				add_state_modifier = {
-					modifier = {
-						army_speed_factor = 0.5
-						army_defence_factor = -0.5
-						army_attack_factor = -0.5
-					}
-				}
-			}
-		}
-		diplomatic_relation = {
-			country = RBZ
-			relation = military_access
-			active = yes
-		}
+		custom_effect_tooltip = RUS_leave_kiev_ce_tt
+		add_political_power = -70
+		add_war_support = -0.05
 		news_event = {
 			id = news.10
-			days = 1
+			hours = 4
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					RUS = {
+					    has_idea = society_very_high
+					}
+				}
+				add_ideas = society_high
+			}
+			if = {
+				limit = {
+					RUS = {
+					    has_idea = society_high
+					}
+				}
+				add_ideas = society_medium
+			}
+			if = {
+				limit = {
+					RUS = {
+					    has_idea = society_medium
+					}
+				}
+				add_ideas = society_low
+			}
+			else = {
+				add_ideas = society_very_low
+			}
+			country_event = {
+				id = super.9
+				hours = 6
+			}
 		}
 	}
 }
@@ -996,26 +504,6 @@ country_event = {
 }
 
 country_event = {
-	id = rus.16
-	title = rus.16.t
-	desc = rus.16.desc
-	picture = GFX_country_event_008
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.16.a
-		swap_ideas = {
-			remove_idea = strength_of_opposition_3
-			add_idea = strength_of_opposition_2
-		}
-		news_event = {
-			id = news.13
-			days = 1
-		}
-	}
-}
-
-country_event = {
 	id = rus.17
 	title = rus.17.t
 	desc = rus.17.desc
@@ -1074,28 +562,6 @@ country_event = {
 		add_ideas = RUS_COM
 	}
 }
-
-country_event = {
-	id = rus.19
-	title = rus.19.t
-	desc = rus.19.desc
-	fire_only_once = yes
-	trigger = {
-		UKR = {
-			surrender_progress > 0.9
-		}
-	}
-	option = {
-		name = rus.19.a
-		RUS = {
-			annex_country = {
-				target = UKR
-				transfer_troops = no
-			}
-		}
-	}
-}
-
 country_event = {
 	id = rus.20
 	title = rus.20.t
@@ -1523,1680 +989,6 @@ country_event = {
 }
 
 country_event = {
-	id = rus.37
-	title = rus.37.t
-	desc = rus.37.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.37.a
-		add_political_power = 60
-		random_list = {
-			3 = {
-				country_event = rus.39
-			}
-			1 = {
-				country_event = rus.40
-			}
-		}
-	}
-	option = {
-		name = rus.37.b
-		add_stability = -0.03
-		add_political_power = -60
-		country_event = rus.38
-	}
-	option = {
-		name = rus.37.c
-		news_event = {
-			id = news.86
-			hours = 3
-		}
-		HER = {
-			add_state_core = 253
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 253
-					}
-				}
-				set_state_controller = 253
-			}
-			
-			add_state_core = 264
-			set_state_owner	= 264
-			set_state_controller = 264
-			
-			add_state_core = 240
-			set_state_owner	= 240
-			set_state_controller = 240
-			
-			add_state_core = 266
-			set_state_owner	= 266
-			set_state_controller = 266
-			
-			add_state_core = 251
-			set_state_owner	= 251
-			set_state_controller = 251
-			
-			add_state_core = 231
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 231
-					}
-				}
-				set_state_controller = 231
-			}
-			
-			add_state_core = 262
-			set_state_owner	= 262
-			set_state_controller = 262
-			
-			add_state_core = 289
-			set_state_owner	= 289
-			set_state_controller = 289
-			
-			add_state_core = 291
-			set_state_owner	= 291
-			set_state_controller = 291
-			
-			add_state_core = 276
-			set_state_owner	= 276
-			set_state_controller = 276
-			
-			add_state_core = 287
-			set_state_owner	= 287
-			set_state_controller = 287
-			load_oob = HER_opolch
-		}
-		HER = {
-			add_ideas = {
-				extensive_conscription
-				low_economic_mobilisation
-				unrecognised_state
-				people_s_respublic
-			}
-
-			add_opinion_modifier = {
-				target = UKR
-				modifier = hostile_status
-			}
-
-			add_opinion_modifier = {
-				target = RUS
-				modifier = mother_russia
-			}
-		}
-		set_autonomy = {
-			target = HER
-			autonomous_state = autonomy_integrated_puppet
-		}
-		HER = {
-			set_popularities = {
-					democratic = 10
-					communism = 0
-					fascism = 80
-					neutrality = 10
-				}
-				
-				set_politics = {
-					ruling_party = fascism
-					last_election = "2018.11.8"
-					election_frequency = 48
-					elections_allowed = No
-				}
-		}
-	}
-}
-
-country_event = {
-	id = rus.38
-	title = rus.38.t
-	desc = rus.38.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.38.a
-		253 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		264 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		240 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		266 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		251 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		231 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		262 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		289 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		291 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		276 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		287 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.85
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.39
-	title = rus.39.t
-	desc = rus.39.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.39.a
-		253 = {
-			add_core_of = RUS
-		}
-		264 = {
-			add_core_of = RUS
-		}
-		240 = {
-			add_core_of = RUS
-		}
-		266 = {
-			add_core_of = RUS
-		}
-		251 = {
-			add_core_of = RUS
-		}
-		231 = {
-			add_core_of = RUS
-		}
-		262 = {
-			add_core_of = RUS
-		}
-		289 = {
-			add_core_of = RUS
-		}
-		291 = {
-			add_core_of = RUS
-		}
-		276 = {
-			add_core_of = RUS
-		}
-		287 = {
-			add_core_of = RUS
-		}
-		news_event = {
-			id = news.87
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.40
-	title = rus.40.t
-	desc = rus.40.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.40.a
-		news_event = {
-			id = news.88
-			hours = 3
-		}
-	}
-	option = {
-		name = rus.40.b
-		add_stability = -0.03
-		add_political_power = -60
-		253 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		264 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		240 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		266 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		251 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		231 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		262 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		289 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		291 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		276 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		287 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.85
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.41
-	title = rus.41.t
-	desc = rus.41.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.41.a
-		add_political_power = 60
-		random_list = {
-			3 = {
-				country_event = rus.43
-			}
-			1 = {
-				country_event = rus.44
-			}
-		}
-	}
-	option = {
-		name = rus.41.b
-		add_stability = -0.03
-		add_political_power = -60
-		country_event = rus.42
-	}
-	option = {
-		name = rus.41.c
-		news_event = {
-			id = news.90
-			hours = 3
-		}
-		ZPR = {
-			add_state_core = 210
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 210
-					}
-				}
-				set_state_controller = 210
-			}
-			
-			add_state_core = 222
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 222
-					}
-				}
-				set_state_controller = 222
-			}
-			
-			add_state_core = 208
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 208
-					}
-				}
-				set_state_controller = 208
-			}
-			
-			add_state_core = 223
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 223
-					}
-				}
-				set_state_controller = 223
-			}
-			
-			add_state_core = 226
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 226
-					}
-				}
-				set_state_controller = 226
-			}
-			
-			add_state_core = 246
-			set_state_owner	= 246
-			set_state_controller = 246
-			
-			add_state_core = 242
-			set_state_owner	= 242
-			set_state_controller = 242
-			
-			load_oob = ZPR_opolch
-		}
-		ZPR = {
-			add_ideas = {
-				extensive_conscription
-				low_economic_mobilisation
-				unrecognised_state
-				people_s_respublic
-			}
-
-			add_opinion_modifier = {
-				target = UKR
-				modifier = hostile_status
-			}
-
-			add_opinion_modifier = {
-				target = RUS
-				modifier = mother_russia
-			}
-		}
-		set_autonomy = {
-			target = ZPR
-			autonomous_state = autonomy_integrated_puppet
-		}
-		ZPR = {
-			set_popularities = {
-					democratic = 10
-					communism = 0
-					fascism = 80
-					neutrality = 10
-				}
-				
-				set_politics = {
-					ruling_party = fascism
-					last_election = "2018.11.8"
-					election_frequency = 48
-					elections_allowed = No
-				}
-		}
-	}
-}
-
-country_event = {
-	id = rus.42
-	title = rus.42.t
-	desc = rus.42.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.42.a
-		210 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		222 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		208 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		223 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		226 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		246 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		242 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.89
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.43
-	title = rus.43.t
-	desc = rus.43.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.43.a
-		210 = {
-			add_core_of = RUS
-		}
-		222 = {
-			add_core_of = RUS
-		}
-		208 = {
-			add_core_of = RUS
-		}
-		223 = {
-			add_core_of = RUS
-		}
-		226 = {
-			add_core_of = RUS
-		}
-		246 = {
-			add_core_of = RUS
-		}
-		242 = {
-			add_core_of = RUS
-		}
-		news_event = {
-			id = news.91
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.44
-	title = rus.44.t
-	desc = rus.44.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.44.a
-		news_event = {
-			id = news.92
-			hours = 3
-		}
-	}
-	option = {
-		name = rus.44.b
-		add_stability = -0.03
-		add_political_power = -60
-		210 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		222 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		208 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		223 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		226 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		246 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		242 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.89
-			hours = 3
-		}
-	}
-}
-
-
-country_event = {
-	id = rus.45
-	title = rus.45.t
-	desc = rus.45.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.45.a
-		add_political_power = 60
-		random_list = {
-			3 = {
-				country_event = rus.47
-			}
-			1 = {
-				country_event = rus.48
-			}
-		}
-	}
-	option = {
-		name = rus.45.b
-		add_stability = -0.03
-		add_political_power = -60
-		country_event = rus.46
-	}
-	option = {
-		name = rus.45.c
-		news_event = {
-			id = news.93
-			hours = 3
-		}
-		HRV = {
-			add_state_core = 101
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 101
-					}
-				}
-				set_state_controller = 101
-			}
-			
-			add_state_core = 130
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 130
-					}
-				}
-				set_state_controller = 130
-			}
-			
-			add_state_core = 103
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 103
-					}
-				}
-				set_state_controller = 103
-			}
-			
-			add_state_core = 138
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 138
-					}
-				}
-				set_state_controller = 138
-			}
-			
-			add_state_core = 100
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 100
-					}
-				}
-				set_state_controller = 100
-			}
-			
-			add_state_core = 107
-			set_state_owner	= 107
-			set_state_controller = 107
-			
-			add_state_core = 139
-			set_state_owner	= 139
-			set_state_controller = 139
-			
-			add_state_core = 133
-			set_state_owner	= 133
-			set_state_controller = 133
-		}
-		HRV = {
-			add_ideas = {
-				extensive_conscription
-				low_economic_mobilisation
-				unrecognised_state
-				people_s_respublic
-			}
-
-			add_opinion_modifier = {
-				target = UKR
-				modifier = hostile_status
-			}
-
-			add_opinion_modifier = {
-				target = RUS
-				modifier = mother_russia
-			}
-			load_oob = HRV_opolch
-		}
-		set_autonomy = {
-			target = HRV
-			autonomous_state = autonomy_integrated_puppet
-			load_oob = HRV_opolch
-		}
-		HRV = {
-			set_popularities = {
-					democratic = 10
-					communism = 0
-					fascism = 80
-					neutrality = 10
-				}
-				
-				set_politics = {
-					ruling_party = fascism
-					last_election = "2018.11.8"
-					election_frequency = 48
-					elections_allowed = No
-				}
-		}
-	}
-}
-
-country_event = {
-	id = rus.46
-	title = rus.46.t
-	desc = rus.46.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.46.a
-		101 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		130 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		103 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		138 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		100 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		107 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		139 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		133 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.94
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.47
-	title = rus.47.t
-	desc = rus.47.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.47.a
-		101 = {
-			add_core_of = RUS
-		}
-		130 = {
-			add_core_of = RUS
-		}
-		103 = {
-			add_core_of = RUS
-		}
-		138 = {
-			add_core_of = RUS
-		}
-		100 = {
-			add_core_of = RUS
-		}
-		107 = {
-			add_core_of = RUS
-		}
-		139 = {
-			add_core_of = RUS
-		}
-		133 = {
-			add_core_of = RUS
-		}
-		news_event = {
-			id = news.95
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.48
-	title = rus.48.t
-	desc = rus.48.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.48.a
-		news_event = {
-			id = news.96
-			hours = 3
-		}
-	}
-	option = {
-		name = rus.48.b
-		add_stability = -0.03
-		add_political_power = -60
-		210 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		222 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		208 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		223 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		226 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		246 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		242 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.94
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.49
-	title = rus.49.t
-	desc = rus.49.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.49.a
-		add_political_power = 60
-		random_list = {
-			3 = {
-				country_event = rus.51
-			}
-			1 = {
-				country_event = rus.52
-			}
-		}
-	}
-	option = {
-		name = rus.49.b
-		add_stability = -0.03
-		add_political_power = -60
-		country_event = rus.50
-	}
-	option = {
-		name = rus.49.c
-		news_event = {
-			id = news.98
-			hours = 3
-		}
-		NKO = {
-			add_state_core = 209
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 209
-					}
-				}
-				set_state_controller = 209
-			}
-			
-			add_state_core = 202
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 202
-					}
-				}
-				set_state_controller = 202
-			}
-			
-			add_state_core = 233
-			set_state_owner	= 233
-			set_state_controller = 233
-			
-			add_state_core = 215
-			set_state_owner	= 215
-			set_state_controller = 215
-			
-			add_state_core = 269
-			set_state_owner	= 269
-			set_state_controller = 269
-		}
-		NKO = {
-			add_ideas = {
-				extensive_conscription
-				low_economic_mobilisation
-				unrecognised_state
-				people_s_respublic
-			}
-
-			add_opinion_modifier = {
-				target = UKR
-				modifier = hostile_status
-			}
-
-			add_opinion_modifier = {
-				target = RUS
-				modifier = mother_russia
-			}
-			load_oob = NKO_opolch
-		}
-		set_autonomy = {
-			target = NKO
-			autonomous_state = autonomy_integrated_puppet
-		}
-		NKO = {
-			set_popularities = {
-					democratic = 10
-					communism = 0
-					fascism = 80
-					neutrality = 10
-				}
-				
-				set_politics = {
-					ruling_party = fascism
-					last_election = "2018.11.8"
-					election_frequency = 48
-					elections_allowed = No
-				}
-		}
-	}
-}
-
-country_event = {
-	id = rus.50
-	title = rus.50.t
-	desc = rus.50.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.50.a
-		269 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		233 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		215 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		209 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		202 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.97
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.51
-	title = rus.51.t
-	desc = rus.51.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.51.a
-		269 = {
-			add_core_of = RUS
-		}
-		233 = {
-			add_core_of = RUS
-		}
-		215 = {
-			add_core_of = RUS
-		}
-		209 = {
-			add_core_of = RUS
-		}
-		202 = {
-			add_core_of = RUS
-		}
-		news_event = {
-			id = news.99
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.52
-	title = rus.52.t
-	desc = rus.52.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.52.a
-		news_event = {
-			id = news.100
-			hours = 3
-		}
-	}
-	option = {
-		name = rus.52.b
-		add_stability = -0.03
-		add_political_power = -60
-		269 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		233 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		215 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		209 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		202 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.97
-			hours = 3
-		}
-	}
-}
-
-
-country_event = {
-	id = rus.53
-	title = rus.53.t
-	desc = rus.53.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.53.a
-		add_political_power = 60
-		random_list = {
-			3 = {
-				country_event = rus.55
-			}
-			1 = {
-				country_event = rus.56
-			}
-		}
-	}
-	option = {
-		name = rus.53.b
-		add_stability = -0.03
-		add_political_power = -60
-		country_event = rus.54
-	}
-	option = {
-		name = rus.53.c
-		news_event = {
-			id = news.102
-			hours = 3
-		}
-		OSS = {
-			add_state_core = 235
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 235
-					}
-				}
-				set_state_controller = 235
-			}
-			
-			add_state_core = 203
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 203
-					}
-				}
-				set_state_controller = 203
-			}
-			
-			add_state_core = 403
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 403
-					}
-				}
-				set_state_controller = 403
-			}
-			
-			add_state_core = 227
-			set_state_owner	= 227
-			set_state_controller = 227
-			
-			add_state_core = 256
-			set_state_owner	= 256
-			set_state_controller = 256
-			
-			add_state_core = 268
-			set_state_owner	= 268
-			set_state_controller = 268
-			
-			add_state_core = 296
-			set_state_owner	= 296
-			set_state_controller = 296
-			
-			add_state_core = 271
-			set_state_owner	= 271
-			set_state_controller = 271
-			
-			add_state_core = 310
-			set_state_owner	= 310
-			set_state_controller = 310
-		}
-		OSS = {
-			add_ideas = {
-				extensive_conscription
-				low_economic_mobilisation
-				unrecognised_state
-				people_s_respublic
-			}
-
-			add_opinion_modifier = {
-				target = UKR
-				modifier = hostile_status
-			}
-
-			add_opinion_modifier = {
-				target = RUS
-				modifier = mother_russia
-			}
-			load_oob = OSS_opolch
-		}
-		set_autonomy = {
-			target = OSS
-			autonomous_state = autonomy_integrated_puppet
-		}
-		OSS = {
-			set_popularities = {
-					democratic = 10
-					communism = 0
-					fascism = 80
-					neutrality = 10
-				}
-				
-				set_politics = {
-					ruling_party = fascism
-					last_election = "2018.11.8"
-					election_frequency = 48
-					elections_allowed = No
-				}
-		}
-	}
-}
-
-country_event = {
-	id = rus.54
-	title = rus.54.t
-	desc = rus.54.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.54.a
-		235 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		203 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		403 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		227 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		256 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		268 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		296 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		271 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		310 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.101
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.55
-	title = rus.55.t
-	desc = rus.55.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.55.a
-		235 = {
-			add_core_of = RUS
-		}
-		203 = {
-			add_core_of = RUS
-		}
-		403 = {
-			add_core_of = RUS
-		}
-		227 = {
-			add_core_of = RUS
-		}
-		256 = {
-			add_core_of = RUS
-		}
-		268 = {
-			add_core_of = RUS
-		}
-		296 = {
-			add_core_of = RUS
-		}
-		271 = {
-			add_core_of = RUS
-		}
-		310 = {
-			add_core_of = RUS
-		}
-		news_event = {
-			id = news.103
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.56
-	title = rus.56.t
-	desc = rus.56.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.56.a
-		news_event = {
-			id = news.104
-			hours = 3
-		}
-	}
-	option = {
-		name = rus.56.b
-		add_stability = -0.03
-		add_political_power = -60
-		235 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		203 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		403 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		227 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		256 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		268 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		296 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		271 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		310 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.101
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.57
-	title = rus.57.t
-	desc = rus.57.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	picture = GFX_country_event_027
-	option = {
-		name = rus.57.a
-		add_war_support = 0.02
-		activate_mission = increase_the_number_of_troops_on_the_border_KAZ
-		hidden_effect = {
-			add_timed_idea = {
-				idea = strategic_redeployment
-				days = 24
-			}
-			news_event = {
-				id = news.106
-				days = 2
-			}
-		}
-		ai_chance = {
-			base = 60
-			modifier = {
-				add = 100
-				is_historical_focus_on = yes
-			}
-		}
-	}
-	option = {
-		name = rus.57.b
-		add_stability = -0.02
-		KAZ = {
-		    add_opinion_modifier = {
-                target = RUS
-                modifier = refused_help_us
-            }
-		}  
-		hidden_effect = {
-		    KAZ = {
-		        country_event = {
-				    id = kaz.2
-				    days = 8
-			    }
-		    }  
-		}
-		ai_chance = {
-			base = 20
-			modifier = {
-				add = -20
-				is_historical_focus_on = yes
-			}
-		}
-	}
-}
-
-country_event = {
-	id = rus.58
-	title = rus.58.t
-	desc = rus.58.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.58.a
-		add_political_power = 60
-		random_list = {
-			3 = {
-				country_event = rus.60
-			}
-			1 = {
-				country_event = rus.61
-			}
-		}
-	}
-	option = {
-		name = rus.58.b
-		add_stability = -0.03
-		add_political_power = -60
-		country_event = rus.59
-	}
-	option = {
-		name = rus.58.c
-		news_event = {
-			id = news.111
-			hours = 3
-		}
-		DNP = {
-			add_state_core = 156
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 156
-					}
-				}
-				set_state_controller = 156
-			}
-			
-			add_state_core = 151
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 151
-					}
-				}
-				set_state_controller = 151
-			}
-			
-			add_state_core = 162
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 162
-					}
-				}
-				set_state_controller = 162
-			}
-			
-			add_state_core = 169
-			if = {
-				limit = {
-					RUS = {
-						has_full_control_of_state = 169
-					}
-				}
-				set_state_controller = 169
-			}
-			
-			add_state_core = 186
-			set_state_owner	= 186
-			set_state_controller = 186
-			
-			add_state_core = 187
-			set_state_owner	= 187
-			set_state_controller = 187
-			
-			add_state_core = 197
-			set_state_owner	= 197
-			set_state_controller = 197
-			
-			add_state_core = 216
-			set_state_owner	= 216
-			set_state_controller = 216
-			
-			add_state_core = 180
-			set_state_owner	= 180
-			set_state_controller = 180
-		}
-		DNP = {
-			add_ideas = {
-				extensive_conscription
-				low_economic_mobilisation
-				unrecognised_state
-				people_s_respublic
-			}
-
-			add_opinion_modifier = {
-				target = UKR
-				modifier = hostile_status
-			}
-
-			add_opinion_modifier = {
-				target = RUS
-				modifier = mother_russia
-			}
-			
-			load_oob = DNP_opolch
-		}
-		set_autonomy = {
-			target = DNP
-			autonomous_state = autonomy_integrated_puppet
-		}
-		DNP = {
-			set_popularities = {
-					democratic = 10
-					communism = 0
-					fascism = 80
-					neutrality = 10
-				}
-				
-				set_politics = {
-					ruling_party = fascism
-					last_election = "2018.11.8"
-					election_frequency = 48
-					elections_allowed = No
-				}
-		}
-	}
-}
-
-country_event = {
-	id = rus.59
-	title = rus.59.t
-	desc = rus.59.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.59.a
-		156 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		151 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		162 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		169 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		186 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		187 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		197 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		216 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		180 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.110
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.60
-	title = rus.60.t
-	desc = rus.60.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.60.a
-		156 = {
-			add_core_of = RUS
-		}
-		151 = {
-			add_core_of = RUS
-		}
-		162 = {
-			add_core_of = RUS
-		}
-		169 = {
-			add_core_of = RUS
-		}
-		186 = {
-			add_core_of = RUS
-		}
-		187 = {
-			add_core_of = RUS
-		}
-		197 = {
-			add_core_of = RUS
-		}
-		216 = {
-			add_core_of = RUS
-		}
-		180 = {
-			add_core_of = RUS
-		}
-		news_event = {
-			id = news.112
-			hours = 3
-		}
-	}
-}
-
-country_event = {
-	id = rus.61
-	title = rus.61.t
-	desc = rus.61.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.61.a
-		news_event = {
-			id = news.113
-			hours = 3
-		}
-	}
-	option = {
-		name = rus.61.b
-		add_stability = -0.03
-		add_political_power = -60
-		156 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		151 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		162 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		169 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		186 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		187 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		197 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		216 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		180 = {
-			add_compliance = 5
-			add_claim_by = RUS
-		}
-		news_event = {
-			id = news.110
-			hours = 3
-		}
-	}
-}
-
-country_event = {
 	id = rus.62
 	title = rus.62.t
 	desc = rus.62.d
@@ -3276,12 +1068,44 @@ country_event = {
 	id = rus.67
 	title = rus.67.t
 	desc = rus.67.d
+	picture = GFX_country_event_038
 	fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = rus.67.a
 		add_ideas = RUS_SMO_conscripts_front
-		set_country_flag = RUS_SMO_conscripts_front_flag
+		hidden_effect = {
+			set_country_flag = RUS_SMO_conscripts_front_flag
+			country_event = { 
+			    id = rus_hidden.5
+				days = 16
+			}
+		}
+	}
+}
+
+country_event = {
+	id = rus_hidden.5
+	title = rus_hidden.5.t
+	desc = rus_hidden.5.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	option = {
+		name = rus_hidden.5.a
+		if = {
+		    limit = {
+			    NOT = { 
+				    RUS = { 
+					    has_country_flag = RUS_return_conscripts_cf 
+					} 
+				} 
+			} 
+			country_event = { 
+			    id = re_event_r.9 
+				days = 0
+			} 
+	    }
 	}
 }
 
@@ -3870,17 +1694,20 @@ country_event = {
 	id = rus.96
 	title = rus.96.t
 	desc = rus.96.desc
+	picture = GFX_country_event_039
 	fire_only_once = yes
 	trigger = {
 		tag = RUS
-		date > 20.07.2023
-		has_global_flag = strelkov_rus_hire
+		date < 20.07.2023
+		NOT = {
+			has_global_flag = girkin_come_back
+		}
 	}
 	option	= {
 		name = rus.96.a
-		add_war_support = -0.1
-		add_stability = -0.1
-		retire_character = strelkov_xyle
+		add_war_support = -0.03
+		add_stability = -0.05
+		add_political_power = 70
     }
 }
 
@@ -3937,41 +1764,6 @@ country_event = {
 			popularity = -0.02
 		}
 	}
-	option = {
-		name = rus.100.b
-		trigger = {
-			NOT = {
-			    has_country_flag = RUS_prigozhin_shut_up
-			}
-		}
-		add_political_power = -150
-		add_war_support = -0.05
-		add_stability = -0.03
-		add_popularity = {
-			ideology = neutrality
-			popularity = -0.02
-		}
-		set_country_flag = RUS_prigozhin_shut_up
-		custom_effect_tooltip = in_development
-	}
-	option = {
-		name = rus.100.c
-		trigger = {
-		    has_country_flag = RUS_prigozhin_shut_up
-			NOT = {
-			    has_country_flag = RUS_prigozhin_arrest
-			}
-		}
-		add_political_power = -150
-		add_war_support = -0.05
-		add_stability = -0.03
-		add_popularity = {
-			ideology = neutrality
-			popularity = -0.02
-		}
-		set_country_flag = RUS_prigozhin_arrest
-		custom_effect_tooltip = in_development
-	}
 }
 
 #Россия: Борьба с военными бюрократами
@@ -3987,33 +1779,6 @@ country_event = {
 		add_command_power = -30
 		army_experience = -5
 		add_stability = -0.05
-	}
-	option = {
-		name = rus.101.b
-		trigger = {
-			NOT = {
-			    has_country_flag = RUS_prigozhin_shut_up
-			}
-		}
-		add_command_power = -30
-		army_experience = -5
-		add_stability = -0.05
-		set_country_flag = RUS_prigozhin_shut_up
-		custom_effect_tooltip = in_development
-	}
-	option = {
-		name = rus.101.c
-		trigger = {
-		    has_country_flag = RUS_prigozhin_shut_up
-			NOT = {
-			    has_country_flag = RUS_prigozhin_arrest
-			}
-		}
-		add_command_power = -30
-		army_experience = -5
-		add_stability = -0.05
-		set_country_flag = RUS_prigozhin_arrest
-		custom_effect_tooltip = in_development
 	}
 }
 
@@ -4032,35 +1797,6 @@ country_event = {
 		add_war_support = -0.1
 		add_political_power = -100
 	}
-	option = {
-		name = rus.102.b
-		trigger = {
-			NOT = {
-			    has_country_flag = RUS_prigozhin_shut_up
-			}
-		}
-		add_command_power = -50
-		army_experience = -15
-		add_war_support = -0.1
-		add_political_power = -100
-		set_country_flag = RUS_prigozhin_shut_up
-		custom_effect_tooltip = in_development
-	}
-	option = {
-		name = rus.102.c
-		trigger = {
-		    has_country_flag = RUS_prigozhin_shut_up
-			NOT = {
-			    has_country_flag = RUS_prigozhin_arrest
-			}
-		}
-		add_command_power = -50
-		army_experience = -15
-		add_war_support = -0.1
-		add_political_power = -100
-		set_country_flag = RUS_prigozhin_arrest
-		custom_effect_tooltip = in_development
-	}
 }
 
 country_event = {
@@ -4073,7 +1809,1637 @@ country_event = {
 	option = {
 		name = rus.103.a
 		add_political_power = 60
-		add_stability = -0.15
+		add_stability = -0.05
 		add_war_support = -0.1
+	}
+}
+
+country_event = {
+	id = rus.104
+	title = rus.104.t
+	desc = rus.104.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.104.a
+		effect_tooltip = {
+			annex_country = {
+				target = PDR
+				transfer_troops = yes
+			}
+			256 = {
+				add_core_of = RUS
+			}
+			407 = {
+				add_core_of = RUS
+			}
+			408 = {
+				add_core_of = RUS
+			}
+			409 = {
+				add_core_of = RUS
+			}
+			410 = {
+				add_core_of = RUS
+			}
+			206 = {
+				add_core_of = RUS
+			}
+		}
+	}
+}
+
+country_event = {
+	id = rus.105
+	title = rus.105.t
+	desc = rus.105.d
+	picture = GFX_country_event_036
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.105.a
+		add_political_power = -100
+		add_stability = -0.15
+		add_war_support = -0.2
+		add_popularity = {
+			ideology = neutrality
+			popularity = -0.1
+		}
+	}
+}
+
+country_event = {
+	id = rus.106
+	title = rus.106.t
+	desc = rus.106.d
+	picture = GFX_country_event_041
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.106.a
+	}
+}
+
+country_event = {
+	id = rus.107
+	title = rus.107.t
+	desc = rus.107.d
+	picture = GFX_country_event_046
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.107.a
+		add_political_power = 30
+		add_war_support = 0.03
+		UKR = {
+			add_stability = -0.05
+		}
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 1
+			tooltip = IW_1_var_add_tt
+		}
+	}
+}
+
+country_event = {
+	id = rus.108
+	title = rus.108.t
+	desc = rus.108.d
+	picture = GFX_country_event_049
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.108.a
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			load_oob = RUS_vasilkov_desant
+			UKR = {
+				country_event = {
+					id = ukr.51
+					hours = 1
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+	id = rus.109
+	title = rus.109.t
+	desc = rus.109.d
+	picture = GFX_country_event_051
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.109.a
+		custom_effect_tooltip = in_development
+	}
+}
+
+country_event = {
+	id = rus.110
+	title = rus.110.t
+	desc = rus.110.d
+	picture = GFX_country_event_051
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.110.a
+		custom_effect_tooltip = in_development
+	}
+}
+
+country_event = {
+	id = rus.111
+	title = rus.111.t
+	desc = rus.111.d
+	picture = GFX_country_event_052
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.111.a
+		add_political_power = 100
+		add_stability = 0.1
+		add_war_support = 0.05
+		if = {
+		    limit = {
+			    has_government = fascism
+			}
+			add_popularity = {
+            	ideology = fascism
+            	popularity = 0.05
+        	}
+		}
+		if = {
+		    limit = {
+			    has_government = neutrality
+			}
+			add_popularity = {
+            	ideology = neutrality
+            	popularity = 0.05
+        	}
+		}
+		custom_effect_tooltip = RUS_referendum_event_tt
+		news_event = {
+			id = news.86
+			hours = 4
+		}
+		hidden_effect = {
+		    if = {
+				limit = {
+					DNR = {
+					    is_ai = yes
+       				}
+					LNR = {
+					    is_ai = yes
+       				}
+				}
+				annex_country = {
+					target = DNR
+					transfer_troops = yes
+				}
+				DNR = {
+					every_unit_leader = {
+						set_nationality = RUS
+					}
+				}
+				annex_country = {
+					target = LNR
+					transfer_troops = yes
+				}
+				LNR = {
+					every_unit_leader = {
+						set_nationality = RUS
+					}
+				}
+			}
+			if = {
+				limit = {
+				    NOT = {
+					    DNR = {
+					        is_ai = yes
+       				    }
+					    LNR = {
+					        is_ai = yes
+       				    }
+					}
+				}
+				set_autonomy = {
+					target = DNR
+					autonomous_state = autonomy_federal_subject
+					end_wars = no
+					end_civil_wars = no
+				}
+				set_autonomy = {
+					target = LNR
+					autonomous_state = autonomy_federal_subject
+					end_wars = no
+					end_civil_wars = no
+				}
+			}
+			RUS = {
+				add_state_core = 221
+				add_state_core = 205
+				add_state_core = 189
+				add_state_core = 194
+				add_state_core = 183
+				add_state_core = 173
+				add_state_core = 172
+				add_state_core = 293
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 237
+					}
+				}
+				237 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 213
+					}
+				}
+				213 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 182
+					}
+				}
+				182 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 149
+					}
+				}
+				149 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 165
+					}
+				}
+				165 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 176
+					}
+				}
+				176 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 145
+					}
+				}
+				145 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 154
+					}
+				}
+				154 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 116
+					}
+				}
+				116 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 125
+					}
+				}
+				125 = {
+					add_compliance = 35
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 264
+					}
+				}
+				264 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 262
+					}
+				}
+				262 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 251
+					}
+				}
+				251 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 253
+					}
+				}
+				253 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 226
+					}
+				}
+				226 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 246
+					}
+				}
+				246 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 242
+					}
+				}
+				242 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 223
+					}
+				}
+				223 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 208
+					}
+				}
+				208 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 30
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
+					add_compliance = 30
+				}
+			}
+		}
+	}
+}
+
+country_event = {
+	id = rus.112
+	title = rus.112.t
+	desc = rus.112.d
+	picture = GFX_country_event_052
+	fire_only_once = no
+	is_triggered_only = yes
+	option = {
+		name = rus.112.a
+		add_political_power = -150
+		add_stability = -0.05
+		custom_effect_tooltip = RUS_referendum_fall_event_tt
+		news_event = {
+			id = news.86
+			hours = 4
+		}
+		hidden_effect = {
+		    if = {
+				limit = {
+					DNR = {
+					    is_ai = yes
+       				}
+					LNR = {
+					    is_ai = yes
+       				}
+				}
+				annex_country = {
+					target = DNR
+					transfer_troops = yes
+				}
+				DNR = {
+					every_unit_leader = {
+						set_nationality = RUS
+					}
+				}
+				annex_country = {
+					target = LNR
+					transfer_troops = yes
+				}
+				LNR = {
+					every_unit_leader = {
+						set_nationality = RUS
+					}
+				}
+			}
+			if = {
+				limit = {
+				    NOT = {
+					    DNR = {
+					        is_ai = yes
+       				    }
+					    LNR = {
+					        is_ai = yes
+       				    }
+					}
+				}
+				set_autonomy = {
+					target = DNR
+					autonomous_state = autonomy_federal_subject
+					end_wars = no
+					end_civil_wars = no
+				}
+				set_autonomy = {
+					target = LNR
+					autonomous_state = autonomy_federal_subject
+					end_wars = no
+					end_civil_wars = no
+				}
+			}
+			RUS = {
+				add_state_core = 221
+				add_state_core = 205
+				add_state_core = 189
+				add_state_core = 194
+				add_state_core = 183
+				add_state_core = 173
+				add_state_core = 172
+				add_state_core = 293
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 237
+					}
+				}
+				237 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 213
+					}
+				}
+				213 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 182
+					}
+				}
+				182 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 149
+					}
+				}
+				149 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 165
+					}
+				}
+				165 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 176
+					}
+				}
+				176 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 145
+					}
+				}
+				145 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 154
+					}
+				}
+				154 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 116
+					}
+				}
+				116 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 125
+					}
+				}
+				125 = {
+					add_compliance = 10
+					add_resistance = 2
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 264
+					}
+				}
+				264 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 262
+					}
+				}
+				262 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 251
+					}
+				}
+				251 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 253
+					}
+				}
+				253 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 226
+					}
+				}
+				226 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 246
+					}
+				}
+				246 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 242
+					}
+				}
+				242 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 223
+					}
+				}
+				223 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 208
+					}
+				}
+				208 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
+					add_compliance = 5
+					add_resistance = 5
+				}
+			}
+		}
+	}
+}
+country_event = {
+	id = rus.113
+	title = rus.113.t
+	desc = rus.113.d
+	picture = GFX_country_event_057
+	fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+		    UKR = {
+		        country_event = {
+				    id = ukr.53
+				    days = 0
+			    }
+			}
+			news_event = {
+				id = news.152
+				hours = 5
+			}
+		}
+	}
+	option = {
+		name = rus.113.a
+		add_political_power = -50
+		add_war_support = -0.07
+		add_stability = -0.05
+		navy_experience = -25
+	}
+}
+#Херсон протесты
+country_event = {
+	id = rus.114
+	title = rus.114.t
+	desc = rus.114.d
+	picture = GFX_country_event_059
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.114.a
+		add_political_power = -60
+		253 = {
+			add_resistance = 30
+		}
+		if = {
+			limit = {
+				RUS = {
+					controls_state = 264
+				}
+			}
+			264 = {
+				add_resistance = 30
+			}
+		}
+		if = {
+			limit = {
+				RUS = {
+					controls_state = 262
+				}
+			}
+			262 = {
+				add_resistance = 30
+			}
+		}
+		if = {
+			limit = {
+				RUS = {
+					controls_state = 240
+				}
+			}
+			240 = {
+				add_resistance = 30
+			}
+		}
+		if = {
+			limit = {
+				RUS = {
+					controls_state = 251
+				}
+			}
+			251 = {
+				add_resistance = 30
+			}
+		}
+		if = {
+			limit = {
+				RUS = {
+					controls_state = 413
+				}
+			}
+			413 = {
+				add_resistance = 30
+			}
+		}
+		if = {
+			limit = {
+				RUS = {
+					controls_state = 231
+				}
+			}
+			231 = {
+				add_resistance = 30
+			}
+		}
+	}
+}
+#Бердянск протесты
+country_event = {
+	id = rus.115
+	title = rus.115.t
+	desc = rus.115.d
+	picture = GFX_country_event_060
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.115.a
+		add_political_power = -60
+		242 = {
+			add_resistance = 30
+		}
+	}
+}
+#Мелитополь протесты
+country_event = {
+	id = rus.116
+	title = rus.116.t
+	desc = rus.116.d
+	picture = GFX_country_event_061
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.116.a
+		add_political_power = -60
+		246 = {
+			add_resistance = 30
+		}
+	}
+}
+#Энергодар протесты
+country_event = {
+	id = rus.117
+	title = rus.117.t
+	desc = rus.117.d
+	picture = GFX_country_event_062
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.117.a
+		add_political_power = -60
+		226 = {
+			add_resistance = 30
+		}
 	}
 }

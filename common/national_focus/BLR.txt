@@ -1,0 +1,470 @@
+focus_tree = {
+	id = BLR_tree
+	country = {
+		factor = 0
+		modifier = {
+			add = 20
+			tag = BLR
+		}
+	}
+	continuous_focus_position = { x = 4190 y = 920 } 
+	initial_show_position = {focus = BLR_appeal_to_people}
+	default = no
+	#Start
+	focus = {
+		id = BLR_appeal_to_people
+		icon = GFX_BLR_appeal_to_people
+		available = {
+			always = yes
+		}
+		allow_branch = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+		}
+		offset = {
+			x = 20
+			y = 4
+			trigger = {
+				OR = {
+					RUS = { has_war_with = UKR }
+					has_country_flag = {
+						flag = BLR_load_full_focus_tree_flag
+						value = 1
+					}
+				}	
+			}
+		}
+		cost = 1	
+		completion_reward = {
+			custom_effect_tooltip = BLR_appeal_to_people_tt
+		}
+		x = 15
+		y = 0
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+
+	
+	}
+	focus = {
+		id = BLR_end_of_third_sector
+		icon = GFX_BLR_end_of_third_sector
+		relative_position_id = BLR_appeal_to_people
+		prerequisite = {
+			focus = BLR_appeal_to_people
+		}
+		mutually_exclusive = {
+			focus = BLR_leave_third_sector_away
+		}
+		cost = 1
+		completion_reward = {
+			custom_effect_tooltip = BLR_opposition_activity_less
+			subtract_from_variable = {
+				BLR_opposition_activity_var = 0.25
+			}
+			subtract_from_variable = {
+				global.BLR_West_influence = 0.25
+			}
+			update_BLR_opposition_activity_var_effects = yes
+		}
+		x = -1
+		y = 2
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_leave_third_sector_away
+		icon = GFX_BLR_leave_third_sector_away
+		relative_position_id = BLR_appeal_to_people
+		prerequisite = {
+			focus = BLR_appeal_to_people
+		}
+		mutually_exclusive = {
+			focus = BLR_end_of_third_sector
+		}
+		cost = 1
+		completion_reward = {
+			custom_effect_tooltip = BLR_leave_third_sector_away_tt
+			set_country_flag = BLR_third_sector_down_the_capital
+			add_to_variable = {
+				global.BLR_West_influence = 0.5
+			}
+		}
+		x = 1
+		y = 2
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_expand_KGB
+		icon = GFX_BLR_expand_KGB
+		relative_position_id = BLR_appeal_to_people
+		available = {
+			NOT = {
+				RUS = {
+					has_war_with = UKR
+				}
+				has_completed_focus = BLR_plan_the_third_republic_referendum
+			}
+		}
+		prerequisite = {
+			focus = BLR_appeal_to_people
+		}
+		cost = 1
+		completion_reward = {
+			custom_effect_tooltip = BLR_expand_KGB_focus_tt
+			set_country_flag = BLR_expand_KGB_flag
+		}
+		x = 0
+		y = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_plan_the_third_republic_referendum
+		icon = GFX_BLR_plan_the_third_republic_referendum
+		relative_position_id = BLR_appeal_to_people
+		prerequisite = {
+			focus = BLR_end_of_third_sector
+			focus = BLR_leave_third_sector_away
+		}
+		cost = 8.7
+		completion_reward = {
+			custom_effect_tooltip = BLR_plan_the_third_republic_referendum_tt
+		}
+		select_effect = {
+			add_timed_idea = {
+				idea = BLR_planning_the_third_referendum
+				days = 60
+			}
+			hidden_effect = {
+				country_event = {
+					id = blrref.0
+					days = 2
+				}
+			}
+		}
+		x = 0
+		y = 3
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	#Neutral
+	focus = {
+		id = BLR_negotiation_effort
+		icon = GFX_BLR_negotiation_effort
+		available = {
+			RUS = {
+				has_war_with = UKR
+			}
+		}
+		allow_branch = {
+			OR = {
+				RUS = { has_war_with = UKR }
+				has_country_flag = {
+					flag = BLR_load_full_focus_tree_flag
+					value = 1
+				}
+			}
+			NOT = {
+				BLR = { has_war = yes}
+			}
+		}
+		cost = 3
+		completion_reward = {
+			custom_effect_tooltip = BLR_negotiation_effort_tt
+		}
+		x = 15
+		y = 0
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	#UKR(NTO)
+
+	#RUS
+
+	#Economic
+	focus = {
+		id = BLR_sick_man_of_europe
+		icon = GFX_BLR_sick_man_of_europe
+		available = {
+			always = yes
+		}
+		allow_branch = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+			OR = {
+				has_dynamic_modifier = {
+					modifier = BLR_third_constitution
+				}
+				has_country_flag = {
+					flag = BLR_load_full_focus_tree_flag
+					value = 1
+				}
+			}
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_sick_man_of_europe_tt
+		}
+		x = 17
+		y = 14
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+
+	#Army
+
+	#WGN in BLR
+
+	#Counter-Intel
+	focus = {
+		id = BLR_expand_agency_department
+		icon = GFX_BLR_expand_agency_department
+		available = {
+			always = yes
+		}
+		allow_branch = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+			OR = {
+				has_country_flag = BLR_counter_intel_flag
+				has_country_flag = {
+					flag = BLR_load_full_focus_tree_flag
+					value = 1
+				}
+			}
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_expand_agency_department_tt
+		}
+		x = 35
+		y = 12
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	#Foreign-Intel
+	focus = {
+		id = BLR_recruit_foreign_agents
+		icon = GFX_BLR_recruit_foreign_agents
+		available = {
+			always = yes
+		}
+		allow_branch = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+			OR = {
+				has_country_flag = BLR_foreign_intel_flag
+				has_country_flag = {
+					flag = BLR_load_full_focus_tree_flag
+					value = 1
+				}
+			}
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_recruit_foreign_agents_tt
+		}
+		x = 40
+		y = 12
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	#Nuclear Programm
+	focus = {
+		id = BLR_develop_nuclear_programm
+		icon = GFX_BLR_develop_nuclear_programm
+		available = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+		}
+		allow_branch = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+			OR = {
+				has_country_flag = BLR_developing_nuclear_programm
+				has_country_flag = {
+					flag = BLR_load_full_focus_tree_flag
+					value = 1
+				}
+			}
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_develop_nuclear_programm_tt
+		}
+		x = 28
+		y = 8
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_peace_atom
+		icon = GFX_BLR_peace_atom
+		relative_position_id = BLR_develop_nuclear_programm
+		available = {
+			#--add tt pls
+			custom_trigger_tooltip = {
+				tooltip = BLR_peace_atom_trigger_tt
+				OR = {
+					has_country_flag = BLR_peace_atom_flag
+					has_country_flag = BLR_two_nuclear_programms_flag
+				}
+			} 
+		}
+		prerequisite = {
+			focus = BLR_develop_nuclear_programm
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_peace_atom_tt
+		}
+		x = 2
+		y = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_radioactive_ashes
+		icon = GFX_BLR_radioactive_ashes
+		relative_position_id = BLR_develop_nuclear_programm
+		available = {
+			#--add tt pls
+			custom_trigger_tooltip = {
+				tooltip = BLR_radioactive_ashes_trigger_tt
+				OR = {
+					has_country_flag = BLR_radioactive_ashes_flag
+					has_country_flag = BLR_two_nuclear_programms_flag
+				}
+			}
+		}
+		prerequisite = {
+			focus = BLR_develop_nuclear_programm
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_radioactive_ashes_tt
+		}
+		x = -2
+		y = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_expand_nuclear_trade
+		icon = GFX_BLR_expand_nuclear_trade
+		relative_position_id = BLR_develop_nuclear_programm
+		available = {
+			always = yes
+		}
+		prerequisite = {
+			focus = BLR_radioactive_ashes
+			focus = BLR_peace_atom
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_expand_nuclear_trade_tt
+		}
+		x = 0
+		y = 2
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	#Neutrality Politic
+	focus = {
+		id = BLR_neutrality_policy
+		icon = GFX_BLR_neutrality_policy
+		available = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+		}
+		allow_branch = {
+			NOT = {
+				BLR = { has_war = yes}
+			}
+			OR = {
+				has_idea = BLR_neutrality_expanded_idea
+				has_country_flag = has_BLR_neutrality_idea_flag
+				has_country_flag = {
+					flag = BLR_load_full_focus_tree_flag
+					value = 1
+				}
+			}
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_neutrality_policy_tt
+		}
+		x = 18
+		y = 8
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_stagnation
+		icon = GFX_BLR_stagnation
+		relative_position_id = BLR_neutrality_policy
+		available = {
+			has_idea = BLR_neutrality_idea
+		}
+		prerequisite = {
+			focus = BLR_neutrality_policy
+		}
+		mutually_exclusive = {
+			focus = BLR_moderate_increase
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_stagnation_tt
+		}
+		x = -1
+		y = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+	focus = {
+		id = BLR_moderate_increase
+		icon = GFX_BLR_moderate_increase
+		relative_position_id = BLR_neutrality_policy
+		available = {
+			has_idea = BLR_neutrality_expanded_idea
+		}
+		prerequisite = {
+			focus = BLR_neutrality_policy
+		}
+		mutually_exclusive = {
+			focus = BLR_stagnation
+		}
+		cost = 2
+		completion_reward = {
+			custom_effect_tooltip = BLR_moderate_increase_tt
+		}
+		x = 1
+		y = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
+}

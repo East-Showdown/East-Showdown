@@ -62,11 +62,46 @@ focus_tree = {
 				hours = 5
 				random_hours = 4
 			}
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -3.5
+				tooltip = IW_m_3_5_var_add_tt
+			}
 			hidden_effect = {
 				set_global_flag = {
 					flag = RUS_leave_from_kiev
 					days = 40
 					value = 1
+				}
+				398 = {
+					transfer_state_to = BLR
+				}
+				402 = {
+					transfer_state_to = BLR
+				}
+				399 = {
+					transfer_state_to = BLR
+				}
+				400 = {
+					transfer_state_to = BLR
+				}
+				401 = {
+					transfer_state_to = BLR
+				}
+				302 = {
+					transfer_state_to = RBZ
+				}
+				272 = {
+					transfer_state_to = RBZ
+				}
+				306 = {
+					transfer_state_to = RBZ
+				}
+				377 = {
+					transfer_state_to = RBZ
+				}
+				371 = {
+					transfer_state_to = RBZ
 				}
 				59 = {
 					add_dynamic_modifier = {
@@ -194,6 +229,11 @@ focus_tree = {
 						scope = RUS
 					}
 				}
+				diplomatic_relation = {
+					country = RBZ
+					relation = military_access
+					active = yes
+				}
 			}
 		}
 	}
@@ -302,14 +342,16 @@ focus_tree = {
 		available = {
 			has_government = neutrality
 		}
-		cost = 2
+		cost = 0.3
 		x = 9
 		y = 2
 		completion_reward = {
-			country_event = {
-				id = rus.16
-				hours = 1
+			swap_ideas = {
+				remove_idea = strength_of_opposition_3
+				add_idea = strength_of_opposition_2
 			}
+			add_stability = 0.05
+			add_political_power = 30
 			increase_escalation_by_2 = yes
 		}
 	}
@@ -369,14 +411,36 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_law_on_discrediting_russian_armed_forces
-		icon = GFX_RUS_law_on_discrediting_the_russian_armed_forces
+		id = RUS_information_front
+		icon = GFX_RUS_information_front
 		relative_position_id = RUS_tv_propaganda
 		prerequisite = {
 			focus = RUS_tv_propaganda
 		}
 		prerequisite = {
 			focus = RUS_z
+		}
+		available = {
+		}
+		cost = 2
+		x = -1
+		y = 1
+		completion_reward = {
+			add_political_power = 20
+			custom_effect_tooltip = UKR_Information_campaign_ce_tt
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 1
+				tooltip = IW_1_var_add_tt
+			}
+		}
+	}
+	focus = {
+		id = RUS_law_on_discrediting_russian_armed_forces
+		icon = GFX_RUS_law_on_discrediting_the_russian_armed_forces
+		relative_position_id = RUS_information_front
+		prerequisite = {
+			focus = RUS_information_front
 		}
 		available = {
 		}
@@ -438,7 +502,7 @@ focus_tree = {
 		icon = GFX_RUS_appeal_to_images_of_the_past
 		relative_position_id = RUS_z
 		prerequisite = {
-			focus = RUS_law_on_discrediting_russian_armed_forces
+			focus = RUS_information_front
 		}
 		prerequisite = {
 			focus = RUS_pay_compensation_to_families_of_deceased
@@ -470,7 +534,7 @@ focus_tree = {
 		y = 1
 
 		available = {
-			has_country_leader = vladimir_putin
+		    has_country_leader = vladimir_putin
 		}
 
 		prerequisite = {
@@ -1617,22 +1681,6 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_take_zmiiniy
-		icon = GFX_RUS_take_zmiiniy
-		prerequisite = {
-			focus = RUS_point_strikes
-		}
-		cost = 0.3
-		x = 22
-		y = 5
-		completion_reward = {
-			country_event = {
-				id = rus.21
-				days = 0
-			}
-		}
-	}
-	focus = {
 	    id = RUS_advance_to_melitopol
 		icon = GFX_RUS_advance_to_zaporozhye
 		prerequisite = {
@@ -2029,21 +2077,6 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_humanitarian_aid
-		icon = GFX_404
-		prerequisite = {
-			focus = RUS_civil-military_administrations
-		}
-		prerequisite = {
-			focus = RUS_1st_round_of_negotiations
-		}
-		cost = 3
-		x = 16
-		y = 7
-		completion_reward = {
-		}
-	}
-	focus = {
 		id = RUS_offensive_in_the_donbass
 		icon = GFX_404
 		prerequisite = {
@@ -2161,11 +2194,11 @@ focus_tree = {
 		id = RUS_ahmat
 		icon = GFX_RUS_akhmat
 		prerequisite = {
-			focus = RUS_take_zmiiniy
+			focus = RUS_point_strikes
 		}
 		cost = 2
 		x = 22
-		y = 6
+		y = 5
 		completion_reward = {
 		}
 	}
@@ -2190,7 +2223,7 @@ focus_tree = {
 		}
 		cost = 3
 		x = 23
-		y = 7
+		y = 6
 		completion_reward = {
 			237 = {
 				add_dynamic_modifier = {
@@ -2211,12 +2244,32 @@ focus_tree = {
 			}
 		}
 		prerequisite = {
-			focus = RUS_take_zmiiniy
+			focus = RUS_ahmat
 		}
 		cost = 3
 		x = 27
 		y = 6
 		completion_reward = {
+		}
+	}
+	###### Подготовка к контрнаступлению ВСУ
+	focus = {
+		id = RUS_UKR_counteroffencive
+		icon = GFX_404
+		prerequisite = {
+			focus = RUS_civil-military_administrations
+		}
+		available = {
+			UKR = {
+              has_completed_focus = UKR_lox7
+			  has_completed_focus = UKR_The_Last_Line_of_Donbass_Defense
+			}
+		}
+		cost = 0
+		x = 16
+		y = 7
+		completion_reward = {
+			add_political_power = 150
 		}
 	}
 	###### RUS Wagner
