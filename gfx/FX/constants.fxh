@@ -85,10 +85,10 @@ static const float 	SNOW_FROST_MIN_EFFECT  		= 0.4f;
 static const float3 ICE_COLOR 					= float3( 0.5f, 0.6f, 0.9f );
 static const float 	ICE_NOISE_TILING  			= 0.1f; //0.068f;
 
-static const float WATER_COLOR_LIGHTNESS = 0.5;
+static const float WATER_COLOR_LIGHTNESS = 0.4;
 static const float WATER_RIPPLE_EFFECT = 0.0025;
 
-static const float COLORMAP_OVERLAY_STRENGTH 	= 0.75f; //0.7f;
+static const float COLORMAP_OVERLAY_STRENGTH 	= 0.65f; //0.6f;
 static const float3 FAKE_CUBEMAP_COLOR 			= float3(0.0f, 0.0f, 0.0f);
 
 // MILD_WINTER_VALUE = ###,						defines.lua   (reload defines)
@@ -145,10 +145,10 @@ static const float  WATER_HEIGHT_RECP_SQUARED = WATER_HEIGHT_RECP * WATER_HEIGHT
 // ------------------    FOG            -------------------------
 // --------------------------------------------------------------
 
-static const float3 FOG_COLOR 					= float3( 0.12, 0.28, 0.6 );
+static const float3 FOG_COLOR 					= float3( 0, 0, 0 );
 static const float 	FOG_BEGIN					= 1.0f;
 static const float 	FOG_END 					= 150.0f;
-static const float 	FOG_MAX 					= 0.35f; 
+static const float 	FOG_MAX 					= 0.25f; 
 
 //static const float 	FOG_MAX 					= 1000.7f;
 
@@ -188,20 +188,20 @@ static const float  SHADOW_WEIGHT_TREE   		= 0.7f;
 // ------------------    GRADIENT BORDERS   ---------------------
 // --------------------------------------------------------------
 
-static const float GB_CAM_MIN = 75.0f;
-static const float GB_CAM_MAX = 250.0f;
-static const float GB_CAM_MAX_FILLING_CLAMP = 0.95f; // 0 to 1 value for clamping the fill when camera is at max distance
-static const float GB_THRESHOLD = 0.05f; // interpolation time
+static const float GB_CAM_MIN = 0.0f;
+static const float GB_CAM_MAX = 1.0f;
+static const float GB_CAM_MAX_FILLING_CLAMP = 1.0f; // 0 to 1 value for clamping the fill when camera is at max distance
+static const float GB_THRESHOLD = 0.01f; // interpolation time
 static const float GB_THRESHOLD2 = 0.15f; // interpolation time
 //static const float3 GB_OUTLINE_COLOR = float3( 0.0f, 0.0f, 0.0f );
 static const float GB_OUTLINE_CUTOFF_SEA = 0.990f; // Magic number to balance cutoff on edges without neighbor (over Sea)
 static const float GB_OPACITY_NEAR = 1.0f; // Transparency when camera is near
-static const float GB_OPACITY_FAR = 0.9f;  // Transparency when camera is far
+static const float GB_OPACITY_FAR = 1.0f;  // Transparency when camera is far
 static const float BORDER_NIGHT_DESATURATION_MAX = 0.2f; // how much border colors can get desaturated at night. 1.0f is full grey
-static const float BORDER_FOW_REMOVAL_FACTOR = .8f; // How much of the FOW that is removed from the borders. 1.0f is no FOW
+static const float BORDER_FOW_REMOVAL_FACTOR = 1.0f; // How much of the FOW that is removed from the borders. 1.0f is no FOW
 static const float BORDER_LIGHT_REMOVAL_FACTOR = 0.8f; // How much of the light calculations that are removed from the borders. 1.0f is no light
-static const float GB_STRENGTH_CH1 = 1.0; // Opacity of bottom layer
-static const float GB_STRENGTH_CH2 = 1.0; // Opacity of top layer
+static const float GB_STRENGTH_CH1 = 0.8; // Opacity of bottom layer
+static const float GB_STRENGTH_CH2 = 0.8; // Opacity of top layer
 static const float GB_FIRST_LAYER_PRIORITY = 0.4; // Priority for first/second layer when both are active at the same pixel
 static const float BORDER_MAP_TILE = 18000.0f;
 
