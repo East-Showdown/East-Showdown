@@ -343,7 +343,7 @@ country_event = {
 	}
 	option = {
 		name = blrref.4.b
-		#--extending for 4 years
+		#--save 4 years
 		set_variable = {
 			var = BLR_third_constitution_stability_factor
 			value = 0.05
@@ -359,6 +359,22 @@ country_event = {
 		add_to_variable = {
 			var = global.BLR_West_influence
 			value = -15
+		}
+	}
+	option = {
+		name = blrref.4.b
+		#--deextending for 2 years
+		set_variable = {
+			var = BLR_third_constitution_stability_factor
+			value = 0.1
+		}
+		set_variable = {
+			var = BLR_third_constitution_war_support_factor
+			value = -0.1
+		}
+		add_to_variable = {
+			var = global.BLR_West_influence
+			value = 5
 		}
 	}
 	immediate = {
@@ -496,7 +512,7 @@ country_event = {
 		}
 	}
 }
-#SovSev become Leader, if Current President die
+#SovSec become Leader, if Current President die
 country_event = {
 	id = blrref.8
 	title = blrref.8.t
@@ -506,8 +522,8 @@ country_event = {
 	
 	option = {
 		name = blrref.8.a
-		#--SovSev become leader
-		set_country_flag = BLR_SovSev_leader
+		#--SovSec become leader
+		set_country_flag = BLR_SovSec_leader
 		add_to_variable = {
 			var = global.BLR_influence
 			value = 2
@@ -519,7 +535,7 @@ country_event = {
 	}
 	option = {
 		name = blrref.8.a
-		#--Premier become leader
+		#--SovSeс with Premier become leader
 		set_country_flag = BLR_Premier_leader
 		add_to_variable = {
 			var = global.BLR_influence
@@ -910,6 +926,48 @@ country_event = {
 				every_core_state = {
 					add_core_of = BPR	
 				}
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 49
+						} 
+						has_country_flag = BPR_Brest_Slot
+					}
+					delete_unit = {
+						state = 49
+						disband = yes
+					}
+				}
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 30
+						} 
+						has_country_flag = BPR_Pinsk_Slot
+					}
+					delete_unit = {
+						state = 30
+						disband = yes
+					}
+				}
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 29
+						} 
+						OR = {
+							has_completed_focus = BLR_leave_third_sector_away
+							has_country_flag = BLR_third_sector_flag
+						}
+					}
+					delete_unit = {
+						state = 29
+						disband = yes
+					}
+				}
 			}
 			49 = {
 				set_state_owner_to = BPR
@@ -927,13 +985,6 @@ country_event = {
 				add_ideas = BPR_guerilla_war
 				change_tag_from = BLR
 			}
-			set_nationality = {
-				target_country = BPR
-				character = BLR_svetlana_tikhanovskaya
-			}
-			BLR_svetlana_tikhanovskaya = {
-				promote_character = yes
-			}
 			BPR = {
 				if = {
 					limit = { BLR = { has_country_flag = BPR_Brest_Slot } }
@@ -942,6 +993,9 @@ country_event = {
 				if = {
 					limit = { BLR = { has_country_flag = BPR_Grodno_Slot } }
 					load_oob = BPR_Grodno
+					30 = {
+						set_state_owner_to = BPR
+					}
 				}
 				if = {
 					limit = { BLR = { has_country_flag = BPR_Pinsk_Slot } }
@@ -954,6 +1008,12 @@ country_event = {
 				if = {
 					limit = { BLR = { OR = { has_completed_focus = BLR_leave_third_sector_away has_country_flag = BLR_third_sector_flag } } }
 					load_oob = BPR_third_sector
+					BLR = {
+						load_oob = BLR_Minsk
+					}
+					29 = {
+						set_state_owner_to = BPR
+					}
 				}
 			}
 		}
