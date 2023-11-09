@@ -1,155 +1,75 @@
-BLR_opposition_category = {
-    kostusev_in_prison = {
+BLR_influence_category = {
+	BLR_opposition_acitivity_mission = {
 		icon = generic_formable_nations
 
 		is_good = no
-		days_mission_timeout = 3600
+		days_mission_timeout = 30
 		selectable_mission = no	
 
 		activation = {
 			tag = BLR
 			has_government = neutrality
-			has_country_leader = {
-				character = BLR_saranchuk
-			}
+			has_character = BLR_svetlana_tikhanovskaya
 		}
-		fire_only_once = yes
+		fire_only_once = no
 		available = {
-			always = no
+			hidden_trigger = {
+				always = no	
+			}
 		}
 		
 		cancel_trigger = {
-			always = no
+			hidden_trigger = {
+				always = no	
+			}
+		}
+
+		visible = {
+			original_tag = BLR
 		}
 		
 		complete_effect = {
-			BLR_kostusev = {
-				add_country_leader_role = {
-					country_leader = { 
-						ideology = nationalism
-						traits = {
-							
-						}
-					}
-				}
+			hidden_effect = {
+				remove_dynamic_modifier = {
+					modifier = BLR_opposition_activity
+				}	
 			}
 
 		}
 		timeout_effect = {
-			retire_character = BLR_kostusev
+			custom_effect_tooltip = BLR_opposition_activity_tt
+			hidden_effect = {
+				BLR = {
+					set_variable = {
+						BLR_opposition_activity_influence = global.BLR_West_influence
+					}
+					multiply_variable = {
+						BLR_opposition_activity_influence = 0.01
+					}
+					add_to_variable = {
+						BLR_opposition_activity_var = BLR_opposition_activity_influence
+					}
+					add_to_variable = {
+						global.BLR_West_influence = BLR_opposition_activity_var
+					}
+					update_BLR_opposition_activity_var_effects = yes
+					#
+					set_variable = {
+						BLR_opposition_activity_influence_second = BLR_opposition_activity_influence
+					}
+					set_variable = {
+						BLR_opposition_activity_var_second = BLR_opposition_activity_var
+					}
+					add_to_variable = {
+						BLR_opposition_activity_var_second = BLR_opposition_activity_influence_second
+					}
+				}
+				activate_mission = BLR_opposition_acitivity_mission	
+			}
 		}
 		
 		ai_will_do = {
 			factor = 0
 		}	
     }
-}
-BLR_map_opposition_category = {
-	#BLR_repress_opposition_time = {
-		#icon = generic_formable_nations
-		#is_good = no
-		#days_mission_timeout = 365
-		#selectable_mission = no	
-
-		#available = {
-			#always = no
-		#}
-		#fire_only_once = yes
-		#cancel_trigger = {
-			#always = no
-		#}
-		#visible = {
-			#tag = BLR
-			#has_government = neutrality
-			#has_completed_focus = BLR_stop_the_opposition
-		#}
-		#complete_effect = {
-			
-		#}
-		#timeout_effect = {
-			#start_civil_war = {
-				#ideology = fascism
-			#}
-		#}
-		
-		#ai_will_do = {
-			#factor = 0
-		#}	
-	#}
-	BLR_repress_opposition_grodno = {
-			on_map_mode = map_only
-			allowed = {
-				tag = BLR
-			}
-			visible = {
-				always = yes
-			}
-			available = {
-				check_variable = {
-					var = BLR_influence
-					value < 25
-				}
-			}
-			icon = generic_formable_nations
-			priority = 10
-			complete_effect = {
-
-			}
-    }
-}
-BLR_army_reform = {
-	BLR_train_tanks = {
-		icon = decision_category_generic_arms_trade
-		fire_only_once = yes
-		available = {
-			count_triggers = {
-				amount = 2
-				divisions_in_state = {
-					size > 8
-					state = 30
-				}
-				divisions_in_state = {
-					size > 8
-					state = 49
-				}
-				divisions_in_state = {
-					size > 8
-					state = 351
-				}
-				ai_will_do = {
-					factor = 40
-				}
-			}
-		}
-		complete_effect = {
-			add_ideas = BLR_tanks
-		}
-	}
-	BLR_train_infantry = {
-		icon = decision_category_generic_arms_trade
-		fire_only_once = yes
-		available = {
-			count_triggers = {
-				amount = 2
-				divisions_in_state = {
-					size > 8
-					state = 30
-				}
-				divisions_in_state = {
-					size > 8
-					state = 49
-				}
-				divisions_in_state = {
-					size > 8
-					state = 351
-				}
-				ai_will_do = {
-					factor = 40
-				}
-			}
-		}
-		complete_effect = {
-			add_ideas = BLR_infantry
-		}
-	}
 }

@@ -1,137 +1,165 @@
-putin_missions = {
-	RUS_month_invasion_plan = { # The one month invasion plan
-		icon = generic_formable_nations
 
-		is_good = no
-		allowed = { tag = RUS }
-
-		activation = {
-			always = no
-		}
-
-		available = { #This sets the goal
-			NOT = { has_war = yes }  
-		}
-		complete_effect = { #W Russia
-			add_war_support = 0.1 
-		}
-
-		timeout_effect = { #L Russia
-			add_war_support = -0.05
-			vladimir_putin = {
-				unit_leader_event = putin_mission.2
-			}
-                        add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.10
-			}
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.10
-			}
-		}
-
-		priority = 10 # i dont know what this does but dont change it
-		fire_only_once = yes
-		days_mission_timeout = 30 
-	}  
-        RUS_imminent_purge = {
-                icon = generic_formable_nations
-
-                is_good = no
-                allowed = { tag = RUS }
-
-                priority = 10
-
-                available = {
-                        hidden_trigger = { always = no }
-                }
- 
-                activation = {
-                        always = no
-                }
-
-                timeout_effect = { # THIS WILL START A CHAIN OF EVENTS WHERE GENERALS WILL BE PURGED
-                         vladimir_putin = {
-                             unit_leader_event = putin_mission.4
-                         }    
-                }
-                days_mission_timeout = 45
-        }
-        first_purge = { # 1st purge of the game
-                icon = generic_ignite_civil_war
-
-                is_good = no
-                allowed = { tag = RUS }       
-
-                activation = {
-                        always = no
-                }
-
-                available = {
-                        hidden_trigger = { always = no }
-                }
-
-                timeout_effect = {
-                         custom_effect_tooltip = character_will_be_purged
-                         hidden_effect = {
-                                 valery_gerasimov = {
-                                          unit_leader_event = putin_mission.3
-                                 }
-                         }
-                }
-                days_mission_timeout = 15
-        }
-
-        2nd_purge = { # 2st purge of the game
-                icon = generic_ignite_civil_war
-
-                is_good = no
-                allowed = { tag = RUS }       
-
-                activation = {
-                        always = no
-                }
-
-                available = {
-                        hidden_trigger = { always = no }
-                }
-
-                timeout_effect = {
-                         custom_effect_tooltip = character_will_be_purged
-                         hidden_effect = {
-                                 vladimir_anatolievich_kochetkov = {
-                                     unit_leader_event = putin_mission.5
-                                 }
-                         }
-                }
-                days_mission_timeout = 15
-        }
-
-        3rd_purge = { # 3st purge of the game
-                icon = generic_ignite_civil_war
-
-                is_good = no
-                allowed = { tag = RUS }       
-
-                activation = {
-                        always = no
-                }
-
-                available = {
-                        hidden_trigger = { always = no }
-                }
-
-                timeout_effect = {
-                         custom_effect_tooltip = character_will_be_purged
-                }
-                days_mission_timeout = 15
-        }
-}
 
 RUS_CMA = {
+    RUS_referendum = {
+		icon = RUS_referendum
+
+		fire_only_once = yes
+		cost = 100
+		days_remove = 6
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = RUS_referendum_tt
+				count_triggers = {
+					amount = 2
+					has_country_flag = Zaporozhye_cma_cf
+					has_country_flag = Kherson_cma_cf
+					has_country_flag = Kharkov_cma_cf
+					has_country_flag = Dnipro_cma_cf
+					has_country_flag = Nikolaev_cma_cf
+					has_country_flag = Odessa_cma_cf
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_referendum_2_tt
+				UKR = {
+				    NOT = {
+						controls_state = 205
+						controls_state = 173
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Zaporozhye_cma_cf
+					}
+					OR = {
+						controls_state = 226
+						controls_state = 246
+						controls_state = 242
+						controls_state = 223
+						controls_state = 208
+						controls_state = 210
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Kherson_cma_cf
+					}
+					OR = {
+						controls_state = 264
+						controls_state = 262
+						controls_state = 240
+						controls_state = 251
+						controls_state = 253
+						controls_state = 231
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Kharkov_cma_cf
+					}
+					OR = {
+						controls_state = 107
+						controls_state = 139
+						controls_state = 133
+						controls_state = 138
+						controls_state = 130
+						controls_state = 101
+						controls_state = 103
+						controls_state = 100
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Dnipro_cma_cf
+					}
+					OR = {
+						controls_state = 197
+						controls_state = 169
+						controls_state = 216
+						controls_state = 187
+						controls_state = 156
+						controls_state = 151
+						controls_state = 162
+						controls_state = 180
+						controls_state = 186
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Nikolaev_cma_cf
+					}
+					OR = {
+						controls_state = 233
+						controls_state = 215
+						controls_state = 209
+						controls_state = 202
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Odessa_cma_cf
+					}
+					OR = {
+						controls_state = 203
+						controls_state = 235
+						controls_state = 227
+						controls_state = 256
+						controls_state = 271
+						controls_state = 268
+						controls_state = 296
+						controls_state = 310
+					}
+				}
+			}
+			date > 2022.9.1
+			NOT = {
+				has_country_flag = RUS_create_done_occupation_Administration_Ukraine
+			}
+		}
+
+		visible = {
+			original_tag = RUS
+			
+		}
+		
+		complete_effect = {
+		    news_event = {
+				id = news.87
+				hours = 4
+			}
+		}
+		
+		remove_effect = {
+		    custom_effect_tooltip = RUS_referendum_done_tt
+			increase_escalation_by_5 = yes
+			hidden_effect = {
+				set_country_flag = RUS_referendum_cf
+				if = {
+				    limit = {
+					    core_compliance = {  
+							occupied_country_tag = UKR
+							value > 50 
+						}
+					}
+					country_event = { 
+						id = rus.111
+						days = 2
+					}
+				}
+				else = {
+					country_event = { 
+						id = rus.112
+						days = 2
+					}
+				}
+			}
+		}
+	}
 	RUS_SALVATION_COMMITTEE = {
-		icon = generic_formable_nations
+		icon = RUS_salvation_committee
 
 		fire_only_once = yes
 		cost = 50
@@ -139,19 +167,15 @@ RUS_CMA = {
 
 		available = {
 			original_tag = RUS
-			count_triggers = {
-				amount = 4
-				controls_state = 264
-				controls_state = 240
-				controls_state = 413
-				controls_state = 262
-				controls_state = 251
-				controls_state = 246
-				controls_state = 242
-				controls_state = 237
+			custom_trigger_tooltip = {
+				tooltip = kherson_control_tt
 				OR = {
-					controls_state = 226
+					controls_state = 264
+					controls_state = 262
+					controls_state = 240
+					controls_state = 251
 					controls_state = 253
+					controls_state = 231
 				}
 			}
 		}
@@ -174,30 +198,20 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 240
-					}
-				}
-				240 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 413
-					}
-				}
-				413 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
 						controls_state = 262
 					}
 				}
 				262 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
 					add_compliance = 5
 				}
 			}
@@ -214,33 +228,74 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 246
+						controls_state = 253
 					}
 				}
-				246 = {
+				253 = {
 					add_compliance = 5
 				}
 			}
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 242
+						controls_state = 231
 					}
 				}
-				242 = {
+				231 = {
 					add_compliance = 5
 				}
 			}
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 237
+						controls_state = 269
 					}
 				}
-				237 = {
+				269 = {
 					add_compliance = 5
 				}
 			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 5
+				}
+			}
+			add_stability = 0.05
 			hidden_effect = {
 				set_country_flag = CMA_COMMITTEE
 			}
@@ -248,7 +303,7 @@ RUS_CMA = {
 	}
 	
 	RUS_PASPORTS = {
-		icon = generic_formable_nations
+		icon = RUS_passport
 
 		fire_only_once = yes
 		cost = 50
@@ -256,17 +311,16 @@ RUS_CMA = {
 
 		available = {
 			original_tag = RUS
-			count_triggers = {
-				amount = 4
-				controls_state = 264
-				controls_state = 240
-				controls_state = 413
-				controls_state = 262
-				controls_state = 251
-				controls_state = 246
-				controls_state = 242
-				controls_state = 237
-				controls_state = 253
+			custom_trigger_tooltip = {
+				tooltip = pasports_tt
+				OR = {
+					has_country_flag = Zaporozhye_cma_cf
+					has_country_flag = Kherson_cma_cf
+					has_country_flag = Kharkov_cma_cf
+					has_country_flag = Dnipro_cma_cf
+					has_country_flag = Nikolaev_cma_cf
+					has_country_flag = Odessa_cma_cf
+				}
 			}
 			has_country_flag = CMA_COMMITTEE
 		}
@@ -278,31 +332,161 @@ RUS_CMA = {
 		remove_effect = {
 		    if = {
 				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 237
+						}
+						DPR = {
+							controls_state = 237
+						}
+					}
+				}
+				237 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 213
+						}
+						DPR = {
+							controls_state = 213
+						}
+					}
+				}
+				213 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 182
+						}
+						DPR = {
+							controls_state = 182
+						}
+					}
+				}
+				182 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 149
+						}
+						DPR = {
+							controls_state = 149
+						}
+					}
+				}
+				149 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 165
+						}
+						DPR = {
+							controls_state = 165
+						}
+					}
+				}
+				165 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 176
+						}
+						LPR = {
+							controls_state = 176
+						}
+					}
+				}
+				176 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 145
+						}
+						LPR = {
+							controls_state = 145
+						}
+					}
+				}
+				145 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 154
+						}
+						LPR = {
+							controls_state = 154
+						}
+					}
+				}
+				154 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 116
+						}
+						LPR = {
+							controls_state = 116
+						}
+					}
+				}
+				116 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 125
+						}
+						LPR = {
+							controls_state = 125
+						}
+					}
+				}
+				125 = {
+					add_compliance = 10
+				}
+			}
+		    if = {
+				limit = {
 					RUS = {
 						controls_state = 264
 					}
 				}
 				264 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 240
-					}
-				}
-				240 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 413
-					}
-				}
-				413 = {
 					add_compliance = 5
 				}
 			}
@@ -319,10 +503,100 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
 						controls_state = 251
 					}
 				}
 				251 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 253
+					}
+				}
+				253 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 226
+					}
+				}
+				226 = {
 					add_compliance = 5
 				}
 			}
@@ -349,32 +623,322 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 237
+						controls_state = 223
 					}
 				}
-				237 = {
+				223 = {
 					add_compliance = 5
 				}
 			}
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 253
+						controls_state = 208
 					}
 				}
-				253 = {
+				208 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
 					add_compliance = 5
 				}
 			}
 			hidden_effect = {
 				set_country_flag = CMA_PASPORTS
 			}
-			add_stability = -0.05
+			add_stability = 0.025
 		}
 	}
 	
 	RUS_NO_VALUTE_ZONE = {
-		icon = generic_formable_nations
+		icon = RUS_no_valute_zone
 
 		fire_only_once = yes
 		cost = 50
@@ -382,17 +946,1962 @@ RUS_CMA = {
 
 		available = {
 			original_tag = RUS
-			count_triggers = {
-				amount = 4
-				controls_state = 264
-				controls_state = 240
-				controls_state = 413
-				controls_state = 262
-				controls_state = 251
-				controls_state = 246
-				controls_state = 242
-				controls_state = 237
-				controls_state = 253
+			custom_trigger_tooltip = {
+				tooltip = pasports_tt
+				OR = {
+					has_country_flag = Zaporozhye_cma_cf
+					has_country_flag = Kherson_cma_cf
+					has_country_flag = Kharkov_cma_cf
+					has_country_flag = Dnipro_cma_cf
+					has_country_flag = Nikolaev_cma_cf
+					has_country_flag = Odessa_cma_cf
+				}
+			}
+			has_country_flag = CMA_COMMITTEE
+		}
+
+		visible = {
+			original_tag = RUS
+		}
+		
+		remove_effect = {
+		    if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 237
+						}
+						DPR = {
+							controls_state = 237
+						}
+					}
+				}
+				237 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 213
+						}
+						DPR = {
+							controls_state = 213
+						}
+					}
+				}
+				213 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 182
+						}
+						DPR = {
+							controls_state = 182
+						}
+					}
+				}
+				182 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 149
+						}
+						DPR = {
+							controls_state = 149
+						}
+					}
+				}
+				149 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 165
+						}
+						DPR = {
+							controls_state = 165
+						}
+					}
+				}
+				165 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 176
+						}
+						LPR = {
+							controls_state = 176
+						}
+					}
+				}
+				176 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 145
+						}
+						LPR = {
+							controls_state = 145
+						}
+					}
+				}
+				145 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 154
+						}
+						LPR = {
+							controls_state = 154
+						}
+					}
+				}
+				154 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 116
+						}
+						LPR = {
+							controls_state = 116
+						}
+					}
+				}
+				116 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 125
+						}
+						LPR = {
+							controls_state = 125
+						}
+					}
+				}
+				125 = {
+					add_compliance = 10
+				}
+			}
+		    if = {
+				limit = {
+					RUS = {
+						controls_state = 264
+					}
+				}
+				264 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 262
+					}
+				}
+				262 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 251
+					}
+				}
+				251 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 253
+					}
+				}
+				253 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 226
+					}
+				}
+				226 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 246
+					}
+				}
+				246 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 242
+					}
+				}
+				242 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 223
+					}
+				}
+				223 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 208
+					}
+				}
+				208 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
+					add_compliance = 5
+				}
+			}
+			hidden_effect = {
+				set_country_flag = CMA_BIVALUTEZONE
+			}
+			add_stability = 0.02
+		}
+	}
+	RUS_NO_GRIVNA = {
+		icon = RUS_no_grivna
+
+		fire_only_once = yes
+		cost = 50
+		days_remove = 15
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = pasports_tt
+				OR = {
+					has_country_flag = Zaporozhye_cma_cf
+					has_country_flag = Kherson_cma_cf
+					has_country_flag = Kharkov_cma_cf
+					has_country_flag = Dnipro_cma_cf
+					has_country_flag = Nikolaev_cma_cf
+					has_country_flag = Odessa_cma_cf
+				}
+			}
+			has_country_flag = CMA_BIVALUTEZONE
+		}
+
+		visible = {
+			original_tag = RUS
+		}
+		
+		remove_effect = {
+		    if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 237
+						}
+						DPR = {
+							controls_state = 237
+						}
+					}
+				}
+				237 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 213
+						}
+						DPR = {
+							controls_state = 213
+						}
+					}
+				}
+				213 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 182
+						}
+						DPR = {
+							controls_state = 182
+						}
+					}
+				}
+				182 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 149
+						}
+						DPR = {
+							controls_state = 149
+						}
+					}
+				}
+				149 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 165
+						}
+						DPR = {
+							controls_state = 165
+						}
+					}
+				}
+				165 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 176
+						}
+						LPR = {
+							controls_state = 176
+						}
+					}
+				}
+				176 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 145
+						}
+						LPR = {
+							controls_state = 145
+						}
+					}
+				}
+				145 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 154
+						}
+						LPR = {
+							controls_state = 154
+						}
+					}
+				}
+				154 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 116
+						}
+						LPR = {
+							controls_state = 116
+						}
+					}
+				}
+				116 = {
+					add_compliance = 10
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 125
+						}
+						LPR = {
+							controls_state = 125
+						}
+					}
+				}
+				125 = {
+					add_compliance = 10
+				}
+			}
+		    if = {
+				limit = {
+					RUS = {
+						controls_state = 264
+					}
+				}
+				264 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 262
+					}
+				}
+				262 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 251
+					}
+				}
+				251 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 253
+					}
+				}
+				253 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 226
+					}
+				}
+				226 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 246
+					}
+				}
+				246 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 242
+					}
+				}
+				242 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 223
+					}
+				}
+				223 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 208
+					}
+				}
+				208 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
+					add_compliance = 5
+				}
+			}
+			add_stability = -0.1
+		}
+	}
+	
+	RUS_recognize_yanukovych = {
+		icon = RUS_recognize_yanukovych
+
+		fire_only_once = yes
+		cost = 150
+
+		available = {
+			original_tag = RUS
+			has_country_flag = CMA_COMMITTEE
+			custom_trigger_tooltip = {
+				tooltip = in_development
+				controls_province = 390
+			}
+		}
+
+		visible = {
+			original_tag = RUS
+		}
+		
+		complete_effect = {
+		    UKR = {
+			    add_political_power = -25
+				add_stability = -0.025
+			}
+			custom_effect_tooltip = RUS_recognize_yanukovych_ce
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 1
+				tooltip = IW_1_var_add_tt
+			}
+			hidden_effect = {
+				set_country_flag = RUS_recognize_yanukovych_cf
+			}
+		}
+	}
+	RUS_occupation_Administration_Ukraine = {
+		icon = gerb_ukraine
+
+		fire_only_once = yes
+		cost = 200
+		days_remove = 31
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = RUS_create_occupation_Administration_Ukraine
+				count_triggers = {
+					amount = 3
+					has_country_flag = Zaporozhye_cma_cf
+					has_country_flag = Kherson_cma_cf
+					has_country_flag = Kharkov_cma_cf
+					has_country_flag = Dnipro_cma_cf
+					has_country_flag = Nikolaev_cma_cf
+					has_country_flag = Odessa_cma_cf
+				}
+			}
+		}
+
+		visible = {
+			original_tag = RUS
+			has_country_flag = RUS_recognize_yanukovych_cf
+		}
+		
+		remove_effect = {
+		    add_stability = 0.05
+			custom_effect_tooltip = RUS_occupation_Administration_Ukraine_ce
+			hidden_effect = {
+				random_list = {
+					40 = { country_event = { id = rus.109 days = 2 } }
+					60 = { country_event = { id = rus.110 days = 2 } }
+				}
+				news_event = {
+					id = news.85
+					hours = 5
+				}
+				set_country_flag = RUS_create_done_occupation_Administration_Ukraine
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 237
+						}
+						DPR = {
+							controls_state = 237
+						}
+					}
+				}
+				237 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 213
+						}
+						DPR = {
+							controls_state = 213
+						}
+					}
+				}
+				213 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 182
+						}
+						DPR = {
+							controls_state = 182
+						}
+					}
+				}
+				182 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 149
+						}
+						DPR = {
+							controls_state = 149
+						}
+					}
+				}
+				149 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 165
+						}
+						DPR = {
+							controls_state = 165
+						}
+					}
+				}
+				165 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 176
+						}
+						LPR = {
+							controls_state = 176
+						}
+					}
+				}
+				176 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 145
+						}
+						LPR = {
+							controls_state = 145
+						}
+					}
+				}
+				145 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 154
+						}
+						LPR = {
+							controls_state = 154
+						}
+					}
+				}
+				154 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 116
+						}
+						LPR = {
+							controls_state = 116
+						}
+					}
+				}
+				116 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+				    OR = {
+						RUS = {
+							controls_state = 125
+						}
+						LPR = {
+							controls_state = 125
+						}
+					}
+				}
+				125 = {
+					add_compliance = 20
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 264
+					}
+				}
+				264 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 262
+					}
+				}
+				262 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 251
+					}
+				}
+				251 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 253
+					}
+				}
+				253 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 226
+					}
+				}
+				226 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 246
+					}
+				}
+				246 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 242
+					}
+				}
+				242 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 223
+					}
+				}
+				223 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 208
+					}
+				}
+				208 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 15
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
+					add_compliance = 15
+				}
+			}
+		}
+	}
+	
+	RUS_Kherson_cma = {
+		icon = RUS_Kherson_VGA
+
+		fire_only_once = yes
+		cost = 60
+		days_remove = 7
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = kherson_control_tt
+				OR = {
+					controls_state = 264
+					controls_state = 262
+					controls_state = 240
+					controls_state = 251
+					controls_state = 253
+					controls_state = 231
+				}
 			}
 			has_country_flag = CMA_COMMITTEE
 		}
@@ -415,30 +2924,20 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 240
-					}
-				}
-				240 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 413
-					}
-				}
-				413 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
 						controls_state = 262
 					}
 				}
 				262 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 240
+					}
+				}
+				240 = {
 					add_compliance = 5
 				}
 			}
@@ -455,36 +2954,6 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 246
-					}
-				}
-				246 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 242
-					}
-				}
-				242 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 237
-					}
-				}
-				237 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
 						controls_state = 253
 					}
 				}
@@ -492,33 +2961,92 @@ RUS_CMA = {
 					add_compliance = 5
 				}
 			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 231
+					}
+				}
+				231 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 269
+					}
+				}
+				269 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 276
+					}
+				}
+				276 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 291
+					}
+				}
+				291 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 289
+					}
+				}
+				289 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 266
+					}
+				}
+				266 = {
+					add_compliance = 5
+				}
+			}
 			hidden_effect = {
-				set_country_flag = CMA_BIVALUTEZONE
+				set_country_flag = Kherson_cma_cf
 			}
 		}
 	}
-	RUS_NO_GRIVNA = {
-		icon = generic_formable_nations
+	RUS_Zaporozhye_cma = {
+		icon = RUS_Zaporozhye_VGA
 
 		fire_only_once = yes
-		cost = 50
-		days_remove = 15
+		cost = 60
+		days_remove = 7
 
 		available = {
 			original_tag = RUS
-			count_triggers = {
-				amount = 4
-				controls_state = 264
-				controls_state = 240
-				controls_state = 413
-				controls_state = 262
-				controls_state = 251
-				controls_state = 246
-				controls_state = 242
-				controls_state = 237
-				controls_state = 253
+			custom_trigger_tooltip = {
+				tooltip = Zaporozhye_control_tt
+				OR = {
+					controls_state = 226
+					controls_state = 246
+					controls_state = 242
+					controls_state = 223
+					controls_state = 208
+					controls_state = 210
+				}
 			}
-			has_country_flag = CMA_BIVALUTEZONE
+			has_country_flag = CMA_COMMITTEE
 		}
 
 		visible = {
@@ -529,50 +3057,10 @@ RUS_CMA = {
 		    if = {
 				limit = {
 					RUS = {
-						controls_state = 264
+						controls_state = 226
 					}
 				}
-				264 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 240
-					}
-				}
-				240 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 413
-					}
-				}
-				413 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 262
-					}
-				}
-				262 = {
-					add_compliance = 5
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						controls_state = 251
-					}
-				}
-				251 = {
+				226 = {
 					add_compliance = 5
 				}
 			}
@@ -599,46 +3087,61 @@ RUS_CMA = {
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 237
+						controls_state = 223
 					}
 				}
-				237 = {
+				223 = {
 					add_compliance = 5
 				}
 			}
 			if = {
 				limit = {
 					RUS = {
-						controls_state = 253
+						controls_state = 208
 					}
 				}
-				253 = {
+				208 = {
 					add_compliance = 5
 				}
 			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 210
+					}
+				}
+				210 = {
+					add_compliance = 5
+				}
+			}
+			hidden_effect = {
+				set_country_flag = Zaporozhye_cma_cf
+			}
 		}
 	}
-	RUS_KHERSON_QUESTION = {
-		icon = generic_formable_nations
+	RUS_Kharkov_cma = {
+		icon = RUS_Kharkov_VGA
 
 		fire_only_once = yes
-		cost = 350
-		days_remove = 3
+		cost = 60
+		days_remove = 7
 
 		available = {
 			original_tag = RUS
-			controls_state = 253
-			controls_state = 231
-			has_full_control_of_state = 240
-			has_full_control_of_state = 413
-			has_full_control_of_state = 251
-			has_full_control_of_state = 262
-			has_full_control_of_state = 264
-			has_full_control_of_state = 266
-			has_full_control_of_state = 276
-			has_full_control_of_state = 287
-			has_country_flag = CMA_PASPORTS
-			has_country_flag = CMA_BIVALUTEZONE
+			custom_trigger_tooltip = {
+				tooltip = Kharkov_control_tt
+				OR = {
+					controls_state = 107
+					controls_state = 139
+					controls_state = 133
+					controls_state = 138
+					controls_state = 130
+					controls_state = 101
+					controls_state = 103
+					controls_state = 100
+				}
+			}
+			has_country_flag = CMA_COMMITTEE
 		}
 
 		visible = {
@@ -646,24 +3149,115 @@ RUS_CMA = {
 		}
 		
 		remove_effect = {
-			country_event = rus.37
+		    if = {
+				limit = {
+					RUS = {
+						controls_state = 107
+					}
+				}
+				107 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 139
+					}
+				}
+				139 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 133
+					}
+				}
+				133 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 138
+					}
+				}
+				138 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 130
+					}
+				}
+				130 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 101
+					}
+				}
+				101 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 103
+					}
+				}
+				103 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 100
+					}
+				}
+				100 = {
+					add_compliance = 5
+				}
+			}
+			hidden_effect = {
+				set_country_flag = Kharkov_cma_cf
+			}
 		}
 	}
-	RUS_ZAPOROJIE_QUESTION = {
-		icon = generic_formable_nations
+	RUS_Dnipro_cma = {
+		icon = RUS_Dnipro_VGA
 
 		fire_only_once = yes
-		cost = 350
-		days_remove = 3
+		cost = 60
+		days_remove = 7
 
 		available = {
 			original_tag = RUS
-			controls_state = 226
-			controls_state = 223
-			has_full_control_of_state = 246
-			has_full_control_of_state = 242
-			has_country_flag = CMA_PASPORTS
-			has_country_flag = CMA_BIVALUTEZONE
+			custom_trigger_tooltip = {
+				tooltip = Dnipro_control_tt
+				OR = {
+					controls_state = 197
+					controls_state = 169
+					controls_state = 216
+					controls_state = 187
+					controls_state = 156
+					controls_state = 151
+					controls_state = 162
+					controls_state = 180
+					controls_state = 186
+				}
+			}
+			has_country_flag = CMA_COMMITTEE
 		}
 
 		visible = {
@@ -671,23 +3265,120 @@ RUS_CMA = {
 		}
 		
 		remove_effect = {
-			country_event = rus.41
+		    if = {
+				limit = {
+					RUS = {
+						controls_state = 197
+					}
+				}
+				197 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 169
+					}
+				}
+				169 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 216
+					}
+				}
+				216 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 187
+					}
+				}
+				187 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 156
+					}
+				}
+				156 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 151
+					}
+				}
+				151 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 162
+					}
+				}
+				162 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 180
+					}
+				}
+				180 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 186
+					}
+				}
+				186 = {
+					add_compliance = 5
+				}
+			}
+			hidden_effect = {
+				set_country_flag = Dnipro_cma_cf
+			}
 		}
 	}
-	RUS_KHARKOV_QUESTION = {
-		icon = generic_formable_nations
+	RUS_Nikolaev_cma = {
+		icon = RUS_Nikolaev_VGA
 
 		fire_only_once = yes
-		cost = 350
-		days_remove = 3
+		cost = 60
+		days_remove = 7
 
 		available = {
 			original_tag = RUS
-			controls_state = 101
-			controls_state = 100
-			has_full_control_of_state = 103
-			has_country_flag = CMA_PASPORTS
-			has_country_flag = CMA_BIVALUTEZONE
+			custom_trigger_tooltip = {
+				tooltip = Nikolaev_control_tt
+				OR = {
+					controls_state = 233
+					controls_state = 215
+					controls_state = 209
+					controls_state = 202
+				}
+			}
+			has_country_flag = CMA_COMMITTEE
 		}
 
 		visible = {
@@ -695,24 +3386,74 @@ RUS_CMA = {
 		}
 		
 		remove_effect = {
-			country_event = rus.45
+		    if = {
+				limit = {
+					RUS = {
+						controls_state = 233
+					}
+				}
+				233 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 215
+					}
+				}
+				215 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 209
+					}
+				}
+				209 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 202
+					}
+				}
+				202 = {
+					add_compliance = 5
+				}
+			}
+			hidden_effect = {
+				set_country_flag = Nikolaev_cma_cf
+			}
 		}
 	}
-	RUS_NIKOLAEV_QUESTION = {
-		icon = generic_formable_nations
+	RUS_Odessa_cma = {
+		icon = RUS_Odessa_VGA
 
 		fire_only_once = yes
-		cost = 350
-		days_remove = 3
+		cost = 60
+		days_remove = 7
 
 		available = {
 			original_tag = RUS
-			controls_state = 209
-			has_full_control_of_state = 233
-			has_full_control_of_state = 215
-			has_full_control_of_state = 269
-			has_country_flag = CMA_PASPORTS
-			has_country_flag = CMA_BIVALUTEZONE
+			custom_trigger_tooltip = {
+				tooltip = Odessa_control_tt
+				OR = {
+					controls_state = 203
+					controls_state = 235
+					controls_state = 227
+					controls_state = 256
+					controls_state = 271
+					controls_state = 268
+					controls_state = 296
+					controls_state = 310
+				}
+			}
+			has_country_flag = CMA_COMMITTEE
 		}
 
 		visible = {
@@ -720,111 +3461,96 @@ RUS_CMA = {
 		}
 		
 		remove_effect = {
-			country_event = rus.49
-		}
-	}
-	RUS_ODESSA_QUESTION = {
-		icon = generic_formable_nations
-
-		fire_only_once = yes
-		cost = 350
-		days_remove = 3
-
-		available = {
-			original_tag = RUS
-			controls_state = 235
-			has_full_control_of_state = 256
-			has_full_control_of_state = 227
-			has_full_control_of_state = 235
-			has_full_control_of_state = 271
-			has_full_control_of_state = 268
-			has_full_control_of_state = 296
-			has_full_control_of_state = 310
-			has_country_flag = CMA_PASPORTS
-			has_country_flag = CMA_BIVALUTEZONE
-		}
-
-		visible = {
-			original_tag = RUS
-		}
-		
-		remove_effect = {
-			country_event = rus.53
-		}
-	}
-	RUS_DNIEPER_QUESTION = {
-		icon = generic_formable_nations
-
-		fire_only_once = yes
-		cost = 350
-		days_remove = 3
-
-		available = {
-			original_tag = RUS
-			controls_state = 156
-			has_full_control_of_state = 187
-			has_full_control_of_state = 186
-			has_full_control_of_state = 180
-			has_full_control_of_state = 197
-			has_full_control_of_state = 216
-			has_country_flag = CMA_PASPORTS
-			has_country_flag = CMA_BIVALUTEZONE
-		}
-
-		visible = {
-			original_tag = RUS
-		}
-		
-		remove_effect = {
-			country_event = rus.58
+		    if = {
+				limit = {
+					RUS = {
+						controls_state = 203
+					}
+				}
+				203 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 235
+					}
+				}
+				235 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 227
+					}
+				}
+				227 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 256
+					}
+				}
+				256 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 271
+					}
+				}
+				271 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 268
+					}
+				}
+				268 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 296
+					}
+				}
+				296 = {
+					add_compliance = 5
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						controls_state = 310
+					}
+				}
+				310 = {
+					add_compliance = 5
+				}
+			}
+			hidden_effect = {
+				set_country_flag = Odessa_cma_cf
+			}
 		}
 	}
 }
 
 RUS_smo = {
-	RUS_annex_LNR = {
-		icon = generic_formable_nations
-
-		fire_only_once = yes
-		cost = 75
-
-		available = {
-			date > 2022.9.29
-			RUS = {
-			    has_war_with = UKR
-			}
-		}
-
-		visible = {
-			original_tag = RUS
-		}
-
-		complete_effect = {
-			RUS = {
-				annex_country = {
-					target = DNR
-					transfer_troops = yes
-				}
-				annex_country = {
-					target = LNR
-					transfer_troops = yes
-				}
-			}
-			LNR = {
-				every_unit_leader = {
-					set_nationality = RUS
-				}
-			}
-			DNR = {
-				every_unit_leader = {
-					set_nationality = RUS
-				}
-		    }
-        }
-	}	
-	
 	RUS_rename_Bakhmut = {
-		icon = generic_formable_nations
+		icon = RUS_Bakhmut
 
 		fire_only_once = yes
 		cost = 75
@@ -1438,10 +4164,10 @@ RUS_amphibious_operations = {
 		icon = generic_formable_nations
 
 		fire_only_once = yes 
-		cost = 40
+		cost = 30
 		
 		ai_will_do = {
-	    	factor = 100
+	    	factor = 110
         }
 
 		available = {
@@ -1478,11 +4204,51 @@ RUS_amphibious_operations = {
 			}
 		}
 	}
+	RUS_landing_Herson = {
+		icon = generic_formable_nations
+
+		fire_only_once = yes 
+		cost = 30
+		
+		ai_will_do = {
+	    	factor = 110
+        }
+
+		available = {
+			RUS = {
+               has_war_with = UKR
+            }
+			custom_trigger_tooltip = {
+				tooltip = Herson_desant_2_tt
+				OR = {
+					has_country_flag = {
+			            flag = RUS_start_SMO
+			            days < 15
+		            }
+					has_country_flag = {
+			            flag = RUS_start_war
+			            days < 15
+		            }
+				}
+			}
+		} 
+
+		visible = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+		    country_event = {
+				id = rus.62
+				hours = 3
+			}
+		}
+	}
 	RUS_landing_zmiiniy = {
 		icon = generic_formable_nations
 
 		fire_only_once = yes 
-		cost = 40
+		cost = 30
 		
 		ai_will_do = {
 	    	factor = 100
@@ -1518,14 +4284,14 @@ RUS_amphibious_operations = {
 			}
 		}
 	}
-	RUS_landing_Herson = {
+	RUS_landing_Vasilkov = {
 		icon = generic_formable_nations
 
 		fire_only_once = yes 
-		cost = 40
+		cost = 30
 		
 		ai_will_do = {
-	    	factor = 100
+	    	factor = 110
         }
 
 		available = {
@@ -1533,15 +4299,19 @@ RUS_amphibious_operations = {
                has_war_with = UKR
             }
 			custom_trigger_tooltip = {
-				tooltip = Herson_desant_2_tt
+				tooltip = gostomel_desant_tt
+				has_country_flag = RUS_gostomel_desant
+			}
+			custom_trigger_tooltip = {
+				tooltip = gostomel_desant_2_tt
 				OR = {
 					has_country_flag = {
 			            flag = RUS_start_SMO
-			            days < 15
+			            days < 10
 		            }
 					has_country_flag = {
 			            flag = RUS_start_war
-			            days < 15
+			            days < 10
 		            }
 				}
 			}
@@ -1553,7 +4323,7 @@ RUS_amphibious_operations = {
 
 		complete_effect = {
 		    country_event = {
-				id = rus.62
+				id = rus.108
 				hours = 3
 			}
 		}
@@ -1562,7 +4332,7 @@ RUS_amphibious_operations = {
 		icon = generic_formable_nations
 
 		fire_only_once = yes 
-		cost = 40
+		cost = 30
 		
 		ai_will_do = {
 	    	factor = 100
@@ -1601,6 +4371,67 @@ RUS_amphibious_operations = {
 				UKR = {
 					country_event = {
 						id = ukr.49
+						hours = 3
+					}
+				}
+			}
+		}
+	}
+	RUS_landing_nikolaev = {
+		icon = generic_formable_nations
+
+		fire_only_once = yes 
+		cost = 30
+		
+		ai_will_do = {
+	    	factor = 100
+        }
+
+		available = {
+			RUS = {
+                has_war_with = UKR
+			    NOT = {
+				    controls_state = 233
+			    }
+            }
+			custom_trigger_tooltip = {
+				tooltip = Herson_full_controls_tt
+				controls_province = 10681
+				controls_province = 18407
+				controls_province = 16280
+				controls_province = 8233
+				controls_province = 10313
+				controls_province = 8233
+				controls_province = 6752
+				controls_province = 18405
+				controls_province = 9544
+			}
+			custom_trigger_tooltip = {
+				tooltip = Herson_desant_3_tt
+				OR = {
+					has_country_flag = {
+			            flag = RUS_start_SMO
+			            days < 25
+		            }
+					has_country_flag = {
+			            flag = RUS_start_war
+			            days < 25
+		            }
+				}
+			}
+		} 
+
+		visible = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = nikolaev_desant_tt
+			hidden_effect = {
+				load_oob = RUS_nikolaev_desant
+				UKR = {
+					country_event = {
+						id = ukr.50
 						hours = 3
 					}
 				}
@@ -2892,35 +5723,6 @@ RUS_information_war = {
 				25 = { country_event = { id = re_event_r.2 days = 3 } }
 				25 = { country_event = { id = re_event_r.6 days = 3 } }
 	        }
-		}
-	}
-	RUS_use_prigozhin_troll_factory = {
-		icon = WGN_discrediting_Ukraine
-
-		fire_only_once = yes
-		cost = 100
-		
-		ai_will_do = {
-	    	factor = 100
-        }
-
-		available = {
-			original_tag = RUS
-		}
-
-		visible = {
-			original_tag = RUS
-			has_completed_focus = RUS_information_front
-			WGN = {
-				has_completed_focus = WGN_troll_factories
-			}
-		}
-		
-		complete_effect = {
-			custom_effect_tooltip = pmcs_wagner_IW_ce_tt
-			hidden_effect = {
-				set_global_flag = WGN_prigozhin_troll_factory_CF
-			}
 		}
 	}
 	RUS_monthly_increase_information_influence = {
