@@ -1,0 +1,572 @@
+focus_tree = {
+	id = LPR
+	continuous_focus_position = { x = 4190 y = 920 } 
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = LPR
+		}
+	}
+	default = no
+	focus = {
+		id = LPR_reshaushiigod
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 40
+		y = 0
+		cost = 0.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		completion_reward = {
+			add_political_power = 150
+		}
+	}
+	focus = {
+		id = LPR_tofuture
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 44
+		y = 2
+		cost = 1.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			RUS = {
+				has_completed_focus = RUS_successful_negotiations
+			}
+		}
+		prerequisite = { focus = LPR_reshaushiigod  }
+		mutually_exclusive = { focus = LPR_ojidaemiyishod  }
+		completion_reward = {
+			add_stability = 1.00
+			add_war_support = -1.00
+		}
+	}
+	focus = {
+		id = LPR_zavtra
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 44
+		y = 3
+		cost = 140
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_tofuture  }
+		completion_reward = {
+		}
+	}
+	focus = {
+		id = LPR_ojidaemiyishod
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 36
+		y = 2
+		cost = 1.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			OR = {
+				RUS = {
+					has_completed_focus = RUS_conflict_flares_up_again
+				}
+				RUS = {
+					has_completed_focus = RUS_failure_of_negotiations
+				}
+				RUS = {
+					has_completed_focus = RUS_there_will_be_no_peaceful_solution
+				}
+			}
+		}
+		prerequisite = { focus = LPR_reshaushiigod  }
+		mutually_exclusive = { focus = LPR_tofuture  }
+		completion_reward = {
+		}
+	}
+	#Тёмные тучи над Донбассом
+	focus = {
+		id = LPR_tyomnyetuchinaddonbassom
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_tyomnyetuchinaddonbassom
+		x = 36
+		y = 3
+		cost = 0.145
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_ojidaemiyishod  }
+		completion_reward = {
+			country_event = {
+				id = DPR.1
+				days = 0
+			}
+		}
+	}
+	#Усиление Блокпостов
+	focus = {
+		id = LPR_usilenieblokpostov
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_usilenieblokpostov
+		x = 36
+		y = 5
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CIVIL_WAR
+		}
+		prerequisite = { focus = LPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_ideas = DNB_blokposti
+			add_manpower = -5000
+	    }
+	}
+	#Реформа вооруженных сил
+	focus = {
+		id = LPR_reformavoorujennihsil
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_konfiskaciyaoruzhiyaunaseleniya
+		x = 34
+		y = 4
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_2
+				amount = 10000
+				producer = RUS
+			}
+			add_stability = -0.05
+			add_ideas = DNB_profarmy
+		}
+	}
+
+	#За что мы сражаемся?
+	focus = {
+		id = LPR_zachtomysrazhaemsya
+		icon =  GFX_DPR_zachtomysrazhaemsya
+		x = 36
+		y = 7
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = LPR_reformavoorujennihsil focus = LPR_usilenieblokpostov focus = LPR_borbasnavodchikami focus = LPR_evacuation_focus0 }
+		completion_reward = {
+			add_ideas = why_we_fight_focus
+		}
+	}
+
+	#Борьба с украинскими диверсантами
+	focus = {
+		id = LPR_borbasukrainskimidiversantami
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_borbasukrainskimidiversantami
+		x = 38
+		y = 5
+		cost = 1
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CARLIST_UPRISING
+		}
+		prerequisite = { focus = LPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_ideas = DNB_diversanti_1
+	    }
+	}
+
+	#Эвакуация населения
+	focus = {
+		id = LPR_evacuation_focus0
+		icon =  GFX_DPR_evacuation_focus0
+		x = 40
+		y = 5
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_TFV_AUTONOMY
+		}
+		prerequisite = { focus = LPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			custom_effect_tooltip = LPR_tooltip_evacuation
+			add_stability = 0.1
+	    }
+	}
+
+	#Борьба с наводчиками
+	focus = {
+		id = LPR_borbasnavodchikami
+		icon =  GFX_DPR_borbasnavodchikami
+		x = 38
+		y = 6
+		cost = 1
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = LPR_borbasukrainskimidiversantami  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = DNB_diversanti_1
+            add_idea = DNB_diversanti_2
+			}
+		}
+	}
+
+	#Снова война...
+	focus = {
+		id = LPR_snovavoyna
+		icon =  GFX_DPR_snovavoyna
+		x = 16
+		y = 0
+		cost = 1
+		available = {
+			always = no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CIVIL_WAR
+		}
+		completion_reward = {
+			add_war_support = 0.15
+		}
+	}
+
+	#Мобилизация
+	focus = {
+		id = LPR_mobilizaciya
+		icon =  GFX_DPR_mobilizaciya
+		x = 18
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = LPR_snovavoyna  }
+		completion_reward = {
+			add_war_support = -0.05
+			add_stability = -0.05
+			add_manpower = 25000
+		}
+	}
+	
+	focus = {
+		id = LPR_mobilizaciya2
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 18
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = LPR_mobilizaciya  }
+		completion_reward = {
+			add_war_support = -0.15
+			add_stability = -0.10
+			add_manpower = 50000
+		}
+	}
+	
+	#Все должны воевать за родину
+	focus = {
+		id = LPR_vse_voyut
+		icon =  GFX_DPR_vsevoyut
+		x = 18
+		y = 4
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = LPR_mobilizaciya2  }
+		completion_reward = {
+			add_war_support = -0.3
+			add_stability = -0.25
+			add_manpower = 300000
+		}
+	}
+	
+	#Переговоры о вступлении в состав РФ
+	focus = {
+		id = LPR_vsutplenie_v_rf
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 16
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			always = no
+		}
+		prerequisite = { focus = LPR_snovavoyna  }
+		completion_reward = {
+			add_war_support = 0.2
+			news_event = {
+				id = news.25
+			}
+		}
+	}
+	
+	#Донецкая народная республика - новый субъект РФ
+	focus = {
+		id = LPR_LPR_v_rf
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 16
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_vsutplenie_v_rf  }
+		completion_reward = {
+			add_stability = 0.25
+			news_event = {
+				id = news.26
+			}
+			RUS = {
+				set_autonomy = {
+					target = LPR
+					autonomous_state = autonomy_integrated_federal_subject
+				}
+			}
+		}
+	}
+	
+	#Попросить у России защиту неба
+	focus = {
+		id = LPR_protect_sky
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 20
+		y = 2
+		cost = 1
+		prerequisite = { focus = LPR_snovavoyna  }
+		completion_reward = {
+			add_ideas = DNB_protect_sky
+		}
+	}
+
+	#Вставай, Донбасс!
+	focus = {
+		id = LPR_vstavaydonbass
+		icon = GFX_DPR_vstavaydonbass
+		x = 14
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = LPR_snovavoyna  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = why_we_fight_focus
+            add_idea = why_we_fight_focus_2
+			}
+		}
+
+	}
+
+	#Бастион борьбы с нацизмом
+	focus = {
+		id = LPR_bastionborbysnacizmom
+		icon =  GFX_DPR_bastionborbysnacizmom
+		x = 14
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_vstavaydonbass  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = why_we_fight_focus_2
+            add_idea = why_we_fight_focus_3
+			}
+		}
+	}
+	
+	#Начало освобождения
+	focus = {
+		id = LPR_startosvobojd
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 10
+		y = 2
+		cost = 1
+		available = {
+			OR = {
+				LPR = {
+				controls_state = 125
+				controls_state = 116
+				controls_state = 154
+				controls_state = 145
+				}
+			}
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_snovavoyna  }
+		completion_reward = {
+			add_war_support=0.15
+		}
+	}
+	
+	#Свобода
+	focus = {
+		id = LPR_osvobozhdenierespublikiotokkupacii
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_osvobozhdenierespublikiotokkupacii
+		x = 12
+		y = 6
+		cost = 1
+		available = {
+			LPR = {
+				controls_state = 125
+				controls_state = 116
+				controls_state = 154
+				controls_state = 145
+				controls_state = 176
+				controls_state = 172
+				controls_state = 173
+				controls_state = 194
+				controls_state = 183
+				controls_state = 293
+			}
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_snovavoyna  }
+
+		completion_reward = {
+			add_stability = 0.15
+			add_war_support=-0.2
+		}
+		
+	}
+
+	#Очистить умы людей от бандеровской пропаганды
+	focus = {
+		id = LPR_ochistitumylyudeyotbanderovskoypropagandy
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_ochistitumylyudeyotbanderovskoypropagandy
+		x = 14
+		y = 7
+		cost = 1
+		available = {
+			LPR = {
+			controls_state = 125
+			controls_state = 116
+			controls_state = 154
+			controls_state = 145
+			controls_state = 176
+		}
+		}
+		search_filters = {
+			FOCUS_FILTER_USA_CONGRESS
+		}
+		prerequisite = { focus = LPR_osvobozhdenierespublikiotokkupacii  }
+		completion_reward = {
+				125 = {
+			add_core_of = LPR
+			}
+                116 = {
+			add_core_of = LPR
+			}
+			    154 = {
+			add_core_of = LPR
+			}
+			145 = {
+			add_core_of = LPR
+			}
+			176 = {
+			add_core_of = LPR
+			}
+		}
+	}
+
+	#Мобилизация на освобожденных территориях
+	focus = {
+		id = LPR_mobilizaciyanaosvobozhdennyhterritoriyah
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_mobilizaciyanaosvobozhdennyhterritoriyah
+		x = 14
+		y = 8
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = LPR_ochistitumylyudeyotbanderovskoypropagandy  }
+		completion_reward = {
+			add_manpower = 25000
+			add_stability = -0.1
+		}
+	}
+
+	#Восстановление Донбасса
+	focus = {
+		id = LPR_vosstanovleniedonbassa
+		icon = GFX_IMAGE_NOT_FOUND #GFX_DPR_vosstanovleniedonbassa
+		x = 10
+		y = 7
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_INDUSTRY
+		}
+		prerequisite = { focus = LPR_osvobozhdenierespublikiotokkupacii  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = DNB_donbass_in_ruins
+            add_idea = DNB_donbass_in_ruins_2
+			}
+		}
+	}
+
+	#Общественные работы
+	focus = {
+		id = LPR_obshchestvennyeraboty
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_obshchestvennyeraboty
+		x = 10
+		y = 9
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_privlechenievolontyorovizrossii  }
+		completion_reward={
+			remove_ideas = DNB_donbass_in_ruins_3 
+			}
+	}
+
+	#Привлечение волонтёров из России
+	focus = {
+		id = LPR_privlechenievolontyorovizrossii
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_privlechenievolontyorovizrossii
+		x = 10
+		y = 8
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = LPR_vosstanovleniedonbassa  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = DNB_donbass_in_ruins_2
+            add_idea = DNB_donbass_in_ruins_3
+			}
+			add_autonomy_score = {
+				value = -30
+			}
+		}
+	}
+}
