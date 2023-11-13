@@ -7,7 +7,7 @@ operation_rescue_operative = { ### 0 1/35
 	prevent_captured_operative_to_die = yes
 
 
-	days = 35
+	days = 10
 	network_strength = 30
 	operatives = 1
 
@@ -106,8 +106,8 @@ operation_infiltrate_civilian = { ### 1 1/35
 	desc = operation_infiltrate_civilian_desc
 	priority = 1
 
-	days = 90
-	network_strength = 35
+	days = 30
+	network_strength = 20
 	operatives = 2
 
 	visible = {
@@ -225,7 +225,7 @@ operation_fake_intel = { ### 2 1/40
 	desc = operation_fake_intel_desc
 	priority = 2
 
-	days = 60
+	days = 21
 	network_strength = 40
 	operatives = 2
 
@@ -357,6 +357,107 @@ operation_fake_intel = { ### 2 1/40
 	}
 }
 
+operation_infiltrate_drg = {
+	icon = GFX_operations_infiltrate_armed_forces
+	map_icon = GFX_operations_infiltrate_armed_forces_map
+	name = operation_infiltrate_drg
+	desc = operation_infiltrate_drg_desc
+	priority = 4
+
+	days = 2
+	network_strength = 20
+	operatives = 1
+
+	visible = {
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+		NOT = {
+			has_operation_token = {
+				tag = FROM
+				token = token_drg
+			}
+		}
+	}
+
+	equipment = {
+	}
+	risk_chance = 0.8
+	experience = 2
+	outcome_extra_chance = 0.2
+
+	awarded_tokens = {
+		token_drg
+	}
+
+	outcome_execute = {
+		ROOT = {
+			add_operation_token = {
+				tag = FROM
+				token = token_drg
+			}
+		}
+	}
+	outcome_extra_execute = { # SCOPE_OPERATION
+		random_list = {
+			33 = {
+				ROOT = {
+					add_operation_token = {
+						tag = FROM
+						token = token_drg
+					}
+					army_experience = 10
+					add_intel = {
+						target = FROM
+						army_intel = 10
+					}
+				}
+			}
+			67 = {
+				ROOT = {
+					add_operation_token = {
+						tag = FROM
+						token = token_drg
+					}
+					army_experience = 10
+				}
+			}
+		}
+	}
+	outcome_potential = {
+		ROOT = {
+			add_operation_token = {
+				tag = FROM
+				token = token_drg
+			}
+		}
+	}
+
+	phases = { #infiltration
+		infiltration_border = { base = 100 }
+	}
+	phases = { #infiltrate military
+		infiltrate_military_turned_pow = {
+			base = 75
+			modifier = {
+				FROM = { has_war = no }
+				factor = 0
+			}
+		}
+		infiltrate_military_ideological_supporter = {
+			base = 25
+			modifier = {
+				FROM = { has_government = ROOT }
+				factor = 0
+			}
+		}
+	}
+	phases = { #exfiltration
+	    exfiltration_go_to_ground = { base = 100 }
+	}
+}
+
 operation_infiltrate_armed_forces_army = { ### 4 1/55
 	icon = GFX_operations_infiltrate_armed_forces
 	map_icon = GFX_operations_infiltrate_armed_forces_map
@@ -364,8 +465,8 @@ operation_infiltrate_armed_forces_army = { ### 4 1/55
 	desc = operation_infiltrate_armed_forces_army_desc
 	priority = 4
 	
-	days = 75
-	network_strength = 50
+	days = 20
+	network_strength = 40
 	operatives = 2
 
 	visible = {
@@ -378,6 +479,10 @@ operation_infiltrate_armed_forces_army = { ### 4 1/55
 				tag = FROM
 				token = token_army
 			}
+		}
+		has_operation_token = {
+			tag = FROM
+			token = token_civilian
 		}
 	}
 
@@ -491,8 +596,8 @@ operation_boost_resistance = { ### 8 2/40
 	
 	cost_multiplier = 0.25
 	
-	days = 50
-	network_strength = 35
+	days = 14
+	network_strength = 30
 	operatives = 2
 
 	visible = {
@@ -629,4 +734,285 @@ operation_boost_resistance = { ### 8 2/40
 		exfiltration_border = { base = 30 }
 		exfiltration_go_to_ground = { base = 70 }
     }
+}
+
+operation_targeted_sabotage_resources = { ### 15 3/35
+	icon = GFX_operations_targeted_sabotage
+	map_icon = GFX_operations_targeted_sabotage_map
+	name = operation_targeted_sabotage_resources
+	desc = operation_targeted_sabotage_resources_desc
+	priority = 15
+	
+	days = 10
+	network_strength = 30
+	operatives = 3
+
+	visible = {
+		num_of_operatives > 1
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+		has_operation_token = {
+			tag = FROM
+			token = token_drg
+		}
+	}
+	
+	requirements = {
+		FROM = {
+			has_war = yes
+		}
+	}
+	selection_target = {
+		targets = { FROM }
+	}
+	required_tokens = { token_drg }
+	equipment = {
+		support_equipment = 1000
+	}
+	risk_chance = 0.2
+	experience = 2
+	outcome_extra_chance = 0.25
+	outcome_modifiers = { target_sabotage_factor operation_outcome }
+	risk_modifiers = { target_sabotage_risk operation_risk }
+	cost_modifiers = { target_sabotage_cost operation_cost }
+	outcome_execute = {
+		FROM.FROM = {
+			add_dynamic_modifier = {
+				modifier = sabotaged_resources
+				days = 21
+			}
+			custom_effect_tooltip = targeted_sabotage_resources_2_tt
+		}
+		ROOT = {
+			remove_operation_token = {
+				tag = FROM
+				token = token_drg
+			}
+		}
+	}
+	outcome_extra_execute = { # SCOPE_OPERATION
+		
+		FROM.FROM = {
+			add_dynamic_modifier = {
+				modifier = sabotaged_resources
+				days = 21
+			}
+			custom_effect_tooltip = targeted_sabotage_resources_2_tt
+		}
+	}
+	outcome_potential = {
+		custom_effect_tooltip = operation_outcome_sabotage_resources_tt
+		custom_effect_tooltip = operation_outcome_consumes_token_tt
+	}
+	phases = { #infiltration
+		infiltration_border = { base = 75 }
+		infiltration_diplomatic = {
+			base = 25
+			modifier = {
+				factor = 20
+				ROOT = { has_war = no }
+				FROM = {
+					has_war = no
+				}
+			}
+			modifier = {
+				FROM = {
+					has_war_with = ROOT
+				}
+				factor = 0
+			}
+		}
+	}
+	phases = {
+		targeted_sabotage_burn_storage = { base = 50 }
+		targeted_sabotage_destroy_mining_equipment = { base = 50 }
+	}
+	phases = { #exfiltration
+		exfiltration_border = { base = 40 }
+		exfiltration_go_to_ground = { base = 60 }
+	}
+}
+
+operation_targeted_sabotage_infrastructure = { ### 14 3/35
+	icon = GFX_operations_targeted_sabotage
+	map_icon = GFX_operations_targeted_sabotage_map
+	name = operation_targeted_sabotage_infrastructure
+	desc = operation_targeted_sabotage_infrastructure_desc
+	priority = 14
+	
+	days = 10
+	network_strength = 30
+	operatives = 3
+
+	visible = {
+		num_of_operatives > 1
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+
+		has_operation_token = {
+			tag = FROM
+			token = token_drg
+		}
+	}	
+
+	selection_target = {
+		targets = { FROM }
+	}
+	required_tokens = { token_drg }
+	equipment = {
+		support_equipment = 1000
+	}
+	risk_chance = 0.2
+	experience = 2
+	outcome_extra_chance = 0.25
+	outcome_modifiers = { target_sabotage_factor operation_risk }
+	risk_modifiers = { target_sabotage_risk operation_outcome }
+	cost_modifiers = { target_sabotage_cost operation_cost }
+	
+	outcome_execute = {
+		FROM.FROM = {
+			random_list = {
+				70 = {
+			    damage_building = {
+				type = air_base
+				damage = 1
+			    }
+			}
+				90 = {
+			    damage_building = {
+				type = supply_node 
+				damage = 1
+			    }
+			}
+			    80 = {
+			    damage_building = {
+				type = rail_way 
+				damage = 1
+			    }
+			}
+			    40 = {
+			    damage_building = {
+                type = arms_factory
+				damage = 1
+				}
+			}
+		}
+	}
+		custom_effect_tooltip = targeted_sabotage_infrastructure_2_tt
+		ROOT = {
+			remove_operation_token = {
+				tag = FROM
+				token = token_drg
+			}
+		}
+	}
+	outcome_extra_execute = { # SCOPE_OPERATION
+		FROM.FROM = {
+			random_list = {
+				20 = {
+			    damage_building = {
+				type = air_base
+				damage = 1
+			    }
+			}
+				40 = {
+			    damage_building = {
+				type = supply_node 
+				damage = 1
+			    }
+			}
+			    30 = {
+			    damage_building = {
+				type = rail_way 
+				damage = 1
+			    }
+			}
+			    10 = {
+			    damage_building = {
+                type = arms_factory
+				damage = 1
+				}
+			}
+	      }
+			custom_effect_tooltip = targeted_sabotage_infrastructure_3_tt
+		}
+	}
+	outcome_potential = {
+		custom_effect_tooltip = operation_outcome_sabotage_infrastructure_tt
+		custom_effect_tooltip = operation_outcome_consumes_token_tt
+	}
+	phases = { #infiltration
+		infiltration_border = { base = 100 }
+	}
+	phases = {
+		targeted_sabotage_destroy_bridge = { base = 25 }
+		targeted_sabotage_collapse_tunnel = { base = 25 }
+		targeted_sabotage_remove_roadsigns = { base = 25 }
+		targeted_sabotage_immobilize_rolling_stock = { base = 25 }
+	}
+	phases = { #exfiltration
+		exfiltration_border = { base = 40 }
+		exfiltration_go_to_ground = { base = 60 }
+	}
+}
+
+
+operation_kill_general = {
+	icon = GFX_operations_infiltrate_armed_forces
+	map_icon = GFX_operations_infiltrate_armed_forces_map
+	name = operation_kill_unit_leader
+	desc = operation_kill_unit_leader_desc
+	priority = 4
+
+	days = 5
+	network_strength = 50
+	operatives = 2
+
+	visible = {
+		num_of_operatives > 1
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+
+		has_operation_token = {
+			tag = FROM
+			token = token_drg
+		}
+	}
+
+	equipment = {
+		
+	}
+	risk_chance = 0.8
+	experience = 2
+	outcome_extra_chance = 0.2
+
+	selection_target = {
+	targets = { FROM }
+	}
+	required_tokens = { token_drg }
+	outcome_execute = {
+			random_unit_leader = {
+				limit = {
+					tag = FROM
+				}
+			}
+			ROOT = {
+				remove_operation_token = {
+					tag = FROM
+					token = token_drg
+				}
+			}
+	   }
+	phases = {
+		targeted_enemy_unit_leader = { base = 100 }
+	}
+	phases = { #exfiltration
+		exfiltration_go_to_ground = { base = 100 }
+	}
 }
