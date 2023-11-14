@@ -576,6 +576,129 @@ operation_infiltrate_armed_forces_army = { ### 4 1/55
 	}
 }
 
+operation_make_resistance_contacts = { ### 9 2/40
+	icon = GFX_operations_make_resistance_contacts
+	map_icon = GFX_operations_make_resistance_contacts_map
+	name = operation_make_resistance_contacts
+	desc = operation_make_resistance_contacts_desc
+	priority = 9
+
+	days = 10
+	network_strength = 40
+	operatives = 2
+
+	visible = {
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+		FROM = {
+			any_controlled_state = {
+				has_resistance = yes
+			}
+		}
+		NOT = {
+			has_operation_token = {
+				tag = FROM
+				token = token_resistance_contacts
+			}
+		}		
+	}
+
+	equipment = {
+		
+	}
+
+	selection_target_state = {
+		has_resistance = yes
+	}
+
+	available = {
+		#NOT = {
+		#	has_operation_token = {
+		#		tag = FROM
+		#		token = token_resistance_contacts
+		#	}
+		#}
+		#
+		#FROM = {
+		#	any_controlled_state = {
+		#		has_resistance = yes
+		#	}
+		#}
+	}
+	
+	awarded_tokens = {
+		token_resistance_contacts
+	}
+	risk_chance = 0.1
+	outcome_extra_chance = 0.25
+	risk_modifiers = { operation_infiltrate_risk operation_risk }
+	outcome_modifiers = { operation_infiltrate_outcome operation_outcome }
+	cost_modifiers = { operation_infiltrate_cost operation_cost }
+	outcome_execute = {
+		ROOT = {
+			add_operation_token = {
+				tag = FROM
+				token = token_resistance_contacts
+			}
+		}
+	}
+	outcome_extra_execute = { # SCOPE_OPERATION
+		random_list = {
+			33 = {
+				ROOT = {
+					add_operation_token = {
+						tag = FROM
+						token = token_resistance_contacts
+					}
+				}
+				FROM.FROM = {
+					add_resistance_target = {
+						amount = 20
+						tooltip = intelligency_agency_resistance_boost_tt
+					}
+				}
+			}
+			67 = {
+				ROOT = {
+					add_operation_token = {
+						tag = FROM
+						token = token_resistance_contacts
+					}
+				}
+				FROM.FROM = {
+					add_resistance_target = {
+						amount = 30
+						tooltip = intelligency_agency_resistance_boost_tt
+					}
+				}
+			}
+		}
+	}
+
+	outcome_potential = {
+		ROOT = {
+			add_operation_token = {
+				tag = FROM
+				token = token_resistance_contacts
+			}
+		}
+	}
+	
+	phases = { #infiltration
+		infiltration_border = { base = 100 }
+	}
+	phases = { #resistance contacts
+		resistance_contacts_radio_circuits = { base = 33 }
+		resistance_support_pidgeons = { base = 33 }
+		resistance_contacts_briefings = { base = 33 }
+	}
+	phases = { #exfiltration
+		exfiltration_go_to_ground = { base = 100 }
+	}
+}
+
 operation_boost_resistance = { ### 8 2/40
 	icon = GFX_operations_boost_resistance
 	map_icon = GFX_operations_boost_resistance_map
@@ -585,13 +708,13 @@ operation_boost_resistance = { ### 8 2/40
 	
 	cost_multiplier = 0.25
 	
-	days = 14
+	days = 8
 	network_strength = 30
 	operatives = 2
 
 	visible = {
 		network_national_coverage = {
-			target = FROM
+			target = FROM.FROM
 			value > 0
 		}
 
@@ -622,27 +745,13 @@ operation_boost_resistance = { ### 8 2/40
 	outcome_modifiers = { boost_resistance_factor }
 	outcome_execute = {
 		FROM.FROM = {
-			if = {
-				limit = {
-					ROOT = {
-						has_completed_focus = SWI_export_saboteurs
-					}
-				}
-				add_resistance_target = {
-					amount = 25
-					tooltip = intelligency_agency_resistance_boost_tt
-				}
-				add_compliance = -15
+		add_resistance_target = {
+			amount = 10
+			tooltip = intelligency_agency_resistance_boost_tt
 			}
-			else = {
-				add_resistance_target = {
-					amount = 10
-					tooltip = intelligency_agency_resistance_boost_tt
-				}
+			add_resistance = 5
 			}
-			subtract_from_variable = { boost_resistance_chance = 10 }
 		}
-	}
 	outcome_extra_execute = { # SCOPE_OPERATION
 		random_list = {
 			33 = { #critical success
@@ -651,10 +760,10 @@ operation_boost_resistance = { ### 8 2/40
 						amount = 20
 						tooltip = intelligency_agency_resistance_boost_tt
 					}
-					subtract_from_variable = { boost_resistance_chance = 10 }
 				}
 				FROM.FROM = {
 					add_compliance = -10
+					add_resistance = 15
 				}
 			}
 			67 = { #normal success
@@ -663,7 +772,10 @@ operation_boost_resistance = { ### 8 2/40
 						amount = 20
 						tooltip = intelligency_agency_resistance_boost_tt
 					}
-					subtract_from_variable = { boost_resistance_chance = 10 }
+				}
+				FROM.FROM = {
+					add_compliance = -5
+					add_resistance = 10
 				}
 			}
 		}
@@ -671,45 +783,14 @@ operation_boost_resistance = { ### 8 2/40
 
 	outcome_potential = {
 		FROM.FROM = {
-			if = {
-				limit = {
-					ROOT = {
-						has_completed_focus = SWI_export_saboteurs
-					}
-				}
-				add_resistance_target = {
-					amount = 25
-					tooltip = intelligency_agency_resistance_boost_tt
-				}
-				add_compliance = -15
+			add_resistance_target = {
+				amount = 25
+				tooltip = intelligency_agency_resistance_boost_tt
 			}
-			else = {
-				add_resistance_target = {
-					amount = 10
-					tooltip = intelligency_agency_resistance_boost_tt
-				}
-			}
+			add_compliance = -15
 		}
 	}
 
-	
-	target_weight = {
-		base = 100
-		
-		modifier = {
-			add = boost_resistance_chance
-		}
-		
-		modifier = {
-			set_temp_variable = { t = distance_to@ROOT.capital }
-			divide_temp_variable = { t = 600 }
-			clamp_temp_variable = { var = t min = 0 max = 1 }
-			multiply_temp_variable = { t = -40 }
-			
-			add = t
-		}
-	}
-	
 	phases = { #infiltration
 		infiltration_border = { base = 100 }
 	}
