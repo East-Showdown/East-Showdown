@@ -943,8 +943,6 @@ country_event = {
     fire_only_once = yes
 	option = {
 		name = blr.4.a
-	}
-	immediate = {
 		hidden_effect = {
 			BLR = {
 				every_core_state = {
@@ -1008,6 +1006,104 @@ country_event = {
 				set_cosmetic_tag = BPR_CW
 				add_ideas = BPR_guerilla_war
 				change_tag_from = BLR
+			}
+			BPR = {
+				if = {
+					limit = { BLR = { has_country_flag = BPR_Brest_Slot } }
+					load_oob = BPR_Brest
+				}
+				if = {
+					limit = { BLR = { has_country_flag = BPR_Grodno_Slot } }
+					load_oob = BPR_Grodno
+					30 = {
+						set_state_owner_to = BPR
+					}
+				}
+				if = {
+					limit = { BLR = { has_country_flag = BPR_Pinsk_Slot } }
+					load_oob = BPR_Pinsk
+				}
+				if = {
+					limit = { BLR = { has_country_flag = BPR_Baranovichi_Slot } }
+					load_oob = BPR_Baranovichi
+				}
+				if = {
+					limit = { BLR = { OR = { has_completed_focus = BLR_leave_third_sector_away has_country_flag = BLR_third_sector_flag } } }
+					load_oob = BPR_third_sector
+					BLR = {
+						load_oob = BLR_Minsk
+					}
+					29 = {
+						set_state_owner_to = BPR
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = blr.4.b
+		hidden_effect = {
+			BLR = {
+				every_core_state = {
+					add_core_of = BPR	
+				}
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 49
+						} 
+						has_country_flag = BPR_Brest_Slot
+					}
+					delete_unit = {
+						state = 49
+						disband = yes
+					}
+				}
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 30
+						} 
+						has_country_flag = BPR_Pinsk_Slot
+					}
+					delete_unit = {
+						state = 30
+						disband = yes
+					}
+				}
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 29
+						} 
+						OR = {
+							has_completed_focus = BLR_leave_third_sector_away
+							has_country_flag = BLR_third_sector_flag
+						}
+					}
+					delete_unit = {
+						state = 29
+						disband = yes
+					}
+				}
+			}
+			49 = {
+				set_state_owner_to = BPR
+			}
+			BPR = {
+				set_capital = { state = 49 }
+				set_province_controller = 2444
+				declare_war_on = {
+					target = BLR
+					type = civil_war
+				}
+				add_civil_war_target = BLR
+				load_focus_tree = BPR_tree
+				set_cosmetic_tag = BPR_CW
+				add_ideas = BPR_guerilla_war
 			}
 			BPR = {
 				if = {
