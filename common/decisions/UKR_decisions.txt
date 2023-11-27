@@ -43,36 +43,38 @@ UKR_Lend_leas1_category = {
 		days_remove = 30
 		cost = 9
 		fire_only_once = no
-
 		available = {
 			has_completed_focus = UKR_large_batch_of_small_arms
 			custom_trigger_tooltip = {
 				tooltip = UKR_nato_have_ammo
 				#Высчитываем, сколько место осталось у Украины на складах
-				set_temp_variable = { ammo_needed = ammunition_free_space }
-				
+				set_temp_variable = {
+					ammo_needed = ammunition_free_space
+				}
 				#Ограничиваем максимумом в 200к
 				clamp_temp_variable = {
 					var = ammo_needed
 					min = 0
 					max = 200
 				}
-				
 				NTO = {
-					check_variable = { ammunition_variable > ammo_needed }
+					check_variable = {
+						ammunition_variable > ammo_needed
+					}
 				}
 			}
 			custom_trigger_tooltip = {
 				tooltip = UKR_nato_have_enough_ammo
 				NTO = {
-					check_variable = { ammunition_variable > 200 }
+					check_variable = {
+						ammunition_variable > 200
+					}
 				}
 			}
 		}
 		#  visible = {
 		#     UKR_can_sell_weapons_trigger = yes
 		# }
-		
 		ai_will_do = {
 			factor = 10
 			modifier = {
@@ -90,21 +92,24 @@ UKR_Lend_leas1_category = {
 		}
 		remove_effect = {
 			#Высчитываем, сколько место осталось у Украины на складах
-			set_temp_variable = { ammo_needed = ammunition_free_space }
-
+			set_temp_variable = {
+				ammo_needed = ammunition_free_space
+			}
 			#Ограничиваем максимумом в 200к
 			clamp_temp_variable = {
-			  var = ammo_needed
-			  min = 0
-			  max = 200
+				var = ammo_needed
+				min = 0
+				max = 200
 			}
-			
 			#Передаём боеприпасы
-			add_to_variable = { ammunition_variable = ammo_needed }
-			NTO = {
-				subtract_from_variable = { ammunition_variable = ammo_needed }
+			add_to_variable = {
+				ammunition_variable = ammo_needed
 			}
-			
+			NTO = {
+				subtract_from_variable = {
+					ammunition_variable = ammo_needed
+				}
+			}
 			custom_effect_tooltip = UKR_ammo_supply_from_nato_tt
 		}
 	}
@@ -187,7 +192,7 @@ UKR_Lend_leas1_category = {
 				variant_name = "M1025 HMMWV"
 				amount = 5000
 				producer = NTO
-			} 
+			}
 		}
 	}
 	UKR_order_m777_in_Ukraine = {
@@ -224,10 +229,10 @@ UKR_Lend_leas1_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-					type = artillery_equipment_3
-					amount = 200
-					producer = NTO
-				}
+				type = artillery_equipment_3
+				amount = 200
+				producer = NTO
+			}
 		}
 	}
 	UKR_order_IFV_in_Ukraine = {
@@ -268,7 +273,7 @@ UKR_Lend_leas1_category = {
 				variant_name = "БМП-1 БМ"
 				amount = 200
 				producer = UKR
-			} 
+			}
 			add_equipment_to_stockpile = {
 				type = nto_bmp1_chassis
 				variant_name = "БМП-1П"
@@ -310,10 +315,7 @@ UKR_Lend_leas1_category = {
 		complete_effect = {
 		}
 		remove_effect = {
-
 			country_event = ukr.44
-				
-
 		}
 	}
 	UKR_order_Himars_in_Ukraine = {
@@ -380,7 +382,7 @@ UKR_Lend_leas1_category = {
 			}
 		}
 		remove_effect = {
-				custom_effect_tooltip = decision_negotowo_tooltip
+			custom_effect_tooltip = decision_negotowo_tooltip
 		}
 	}
 	UKR_order_support_equipment_in_Ukraine = {
@@ -589,103 +591,99 @@ UKR_Lend_leas1_category = {
 				}
 			}
 			custom_effect_tooltip = UKR_Leopards_tooltip_tt
-			hidden_effect = {		
-			load_oob = UKR_LEO
+			hidden_effect = {
+				load_oob = UKR_LEO
 			}
 		}
 	}
-#Челленджер
-UKR_order_Challengers_in_Ukraine = {
-	icon = decision_category_generic_arms_trade
-	fire_only_once = yes
-	available = {
-		has_completed_focus = UKR_Request_Challengers
-	}
-	days_remove = 90
-	cost = 10
-	ai_will_do = {
-		factor = 10
-		modifier = {
-			has_equipment = {
-				infantry_equipment < 1
+	#Челленджер
+	UKR_order_Challengers_in_Ukraine = {
+		icon = decision_category_generic_arms_trade
+		fire_only_once = yes
+		available = {
+			has_completed_focus = UKR_Request_Challengers
+		}
+		days_remove = 90
+		cost = 10
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				has_equipment = {
+					infantry_equipment < 1
+				}
+				factor = 50
 			}
-			factor = 50
-		}
-		modifier = {
-			has_manpower < 10000
-			factor = 0				#need to up conscription laws
-		}
-	}
-	complete_effect = {
-		UKR = {
-			add_offsite_building = {
-				type = industrial_complex
-				level = 1
+			modifier = {
+				has_manpower < 10000
+				factor = 0				#need to up conscription laws
 			}
 		}
-	}
-	remove_effect = {
-		NTO = {
-			send_equipment = {
-				equipment = challenger2_chassis
-				amount = 200
-				target = UKR
+		complete_effect = {
+			UKR = {
+				add_offsite_building = {
+					type = industrial_complex
+					level = 1
+				}
 			}
 		}
-		custom_effect_tooltip = UKR_Challanger_tooltip_tt
-		hidden_effect = {
-			load_oob = UKR_CHALLENGER
-		}
-	}
-}
-
-#Леклерк
-UKR_order_Leclercs_in_Ukraine = {
-	icon = decision_category_generic_arms_trade
-	fire_only_once = yes
-	available = {
-		has_completed_focus = UKR_Request_Leclercs
-	}
-	days_remove = 90
-	cost = 10
-	ai_will_do = {
-		factor = 10
-		modifier = {
-			has_equipment = {
-				infantry_equipment < 1
+		remove_effect = {
+			NTO = {
+				send_equipment = {
+					equipment = challenger2_chassis
+					amount = 200
+					target = UKR
+				}
 			}
-			factor = 50
-		}
-		modifier = {
-			has_manpower < 10000
-			factor = 0				#need to up conscription laws
-		}
-	}
-	complete_effect = {
-		UKR = {
-			add_offsite_building = {
-				type = industrial_complex
-				level = 1
+			custom_effect_tooltip = UKR_Challanger_tooltip_tt
+			hidden_effect = {
+				load_oob = UKR_CHALLENGER
 			}
 		}
 	}
-	remove_effect = {
-		NTO = {
-			send_equipment = {
-				equipment = leclerc_chassis_0
-				amount = 350
-				target = UKR
+	#Леклерк
+	UKR_order_Leclercs_in_Ukraine = {
+		icon = decision_category_generic_arms_trade
+		fire_only_once = yes
+		available = {
+			has_completed_focus = UKR_Request_Leclercs
+		}
+		days_remove = 90
+		cost = 10
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				has_equipment = {
+					infantry_equipment < 1
+				}
+				factor = 50
+			}
+			modifier = {
+				has_manpower < 10000
+				factor = 0				#need to up conscription laws
 			}
 		}
-
-		custom_effect_tooltip = UKR_Leclercs_tooltip_tt
-		hidden_effect = {
-			load_oob = UKR_LECLERC
+		complete_effect = {
+			UKR = {
+				add_offsite_building = {
+					type = industrial_complex
+					level = 1
+				}
+			}
 		}
-		
+		remove_effect = {
+			NTO = {
+				send_equipment = {
+					equipment = leclerc_chassis_0
+					amount = 350
+					target = UKR
+				}
+			}
+			custom_effect_tooltip = UKR_Leclercs_tooltip_tt
+			hidden_effect = {
+				load_oob = UKR_LECLERC
+			}
+		}
 	}
-}
-
 	UKR_order_Abrams_in_Ukraine = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
@@ -731,7 +729,6 @@ UKR_order_Leclercs_in_Ukraine = {
 			hidden_effect = {
 				load_oob = UKR_ABRAMS
 			}
-		
 		}
 	}
 	UKR_order_mig29_in_Ukraine = {
@@ -771,7 +768,7 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = ukr_fighter_equipment_1
 				amount = 30
 				producer = UKR
-			} 
+			}
 		}
 	}
 	UKR_order_su25_in_Ukraine = {
@@ -811,12 +808,12 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = ukr_CAS_equipment_2
 				amount = 30
 				producer = UKR
-			} 
+			}
 		}
 	}
 	UKR_order_mi24_in_Ukraine = {
 		icon = decision_category_generic_arms_trade
-		fire_only_once = yes	
+		fire_only_once = yes
 		available = {
 			has_completed_focus = UKR_We_need_mi_24b
 		}
@@ -851,10 +848,10 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = ukr_hel_strike_equipment_1
 				amount = 35
 				producer = UKR
-			} 
+			}
 		}
 	}
-    UKR_order_f16_in_Ukraine = {
+	UKR_order_f16_in_Ukraine = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
@@ -891,7 +888,7 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = nto_fighter_equipment_1
 				amount = 60
 				producer = NTO
-			} 
+			}
 		}
 	}
 	UKR_order_ah64_in_Ukraine = {
@@ -931,7 +928,7 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = nto_hel_strike_equipment_3
 				amount = 40
 				producer = NTO
-			} 
+			}
 		}
 	}
 	UKR_order_eurofighters_in_Ukraine = {
@@ -971,7 +968,7 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = nto_fighter_equipment_euro
 				amount = 60
 				producer = NTO
-			} 
+			}
 		}
 	}
 	UKR_order_bayraktar_in_Ukraine = {
@@ -1011,7 +1008,7 @@ UKR_order_Leclercs_in_Ukraine = {
 				type = nto_uav_strike_bayraktar
 				amount = 35
 				producer = NTO
-			} 
+			}
 		}
 	}
 }
@@ -3034,8 +3031,6 @@ UKR_counterattack_category = {
 						state = 180
 						state = 187
 						state = 169
-
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3043,11 +3038,11 @@ UKR_counterattack_category = {
 					scope = UKR
 					days = 35
 				}
-			}	
+			}
 			hidden_effect = {
 				set_global_flag = UKR_south_counterattack
-			}	
-			news_event = news.119	
+			}
+			news_event = news.119
 		}
 		fire_only_once = yes
 	}
@@ -3082,7 +3077,6 @@ UKR_counterattack_category = {
 						state = 100
 						state = 103
 						state = 101
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3090,8 +3084,8 @@ UKR_counterattack_category = {
 					scope = UKR
 					days = 35
 				}
-			}	
-			news_event = news.120			
+			}
+			news_event = news.120
 		}
 		fire_only_once = yes
 	}
@@ -3131,9 +3125,6 @@ UKR_counterattack_category = {
 						state = 57
 						state = 82
 						state = 72
-					
-
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3141,14 +3132,14 @@ UKR_counterattack_category = {
 					scope = UKR
 					days = 35
 				}
-			}	
-			news_event = news.121		
+			}
+			news_event = news.121
 		}
-	fire_only_once = yes
+		fire_only_once = yes
+	}
 }
-}
-UKR_Liberate_the_Donbass_category = {
 
+UKR_Liberate_the_Donbass_category = {
 	UKR_Strike_supply_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3171,7 +3162,7 @@ UKR_Liberate_the_Donbass_category = {
 					type = supply_node
 					damage = 1
 				}
-			}	
+			}
 			189 = {
 				damage_building = {
 					type = supply_node
@@ -3182,32 +3173,29 @@ UKR_Liberate_the_Donbass_category = {
 				damage_building = {
 					type = supply_node
 					damage = 1
-				}	
+				}
 			}
-
 			194 = {
 				damage_building = {
 					type = supply_node
 					damage = 1
-				}	
+				}
 			}
 			173 = {
 				damage_building = {
 					type = supply_node
 					damage = 1
-				}	
+				}
 			}
 			183 = {
 				damage_building = {
 					type = supply_node
 					damage = 1
-				}	
+				}
 			}
 		}
 		fire_only_once = yes
-
 	}
-
 	UKR_Strike_Suppress_the_Donbass_air_defense = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3230,7 +3218,7 @@ UKR_Liberate_the_Donbass_category = {
 					type = anti_air_building
 					damage = 2
 				}
-			}	
+			}
 			189 = {
 				damage_building = {
 					type = anti_air_building
@@ -3241,33 +3229,29 @@ UKR_Liberate_the_Donbass_category = {
 				damage_building = {
 					type = anti_air_building
 					damage = 1
-				}	
+				}
 			}
-
 			194 = {
 				damage_building = {
 					type = anti_air_building
 					damage = 2
-				}	
+				}
 			}
 			173 = {
 				damage_building = {
 					type = anti_air_building
 					damage = 2
-				}	
+				}
 			}
 			183 = {
 				damage_building = {
 					type = anti_air_building
 					damage = 1
-				}	
+				}
 			}
 		}
 		fire_only_once = yes
-
 	}
-
-
 	UKR_break_up_the_fortifications_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3290,7 +3274,7 @@ UKR_Liberate_the_Donbass_category = {
 					type = bunker
 					damage = 4
 				}
-			}	
+			}
 			189 = {
 				damage_building = {
 					type = bunker
@@ -3301,31 +3285,29 @@ UKR_Liberate_the_Donbass_category = {
 				damage_building = {
 					type = bunker
 					damage = 4
-				}	
+				}
 			}
 			293 = {
 				damage_building = {
 					type = bunker
 					damage = 4
-				}	
+				}
 			}
 			173 = {
 				damage_building = {
 					type = bunker
 					damage = 5
-				}	
+				}
 			}
 			183 = {
 				damage_building = {
 					type = bunker
 					damage = 2
-				}	
+				}
 			}
 		}
 		fire_only_once = yes
-
 	}
-
 	UKR_Shell_Donetsk_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3337,20 +3319,16 @@ UKR_Liberate_the_Donbass_category = {
 		cost = 10
 		days_remove = 0
 		remove_effect = {
-
 			205 = {
 				add_manpower = -74
 				damage_building = {
 					type = infrastructure
 					damage = 1
-				}	
+				}
 			}
-
 		}
 		fire_only_once = yes
-
 	}
-
 	UKR_Shell_Horlivka_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3362,20 +3340,16 @@ UKR_Liberate_the_Donbass_category = {
 		cost = 10
 		days_remove = 0
 		remove_effect = {
-
 			189 = {
 				add_manpower = -35
 				damage_building = {
 					type = infrastructure
 					damage = 1
-				}	
+				}
 			}
-
 		}
 		fire_only_once = yes
-
-	}	
-
+	}
 	UKR_Shell_Alchevsk_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3387,20 +3361,16 @@ UKR_Liberate_the_Donbass_category = {
 		cost = 10
 		days_remove = 0
 		remove_effect = {
-
 			172 = {
 				add_manpower = -10
 				damage_building = {
 					type = infrastructure
 					damage = 1
-				}	
+				}
 			}
-
 		}
 		fire_only_once = yes
-
-	}	
-
+	}
 	UKR_Shell_Stakhanov_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3412,20 +3382,16 @@ UKR_Liberate_the_Donbass_category = {
 		cost = 10
 		days_remove = 0
 		remove_effect = {
-
 			293 = {
 				add_manpower = -8
 				damage_building = {
 					type = infrastructure
 					damage = 1
-				}	
+				}
 			}
-
 		}
 		fire_only_once = yes
-
 	}
-
 	UKR_Shell_Luhansk_Donbass = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3437,20 +3403,16 @@ UKR_Liberate_the_Donbass_category = {
 		cost = 10
 		days_remove = 0
 		remove_effect = {
-
 			173 = {
-				add_manpower = -28 
+				add_manpower = -28
 				damage_building = {
 					type = infrastructure
 					damage = 1
-				}	
+				}
 			}
-
 		}
 		fire_only_once = yes
-
 	}
-
 	UKR_Start_the_operation_Donbass = {
 		icon = decision_icon_the_offensive_of_luhansk
 		visible = {
@@ -3472,7 +3434,6 @@ UKR_Liberate_the_Donbass_category = {
 		ai_will_do = {
 			factor = 40
 		}
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3486,7 +3447,6 @@ UKR_Liberate_the_Donbass_category = {
 						state = 194
 						state = 183
 						state = 176
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3494,7 +3454,7 @@ UKR_Liberate_the_Donbass_category = {
 					scope = UKR
 					days = 65
 				}
-			}			
+			}
 		}
 		fire_only_once = yes
 	}
@@ -3521,9 +3481,8 @@ UKR_derusification = {
 		}
 		complete_effect = {
 			add_political_power = 100
-	    }
+		}
 	}
-	
 	UKR_derusofication_odessa_neighboorhoods = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
@@ -3544,11 +3503,16 @@ UKR_derusification = {
 			original_tag = UKR
 		}
 		complete_effect = {
-			set_province_name = { id = 757 name = VICTORY_POINTS_757_HADZHIBEYSKIY }
-			set_province_name = { id = 16459 name = VICTORY_POINTS_16459_PERESYPSKY }
+			set_province_name = {
+				id = 757
+				name = VICTORY_POINTS_757_HADZHIBEYSKIY
+			}
+			set_province_name = {
+				id = 16459
+				name = VICTORY_POINTS_16459_PERESYPSKY
+			}
+		}
 	}
-}
-
 	UKR_derusofication_kharkov_neighboorhoods = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
@@ -3569,15 +3533,19 @@ UKR_derusification = {
 			original_tag = UKR
 		}
 		complete_effect = {
-			set_province_name = { id = 9189 name = VICTORY_POINTS_9189_SALTOV }
-			set_province_name = { id = 18383 name = VICTORY_POINTS_18383_SALTOV }			
+			set_province_name = {
+				id = 9189
+				name = VICTORY_POINTS_9189_SALTOV
+			}
+			set_province_name = {
+				id = 18383
+				name = VICTORY_POINTS_18383_SALTOV
+			}
 		}
 	}
 }
 
-
 UKR_Extraordinary_measures = {
-
 	UKR_EM = {
 		icon = decision_category_generic_arms_trade
 		available = {
@@ -3605,7 +3573,6 @@ UKR_Extraordinary_measures = {
 			original_tag = UKR
 		}
 	}
-	
 	UKR_EM_donetsk_roads = {
 		icon = decision_category_generic_arms_trade
 		visible = {
@@ -3613,7 +3580,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3623,7 +3589,6 @@ UKR_Extraordinary_measures = {
 						state = 182
 						state = 213
 						state = 237
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3645,7 +3610,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3655,7 +3619,6 @@ UKR_Extraordinary_measures = {
 						state = 125
 						state = 176
 						state = 154
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3677,7 +3640,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3687,7 +3649,6 @@ UKR_Extraordinary_measures = {
 						state = 226
 						state = 223
 						state = 208
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3709,7 +3670,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3721,7 +3681,6 @@ UKR_Extraordinary_measures = {
 						state = 262
 						state = 253
 						state = 231
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3743,7 +3702,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3774,7 +3732,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3784,7 +3741,6 @@ UKR_Extraordinary_measures = {
 						state = 56
 						state = 60
 						state = 59
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3806,7 +3762,6 @@ UKR_Extraordinary_measures = {
 		}
 		cost = 10
 		days_remove = 1
-
 		complete_effect = {
 			every_state = {
 				limit = {
@@ -3818,7 +3773,6 @@ UKR_Extraordinary_measures = {
 						state = 130
 						state = 133
 						state = 138
-
 					}
 				}
 				add_dynamic_modifier = {
@@ -3836,7 +3790,7 @@ UKR_Extraordinary_measures = {
 }
 
 UKR_special_operations = {
-    UKR_strike_Headquarters_Wagner = {
+	UKR_strike_Headquarters_Wagner = {
 		icon = strike_Headquarters_Wagner
 		visible = {
 			original_tag = UKR
@@ -3849,13 +3803,12 @@ UKR_special_operations = {
 		days_remove = 1
 		fire_only_once = yes
 		ai_will_do = {
-			base = 0  
-			modifier = {  
-			    add = 100  
+			base = 0
+			modifier = {
+				add = 100
 				date > 2022.8.14
-			} 
+			}
 		}
-
 		remove_effect = {
 			custom_effect_tooltip = UKR_strike_Headquarters_Wagner_ce
 			hidden_effect = {
@@ -3871,7 +3824,6 @@ UKR_special_operations = {
 }
 
 UKR_Himars = {
-	
 	UKR_Himars_cooldown = {
 		icon = decision_category_generic_arms_trade
 		available = {
@@ -3897,7 +3849,6 @@ UKR_Himars = {
 			original_tag = UKR
 		}
 	}
-
 	UKR_Himars_Donetsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -3918,7 +3869,7 @@ UKR_Himars = {
 		}
 		available = {
 			205 = {
-				controller = { 
+				controller = {
 					OR = {
 						is_in_faction_with = RUS
 						is_puppet_of = RUS
@@ -3939,43 +3890,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			205 = {
-                damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
 				damage_building = {
-                    type = infrastructure
-                    damage = 2
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 2
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
+				damage_building = {
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				205 = {
 					controller = {
 						random_list = {
@@ -4012,14 +3960,13 @@ UKR_Himars = {
 				}
 			}
 			set_variable = {
-					var = new_himars_shelling
-					value = 205
+				var = new_himars_shelling
+				value = 205
 			}
 			set_country_flag = UKR_himars_cooldown_flag
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Mariupol = {
 		icon = decision_icon_himars
 		visible = {
@@ -4061,43 +4008,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			237 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				237 = {
 					controller = {
 						random_list = {
@@ -4137,7 +4081,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Berdyansk = {
 		icon = decision_icon_himars
 		visible = {
@@ -4179,43 +4122,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			242 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				242 = {
 					controller = {
 						random_list = {
@@ -4255,7 +4195,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Melitopol = {
 		icon = decision_icon_himars
 		visible = {
@@ -4297,43 +4236,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			246 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				246 = {
 					controller = {
 						random_list = {
@@ -4373,7 +4309,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Kahovka = {
 		icon = decision_icon_himars
 		visible = {
@@ -4415,43 +4350,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			413 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				413 = {
 					controller = {
 						random_list = {
@@ -4491,7 +4423,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Aleshki = {
 		icon = decision_icon_himars
 		visible = {
@@ -4533,43 +4464,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			262 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				262 = {
 					controller = {
 						random_list = {
@@ -4609,7 +4537,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Genichesk = {
 		icon = decision_icon_himars
 		visible = {
@@ -4651,43 +4578,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			251 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				251 = {
 					controller = {
 						random_list = {
@@ -4727,7 +4651,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Skadovsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -4769,43 +4692,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			264 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				264 = {
 					controller = {
 						random_list = {
@@ -4845,7 +4765,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Berislav = {
 		icon = decision_icon_himars
 		visible = {
@@ -4887,43 +4806,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			231 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				231 = {
 					controller = {
 						random_list = {
@@ -4963,7 +4879,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Kherson = {
 		icon = decision_icon_himars
 		visible = {
@@ -5005,43 +4920,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			253 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				253 = {
 					controller = {
 						random_list = {
@@ -5081,7 +4993,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Polohy = {
 		icon = decision_icon_himars
 		visible = {
@@ -5123,43 +5034,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			223 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				223 = {
 					controller = {
 						random_list = {
@@ -5199,7 +5107,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Vasilyvka = {
 		icon = decision_icon_himars
 		visible = {
@@ -5241,43 +5148,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			226 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				226 = {
 					controller = {
 						random_list = {
@@ -5317,7 +5221,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Zaporojia = {
 		icon = decision_icon_himars
 		visible = {
@@ -5359,43 +5262,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			208 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				208 = {
 					controller = {
 						random_list = {
@@ -5435,7 +5335,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Kalmiusskoe = {
 		icon = decision_icon_himars
 		visible = {
@@ -5477,43 +5376,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			221 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				221 = {
 					controller = {
 						random_list = {
@@ -5553,7 +5449,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Volnovaha = {
 		icon = decision_icon_himars
 		visible = {
@@ -5595,43 +5490,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			213 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				213 = {
 					controller = {
 						random_list = {
@@ -5671,7 +5563,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Pokrovsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -5713,43 +5604,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			182 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				182 = {
 					controller = {
 						random_list = {
@@ -5789,7 +5677,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Gorlovka = {
 		icon = decision_icon_himars
 		visible = {
@@ -5831,43 +5718,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			189 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				189 = {
 					controller = {
 						random_list = {
@@ -5907,7 +5791,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Bakhmut = {
 		icon = decision_icon_himars
 		visible = {
@@ -5949,43 +5832,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			165 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				165 = {
 					controller = {
 						random_list = {
@@ -6025,7 +5905,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Kramatorsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -6064,43 +5943,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			149 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				149 = {
 					controller = {
 						random_list = {
@@ -6140,7 +6016,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Severodonetsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -6182,43 +6057,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			145 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				145 = {
 					controller = {
 						random_list = {
@@ -6258,7 +6130,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Stahanov = {
 		icon = decision_icon_himars
 		visible = {
@@ -6300,43 +6171,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			293 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				293 = {
 					controller = {
 						random_list = {
@@ -6376,7 +6244,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Alchevsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -6418,43 +6285,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			172 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				172 = {
 					controller = {
 						random_list = {
@@ -6494,7 +6358,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Antratsit = {
 		icon = decision_icon_himars
 		visible = {
@@ -6536,43 +6399,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			194 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				194 = {
 					controller = {
 						random_list = {
@@ -6612,7 +6472,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Lugansk = {
 		icon = decision_icon_himars
 		visible = {
@@ -6654,43 +6513,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			173 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				173 = {
 					controller = {
 						random_list = {
@@ -6730,7 +6586,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Sverdlovsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -6772,43 +6627,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			183 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				183 = {
 					controller = {
 						random_list = {
@@ -6848,7 +6700,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Svatovo = {
 		icon = decision_icon_himars
 		visible = {
@@ -6890,43 +6741,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			116 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				116 = {
 					controller = {
 						random_list = {
@@ -6966,7 +6814,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Starobelsk = {
 		icon = decision_icon_himars
 		visible = {
@@ -7008,43 +6855,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			125 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				125 = {
 					controller = {
 						random_list = {
@@ -7084,7 +6928,6 @@ UKR_Himars = {
 		}
 		fire_only_once = no
 	}
-	
 	UKR_Himars_Schastie = {
 		icon = decision_icon_himars
 		visible = {
@@ -7126,44 +6969,40 @@ UKR_Himars = {
 				has_country_flag = UKR_himars_cooldown_flag
 			}
 		}
-
 		complete_effect = {
 			154 = {
 				damage_building = {
-                    type = arms_factory
-                    damage = 1
-                }
+					type = arms_factory
+					damage = 1
+				}
 				damage_building = {
-                    type = infrastructure
-                    damage = 1
-                }
+					type = infrastructure
+					damage = 1
+				}
 				damage_building = {
-                    type = industrial_complex
-                    damage = 1
-                }
+					type = industrial_complex
+					damage = 1
+				}
 				damage_building = {
-                    type = rail_way
-                    damage = 3
-                }
+					type = rail_way
+					damage = 3
+				}
 				damage_building = {
-                    type = anti_air_building
-                    damage = 1
-                }
+					type = anti_air_building
+					damage = 1
+				}
 				damage_building = {
-                    type = supply_node
-                    damage = 1
-                }
+					type = supply_node
+					damage = 1
+				}
 				add_dynamic_modifier = {
 					scope = RUS
 					modifier = himars_shelling
 					days = 14
 				}
-            }
-			
+			}
 			custom_effect_tooltip = UKR_tt_Himars2
-			
 			hidden_effect = {
-					
 				154 = {
 					controller = {
 						random_list = {
@@ -7206,7 +7045,6 @@ UKR_Himars = {
 }
 
 UKR_Bombing_Russia = {
-	
 	UKR_bomb_genichesk_bridge = {
 		icon = unknown
 		visible = {
@@ -7234,14 +7072,38 @@ UKR_Bombing_Russia = {
 				has_global_flag = GENICHESK_STRAIT_BLOCKED
 			}
 		}
-
 		remove_effect = {
-			set_global_flag = GENICHESK_STRAIT_BLOCKED
-			news_event = {
-				id = news.157
-				hours = 8
+			random_list = {
+			0.4 = {
+				set_global_flag = GENICHESK_STRAIT_BLOCKED
+				set_global_flag = GENICHESK_GET_SLIGHTLY_DAMAGED
+				news_event = {
+					id = news.157
+					hours = 8
+				}
 			}
+			0.2 = {
+				set_global_flag = GENICHESK_STRAIT_BLOCKED
+				set_global_flag = GENICHESK_GET_BADLY_DAMAGED
+				news_event = {
+					id = news.158
+					hours = 8
+				}
+			}
+			0.1 = {
+				set_global_flag = GENICHESK_STRAIT_BLOCKED
+				set_global_flag = GENICHESK_GET_DESTROYED
+				news_event = {
+					id = news.159
+					hours = 8
+				}
+			}
+			0.3 = {
+
+			}
+
 		}
+	}
 		fire_only_once = no
 	}
 	UKR_bomb_crimea_bridge = {
@@ -7249,7 +7111,7 @@ UKR_Bombing_Russia = {
 		visible = {
 			original_tag = UKR
 		}
-		cost = 50
+		cost = 75
 		days_remove = 20
 		on_map_mode = map_only
 		highlight_states = {
@@ -7271,17 +7133,38 @@ UKR_Bombing_Russia = {
 				has_global_flag = CRIMEA_STRAIT_BLOCKED
 			}
 		}
-
 		remove_effect = {
-			set_global_flag = CRIMEA_STRAIT_BLOCKED
+			random_list = {
+		0.40 = {	set_global_flag = CRIMEA_STRAIT_BLOCKED
+				set_global_flag = CRIMEA_GET_SLIGHTLY_DAMAGED
+
 			news_event = {
 				id = news.156
 				hours = 8
 			}
 		}
+		0.15 = {
+			set_global_flag = CRIMEA_STRAIT_BLOCKED
+			set_global_flag = CRIMEA_GET_BADLY_DAMAGED
+			news_event = {
+				id = news.160
+				hours = 8
+			}
+		}
+		0.05 = {
+			set_global_flag = CRIMEA_STRAIT_BLOCKED
+			set_global_flag = CRIMEA_GET_FATAL_DAMAGED
+			news_event = {
+				id = news.161
+				hours = 8
+			}
+		}
+		0.40 = {}
+
+		}
+		}
 		fire_only_once = no
 	}
-
 	UKR_BPLA_cooldown = {
 		icon = decision_category_generic_arms_trade
 		available = {
@@ -7307,7 +7190,6 @@ UKR_Bombing_Russia = {
 			original_tag = UKR
 		}
 	}
-	
 	UKR_BPLA_Belgorod = {
 		icon = decision_icon_bpla
 		visible = {
@@ -7332,15 +7214,14 @@ UKR_Bombing_Russia = {
 				owns_state = 120
 			}
 			UKR = {
-					has_full_control_of_state = 101
-					has_full_control_of_state = 100
-				}
+				has_full_control_of_state = 101
+				has_full_control_of_state = 100
+			}
 			NOT = {
 				has_country_flag = UKR_BPLA_cooldown_flag
 			}
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			336 = {
 				random_list = {
@@ -7375,7 +7256,7 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			120 = {
 				random_list = {
 					1 = {
@@ -7409,14 +7290,14 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.97
-				add_war_support = -0.005
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 70
+				var = new_bpla_strike
+				value = 70
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -7446,15 +7327,14 @@ UKR_Bombing_Russia = {
 				owns_state = 272
 			}
 			UKR = {
-					has_full_control_of_state = 56
-					has_full_control_of_state = 57
-				}
+				has_full_control_of_state = 56
+				has_full_control_of_state = 57
+			}
 			NOT = {
 				has_country_flag = UKR_BPLA_cooldown_flag
 			}
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			302 = {
 				random_list = {
@@ -7489,7 +7369,7 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			272 = {
 				random_list = {
 					1 = {
@@ -7523,14 +7403,237 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.97
-				add_war_support = -0.005
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 39
+				var = new_bpla_strike
+				value = 39
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	UKR_BPLA_Voronezh = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 61
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 61
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			61 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 70
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	UKR_BPLA_Orel = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 46
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 46
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			46 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 70
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	UKR_BPLA_Lipetzk = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 47
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 47
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			47 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 70
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -7560,15 +7663,14 @@ UKR_Bombing_Russia = {
 				owns_state = 377
 			}
 			UKR = {
-					has_full_control_of_state = 72
-					has_full_control_of_state = 66
-				}
+				has_full_control_of_state = 72
+				has_full_control_of_state = 66
+			}
 			NOT = {
 				has_country_flag = UKR_BPLA_cooldown_flag
 			}
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			306 = {
 				random_list = {
@@ -7603,7 +7705,7 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			377 = {
 				random_list = {
 					1 = {
@@ -7637,14 +7739,14 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.97
-				add_war_support = -0.005
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 54
+				var = new_bpla_strike
+				value = 54
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -7677,7 +7779,6 @@ UKR_Bombing_Russia = {
 			}
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			70 = {
 				random_list = {
@@ -7712,14 +7813,14 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.98
-				add_war_support = -0.007
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 70
+				var = new_bpla_strike
+				value = 70
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -7752,7 +7853,6 @@ UKR_Bombing_Russia = {
 			}
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			54 = {
 				random_list = {
@@ -7787,14 +7887,14 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.98
-				add_war_support = -0.007
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 54
+				var = new_bpla_strike
+				value = 54
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -7827,7 +7927,6 @@ UKR_Bombing_Russia = {
 			}
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			39 = {
 				random_list = {
@@ -7862,19 +7961,401 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.98
-				add_war_support = -0.007
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 39
+				var = new_bpla_strike
+				value = 39
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
 		fire_only_once = no
 	}
+	#
+	UKR_BPLA_Tula = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 33
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 33
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_new_BPLA_flag
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			33 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	UKR_BPLA_Ryzen = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 23
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 23
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_new_BPLA_flag
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			23 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	UKR_BPLA_Tambov = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 43
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 43
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_new_BPLA_flag
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			43 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	UKR_BPLA_Smolensk = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 12
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 12
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_new_BPLA_flag
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			12 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	#
+	UKR_BPLA_Vladimir = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 50
+		days_remove = 10
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 15
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 15
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_new_BPLA_flag
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			15 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 1
+						}
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
 	UKR_BPLA_Kaluga = {
 		icon = decision_icon_bpla
 		visible = {
@@ -7903,7 +8384,6 @@ UKR_Bombing_Russia = {
 			has_country_flag = UKR_new_BPLA_flag
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			24 = {
 				random_list = {
@@ -7938,14 +8418,14 @@ UKR_Bombing_Russia = {
 						}
 					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.98
-				add_war_support = -0.007
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 24
+				var = new_bpla_strike
+				value = 24
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -7979,7 +8459,6 @@ UKR_Bombing_Russia = {
 			has_country_flag = UKR_new_BPLA_flag
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			13 = {
 				random_list = {
@@ -8013,15 +8492,17 @@ UKR_Bombing_Russia = {
 							damage = 1
 						}
 					}
+					0.5 = {
+					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.98
-				add_war_support = -0.007
+				add_war_support = -0.001
 			}
 			set_variable = {
-							var = new_bpla_strike
-							value = 13
+				var = new_bpla_strike
+				value = 13
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
@@ -8055,7 +8536,6 @@ UKR_Bombing_Russia = {
 			has_country_flag = UKR_new_BPLA_flag
 			has_country_flag = UKR_use_BPLA_flag
 		}
-
 		complete_effect = {
 			14 = {
 				random_list = {
@@ -8089,21 +8569,2025 @@ UKR_Bombing_Russia = {
 							damage = 1
 						}
 					}
+					2.5 = {
+					}
 				}
-            }
+			}
 			RUS = {
 				country_event = rus.99
-				add_war_support = -0.01
+				add_war_support = -0.002
 			}
 			set_country_flag = UKR_BPLA_cooldown_flag
 		}
 		fire_only_once = no
 	}
+	#C200 
+	#
+	UKR_BPLA_Krasnoperekopsk = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 75
+		days_remove = 15
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 280
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 280
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_C200_flag
+			has_country_flag = UKR_use_BPLA_flag
+			UKR = {
+				count_triggers = {
+					amount = 1
+					controls_state = 233
+					controls_state = 256
+				}
+			}
+		}
+		complete_effect = {
+			280 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 4
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 2
+						}
+					}
+					0.5 = {
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	#
+	UKR_BPLA_Evpatoriya = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 75
+		days_remove = 15
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 303
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 303
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_C200_flag
+			has_country_flag = UKR_use_BPLA_flag
+			UKR = {
+				count_triggers = {
+					amount = 1
+					controls_state = 233
+					controls_state = 256
+				}
+			}
+		}
+		complete_effect = {
+			303 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 4
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 2
+						}
+					}
+					0.5 = {
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	UKR_BPLA_Krasnogvardeyskoye = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 75
+		days_remove = 15
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 297
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 297
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_C200_flag
+			has_country_flag = UKR_use_BPLA_flag
+			UKR = {
+				count_triggers = {
+					amount = 1
+					controls_state = 233
+					controls_state = 256
+				}
+			}
+		}
+		complete_effect = {
+			297 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 4
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 2
+						}
+					}
+					0.5 = {
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+	#
+	UKR_BPLA_Djankoy = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+		}
+		cost = 75
+		days_remove = 15
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 290
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 290
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_C200_flag
+			has_country_flag = UKR_use_BPLA_flag
+			UKR = {
+				count_triggers = {
+					amount = 1
+					controls_state = 233
+					controls_state = 256
+				}
+			}
+		}
+		complete_effect = {
+			290 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 4
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 2
+						}
+					}
+					0.5 = {
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+
+
+	#
+
+	UKR_BPLA_Simferopol = {
+		icon = decision_icon_bpla
+		visible = {
+			original_tag = UKR
+			UKR = {
+				count_triggers = {
+					amount = 1
+					controls_state = 264
+					controls_state = 240
+					controls_state = 251
+					controls_state = 262
+				}
+			}
+		}
+		cost = 75
+		days_remove = 15
+		on_map_mode = map_only
+		highlight_states = {
+			highlight_state_targets = {
+				state = 321
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+		ai_will_do = {
+			factor = 40
+		}
+		available = {
+			RUS = {
+				owns_state = 321
+			}
+			NOT = {
+				has_country_flag = UKR_BPLA_cooldown_flag
+			}
+			has_country_flag = UKR_C200_flag
+			has_country_flag = UKR_use_BPLA_flag
+		}
+		complete_effect = {
+			321 = {
+				random_list = {
+					1 = {
+						damage_building = {
+							type = arms_factory
+							damage = 3
+						}
+					}
+					1 = {
+						damage_building = {
+							type = infrastructure
+							damage = 4
+						}
+					}
+					1 = {
+						damage_building = {
+							type = industrial_complex
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = rail_way
+							damage = 2
+						}
+					}
+					1 = {
+						damage_building = {
+							type = anti_air_building
+							damage = 2
+						}
+					}
+					0.5 = {
+					}
+				}
+			}
+			RUS = {
+				country_event = rus.98
+				add_war_support = -0.001
+			}
+			set_variable = {
+				var = new_bpla_strike
+				value = 24
+			}
+			set_country_flag = UKR_BPLA_cooldown_flag
+		}
+		fire_only_once = no
+	}
+
+		#
+
+		UKR_BPLA_Belogorsk = {
+			icon = decision_icon_bpla
+			visible = {
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 264
+						controls_state = 240
+						controls_state = 251
+						controls_state = 262
+					}
+				}
+			}
+			cost = 75
+			days_remove = 15
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 304
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 304
+				}
+				NOT = {
+					has_country_flag = UKR_BPLA_cooldown_flag
+				}
+				has_country_flag = UKR_C200_flag
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				304 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 3
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 2
+							}
+						}
+						0.5 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_BPLA_cooldown_flag
+			}
+			fire_only_once = no
+		}
+
+		#
+			UKR_BPLA_Fedor = {
+			icon = decision_icon_bpla
+			visible = {
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 264
+						controls_state = 240
+						controls_state = 251
+						controls_state = 262
+					}
+				}
+			}
+			cost = 75
+			days_remove = 15
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 309
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 309
+				}
+				NOT = {
+					has_country_flag = UKR_BPLA_cooldown_flag
+				}
+				has_country_flag = UKR_C200_flag
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				309 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 3
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 2
+							}
+						}
+						0.5 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_BPLA_cooldown_flag
+			}
+			fire_only_once = no
+		}
+
+			UKR_BPLA_Fedor = {
+			icon = decision_icon_bpla
+			visible = {
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 264
+						controls_state = 240
+						controls_state = 251
+						controls_state = 262
+					}
+				}
+			}
+			cost = 75
+			days_remove = 15
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 309
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 309
+				}
+				NOT = {
+					has_country_flag = UKR_BPLA_cooldown_flag
+				}
+				has_country_flag = UKR_C200_flag
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				309 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 3
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 2
+							}
+						}
+						0.5 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_BPLA_cooldown_flag
+			}
+			fire_only_once = no
+		}
+
+		#
+		UKR_BPLA_Yalta = {
+			icon = decision_icon_bpla
+			visible = {
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 264
+						controls_state = 240
+						controls_state = 251
+						controls_state = 262
+					}
+				}
+			}
+			cost = 75
+			days_remove = 15
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 337
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 337
+				}
+				NOT = {
+					has_country_flag = UKR_BPLA_cooldown_flag
+				}
+				has_country_flag = UKR_C200_flag
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				337 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 3
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 2
+							}
+						}
+						0.5 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_BPLA_cooldown_flag
+			}
+			fire_only_once = no
+		}
+
+		UKR_BPLA_Kerch = {
+			icon = decision_icon_bpla
+			visible = {
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 264
+						controls_state = 240
+						controls_state = 251
+						controls_state = 262
+					}
+				}
+			}
+			cost = 75
+			days_remove = 15
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 314
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 314
+				}
+				NOT = {
+					has_country_flag = UKR_BPLA_cooldown_flag
+				}
+				has_country_flag = UKR_C200_flag
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				314 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 3
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = naval_base
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = dockyard
+								damage = 2
+							}
+						}
+						0.5 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_BPLA_cooldown_flag
+			}
+			fire_only_once = no
+		}
+
+
+		UKR_BPLA_Sevastopol = {
+			icon = decision_icon_bpla
+			visible = {
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 264
+						controls_state = 240
+						controls_state = 251
+						controls_state = 262
+					}
+				}
+			}
+			cost = 75
+			days_remove = 15
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 335
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 335
+				}
+				NOT = {
+					has_country_flag = UKR_BPLA_cooldown_flag
+				}
+				has_country_flag = UKR_C200_flag
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				335 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 3
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = naval_base
+								damage = 2
+							}
+						}
+						1 = {
+							damage_building = {
+								type = dockyard
+								damage = 2
+							}
+						}
+						0.5 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_BPLA_cooldown_flag
+			}
+			fire_only_once = no
+		}
+
+
+
+
+		#OTRK GROM
+
+
+		UKR_ORTK_Sevastopol = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 335
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 335
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				335 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = naval_base
+								damage = 4
+							}
+						}
+						1 = {
+							damage_building = {
+								type = dockyard
+								damage = 3
+							}
+						}
+						1.8 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Simferopol = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 321
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 321
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				321 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Yalta = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 337
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 337
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				337 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Belogorsk = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 304
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 304
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				304 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Feodosiya = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 309
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 309
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				309 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Evpatoriya = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 303
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 303
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				303 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+
+		UKR_ORTK_Krasnogvardeyskoye = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 297
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 297
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				297 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Djankoy = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 290
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 290
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				290 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		UKR_ORTK_Krasnoperekopsk = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 280
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 280
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				280 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						0.1 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+
+		UKR_ORTK_Kerch = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 50
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 314
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 314
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			complete_effect = {
+				314 = {
+					random_list = {
+						1 = {
+							damage_building = {
+								type = arms_factory
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = infrastructure
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = industrial_complex
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = rail_way
+								damage = 5
+							}
+						}
+						1 = {
+							damage_building = {
+								type = anti_air_building
+								damage = 5
+							}
+						}
+						2.8 = {
+						}
+					}
+				}
+				RUS = {
+					country_event = rus.98
+					add_war_support = -0.001
+				}
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			}
+			fire_only_once = no
+		}
+
+		#ударить ОТРК по крымскому мосту
+		UKR_ORTK_KrimeanBridge = {
+			icon = decision_icon_bpla
+			visible = {
+				has_country_flag = OTRK_GROM
+				original_tag = UKR
+				UKR = {
+					count_triggers = {
+						amount = 1
+						controls_state = 253
+						controls_state = 233
+						controls_state = 256
+						controls_state = 208
+						controls_state = 216
+					}
+				}
+			}
+			cost = 125
+			days_remove = 3
+			on_map_mode = map_only
+			highlight_states = {
+				highlight_state_targets = {
+					state = 414
+				}
+				highlight_color_while_active = 3
+				highlight_color_before_active = 2
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			available = {
+				RUS = {
+					owns_state = 414
+				}
+				NOT = {
+					has_country_flag = UKR_OTRK_cooldown
+					has_global_flag = CRIMEA_STRAIT_BLOCKED
+				}
+				has_country_flag = OTRK_GROM
+				has_country_flag = UKR_use_BPLA_flag
+			}
+			remove_effect = {	
+				random_list = {
+					0.15 = {set_global_flag = CRIMEA_STRAIT_BLOCKED
+							set_global_flag = CRIMEA_GET_SLIGHTLY_DAMAGED
+			
+						news_event = {
+							id = news.156
+							hours = 8
+						}
+					}
+					0.40 = {
+						set_global_flag = CRIMEA_STRAIT_BLOCKED
+						set_global_flag = CRIMEA_GET_BADLY_DAMAGED
+						news_event = {
+							id = news.160
+							hours = 8
+						}
+					}
+					0.25 = {
+						set_global_flag = CRIMEA_STRAIT_BLOCKED
+						set_global_flag = CRIMEA_GET_FATAL_DAMAGED
+						news_event = {
+							id = news.161
+							hours = 8
+						}
+					}
+					0.20 = {}
+			
+					}
+
+				set_variable = {
+					var = new_bpla_strike
+					value = 24
+				}
+				set_country_flag = UKR_OTRK_cooldown
+			
+		}
+		fire_only_once = no
+		}
+	
+		UKR_OTRK_cooldown = {
+			icon = decision_category_generic_arms_trade
+			available = {
+				NOT = {
+					has_war_with = RUS
+				}
+			}
+			visible = {
+				has_war_with = RUS
+			}
+			ai_will_do = {
+				factor = 40
+			}
+			activation = {
+				has_country_flag = UKR_OTRK_cooldown
+			}
+			timeout_effect = {
+				clr_country_flag = UKR_OTRK_cooldown
+			}
+			days_mission_timeout = 30
+			days_remove = 0
+			allowed = {
+				original_tag = UKR
+			}
+		}
+
+	#переименовать на расширить диапазон применения 
 	UKR_bpla_new_bpla = {
 		icon = decision_category_generic_arms_trade
 		available = {
-			date > 2023.01.01
 			has_country_flag = UKR_use_BPLA_flag
+			has_completed_focus = Bober
 		}
 		visible = {
 			tag = UKR
@@ -8131,7 +10615,7 @@ UKR_Bombing_Russia = {
 	}
 }
 
-UKR_New_brigades_category = { 
+UKR_New_brigades_category = {
 	UKR_Form_Kraken = {
 		icon = GFX_decision_UKR_Form_Kraken
 		available = {
@@ -8142,12 +10626,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_Kraken
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8161,12 +10644,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_Svoboda
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8180,16 +10662,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_77aeromobylna
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_115_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_115TH
 		available = {
@@ -8200,12 +10680,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_115_mekhanizovana
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8219,12 +10698,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_110_mekhanizovana
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8238,12 +10716,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_shaman
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8257,12 +10734,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_71egerskaya 
-							
-		}
+				load_oob = UKR_71egerskaya
+			}
 		}
 		fire_only_once = yes
 	}
@@ -8276,11 +10752,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_68egerskaya
-		}
+				load_oob = UKR_68egerskaya
+			}
 		}
 		fire_only_once = yes
 	}
@@ -8294,14 +10770,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_67mekhanizovana
+				load_oob = UKR_67mekhanizovana
 			}
 		}
 		fire_only_once = yes
-	}	
+	}
 	UKR_Form_66_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_66TH
 		available = {
@@ -8312,14 +10788,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_66mekhanizovana
+				load_oob = UKR_66mekhanizovana
 			}
 		}
 		fire_only_once = yes
-	}	
+	}
 	UKR_Form_65_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_65TH
 		available = {
@@ -8330,14 +10806,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_65mekhanizovana
+				load_oob = UKR_65mekhanizovana
 			}
 		}
 		fire_only_once = yes
-	}	
+	}
 	UKR_Form_47_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_47TH
 		available = {
@@ -8348,14 +10824,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_47mekhanizovana
-		}
+				load_oob = UKR_47mekhanizovana
+			}
 		}
 		fire_only_once = yes
-	}	
+	}
 	UKR_Form_42_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_42TH
 		available = {
@@ -8366,14 +10842,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_42mekhanizovana
+				load_oob = UKR_42mekhanizovana
 			}
 		}
 		fire_only_once = yes
-	}	
+	}
 	UKR_Form_5_shturmova = {
 		icon = GFX_decision_UKR_Form_5TH
 		available = {
@@ -8384,17 +10860,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_5okremashturmova
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
-
 	UKR_Form_48 = {
 		icon = GFX_decision_UKR_Form_48TH
 		available = {
@@ -8405,16 +10878,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_48ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_49 = {
 		icon = GFX_decision_UKR_Form_49TH
 		available = {
@@ -8425,17 +10896,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_49ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
-
 	UKR_Form_3_shturmova = {
 		icon = GFX_decision_UKR_Form_3TH
 		available = {
@@ -8446,15 +10914,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_3okremashturmova
 			}
-			
 		}
 		fire_only_once = yes
-	}	
+	}
 	UKR_Form_1_obsp = {
 		icon = GFX_decision_UKR_Form_1TH
 		visible = {
@@ -8465,15 +10932,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_1obsp
-		}
+				load_oob = UKR_1obsp
+			}
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_37 = {
 		icon = GFX_decision_UKR_Form_37TH
 		available = {
@@ -8484,12 +10950,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_37ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8503,16 +10968,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_38ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_21 = {
 		icon = GFX_decision_UKR_Form_21TH
 		available = {
@@ -8523,16 +10986,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_21ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_22 = {
 		icon = GFX_decision_UKR_Form_22TH
 		available = {
@@ -8543,16 +11004,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_22ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_23 = {
 		icon = GFX_decision_UKR_Form_23TH
 		available = {
@@ -8563,16 +11022,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_23ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_31 = {
 		icon = GFX_decision_UKR_Form_31TH
 		available = {
@@ -8583,12 +11040,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_31ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8602,12 +11058,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_32ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8621,16 +11076,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_33ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_41 = {
 		icon = GFX_decision_UKR_Form_41TH
 		available = {
@@ -8641,17 +11094,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_41ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
-
 	UKR_Form_43 = {
 		icon = GFX_decision_UKR_Form_43TH
 		available = {
@@ -8662,16 +11112,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_43ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_44 = {
 		icon = GFX_decision_UKR_Form_44TH
 		available = {
@@ -8682,16 +11130,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_44ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_116 = {
 		icon = GFX_decision_UKR_Form_116TH
 		available = {
@@ -8702,16 +11148,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_116ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_117 = {
 		icon = GFX_decision_UKR_Form_117TH
 		available = {
@@ -8722,16 +11166,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_117ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_118 = {
 		icon = GFX_decision_UKR_Form_118TH
 		available = {
@@ -8742,12 +11184,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_118ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8761,12 +11202,11 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_13ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
@@ -8780,16 +11220,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_88ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_14 = {
 		icon = GFX_decision_UKR_Form_14TH
 		available = {
@@ -8800,16 +11238,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_14ma
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_GvardyaNastupa = {
 		icon = GFX_decision_UKR_Form_GVN
 		available = {
@@ -8820,16 +11256,14 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_gvardiyanastupa
 			}
-			
 		}
 		fire_only_once = yes
 	}
-
 	UKR_Form_82_desantno_shturmova = {
 		icon = GFX_decision_UKR_Form_82TH
 		visible = {
@@ -8840,39 +11274,33 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
-		remove_effect = { 
+		remove_effect = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-			load_oob = UKR_82desantnoshturmova
+				load_oob = UKR_82desantnoshturmova
 			}
 		}
 		fire_only_once = yes
 	}
-	
 }
 
 UKR_information_war = {
-    UKR_discrediting_government_Russia = {
+	UKR_discrediting_government_Russia = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 31
 		cost = 50
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 		}
-		
 		complete_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.rus_information_war_var_sum
 				value = -1
 				tooltip = IW_rus_m_1_var_add_tt
@@ -8881,63 +11309,64 @@ UKR_information_war = {
 	}
 	UKR_discrediting_VS_RF = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 31
 		cost = 55
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 		}
-		
 		complete_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.rus_information_war_var_sum
 				value = -1
 				tooltip = IW_rus_m_1_var_add_tt
 			}
 			RUS = {
-			    add_command_power = -10
+				add_command_power = -10
 			}
 			hidden_effect = {
 				random_list = {
-			        90 = { }
-			        5 = { country_event = { id = re_event_u.8 days = 2 } }
-					5 = { country_event = { id = re_event_u.10 days = 4 } }
-	            }
+					90 = {
+					}
+					5 = {
+						country_event = {
+							id = re_event_u.8
+							days = 2
+						}
+					}
+					5 = {
+						country_event = {
+							id = re_event_u.10
+							days = 4
+						}
+					}
+				}
 			}
 		}
 	}
 	UKR_manipulation_facts = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 15
 		days_remove = 2
 		cost = 55
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 		}
-		
 		remove_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.ukr_information_war_var_sum
 				value = 1
 				tooltip = IW_1_var_add_tt
@@ -8946,54 +11375,44 @@ UKR_information_war = {
 	}
 	UKR_infiltration_media = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 50
 		days_remove = 15
 		cost = 50
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 		}
-		
 		remove_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.rus_information_war_var_sum
 				value = -1.5
 				tooltip = IW_rus_m_1_5_var_add_tt
 			}
 			RUS = {
-			    add_political_power = -20
+				add_political_power = -20
 			}
 		}
 	}
 	UKR_Expand_presence_press = {
 		icon = UKR_press
-
 		fire_only_once = yes
 		days_remove = 5
 		cost = 60
-		
 		ai_will_do = {
-	    	factor = 20
-        }
-
+			factor = 20
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 		}
-		
 		remove_effect = {
 			custom_effect_tooltip = IW_1_var_add_EM_tt
 			hidden_effect = {
@@ -9003,23 +11422,18 @@ UKR_information_war = {
 	}
 	UKR_International_organizations = {
 		icon = UKR_international_organizations
-
 		fire_only_once = yes
 		days_remove = 15
 		cost = 70
-		
 		ai_will_do = {
-	    	factor = 20
-        }
-
+			factor = 20
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 		}
-		
 		remove_effect = {
 			custom_effect_tooltip = IW_1_var_add_EM_tt
 			hidden_effect = {
@@ -9030,58 +11444,48 @@ UKR_information_war = {
 	}
 	UKR_address_the_united_nations = {
 		icon = UKR_discrediting_Russia
-
 		cost = 85
 		days_re_enable = 50
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-		
 		visible = {
 			original_tag = UKR
 		}
-
 		complete_effect = {
 			add_stability = 0.05
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.ukr_information_war_var_sum
 				value = 1.5
 				tooltip = IW_1_5_var_add_tt
 			}
 		}
 	}
-    UKR_the_legend_of_the_ghost_of_kiev = {
+	UKR_the_legend_of_the_ghost_of_kiev = {
 		icon = UKR_discrediting_Russia
-
 		cost = 40
 		fire_only_once = yes
 		days_remove = 65
-		
 		ai_will_do = {
-	    	factor = 20
-        }
-		
+			factor = 20
+		}
 		available = {
 			original_tag = UKR
 		}
-		
 		visible = {
 			original_tag = UKR
 			has_completed_focus = UKR_Information_campaign
 		}
-
 		complete_effect = {
-		    add_war_support = 0.03
+			add_war_support = 0.03
 			add_timed_idea = {
 				idea = the_ghost_of_kiev
 				days = 65
 			}
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.ukr_information_war_var_sum
 				value = 0.5
 				tooltip = IW_0_5_var_add_tt
@@ -9090,26 +11494,21 @@ UKR_information_war = {
 	}
 	UKR_Russian_crimes_international_level = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 60
 		cost = 100
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 			has_completed_focus = UKR_Information_campaign
 		}
-		
 		complete_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.ukr_information_war_var_sum
 				value = 1.5
 				tooltip = IW_1_5_var_add_tt
@@ -9119,58 +11518,60 @@ UKR_information_war = {
 	}
 	UKR_Throw_fakes_VS_RF = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 30
 		days_remove = 4
 		cost = 70
-		
 		ai_will_do = {
-	    	factor = 15
-        }
-
+			factor = 15
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 			has_completed_focus = UKR_Information_campaign
 		}
-		
 		remove_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.ukr_information_war_var_sum
 				value = 1
 				tooltip = IW_1_var_add_tt
 			}
 			RUS = {
-			    add_command_power = -15
+				add_command_power = -15
 				add_stability = -0.02
 			}
 			hidden_effect = {
 				random_list = {
-			    	90 = { }
-			    	5 = { country_event = { id = re_event_u.8 days = 2 } }
-			    	5 = { country_event = { id = re_event_u.10 days = 4 } }
-	        	}
+					90 = {
+					}
+					5 = {
+						country_event = {
+							id = re_event_u.8
+							days = 2
+						}
+					}
+					5 = {
+						country_event = {
+							id = re_event_u.10
+							days = 4
+						}
+					}
+				}
 			}
 		}
 	}
 	UKR_death_prigozhin_utkin = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = yes
 		cost = 60
-		
 		ai_will_do = {
-	    	factor = 30
-        }
-
+			factor = 30
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 			has_completed_focus = UKR_expansion_of_CIPSO
@@ -9178,62 +11579,96 @@ UKR_information_war = {
 				has_country_flag = WGN_death_prigozhin_utkin
 			}
 		}
-		
 		complete_effect = {
-			add_to_variable = {	
+			add_to_variable = {
 				var = global.rus_information_war_var_sum
 				value = -2
 				tooltip = IW_rus_m_2_var_add_tt
 			}
 			RUS = {
-			    add_stability = -0.05
+				add_stability = -0.05
 			}
 		}
 	}
 	UKR_minor_information_provocation = {
 		icon = UKR_discrediting_Russia
-
 		fire_only_once = no
 		days_re_enable = 35
 		cost = 100
-		
 		ai_will_do = {
-	    	factor = 10
-        }
-
+			factor = 10
+		}
 		available = {
 			original_tag = UKR
 		}
-
 		visible = {
 			original_tag = UKR
 			has_completed_focus = UKR_Information_campaign
 		}
-		
 		complete_effect = {
 			random_list = {
-			    20 = { country_event = { id = re_event_u.5 days = 3 } }
-				20 = { country_event = { id = re_event_u.6 days = 3 } }
-				20 = { country_event = { id = re_event_u.7 days = 3 } }
-				20 = { country_event = { id = re_event_u.8 days = 3 } }
-				20 = { if = { limit = { UKR = { controls_province = 18215 NOT = { has_country_flag = UKR_blow_Kiev_building_IW } } } country_event = { id = re_event_u.1 days = 3 } } else = { country_event = { id = re_event_u.10 days = 3 } } }
-	        }
+				20 = {
+					country_event = {
+						id = re_event_u.5
+						days = 3
+					}
+				}
+				20 = {
+					country_event = {
+						id = re_event_u.6
+						days = 3
+					}
+				}
+				20 = {
+					country_event = {
+						id = re_event_u.7
+						days = 3
+					}
+				}
+				20 = {
+					country_event = {
+						id = re_event_u.8
+						days = 3
+					}
+				}
+				20 = {
+					if = {
+						limit = {
+							UKR = {
+								controls_province = 18215
+								NOT = {
+									has_country_flag = UKR_blow_Kiev_building_IW
+								}
+							}
+						}
+						country_event = {
+							id = re_event_u.1
+							days = 3
+						}
+					}
+					else = {
+						country_event = {
+							id = re_event_u.10
+							days = 3
+						}
+					}
+				}
+			}
 		}
 	}
-
 	UKR_monthly_increase_information_influence = {
 		activation = {
-		    OR = {
-			    has_country_flag = UKR_Expand_presence_press_CF
+			OR = {
+				has_country_flag = UKR_Expand_presence_press_CF
 				has_country_flag = UKR_International_organizations_CF
 			}
 		}
 		available = {
 			NOT = {
 				OR = {
-			        has_country_flag = UKR_Expand_presence_press_CF
-				    has_country_flag = UKR_International_organizations_CF
-			    }
+					has_country_flag = UKR_Expand_presence_press_CF
+					has_country_flag = UKR_International_organizations_CF
+				}
 			}
 		}
 		icon = UKR_discrediting_Russia
@@ -9241,24 +11676,24 @@ UKR_information_war = {
 		hidden = yes
 		days_mission_timeout = 30
 		timeout_effect = {
-		    if = {
+			if = {
 				limit = {
-				    OR = {
-					    UKR = {
-					        has_country_flag = UKR_Expand_presence_press_CF	
-					    }
+					OR = {
 						UKR = {
-					        has_country_flag = UKR_International_organizations_CF
-					    }
+							has_country_flag = UKR_Expand_presence_press_CF
+						}
+						UKR = {
+							has_country_flag = UKR_International_organizations_CF
+						}
 					}
 					NOT = {
 						UKR = {
-					        has_country_flag = UKR_Expand_presence_press_CF
+							has_country_flag = UKR_Expand_presence_press_CF
 							has_country_flag = UKR_International_organizations_CF
-					    }
+						}
 					}
 				}
-				add_to_variable = {	
+				add_to_variable = {
 					var = global.ukr_information_war_var_sum
 					value = 1
 					tooltip = IW_1_var_add_tt
@@ -9266,12 +11701,12 @@ UKR_information_war = {
 			}
 			if = {
 				limit = {
-				    UKR = {
-					    has_country_flag = UKR_Expand_presence_press_CF
-				        has_country_flag = UKR_International_organizations_CF
+					UKR = {
+						has_country_flag = UKR_Expand_presence_press_CF
+						has_country_flag = UKR_International_organizations_CF
 					}
 				}
-				add_to_variable = {	
+				add_to_variable = {
 					var = global.ukr_information_war_var_sum
 					value = 2
 					tooltip = IW_2_var_add_tt
@@ -9280,12 +11715,13 @@ UKR_information_war = {
 		}
 	}
 }
+
 UKR_destroy_oligarchate_category = {
-    UKR_nationalize_zaporozhstal = {
+	UKR_nationalize_zaporozhstal = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
-			has_completed_focus =  UKR_destroy_oligarchs
+			has_completed_focus = UKR_destroy_oligarchs
 			controls_state = 208
 		}
 		visible = {
@@ -9297,23 +11733,23 @@ UKR_destroy_oligarchate_category = {
 			factor = 10
 		}
 		remove_effect = {
-		208 = { 
-			add_building_construction = {
-				type = industrial_complex
-				level = 1
-			}
-			add_resource = {
-				type = steel
-				amount = 10
+			208 = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+				}
+				add_resource = {
+					type = steel
+					amount = 10
+				}
 			}
 		}
-	    }
-    }
+	}
 	UKR_nationalize_kametstal = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
-			has_completed_focus =  UKR_destroy_oligarchs
+			has_completed_focus = UKR_destroy_oligarchs
 			controls_state = 169
 		}
 		visible = {
@@ -9325,23 +11761,23 @@ UKR_destroy_oligarchate_category = {
 			factor = 10
 		}
 		remove_effect = {
-		169 = { 
-			add_building_construction = {
-				type = industrial_complex
-				level = 1
-			}
-			add_resource = {
-				type = steel
-				amount = 5
+			169 = {
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+				}
+				add_resource = {
+					type = steel
+					amount = 5
+				}
 			}
 		}
-	    }
 	}
 	UKR_nationalize_nikopol_zavodferosplavov = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
-			has_completed_focus =  UKR_destroy_oligarchs
+			has_completed_focus = UKR_destroy_oligarchs
 			controls_state = 216
 		}
 		visible = {
@@ -9353,7 +11789,7 @@ UKR_destroy_oligarchate_category = {
 			factor = 10
 		}
 		remove_effect = {
-			216 = { 
+			216 = {
 				add_building_construction = {
 					type = industrial_complex
 					level = 1
@@ -9363,16 +11799,15 @@ UKR_destroy_oligarchate_category = {
 					amount = 5
 				}
 			}
-			
 		}
 	}
 	UKR_nationalize_privat = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
-			has_completed_focus =  UKR_destroy_oligarchs
-			has_decision =  UKR_nationalize_zaporozhstal
-			has_decision =  UKR_nationalize_nikopol_zavodferosplavov
+			has_completed_focus = UKR_destroy_oligarchs
+			has_decision = UKR_nationalize_zaporozhstal
+			has_decision = UKR_nationalize_nikopol_zavodferosplavov
 		}
 		visible = {
 			has_government = fascism
@@ -9390,7 +11825,7 @@ UKR_destroy_oligarchate_category = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
-			has_completed_focus =  UKR_destroy_oligarchs
+			has_completed_focus = UKR_destroy_oligarchs
 			has_decision = UKR_nationalize_dtek
 		}
 		visible = {
@@ -9409,7 +11844,7 @@ UKR_destroy_oligarchate_category = {
 		icon = decision_category_generic_arms_trade
 		fire_only_once = yes
 		available = {
-			has_completed_focus =  UKR_destroy_oligarchs
+			has_completed_focus = UKR_destroy_oligarchs
 			has_decision = UKR_nationalize_kametstal
 		}
 		visible = {
@@ -9445,6 +11880,6 @@ UKR_destroy_oligarchate_category = {
 				idea = UKR_integration_oligarchs
 				days = 30
 			}
-		}	
+		}
 	}
 }
