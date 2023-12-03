@@ -449,9 +449,9 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	NDefines.NAI.ATTACK_HEAVILY_DEFENDED_LIMIT = 1				-- AI will not launch attacks against heavily defended fronts unless they consider to have this level of advantage (1.0 = 100%)
 	
 	NDefines.NAI.FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.45 -- ai will consider a front fortified if this ratio of provinces has fort
-	NDefines.NAI.HEAVILY_FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 1000 -- ai will consider a front super fortified if this ratio of provinces has lots of forts
-	NDefines.NAI.ENEMY_FORTIFICATION_FACTOR_FOR_FRONT_REQUESTS = 0.45		-- front unit request factor at max enemy fortification
-	NDefines.NAI.ENEMY_FORTIFICATION_FACTOR_FOR_FRONT_REQUESTS_MAX = 1 	-- max factor that can be added by enemy fortification
+	NDefines.NAI.HEAVILY_FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.6 -- ai will consider a front super fortified if this ratio of provinces has lots of forts
+	NDefines.NAI.ENEMY_FORTIFICATION_FACTOR_FOR_FRONT_REQUESTS = 0.0		-- front unit request factor at max enemy fortification
+	NDefines.NAI.ENEMY_FORTIFICATION_FACTOR_FOR_FRONT_REQUESTS_MAX = 0.0 	-- max factor that can be added by enemy fortification
 	
 	NDefines.NAI.HOURS_BETWEEN_ENCIRCLEMENT_DISCOVERY = 360			  -- Per army, interval in hours between refresh of which provinces it considers make up potential encirclement points
 	
