@@ -4,9 +4,15 @@ run_generic_operation = {
 		NOT = { check_variable = { generic_operation_type_to_run = 0 } }
 		
 		var:generic_operation_target = {
+			has_war = yes
 			exists = yes
 			has_capitulated = no
-			NOT = { is_ally_with = PREV }
+			NOT = { 
+				is_ally_with = PREV
+				PREV = {
+				is_major = no
+				}
+			}
 		}
 	}
 	
@@ -27,7 +33,7 @@ run_generic_operation = {
 	ai_strategy = {
 		type = operative_mission
 		mission = build_intel_network
-		value = 800
+		value = -900
 		mission_target = var:generic_operation_target
 	}
 }
@@ -38,9 +44,18 @@ run_generic_operation_add_more_operatives = {
 		NOT = { check_variable = { generic_operation_type_to_run = 0 } }
 		
 		var:generic_operation_target = {
+			any_neighbor_state = {
+				is_controlled_by = PREV
+			}
+			has_war = yes
 			exists = yes
 			has_capitulated = no
-			NOT = { is_ally_with = PREV }
+			NOT = { 
+				is_ally_with = PREV
+				PREV = {
+				is_major = no
+				}
+			}
 		}
 		num_of_operatives > 4
 	}
@@ -51,7 +66,7 @@ run_generic_operation_add_more_operatives = {
 	ai_strategy = {
 		type = operative_mission
 		mission = build_intel_network
-		value = 800
+		value = -900
 		mission_target = var:generic_operation_target
 		num_operatives = 2
 	}
