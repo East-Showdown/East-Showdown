@@ -1,0 +1,161 @@
+RUS_trace_Zelensky = { ### 1/50
+	icon = GFX_raid_trotskys_villa
+	map_icon = GFX_raid_trotskys_villa_map
+	name = trace_Zelensky
+	desc = trace_Zelensky_desc
+	days = 10
+
+	priority = 11
+
+	allowed = {
+		original_tag = RUS
+		NOT = {
+			UKR = {
+				has_country_flag = UKR_track_Zelensky
+			}
+		}
+	}
+	available = { 
+		network_national_coverage = {
+			target = UKR
+			value > 0
+		}
+	}
+	visible = {
+		has_completed_focus = RUS_special_operations_forces
+	}
+
+	operation_target = {
+		targets = {UKR}
+	}
+
+	operatives = 1
+
+	# Integer [0-100] - Every operation has a hard requirement of network strength in the target country
+	network_strength = 10
+
+	equipment = {
+		infantry_equipment = 50
+		support_equipment = 50
+	}
+
+	on_start = {  # SCOPE_OPERATION
+		
+	}
+
+	outcome_modifiers = { operation_outcome }
+	cost_modifiers = { operation_cost }
+	risk_modifiers = { operation_risk }
+
+	outcome_potential = {
+		custom_effect_tooltip = raid_trotskys_villa_outcome_tt
+	}
+	risk_chance = 0.35
+	experience = 5
+	# outcome is an effect that runs when the operation has completed
+	outcome_execute = { # SCOPE_OPERATION
+		UKR = { set_country_flag = UKR_track_Zelensky } #For AI Strat
+	}
+
+	outcome_extra_chance = 0.50
+
+	outcome_extra_execute = {
+		UKR = { set_country_flag = UKR_track_Zelensky } #For AI Strat
+	}
+
+	# This is where all the separate phases are defined
+	# Each phase for an operation may have a single actual phase assigned to it, which is determined here
+	phases = { #infiltration 
+		infiltration_border = { base = 60 }
+		infiltration_diplomatic = {
+			base = 40
+			modifier = {
+				FROM = {
+					has_war_with = ROOT
+				}
+				factor = 0
+			}
+		}
+	}
+	phases = { 
+		exfiltration_border = { base = 40 }
+		exfiltration_go_to_ground = { base = 60 }
+	}
+}
+
+RUS_murder_Zelensky = { ### 1/50
+	icon = GFX_murder_trotsky
+	map_icon = GFX_murder_trotsky_map
+	name = murder_Zelensky
+	desc = murder_Zelensky_desc
+	days = 20
+
+	priority = 10
+
+	allowed = {
+		original_tag = RUS
+		NOT = {
+			UKR = {
+				has_country_flag = UKR_murdered_Zelensky
+			}
+		}
+	}
+	available = {
+    UKR = {
+		has_country_flag = UKR_track_Zelensky
+	}
+	}
+	visible = {
+		has_completed_focus = RUS_special_operations_forces
+	}
+
+    operation_target = {
+		targets = {UKR}
+	}
+
+	operatives = 1
+
+	# Integer [0-100] - Every operation has a hard requirement of network strength in the target country
+	network_strength = 20
+
+	on_start = {  # SCOPE_OPERATION
+		
+	}
+
+	outcome_modifiers = { operation_outcome operation_infiltrate_outcome }
+	cost_modifiers = { operation_cost operation_infiltrate_cost }
+	risk_modifiers = { operation_risk operation_infiltrate_risk }
+
+	outcome_potential = {
+		custom_effect_tooltip = murder_Zelensky_outcome_tt
+	}
+	risk_chance = 0.25
+	experience = 5
+	# outcome is an effect that runs when the operation has completed
+	outcome_execute = { # SCOPE_OPERATION
+		UKR = { set_country_flag = murdered_Zelensky } # This operation can only be done once
+	}
+	
+	# This is where all the separate phases are defined
+	# Each phase for an operation may have a single actual phase assigned to it, which is determined here
+	phases = {
+		infiltration_go_to_ground = {
+			base = 100
+		}
+	}
+	phases = { 
+		exfiltration_border = { base = 40 }
+		exfiltration_go_to_ground = { base = 60 }
+	}
+}
+
+#operation_infiltrate_risk
+#operation_infiltrate_outcome
+#operation_infiltrate_cost
+#
+#operation_steal_tech_risk
+#operation_steal_tech_outcome
+#
+#target_sabotage_factor
+#target_sabotage_risk
+#target_sabotage_cost
