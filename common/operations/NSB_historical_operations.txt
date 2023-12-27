@@ -1,6 +1,6 @@
 RUS_trace_Zelensky = { ### 1/50
-	icon = GFX_raid_trotskys_villa
-	map_icon = GFX_raid_trotskys_villa_map
+	icon = GFX_trace_Zelensky
+	map_icon = GFX_trace_Zelensky_map
 	name = trace_Zelensky
 	desc = trace_Zelensky_desc
 	days = 10
@@ -11,7 +11,10 @@ RUS_trace_Zelensky = { ### 1/50
 		original_tag = RUS
 		NOT = {
 			UKR = {
-				has_country_flag = UKR_track_Zelensky
+			    OR = {
+					has_country_flag = UKR_track_Zelensky
+					has_country_flag = UKR_track_Zelensky_fail
+				}
 			}
 		}
 	}
@@ -23,6 +26,9 @@ RUS_trace_Zelensky = { ### 1/50
 	}
 	visible = {
 		has_completed_focus = RUS_special_operations_forces
+		NOT = {
+			has_completed_focus = RUS_SMO
+		}
 	}
 
 	operation_target = {
@@ -32,10 +38,10 @@ RUS_trace_Zelensky = { ### 1/50
 	operatives = 1
 
 	# Integer [0-100] - Every operation has a hard requirement of network strength in the target country
-	network_strength = 10
+	network_strength = 15
 
 	equipment = {
-		infantry_equipment = 50
+		infantry_equipment = 100
 		support_equipment = 50
 	}
 
@@ -48,47 +54,48 @@ RUS_trace_Zelensky = { ### 1/50
 	risk_modifiers = { operation_risk }
 
 	outcome_potential = {
-		custom_effect_tooltip = raid_trotskys_villa_outcome_tt
+		custom_effect_tooltip = RUS_trace_Zelensky_outcome_tt
 	}
-	risk_chance = 0.35
+	risk_chance = 0
 	experience = 5
 	# outcome is an effect that runs when the operation has completed
 	outcome_execute = { # SCOPE_OPERATION
-		UKR = { set_country_flag = UKR_track_Zelensky } #For AI Strat
+		random_list = {
+			40 = { UKR = { set_country_flag = UKR_track_Zelensky } }
+			60 = { RUS = { country_event = { id = rus.123 days = 3 } } UKR = { set_country_flag = UKR_track_Zelensky_fail } }
+		}
 	}
 
 	outcome_extra_chance = 0.50
 
 	outcome_extra_execute = {
-		UKR = { set_country_flag = UKR_track_Zelensky } #For AI Strat
+		random_list = {
+			40 = { UKR = { set_country_flag = UKR_track_Zelensky } }
+			60 = { RUS = { country_event = { id = rus.123 days = 3 } } UKR = { set_country_flag = UKR_track_Zelensky_fail } }
+		}
 	}
 
 	# This is where all the separate phases are defined
 	# Each phase for an operation may have a single actual phase assigned to it, which is determined here
-	phases = { #infiltration 
-		infiltration_border = { base = 60 }
-		infiltration_diplomatic = {
-			base = 40
-			modifier = {
-				FROM = {
-					has_war_with = ROOT
-				}
-				factor = 0
-			}
+	phases = {
+		cross_the_border_Zelensky = {
+			base = 100
 		}
 	}
 	phases = { 
-		exfiltration_border = { base = 40 }
-		exfiltration_go_to_ground = { base = 60 }
+		redirect_to_Kiev_Zelensky = { base = 100 }
+	}
+	phases = { 
+		FSB_Kiev_Zelensky = { base = 100 }
 	}
 }
 
 RUS_murder_Zelensky = { ### 1/50
-	icon = GFX_murder_trotsky
-	map_icon = GFX_murder_trotsky_map
+	icon = GFX_murder_Zelensky
+	map_icon = GFX_murder_Zelensky_map
 	name = murder_Zelensky
 	desc = murder_Zelensky_desc
-	days = 20
+	days = 4
 
 	priority = 10
 
@@ -96,27 +103,30 @@ RUS_murder_Zelensky = { ### 1/50
 		original_tag = RUS
 		NOT = {
 			UKR = {
-				has_country_flag = UKR_murdered_Zelensky
+			    OR = {
+					has_country_flag = UKR_murdered_Zelensky_fail
+					has_country_flag = UKR_murdered_Zelensky
+				}
 			}
 		}
 	}
 	available = {
-    UKR = {
-		has_country_flag = UKR_track_Zelensky
-	}
+        UKR = {
+		    has_country_flag = UKR_track_Zelensky
+	    }
 	}
 	visible = {
-		has_completed_focus = RUS_special_operations_forces
+		has_completed_focus = RUS_SMO
 	}
 
     operation_target = {
 		targets = {UKR}
 	}
 
-	operatives = 1
+	operatives = 2
 
 	# Integer [0-100] - Every operation has a hard requirement of network strength in the target country
-	network_strength = 20
+	network_strength = 25
 
 	on_start = {  # SCOPE_OPERATION
 		
@@ -129,23 +139,28 @@ RUS_murder_Zelensky = { ### 1/50
 	outcome_potential = {
 		custom_effect_tooltip = murder_Zelensky_outcome_tt
 	}
-	risk_chance = 0.25
+	risk_chance = 0
 	experience = 5
 	# outcome is an effect that runs when the operation has completed
 	outcome_execute = { # SCOPE_OPERATION
-		UKR = { set_country_flag = murdered_Zelensky } # This operation can only be done once
+		random_list = {
+			20 = { UKR = { country_event = { id = ukr.58 hours = 1 } set_country_flag = UKR_murdered_Zelensky } }
+			80 = { RUS = { country_event = { id = rus.125 hours = 4 } } UKR = { set_country_flag = UKR_murdered_Zelensky_fail } }
+		}
 	}
 	
 	# This is where all the separate phases are defined
 	# Each phase for an operation may have a single actual phase assigned to it, which is determined here
 	phases = {
-		infiltration_go_to_ground = {
+		FSB_murder_Kiev_Zelensky = {
 			base = 100
 		}
 	}
 	phases = { 
-		exfiltration_border = { base = 40 }
-		exfiltration_go_to_ground = { base = 60 }
+		territorial_defense_murder_Kiev_Zelensky = { base = 100 }
+	}
+	phases = { 
+		murder_Zelensky_F = { base = 100 }
 	}
 }
 
