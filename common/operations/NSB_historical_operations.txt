@@ -1,0 +1,177 @@
+RUS_trace_Zelensky = { ### 1/50
+	icon = GFX_trace_Zelensky
+	map_icon = GFX_trace_Zelensky_map
+	name = trace_Zelensky
+	desc = trace_Zelensky_desc
+	days = 10
+
+	priority = 11
+
+	allowed = {
+		original_tag = RUS
+		NOT = {
+			UKR = {
+			    OR = {
+					has_country_flag = UKR_track_Zelensky
+					has_country_flag = UKR_track_Zelensky_fail
+				}
+			}
+		}
+	}
+	available = { 
+		network_national_coverage = {
+			target = UKR
+			value > 0
+		}
+	}
+	visible = {
+		has_completed_focus = RUS_special_operations_forces
+		NOT = {
+			has_completed_focus = RUS_SMO
+		}
+	}
+
+	operation_target = {
+		targets = {UKR}
+	}
+
+	operatives = 1
+
+	# Integer [0-100] - Every operation has a hard requirement of network strength in the target country
+	network_strength = 15
+
+	equipment = {
+		infantry_equipment = 100
+		support_equipment = 50
+	}
+
+	on_start = {  # SCOPE_OPERATION
+		
+	}
+
+	outcome_modifiers = { operation_outcome }
+	cost_modifiers = { operation_cost }
+	risk_modifiers = { operation_risk }
+
+	outcome_potential = {
+		custom_effect_tooltip = RUS_trace_Zelensky_outcome_tt
+	}
+	risk_chance = 0
+	experience = 5
+	# outcome is an effect that runs when the operation has completed
+	outcome_execute = { # SCOPE_OPERATION
+		random_list = {
+			40 = { UKR = { set_country_flag = UKR_track_Zelensky } }
+			60 = { RUS = { country_event = { id = rus.123 days = 3 } } UKR = { set_country_flag = UKR_track_Zelensky_fail } }
+		}
+	}
+
+	outcome_extra_chance = 0.50
+
+	outcome_extra_execute = {
+		random_list = {
+			40 = { UKR = { set_country_flag = UKR_track_Zelensky } }
+			60 = { RUS = { country_event = { id = rus.123 days = 3 } } UKR = { set_country_flag = UKR_track_Zelensky_fail } }
+		}
+	}
+
+	# This is where all the separate phases are defined
+	# Each phase for an operation may have a single actual phase assigned to it, which is determined here
+	phases = {
+		cross_the_border_Zelensky = {
+			base = 100
+		}
+	}
+	phases = { 
+		redirect_to_Kiev_Zelensky = { base = 100 }
+	}
+	phases = { 
+		FSB_Kiev_Zelensky = { base = 100 }
+	}
+}
+
+RUS_murder_Zelensky = { ### 1/50
+	icon = GFX_murder_Zelensky
+	map_icon = GFX_murder_Zelensky_map
+	name = murder_Zelensky
+	desc = murder_Zelensky_desc
+	days = 4
+
+	priority = 10
+
+	allowed = {
+		original_tag = RUS
+		NOT = {
+			UKR = {
+			    OR = {
+					has_country_flag = UKR_murdered_Zelensky_fail
+					has_country_flag = UKR_murdered_Zelensky
+				}
+			}
+		}
+	}
+	available = {
+        UKR = {
+		    has_country_flag = UKR_track_Zelensky
+	    }
+	}
+	visible = {
+		has_completed_focus = RUS_SMO
+		has_country_flag = { flag = RUS_start_SMO days < 30 }
+	}
+
+    operation_target = {
+		targets = {UKR}
+	}
+
+	operatives = 2
+
+	# Integer [0-100] - Every operation has a hard requirement of network strength in the target country
+	network_strength = 25
+
+	on_start = {  # SCOPE_OPERATION
+		
+	}
+
+	outcome_modifiers = { operation_outcome operation_infiltrate_outcome }
+	cost_modifiers = { operation_cost operation_infiltrate_cost }
+	risk_modifiers = { operation_risk operation_infiltrate_risk }
+
+	outcome_potential = {
+		custom_effect_tooltip = murder_Zelensky_outcome_tt
+	}
+	risk_chance = 0
+	experience = 5
+	# outcome is an effect that runs when the operation has completed
+	outcome_execute = { # SCOPE_OPERATION
+		random_list = {
+			20 = { UKR = { country_event = { id = ukr.58 hours = 1 } set_country_flag = UKR_murdered_Zelensky } }
+			80 = { RUS = { country_event = { id = rus.125 hours = 4 } } UKR = { set_country_flag = UKR_murdered_Zelensky_fail } }
+		}
+	}
+	
+	# This is where all the separate phases are defined
+	# Each phase for an operation may have a single actual phase assigned to it, which is determined here
+	phases = {
+		FSB_murder_Kiev_Zelensky = {
+			base = 100
+		}
+	}
+	phases = { 
+		territorial_defense_murder_Kiev_Zelensky = { base = 100 }
+	}
+	phases = { 
+		murder_Zelensky_F = { base = 100 }
+	}
+}
+
+#operation_infiltrate_risk
+#operation_infiltrate_outcome
+#operation_infiltrate_cost
+#
+#operation_steal_tech_risk
+#operation_steal_tech_outcome
+#
+#target_sabotage_factor
+#target_sabotage_risk
+#target_sabotage_cost
