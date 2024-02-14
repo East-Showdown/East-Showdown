@@ -1,0 +1,478 @@
+﻿# Шаблон дивизиона историческая система названий. Это новый метод присвоения имен дивизионам на основе имен-групп, присвоенных шаблону.
+# Если у нас закончатся все исторические имена, имена будут назначены старым способом.
+#
+# У каждой группы есть придуманный тег. Используйте его, если вы хотите добавить больше или заменить существующие названия с помощью дополнительных txt-файлов (моддинг).
+#
+# for_countries - перечисляет все страны, которые могут его использовать. Если пусто или отсутствует весь тег, то все страны в мире могут его использовать.
+#
+# can_use - триггер, который блокирует/разблокирует группу при определенных обстоятельствах. Триггер находится в области видимости страны.
+#
+# division_types - список маркеров соответствующих типов подразделений. На самом деле игрок может использовать любую группу названий для div.template.
+# однако этот тег является помощником для автоматического выбора (для AI, или если группа должна переключиться сама по себе, т.к.
+# например, текущая больше не доступна из-за того, что триггер can_use говорит об этом).
+# При автоматическом выборе шаблон подразделения должен иметь хотя бы 1 из следующих типов, чтобы он был выбран.
+#
+# fallback_name - Будет использоваться, если у нас закончатся заскриптованные исторические названия. Если вы хотите использовать старое название дивизии.
+# механики, которые будут использоваться для отступления, то просто пропустите эту опцию.
+#
+# неупорядоченный - Это список исторических названий дивизий, у которых не было номера. Независимо от того, были ли такие названия в истории или нет.
+# эта опция доступна здесь в основном для модов.
+#
+# упорядоченный - Список всех исторических названий. 
+# Номера должны начинаться от 1 и выше. 
+# Числа не могут повторяться в одном диапазоне.
+# Если в скрипте для этой группы задано имя под тем же номером (например, в моде в другом файле), это имя будет переопределено.
+# Все аргументы между скобками должны быть разделены пробелами. Каждый аргумент обернут в "квоту".
+# 1-й аргумент = Имя. Оно должно содержать либо: 
+# %d (для десятичного размещения чисел)
+# %s (для размещения строковых чисел - РОМАНСКИЕ числа, например XIV).
+# 2-й аргумент необязателен = Локализуемый текст, описывающий данное историческое деление. Текст будет виден во всплывающей подсказке.
+# где вы выбираете название исторического подразделения.
+# 3-й аргумент необязателен = URL, желательно указывающий на WIKI. Это будущая функция, которая в настоящее время не работает в
+# текущей версии игры.
+
+
+# Division template historical names system. Is a new method of naming the divisions based on the names-group assigned to it's template.
+# If we run out of all historical names, the names will be assigned in the old way.
+#
+# Each group has a made up tag. Use it if you want to append more, or replace existing names with the extra txt files (modding).
+#
+# for_countries - lists all countries that can use it. If empty, or entire tag is missing, all countries in the world can use it.
+#
+# can_use - is a trigger that locks/unlocks the group under specific circumstances. The trigger is in a country scope.
+#
+# division_types - is a list of tokens to corresponding unit types. A player can in fact use any group of names for a div.template
+#                  however this tag is a helper for an automated choice (for AI, or if the group must switch on it's own, because
+#                  for example the current one is no longer available due to the can_use trigger saying so).
+#                  In automated choice, the division template must have at least 1 of the following types for it to be chosen.
+#
+# fallback_name - Is going to be used if we run out of the scripted historical names. If you want to use the old division naming
+#                 mechanics to be used for fallbacks, then just skip this option.
+#
+# unordered - It's a list of historical division names that did not have a number. Regardless if such names happened in history or not
+#             this option is available here mainly for a mods.
+#
+# ordered - Is a list of all historical names. 
+#           Numbers must start from 1 and up. 
+#           Numbers can't repeat in one scope.
+#           If you script the name for this group, at the same number (for example in a mod in another file), the name will be override.
+#           All arguments between the brackets must be separated by spaces. Each argument is wrapped in "quotas".
+#           1st argument = The name. It must contain either: 
+#                          %d (for decimal number placement)
+#                          %s (for string number placement - ROMAN numbers like XIV).
+#           2nd argument is optional = A localizable text describing this historical division. The text will be visible in the tooltip
+#                                      where you choose the historical division name.
+#           3rd argument is optional = An URL preferably pointing to the WIKI. It's a future feature that is not currently working in
+#                                      the current game version.
+
+
+# Шаблон дивізіону історична система назв. Це новий метод присвоєння імен дивізіонам на основі імен-груп, присвоєних шаблону.
+# Якщо у нас закінчаться всі історичні імена, імена будуть призначені старим способом.
+#
+# У кожної групи є придуманий тег. Використовуйте його, якщо ви хочете додати більше або замінити наявні назви за допомогою додаткових txt-файлів (моддінг).
+#
+# for_countries - перераховує всі країни, які можуть його використовувати. Якщо порожньо або відсутній весь тег, то всі країни у світі можуть його використовувати.
+#
+# can_use - тригер, який блокує/розблокує групу за певних обставин. Тригер знаходиться в області видимості країни.
+#
+# division_types - список маркерів відповідних типів підрозділів. Насправді гравець може використовувати будь-яку групу назв для div.template.
+# однак цей тег є помічником для автоматичного вибору (для AI, або якщо група має перемкнутися сама по собі, тому що.
+# наприклад, поточна більше не доступна через те, що тригер can_use говорить про це).
+# При автоматичному виборі шаблон підрозділу повинен мати хоча б 1 з наступних типів, щоб він був обраний.
+#
+# fallback_name - Буде використовуватися, якщо у нас закінчаться заскриптовані історичні назви. Якщо ви хочете використовувати стару назву дивізії.
+# механіки, які будуть використовуватися для відступу, то просто пропустіть цю опцію.
+#
+# невпорядкований - Це список історичних назв дивізій, у яких не було номера. Незалежно від того, чи були такі назви в історії чи ні.
+# ця опція доступна тут в основному для модів.
+#
+# упорядкований - Список усіх історичних назв. 
+# Номери повинні починатися від 1 і вище. 
+# Числа не можуть повторюватися в одному діапазоні.
+# Якщо в скрипті для цієї групи задано ім'я під тим самим номером (наприклад, у моді в іншому файлі), це ім'я буде перевизначено.
+# Усі аргументи між дужками мають бути розділені пробілами. Кожен аргумент обгорнутий у "квоту".
+# 1-й аргумент = Ім'я. Воно має містити або: 
+# %d (для десяткового розміщення чисел)
+# %s (для розміщення строкових чисел - РОМАНСЬКІ числа, наприклад XIV).
+# 2-й аргумент необов'язковий = Локалізований текст, що описує цей історичний поділ. Текст буде видно у спливаючій підказці.
+# де ви вибираєте назву історичного підрозділу.
+# 3-й аргумент необов'язковий = URL, який бажано вказує на WIKI. Це майбутня функція, яка наразі не працює в
+# поточній версії гри.
+
+POL_INF_01 = 
+{
+	name = "Infantry Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "infantry" }
+
+	# Number reservation system will tie to another group.
+	#link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Piechoty"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		1 = { "1 batalion 21 brygady Strzelcow Podhalanskich" }
+		2 = { "2 batalion 21 brygady Strzelcow Podhalanskich" }
+		3 = { "3 batalion 21 brygady Strzelcow Podhalanskich" }
+		4 = { "4 batalion 21 brygady Strzelcow Podhalanskich" }
+		#rozvidka kryto tipo
+		5 = { "2 batalion rozpoznawczy Grubeshovsky" }
+		6 = { "9 zwiad bitwa warminska" }
+		7 = { "18 batalion rozpoznawczy" }
+		#мобилизейшн
+		8 = { "5 batalion 21 brygady Strzelcow Podhalanskich" }
+		9 = { "6 batalion 21 brygady Strzelcow Podhalanskich" }
+		10 = { "7 batalion 21 brygady Strzelcow Podhalanskich" }
+		11 = { "8 batalion 21 brygady Strzelcow Podhalanskich" }
+		12 = { "9 batalion 21 brygady Strzelcow Podhalanskich" }
+		13 = { "10 batalion 21 brygady Strzelcow Podhalanskich" }
+		14 = { "11 batalion 21 brygady Strzelcow Podhalanskich" }
+		15 = { "12 batalion 21 brygady Strzelcow Podhalanskich" }
+		16 = { "13 batalion 21 brygady Strzelcow Podhalanskich" }
+		17 = { "14 batalion 21 brygady Strzelcow Podhalanskich" }
+		18 = { "15 batalion 21 brygady Strzelcow Podhalanskich" }
+		19 = { "16 batalion 21 brygady Strzelcow Podhalanskich" }
+		20 = { "17 batalion 21 brygady Strzelcow Podhalanskich" }
+		21 = { "18 batalion 21 brygady Strzelcow Podhalanskich" }
+		22 = { "19 batalion 21 brygady Strzelcow Podhalanskich" }
+		23 = { "20 batalion 21 brygady Strzelcow Podhalanskich" }
+		24 = { "21 batalion 21 brygady Strzelcow Podhalanskich" }
+		25 = { "22 batalion 21 brygady Strzelcow Podhalanskich" }
+		26 = { "23 batalion 21 brygady Strzelcow Podhalanskich" }
+		27 = { "24 batalion 21 brygady Strzelcow Podhalanskich" }
+
+		28 = { "1 batalion Obrony Terytorialnej" }
+		29 = { "2 batalion Obrony Terytorialnej" }
+		30 = { "3 batalion Obrony Terytorialnej" }
+		31 = { "4 batalion Obrony Terytorialnej" }
+		32 = { "5 batalion Obrony Terytorialnej" }
+		33 = { "6 batalion Obrony Terytorialnej" }
+		34 = { "7 batalion Obrony Terytorialnej" }
+	}
+}
+
+
+POL_CAV_01 = 
+{
+	name = "Cavalry Brigade"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "cavalry" }
+
+	# Number reservation system will tie to another group.
+	#link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Kawalerii"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		101 = { "Krakowska Brygada Kawalerii" }		# use historical named brigades for initial names then default numbered divisions for ahistorical names
+		102 = { "Kresowa Brygada Kawalerii" }		
+		103 = { "Mazowiecka Brygada Kawalerii" }		
+	}
+}
+
+
+POL_MOT_01 = 
+{
+	name = "Motorized Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "motorized" } 
+
+	# Number reservation system will tie to another group.
+	link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Motorowy"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		101 = { " Warszawska Dywizja Motorowa" }
+		10 = { "%d Dywizja Motorowa" }
+		1 = { "%d Dywizja Motorowa Legionów" }
+	}
+}
+
+POL_MEC_01 = 
+{
+	name = "Mechanized Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "mechanized" } 
+
+	# Number reservation system will tie to another group.
+	link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Zmechanizowany"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		1 = { "1 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }
+		2 = { "2 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }	
+		3 = { "3 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }	
+		4 = { "4 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }		
+		5 = { "1 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		6 = { "2 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		7 = { "3 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		8 = { "4 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		9 = { "1 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		10 = { "2 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		11 = { "3 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		12 = { "4 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		13 = { "1 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		14 = { "2 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		15 = { "3 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		16 = { "4 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		#мобилизейшн
+		17 = { "5 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		18 = { "6 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		19 = { "7 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		20 = { "8 batalion 15 Gizyckiej Brygady Zmechanizowanej im. Zawiszy Chyornego" }	
+		21 = { "5 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		22 = { "6 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		23 = { "7 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		24 = { "8 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		25 = { "9 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		26 = { "10 batalion 19 Lubelskiej Brygady Zmechanizowanej" }	
+		27 = { "5 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		28 = { "6 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		29 = { "7 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		30 = { "8 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		31 = { "9 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		32 = { "10 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		33 = { "11 batalion 20 brygady zmechanizowanej Bartoszyca" }	
+		34 = { "5 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }	
+		35 = { "6 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }	
+		36 = { "7 Batalion 9 Brygady Kawalerii Pancernej im. Stefana Batorego" }	
+	}
+}
+
+POL_ARM_01 = 
+{
+	name = "Armored Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "light_armor" "medium_armor" "heavy_armor" "modern_armor" }
+
+	# Number reservation system will tie to another group.
+	#link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Pancerny"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		1 = { "1 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		2 = { "2 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		3 = { "3 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		4 = { "4 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		#мобилизейшн
+		5 = { "5 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		6 = { "6 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		7 = { "7 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		8 = { "8 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		9 = { "9 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		10 = { "10 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+		11 = { "11 Batalion 1 Brygady Pancernej im. Tadeusza Kosciuszki" }
+	
+	}
+}
+
+
+POL_PAR_01 = 
+{
+	name = "Airborne Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "paratrooper" }
+
+	# Number reservation system will tie to another group.
+	link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Spadochronowa"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		1 = { "6 batalion powietrznodesantowy" }
+		2 = { "16 batalion powietrznodesantowy" }
+		3 = { "18 batalion powietrznodesantowy" }
+		4 = { "1 Batalion Kawalerii Powietrznej" }
+		5 = { "7 batalion powietrznodesantowy" }
+
+	}
+}
+
+POL_MAR_01 = 
+{
+	name = "Marine Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "marine" }
+
+	# Number reservation system will tie to another group.
+	link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Piechoty Morskiej"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		1 = { "%d Dywizja Piechoty Morskiej" }
+	}
+}
+
+POL_MNT_01 = 
+{
+	name = "Mountain Division"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "mountaineers" }
+
+	# Number reservation system will tie to another group.
+	link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion Piechoty Gorskiej"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		21 = { "%d Dywizja Piechoty Górskiej" }		
+		22 = { "%d Dywizja Piechoty Górskiej" }		
+	}
+}
+
+POL_GAR_01 = 
+{
+	name = "Border Guard Brigade"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "infantry" }
+
+	# Number reservation system will tie to another group.
+	# link_numbering_with = { POL_INF_01 }
+
+	fallback_name = "%d batalion KOP"
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+	
+		1 = { "%d Brygada Ochrony Pogranicza" }
+		2 = { "%d Brygada Ochrony Pogranicza" }
+		3 = { "%d Brygada Ochrony Pogranicza" }
+	}
+}
+
+POL_ART_01 = 
+{
+	name = "Artileriyskiy divizion"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+
+	division_types = { "Polevoi_SAU" }
+
+	# Number reservation system will tie to another group.
+	#link_numbering_with = { UKR_INF_01 }
+
+	fallback_name = "%dya batalion artylerii."
+
+	# Names with numbers (only one number per entry). 
+	# It's okay to have gaps in numbering.
+	ordered =
+	{
+		1 = { "1 Batalion Artylerii 11 Pulku Mazurskiego." }
+		2 = { "2 Batalion Artylerii 11 Pulku Mazurskiego." }
+		3 = { "3 Batalion Artylerii 11 Pulku Mazurskiego." }
+		4 = { "4 Batalion Artylerii 11 Pulku Mazurskiego." }
+
+	}
+}
+
+
+POL_GAR_02 = {
+
+	name = "Batalion Pograniczny"
+
+	for_countries = { POL }
+
+	can_use = { always = yes }
+	
+	division_types = { "infantry" }
+
+	fallback_name = "%dya batalion pograniczny."
+
+	ordered = {
+		1 = {"1 Batalion graniczny"}
+		2 = {"2 Batalion graniczny"}
+		3 = {"3 Batalion graniczny"}
+		4 = {"4 Batalion graniczny"}
+		5 = {"5 Batalion graniczny"}
+		6 = {"6 Batalion graniczny"}
+		7 = {"7 Batalion graniczny"}
+		8 = {"8 Batalion graniczny"}
+		9 = {"9 Batalion graniczny"}
+		10 = {"10 Batalion graniczny"}
+		11 = {"11 Batalion graniczny"}
+		12 = {"12 Batalion graniczny"}
+		13 = {"13 Batalion graniczny"}
+		14 = {"14 Batalion graniczny"}
+		15 = {"15 Batalion graniczny"}
+		16 = {"16 Batalion graniczny"}
+		17 = {"17 Batalion graniczny"}
+		18 = {"18 Batalion graniczny"}
+		19 = {"19 Batalion graniczny"}
+		20 = {"20 Batalion graniczny"}
+		21 = {"21 Batalion graniczny"}
+		22 = {"22 Batalion graniczny"}
+		23 = {"23 Batalion graniczny"}
+		24 = {"24 Batalion graniczny"}
+		25 = {"25 Batalion graniczny"}
+		26 = {"26 Batalion graniczny"}
+
+	}
+}

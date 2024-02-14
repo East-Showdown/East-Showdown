@@ -1,0 +1,579 @@
+focus_tree = {
+	id = DPR
+	continuous_focus_position = { x = 4190 y = 920 } 
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = DPR
+		}
+	}
+	default = no
+	focus = {
+		id = DPR_reshaushiigod
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 40
+		y = 0
+		cost = 0.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		completion_reward = {
+			add_political_power = 150
+		}
+	}
+	focus = {
+		id = DPR_tofuture
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 44
+		y = 2
+		cost = 1.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			RUS = {
+				has_completed_focus = RUS_successful_negotiations
+			}
+		}
+		prerequisite = { focus = DPR_reshaushiigod  }
+		mutually_exclusive = { focus = DPR_ojidaemiyishod  }
+		completion_reward = {
+			add_stability = 1.00
+			add_war_support = -1.00
+		}
+	}
+	focus = {
+		id = DPR_zavtra
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 44
+		y = 3
+		cost = 140
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_tofuture  }
+		completion_reward = {
+		}
+	}
+	focus = {
+		id = DPR_ojidaemiyishod
+		icon = GFX_IMAGE_NOT_FOUND
+		x = 36
+		y = 2
+		cost = 1.5
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			OR = {
+				RUS = {
+					has_completed_focus = RUS_conflict_flares_up_again
+				}
+				RUS = {
+					has_completed_focus = RUS_failure_of_negotiations
+				}
+				RUS = {
+					has_completed_focus = RUS_there_will_be_no_peaceful_solution
+				}
+			}
+		}
+		prerequisite = { focus = DPR_reshaushiigod  }
+		mutually_exclusive = { focus = DPR_tofuture  }
+		completion_reward = {
+		}
+	}
+	#Тёмные тучи над Донбассом
+	focus = {
+		id = DPR_tyomnyetuchinaddonbassom
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_tyomnyetuchinaddonbassom
+		x = 36
+		y = 3
+		cost = 0.145
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_ojidaemiyishod  }
+		completion_reward = {
+			country_event = {
+				id = DPR.1
+				days = 0
+			}
+		}
+	}
+	#Усиление Блокпостов
+	focus = {
+		id = DPR_usilenieblokpostov
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_usilenieblokpostov
+		x = 36
+		y = 5
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CIVIL_WAR
+		}
+		prerequisite = { focus = DPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_ideas = DNB_blokposti
+			add_manpower = -5000
+	    }
+	}
+	#Реформа вооруженных сил
+	focus = {
+		id = DPR_reformavoorujennihsil
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_konfiskaciyaoruzhiyaunaseleniya
+		x = 34
+		y = 4
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_2
+				amount = 10000
+				producer = RUS
+			}
+			add_stability = -0.05
+			add_ideas = DNB_profarmy
+		}
+	}
+
+	#За что мы сражаемся?
+	focus = {
+		id = DPR_zachtomysrazhaemsya
+		icon =  GFX_DPR_zachtomysrazhaemsya
+		x = 36
+		y = 7
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = DPR_reformavoorujennihsil focus = DPR_usilenieblokpostov focus = DPR_borbasnavodchikami focus = DPR_evacuation_focus0 }
+		completion_reward = {
+			add_ideas = why_we_fight_focus
+		}
+	}
+
+	#Борьба с украинскими диверсантами
+	focus = {
+		id = DPR_borbasukrainskimidiversantami
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_borbasukrainskimidiversantami
+		x = 38
+		y = 5
+		cost = 1
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CARLIST_UPRISING
+		}
+		prerequisite = { focus = DPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			add_ideas = DNB_diversanti_1
+	    }
+	}
+
+	#Эвакуация населения
+	focus = {
+		id = DPR_evacuation_focus0
+		icon =  GFX_DPR_evacuation_focus0
+		x = 40
+		y = 5
+		cost = 0.8
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_TFV_AUTONOMY
+		}
+		prerequisite = { focus = DPR_tyomnyetuchinaddonbassom  }
+		completion_reward = {
+			custom_effect_tooltip = DPR_tooltip_evacuation
+			add_stability = 0.1
+	    }
+	}
+
+	#Борьба с наводчиками
+	focus = {
+		id = DPR_borbasnavodchikami
+		icon =  GFX_DPR_borbasnavodchikami
+		x = 38
+		y = 6
+		cost = 1
+		available = {
+			has_war=no
+		}
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = DPR_borbasukrainskimidiversantami  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = DNB_diversanti_1
+            add_idea = DNB_diversanti_2
+			}
+		}
+	}
+
+	#Снова война...
+	focus = {
+		id = DPR_snovavoyna
+		icon =  GFX_DPR_snovavoyna
+		x = 16
+		y = 0
+		cost = 1
+		available = {
+			always = no
+		}
+		search_filters = {
+			FOCUS_FILTER_SPA_CIVIL_WAR
+		}
+		completion_reward = {
+			add_war_support = 0.15
+		}
+	}
+
+	#Мобилизация
+	focus = {
+		id = DPR_mobilizaciya
+		icon =  GFX_DPR_mobilizaciya
+		x = 18
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = DPR_snovavoyna  }
+		completion_reward = {
+			add_war_support = -0.05
+			add_stability = -0.05
+			add_manpower = 25000
+			hidden_effect = {
+				news_event = {
+					id = news.65 
+					hours = 5
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = DPR_mobilizaciya2
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 18
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = DPR_mobilizaciya  }
+		completion_reward = {
+			add_war_support = -0.15
+			add_stability = -0.10
+			add_manpower = 50000
+		}
+	}
+	
+	#Все должны воевать за родину
+	focus = {
+		id = DPR_vse_voyut
+		icon =  GFX_DPR_vsevoyut
+		x = 18
+		y = 4
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = DPR_mobilizaciya2  }
+		completion_reward = {
+			add_war_support = -0.3
+			add_stability = -0.25
+			add_manpower = 300000
+		}
+	}
+	
+	#Переговоры о вступлении в состав РФ
+	focus = {
+		id = DPR_vsutplenie_v_rf
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 16
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			always = no
+		}
+		prerequisite = { focus = DPR_snovavoyna  }
+		completion_reward = {
+			add_war_support = 0.2
+			news_event = {
+				id = news.23
+			}
+		}
+	}
+	
+	#Донецкая народная республика - новый субъект РФ
+	focus = {
+		id = DPR_DPR_v_rf
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 16
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		available = {
+			NOT = {
+				has_global_flag = novorossia_suchestvuet
+			}
+		}
+		prerequisite = { focus = DPR_vsutplenie_v_rf  }
+		completion_reward = {
+			add_stability = 0.25
+			news_event = {
+				id = news.24
+			}
+			RUS = {
+				set_autonomy = {
+					target = DPR
+					autonomous_state = autonomy_integrated_federal_subject
+				}
+			}
+		}
+	}
+
+	#Попросить у России защиту неба
+	focus = {
+		id = DPR_protect_sky
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 20
+		y = 2
+		cost = 1
+		prerequisite = { focus = DPR_snovavoyna  }
+		completion_reward = {
+			add_ideas = DNB_protect_sky
+		}
+	}
+
+	#Вставай, Донбасс!
+	focus = {
+		id = DPR_vstavaydonbass
+		icon = GFX_DPR_vstavaydonbass
+		x = 14
+		y = 2
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+		prerequisite = { focus = DPR_snovavoyna  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = why_we_fight_focus
+            add_idea = why_we_fight_focus_2
+			}
+		}
+
+	}
+
+	#Бастион борьбы с нацизмом
+	focus = {
+		id = DPR_bastionborbysnacizmom
+		icon =  GFX_DPR_bastionborbysnacizmom
+		x = 14
+		y = 3
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_vstavaydonbass  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = why_we_fight_focus_2
+            add_idea = why_we_fight_focus_3
+			}
+		}
+	}
+	
+	#Начало освобождения
+	focus = {
+		id = DPR_startosvobojd
+		icon =  GFX_IMAGE_NOT_FOUND
+		x = 10
+		y = 2
+		cost = 1
+		available = {
+			OR = {
+				DPR = {
+				controls_state = 237
+				controls_state = 213
+				controls_state = 182
+				controls_state = 165
+				}
+			}
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_snovavoyna  }
+		completion_reward = {
+			add_war_support=0.15
+		}
+	}
+	
+	#Свобода
+	focus = {
+		id = DPR_osvobozhdenierespublikiotokkupacii
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_osvobozhdenierespublikiotokkupacii
+		x = 12
+		y = 6
+		cost = 1
+		available = {
+			DPR = {
+				controls_state = 237
+				controls_state = 213
+				controls_state = 182
+				controls_state = 165
+				controls_state = 189
+				controls_state = 221
+				controls_state = 205
+			}
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_snovavoyna  }
+
+		completion_reward = {
+			add_stability = 0.15
+			add_war_support=-0.2
+		}
+		
+	}
+
+	#Очистить умы людей от бандеровской пропаганды
+	focus = {
+		id = DPR_ochistitumylyudeyotbanderovskoypropagandy
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_ochistitumylyudeyotbanderovskoypropagandy
+		x = 14
+		y = 7
+		cost = 1
+		available = {
+			DPR = {
+			controls_state = 237
+			controls_state = 213
+			controls_state = 182
+			controls_state = 165
+		}
+		}
+		search_filters = {
+			FOCUS_FILTER_USA_CONGRESS
+		}
+		prerequisite = { focus = DPR_osvobozhdenierespublikiotokkupacii  }
+		completion_reward = {
+			237 = {
+				add_core_of = DPR
+			}
+            213 = {
+				add_core_of = DPR
+			}
+			182 = {
+				add_core_of = DPR
+			}
+			149 = {
+				add_core_of = DPR
+			}
+			165 = {
+				add_core_of = DPR
+			}
+		}
+	}
+
+	#Мобилизация на освобожденных территориях
+	focus = {
+		id = DPR_mobilizaciyanaosvobozhdennyhterritoriyah
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_mobilizaciyanaosvobozhdennyhterritoriyah
+		x = 14
+		y = 8
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_MANPOWER
+		}
+		prerequisite = { focus = DPR_ochistitumylyudeyotbanderovskoypropagandy  }
+		completion_reward = {
+			add_manpower = 25000
+			add_stability = -0.1
+		}
+	}
+
+	#Восстановление Донбасса
+	focus = {
+		id = DPR_vosstanovleniedonbassa
+		icon = GFX_IMAGE_NOT_FOUND 
+		x = 10
+		y = 7
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_INDUSTRY
+		}
+		prerequisite = { focus = DPR_osvobozhdenierespublikiotokkupacii  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = DNB_donbass_in_ruins
+            add_idea = DNB_donbass_in_ruins_2
+			}
+		}
+	}
+
+	#Общественные работы
+	focus = {
+		id = DPR_obshchestvennyeraboty
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_obshchestvennyeraboty
+		x = 10
+		y = 9
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_privlechenievolontyorovizrossii  }
+		completion_reward={
+			remove_ideas = DNB_donbass_in_ruins_3 
+			}
+	}
+
+	#Привлечение волонтёров из России
+	focus = {
+		id = DPR_privlechenievolontyorovizrossii
+		icon =  GFX_IMAGE_NOT_FOUND #GFX_DPR_privlechenievolontyorovizrossii
+		x = 10
+		y = 8
+		cost = 1
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+		prerequisite = { focus = DPR_vosstanovleniedonbassa  }
+		completion_reward = {
+			swap_ideas = {
+            remove_idea = DNB_donbass_in_ruins_2
+            add_idea = DNB_donbass_in_ruins_3
+			}
+			add_autonomy_score = {
+				value = -30
+			}
+		}
+	}
+}

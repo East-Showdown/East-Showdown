@@ -1,0 +1,892 @@
+add_namespace = WGN
+add_namespace = WGN_mission
+
+unit_leader_event = {
+	id = WGN_mission.1
+	title = WGN_mission.1.t
+	desc = WGN_mission.1.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN_mission.1.a
+		activate_mission = WGN_soledar_conquest
+	}
+}
+
+unit_leader_event = {
+	id = WGN_mission.2
+	title = WGN_mission.2.t
+	desc = WGN_mission.2.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN_mission.2.a
+		activate_mission = WGN_bakhmut_conquest
+	}
+}
+
+unit_leader_event = {
+	id = WGN_mission.3
+	title = WGN_mission.3.t
+	desc = WGN_mission.3.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN_mission.3.a
+		add_political_power = -50
+		add_stability = -0.1
+		army_experience = -20
+		add_command_power = -50
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = 0.20
+		}
+		hidden_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = 0.20
+			}	
+			set_country_flag = WGN_BM_fail
+		}
+	}
+}
+
+country_event = {
+	id = WGN.1
+	title = WGN.1.t
+	desc = WGN.1.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.1.a
+	}
+}
+
+#начало снарядного голода
+country_event = {
+	id = WGN.2
+	title = WGN.2.t
+	desc = WGN.2.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.2.a
+		custom_effect_tooltip = WGN_no_shell_tooltip
+		hidden_effect = {
+			WGN = {
+				load_focus_tree = WGN_2
+			}
+			swap_ideas = {
+				remove_idea = WGN_shell_hunger_idea
+				add_idea = WGN_shell_hunger_idea_2
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.1
+			}
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.1
+			}
+		}
+	}
+}
+
+#обращение к путину
+country_event = {
+	id = WGN.3
+	title = WGN.3.t
+	desc = WGN.3.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.3.a
+	}
+}
+
+country_event = {
+	id = WGN.4
+	title = WGN.4.t
+	desc = WGN.4.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.4.a
+		WGN = {
+			every_army_leader = {
+				remove_trait = {
+					trait = wgn_commander
+				}
+				remove_trait = {
+					trait = wgn_leader
+				}
+				promote_leader = yes
+			}
+			every_unit_leader = {
+				limit = { NOT = { is_character = evgeniy_prigozhin} }
+				set_nationality = RUS
+			}
+			remove_power_balance = {
+				id = WGN_power_balance
+			}
+			set_nationality = {
+				target_country = RUS
+				character = evgeniy_prigozhin
+			}
+		}
+		RUS = {
+			if = {
+				limit = {
+					has_global_flag = strelkov_rus_hire
+				}
+				retire_character = igor_girkin
+			}
+			retire_character = sergei_shoigy
+			valery_gerasimov = {
+				retire = yes
+			}
+			random_army_leader = {
+				retire = yes
+			}
+			random_army_leader = {
+				retire = yes
+			}
+			random_army_leader = {
+				retire = yes
+			}
+			random_army_leader = {
+				retire = yes
+			}
+			random_army_leader = {
+				retire = yes
+			}
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+			}
+			add_popularity = { ideology = fascism popularity = 0.6 }
+			set_party_name = {  
+				ideology = fascism
+				long_name = prigozhin_war_junta_long  
+				name = prigozhin_war_junta
+			}
+			remove_power_balance = {
+				id = RUS_power_balance
+			}
+			remove_ideas = weak_ideology
+			remove_ideas = state_of_stability
+			add_ideas = { WGN_council_idea }
+			set_cosmetic_tag = RUS_neutrality
+			retire_ideology_leader = fascism
+			evgeniy_prigozhin = {
+				promote_character = yes
+			}
+			add_country_leader_role = {
+				character = evgeniy_prigozhin
+				promote_leader = yes
+				country_leader = {
+					ideology = prigozhin_war_junta
+					traits = { oligarch_winner criminal_oligarch }
+				}
+			}
+			set_country_leader_ideology = prigozhin_war_junta
+			change_tag_from = WGN
+		}
+		BOR = {
+			country_event = bor_hidden.1
+		}
+		set_global_flag = RUS_Wagner_victory	
+		hidden_effect = {
+		    RUS = {
+		        country_event = {
+				    id = super.6
+				    hours = 4
+			    }
+			}
+		}
+	}
+	option = {
+		name = WGN.4.s
+		WGN = {
+			add_to_war = {
+				targeted_alliance = RUS
+				enemy = UKR
+			}
+		}
+		RUS = {
+			retire_character = sergei_shoigy
+			valery_gerasimov = {
+				retire = yes
+			}
+		}
+		complete_national_focus = WGN_victory
+		complete_national_focus = WGN_back_to_war
+		remove_ideas = WGN_shell_hunger_idea_3
+		if = {
+			limit = {
+				has_war_with = RUS
+			}
+			remove_mission = hold_rostov
+			remove_mission = hold_voronezh
+			white_peace = RUS
+			white_peace = CHE
+			white_peace = DPR
+			white_peace = LPR
+			remove_ideas = march_justice_idea
+			remove_ideas = march_justice_idea_2
+		}
+		hidden_effect = {
+		    country_event = {
+				id = wgn.14
+				days = 60
+			}
+		}
+	}
+}
+
+#Согласие Путина
+country_event = {
+	id = WGN.5
+	title = WGN.5.t
+	desc = WGN.5.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.5.a
+		remove_power_balance = {
+			id = RUS_power_balance
+		}
+		remove_power_balance = {
+			id = WGN_power_balance
+		}
+		hidden_effect = {
+			remove_ideas = WGN_shell_hunger_idea_3
+		}
+		RUS = {
+			retire_character = sergei_shoigy
+			retire_character = valery_gerasimov
+		}
+		remove_ideas = WGN_shell_hunger_idea_3
+		complete_national_focus = WGN_back_to_war
+	}
+}
+
+#Отказ Путина
+country_event = {
+	id = WGN.6
+	title = WGN.6.t
+	desc = WGN.6.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.6.a
+		complete_national_focus = WGN_march
+	}
+}
+
+#Подход к Москве
+country_event = {
+	id = WGN.7
+	title = WGN.7.t
+	desc = WGN.7.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.7.a
+		if = {
+			limit = {
+				has_war_with = RUS
+			}
+			remove_mission = hold_rostov
+			remove_mission = hold_voronezh
+			white_peace = RUS
+			white_peace = CHE
+			white_peace = DPR
+			white_peace = LPR
+			remove_ideas = march_justice_idea
+			remove_ideas = march_justice_idea_2
+		}
+		remove_ideas = WGN_shell_hunger_idea_3
+		complete_national_focus = WGN_no_blood
+		complete_national_focus = WGN_belarus
+		news_event = news.131
+		ai_chance = {
+			base = 10
+			modifier = {
+				add = 100
+				is_historical_focus_on = yes
+			}
+		}
+		hidden_effect = {
+		    country_event = {
+				id = wgn.14
+				days = 60
+			}
+		}
+	}
+	option = {
+		name = WGN.7.s
+		if = {
+			limit = {
+				has_war_with = RUS
+			}
+			swap_ideas = {
+				remove_idea = march_justice_idea
+				add_idea = march_justice_idea_2
+			}
+			activate_mission = take_moscow
+		}
+		complete_national_focus = WGN_destroy_shoigu
+		news_event = news.130 
+		if = {
+			limit = {
+				NOT = {
+					has_war_with = RUS
+				}
+			}
+			hidden_effect = {
+				country_event = {
+					id = WGN.4
+					hours = 6
+				}
+			}
+		}
+	}
+}
+
+#поражение
+country_event = {
+	id = WGN.9
+	title = WGN.9.t
+	desc = WGN.9.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.9.a
+		RUS = {
+			annex_country = {
+				target = WGN
+			}
+		}
+		remove_power_balance = {
+			id = RUS_power_balance
+		}
+		remove_power_balance = {
+			id = WGN_power_balance
+		}
+	}
+}
+
+#Вступительный
+country_event = {
+	id = WGN.10
+	title = WGN.10.t
+	desc = WGN.10.d
+	picture = GFX_country_event_009
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = WGN.10.a
+		complete_national_focus = WGN_utkin_orchestra
+	}
+}
+
+#Война нужна была олигархам
+country_event = {
+	id = WGN.11
+	title = WGN.11.t
+	desc = WGN.11.d
+	picture = GFX_country_event_032
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.11.a
+		add_political_power = 50
+		RUS = {
+		    country_event = {
+				id = rus.100
+				hours = 1
+			}
+		}
+	}
+}
+
+#Борьба с военными бюрократами
+country_event = {
+	id = WGN.12
+	title = WGN.12.t
+	desc = WGN.12.d
+	picture = GFX_country_event_033
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.12.a
+		army_experience = 20
+		add_command_power = 10
+		RUS = {
+		    country_event = {
+				id = rus.101
+				hours = 1
+			}
+		}
+	}
+}
+
+#Дискредитация МО РФ
+country_event = {
+	id = WGN.13
+	title = WGN.13.t
+	desc = WGN.13.d
+	picture = GFX_country_event_034
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.13.a
+		add_command_power = 15
+		add_political_power = 30
+		RUS = {
+		    country_event = {
+				id = rus.102
+				hours = 1
+			}
+		}
+		hidden_effect = {
+		    if = {
+			    limit = {
+					WGN = {
+						is_ai = no
+					}
+				}
+				play_song = "prigozhin_bombit_2"
+			}
+		}
+	}
+}
+
+#Пригожин и Уткин мертвы
+country_event = {
+	id = WGN.14
+	title = WGN.14.t
+	desc = WGN.14.d
+	picture = GFX_country_event_035
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.14.a
+		add_political_power = -300
+		army_experience = -80
+		add_stability = -0.6
+		add_war_support = -0.2
+		RUS = {
+		    country_event = {
+				id = rus.103
+				hours = 0
+			}
+		}
+		news_event = {
+			id = news.132
+			hours = 4
+		}
+		custom_effect_tooltip = WGN_Prigoshin_F
+		hidden_effect = {
+		    set_country_flag = WGN_death_prigozhin_utkin
+		    country_event = {
+				id = super.5
+				hours = 3
+			}
+			country_event = {
+				id = WGN.16
+				days = 3
+			}
+			evgeniy_prigozhin = {
+				retire = yes
+			}
+			dmitry_utkin = {
+				retire = yes
+			}
+			promote_character = {  character = council_commanders_PMC  ideology = wgn }
+			activate_advisor = WGN_commanders_PMC
+		}
+	}
+}
+
+#ШОЙГК ГЕРАСИМ ГДЕ БАНАН?
+country_event = {
+	id = WGN.15
+	title = WGN.15.t
+	desc = WGN.15.d
+	picture = GFX_country_event_036
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.15.a
+		add_political_power = 50
+		RUS = {
+		    country_event = {
+				id = rus.105
+				hours = 1
+			}
+		}
+		news_event = {
+			id = news.133
+			hours = 2
+		}
+		hidden_effect = {
+		    if = {
+			    limit = {
+					WGN = {
+						is_ai = no
+					}
+				}
+				play_song = "prigozhin_bombit"
+			}
+		}
+	}
+}
+
+#Новый глава ЧВК
+country_event = {
+	id = WGN.16
+	title = WGN.16.t
+	desc = WGN.16.d
+	picture = GFX_country_event_009
+	fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+		    country_event = {
+				id = WGN.19
+				days = 36
+			}
+		}
+	}
+	option = {
+		name = WGN.16.a
+		ai_chance = { base = 45 }
+		custom_effect_tooltip = WGN_anton_elizarov_power
+		hidden_effect = {
+		    set_politics = {
+				ruling_party = neutrality
+			}
+			set_popularities = {  democratic = 0  neutrality = 50  fascism = 50  communism = 0 }
+			add_country_leader_role = {
+				character = anton_elizarov
+				promote_leader = yes
+				country_leader = {
+					ideology = wgn_n
+				}
+			}
+			anton_elizarov = {
+				promote_leader = yes
+				remove_trait = {
+					trait = wgn_commander
+				}
+				add_trait = {
+					trait = wgn_leader
+				}
+			}
+		}
+		add_stability = 0.1
+	}
+	option = {
+		name = WGN.16.b
+		ai_chance = { base = 45 }
+		custom_effect_tooltip = WGN_Andrey_Troshev_power
+		hidden_effect = {
+		    set_politics = {
+				ruling_party = neutrality
+			}
+			set_popularities = {  democratic = 0  neutrality = 50  fascism = 50  communism = 0 }
+			add_country_leader_role = {
+				character = Andrey_Troshev
+				promote_leader = yes
+				country_leader = {
+					ideology = wgn_n
+				}
+			}
+			add_field_marshal_role = {
+			    Character = Andrey_Troshev
+				traits = { wgn_leader old_guard war_hero }
+				skill = 3
+				attack_skill = 4
+				defense_skill = 2
+				planning_skill = 3
+				logistics_skill = 3
+			}
+		}
+		add_stability = 0.1
+	}
+	option = {
+		name = WGN.16.c
+		ai_chance = { base = 10 }
+		add_political_power = 40
+		add_stability = -0.05
+		add_field_marshal_role = {
+			Character = council_commanders_PMC
+			traits = { wgn_leader }
+			skill = 3
+			attack_skill = 2
+			defense_skill = 3
+			planning_skill = 7
+			logistics_skill = 2
+		}
+	}
+	option = {
+		name = WGN.16.da
+		custom_effect_tooltip = WGN_end_PMC_Wagner
+		hidden_effect = {
+		    if = {
+			    limit = {
+				    WGN = {
+					    controls_province = 3040
+				    }
+		        }
+			    RUS = {
+				    annex_country = {
+					    target = WGN
+				    }
+			    }
+	        }
+		    else = {
+			    BLR = {
+				    annex_country = {
+					    target = WGN
+				    }
+			    }
+		    }
+		}
+	}
+}
+
+#Удар по полевому лагерю ЧВК
+country_event = {
+	id = WGN.17
+	title = WGN.17.t
+	desc = WGN.17.d
+	picture = GFX_country_event_042
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.17.a
+		add_political_power = 50
+		RUS = {
+		    add_political_power = -60
+		    add_stability = -0.02
+			add_war_support = -0.07
+		}
+		news_event = {
+			id = news.140
+			hours = 1
+		}
+	}
+}
+
+#ЧВК Вагнер присоединяется к СВО
+country_event = {
+	id = WGN.18
+	title = WGN.18.t
+	desc = WGN.18.d
+	picture = GFX_country_event_009
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.18.a
+		add_political_power = 100
+		add_war_support = 0.1
+		add_equipment_to_stockpile = {
+			type = motorized_equipment_1	
+			amount = 200
+			producer = RUS
+		}
+		add_to_war = {
+			targeted_alliance = RUS
+			enemy = UKR
+		}
+	}
+}
+
+#Сын Пригожина
+country_event = {
+	id = WGN.19
+	title = WGN.19.t
+	desc = WGN.19.d
+	picture = GFX_country_event_054
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.19.a
+		ai_chance = { base = 100 }
+		add_political_power = 100
+		add_stability = 0.1
+		add_war_support = 0.15
+		custom_effect_tooltip = WGN_son_Prigoshin
+		hidden_effect = {
+		    anton_elizarov = {
+			    remove_country_leader_role = {  ideology = wgn_n }
+			}
+			Andrey_Troshev = {
+			    remove_country_leader_role = {  ideology = wgn_n }
+				remove_unit_leader = yes
+			}
+			council_commanders_PMC = {
+			    remove_country_leader_role = {  ideology = wgn_d }
+				remove_country_leader_role = {  ideology = wgn }
+				remove_country_leader_role = {  ideology = wgn_c }
+				remove_country_leader_role = {  ideology = wgn_n }
+				remove_unit_leader = yes
+			}
+		    set_politics = {
+			    ruling_party = fascism
+			}
+			set_popularities = {  democratic = 0  neutrality = 0  fascism = 100  communism = 0 }
+			promote_character = {  character = pavel_prigozhin  ideology = wgn }
+			add_field_marshal_role = {
+			    Character = pavel_prigozhin
+				traits = { wgn_leader desert_fox }
+				skill = 1
+				attack_skill = 2
+				defense_skill = 1
+				planning_skill = 1
+				logistics_skill = 3
+			}
+			if = {
+			    limit = {
+					anton_elizarov = {
+						has_trait = wgn_leader
+			        }
+				}
+				anton_elizarov = {
+				    demote_leader = yes
+					remove_trait = {
+						trait = wgn_leader
+					}
+					add_trait = {
+						trait = wgn_commander
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = WGN.19.b
+		add_political_power = -30
+	}
+}
+
+#Бибер и Долик
+country_event = {
+	id = WGN.20
+	title = WGN.20.t
+	desc = WGN.20.d
+	picture = GFX_country_event_055
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.20.a
+		add_political_power = 10
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.02
+		}
+		hidden_effect = {
+		    add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.02
+			}
+			country_event = {
+				id = WGN.21
+				days = 93
+			}
+		}
+	}
+}
+
+#Бибера убили суки мрази
+country_event = {
+	id = WGN.21
+	title = WGN.21.t
+	desc = WGN.21.d
+	picture = GFX_country_event_056
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.21.a
+		add_stability = -0.05
+		add_command_power = -5
+	}
+}
+
+#Бомбастик Попасной
+country_event = {
+	id = WGN.22
+	title = WGN.22.t
+	desc = WGN.22.d
+	picture = GFX_country_event_058
+	fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			news_event = {
+				id = news.153
+				hours = 5
+			}
+		}
+	}
+	option = {
+		name = WGN.22.a
+		add_political_power = -100
+		army_experience = -60
+		add_command_power = -50
+		add_manpower = -20
+	}
+}
+
+#Нужина убили кувалдой
+country_event = {
+	id = WGN.23
+	title = WGN.23.t
+	desc = WGN.23.d
+	picture = GFX_country_event_044
+	fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			news_event = {
+				id = news.154
+				hours = 5
+			}
+		}
+	}
+	option = {
+		name = WGN.23.a
+		add_political_power = 50
+		army_experience = 10
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.05
+		}
+		hidden_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.05
+			}
+		}
+	}
+}
+#Пригожин бомбит Бахмут с СУ
+country_event = {
+	id = WGN.24
+	title = WGN.24.t
+	desc = WGN.24.d
+	picture = GFX_country_event_069
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.24.a
+		add_political_power = 40
+		army_experience = 20
+		air_experience = 10
+		add_command_power = 15
+	}
+}
