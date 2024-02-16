@@ -1,101 +1,272 @@
 SMO_Negotiations_category = {
 	SMO_first_negotiations = {
-		icon = generic_formable_nations 
+		icon = GFX_SMO_Negotiations
 		fire_only_once = yes
+		days_remove = 1
+		cost = 50
 		visible = {
 			NOT = {
-				has_country_flag = SMO_first_negotiations_failed
-				has_country_flag = SMO_first_negotiations_accepted
+				has_global_flag = SMO_first_negotiations_over
 			}
 		}
 		available = {
-			#RUS complete focus and if UKR agree, it will be unlocked or UKR made this
-			NOT = {
-				original_tag = BLR
-			}
+			
 		}
 		complete_effect = {
+			hidden_effect = {
+				set_global_flag = SMO_first_negotiations_over
+			}
+		}
+		remove_effect = {
+		    add_to_variable = {	
+				var = global.SMO_progress_of_the_peace_talks
+				value = 10
+				tooltip = SMO_progress_of_the_peace_add_10
+			}
 			#unlocks the second negotiations
 			RUS = {
-				country_event = smo.13
+				country_event = negotiations.1
 			}
 			UKR = {
-				country_event = smo.13
+				country_event = negotiations.1
 			}
+			news_event = { id = news.167 hours = 3 }
+			reduce_escalation_by_5 = yes
 		}
 	}
 	SMO_second_negotiations = {
-		icon = generic_formable_nations 
+		icon = GFX_SMO_Negotiations 
 		fire_only_once = yes
+		cost = 50
+		days_remove = 4
 		visible = {
-			has_country_flag = SMO_first_negotiations_accepted
+			has_global_flag = {
+				flag = SMO_first_negotiations_over
+				days > 4
+			}
 			NOT = {
-				has_country_flag = SMO_humanitary_help_flag
-				has_country_flag = SMO_second_negotiations_failed
+				has_global_flag = SMO_second_negotiations_over
 			}
 		}
 		available = {
-			NOT = {
-				original_tag = BLR
-			}
-			has_country_flag = SMO_first_negotiations_accepted
+		    
 		}
 		complete_effect = {
-			#unlock humanitary decisions for freeze SMO
+			hidden_effect = {
+				set_global_flag = SMO_second_negotiations_over
+			}
+		}
+		remove_effect = {
+		    add_to_variable = {	
+				var = global.SMO_progress_of_the_peace_talks
+				value = 15
+				tooltip = SMO_progress_of_the_peace_add_15
+			}
+			#unlocks the second negotiations
 			RUS = {
-				country_event = smo.14
+				country_event = negotiations.2
 			}
 			UKR = {
-				country_event = smo.14
+				country_event = negotiations.2
 			}
+			news_event = { id = news.168 hours = 3 }
+			reduce_escalation_by_5_5 = yes
 		}
 	}
 	SMO_third_negotiations = {
-		icon = generic_formable_nations 
+		icon = GFX_SMO_Negotiations 
 		fire_only_once = yes
+		cost = 50
+		days_remove = 4
 		visible = {
+			has_global_flag = {
+				flag = SMO_second_negotiations_over
+				days > 4
+			}
 			NOT = {
-				has_country_flag = SMO_third_negotiations_failed
+				has_global_flag = SMO_third_negotiations_over
 			}
-			BLR = {
-				has_completed_focus = BLR_negotiation_effort
-			}
-			
 		}
 		available = {
-			original_tag = BLR
-			BLR = {
-				has_completed_focus = BLR_negotiation_effort
-			}
+		    
 		}
 		complete_effect = {
-			#always failed
+			hidden_effect = {
+				set_global_flag = SMO_third_negotiations_over
+			}
+		}
+		remove_effect = {
+		    add_to_variable = {	
+				var = global.SMO_progress_of_the_peace_talks
+				value = 15
+				tooltip = SMO_progress_of_the_peace_add_15
+			}
+			#unlocks the second negotiations
 			RUS = {
-				country_event = smo.15
+				country_event = negotiations.3
 			}
 			UKR = {
-				country_event = smo.15
+				country_event = negotiations.3
+			}
+			news_event = { id = news.169 hours = 3 }
+			reduce_escalation_by_6_5 = yes
+			hidden_effect = {
+			    UKR = {
+					country_event = {
+						id = ukr.63
+						days = 14
+					}
+				}
 			}
 		}
 	}
-
-	SMO_humanitary_help = {
-		icon = generic_formable_nations 
-		fire_only_once = no
+    SMO_humanitarian_corridors = {
+		icon = GFX_SMO_Negotiations 
+		fire_only_once = yes
+		cost = 45
+		days_remove = 4
 		visible = {
-			has_country_flag = SMO_humanitary_help_flag
+			check_variable = {
+				global.SMO_progress_of_the_peace_talks > 29
+			}
+			NOT = {
+				has_global_flag = SMO_humanitarian_corridors_cf
+			}
 		}
 		available = {
-			OR = {
-				original_tag = RUS
-				original_tag = UKR
-			}
-			has_country_flag = SMO_humanitary_help_flag
+		    
 		}
 		complete_effect = {
-			add_timed_idea = {
-				idea = SMO_humanitary_help_idea
-				days = 60
+			hidden_effect = {
+				set_global_flag = SMO_humanitarian_corridors_cf
+			}
+		}
+		remove_effect = {
+		    add_to_variable = {	
+				var = global.SMO_progress_of_the_peace_talks
+				value = 5
+				tooltip = SMO_progress_of_the_peace_add_5
+			}
+			custom_effect_tooltip = SMO_humanitarian_corridors_cet
+			reduce_escalation_by_3_5 = yes
+			hidden_effect = {
+				RUS = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+					add_timed_idea = {
+						idea = SMO_ceasefire_RUS
+						days = 7
+					}
+				}
+				DPR = {
+					add_timed_idea = {
+						idea = SMO_ceasefire_RUS
+						days = 7
+					}
+				}
+				LPR = {
+					add_timed_idea = {
+						idea = SMO_ceasefire_RUS
+						days = 7
+					}
+				}
+				WGN = {
+					add_timed_idea = {
+						idea = SMO_ceasefire_RUS
+						days = 7
+					}
+				}
+				CHE = {
+					add_timed_idea = {
+						idea = SMO_ceasefire_RUS
+						days = 7
+					}
+				}
+				UKR = {
+					add_timed_idea = {
+						idea = SMO_ceasefire_UKR
+						days = 7
+					}
+				}
+				BLR = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+				POL = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+				SLO = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+				HUN = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+				ROM = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+				BUL = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+				LIT = {
+					add_timed_idea = {
+						idea = SMO_Ukrainian_refugees
+						days = 31
+					}
+				}
+			}
+			news_event = { id = news.170 hours = 3 }
+		}
+	}
+	SMO_prisoner_of_war_exchange = {
+		icon = GFX_SMO_Negotiations 
+		fire_only_once = yes
+		cost = 50
+		days_remove = 7
+		visible = {
+			check_variable = {
+				global.SMO_progress_of_the_peace_talks > 49
+			}
+			NOT = {
+				has_global_flag = SMO_prisoner_of_war_exchange_cf
+			}
+		}
+		available = {
+		    
+		}
+		complete_effect = {
+			hidden_effect = {
+				set_global_flag = SMO_prisoner_of_war_exchange_cf
+			}
+		}
+		remove_effect = {
+		    add_to_variable = {	
+				var = global.SMO_progress_of_the_peace_talks
+				value = 10
+				tooltip = SMO_progress_of_the_peace_add_10
+			}
+			custom_effect_tooltip = SMO_prisoner_of_war_exchange_cet
+			reduce_escalation_by_3_5 = yes
+			hidden_effect = {
+				set_global_flag = SMO_prisoner_of_war_exchange_gf
 			}
 		}
 	}
