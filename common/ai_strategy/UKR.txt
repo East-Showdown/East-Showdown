@@ -1,190 +1,285 @@
-#We do not need to defend territories that are not attacked by the enemy
+# Не ставить войска на границу с некоторыми странами
 UKR_do_not_attack_the_territory_of_the_russia = {
 	allowed = {
 		original_tag = UKR
 	}
+
 	enable = {
 		always = yes
 	}
+
 	abort = {
 		always = no
 	}
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = POL
+		value = -2000
+	}
+	
+	ai_strategy = {
+		type = front_unit_request
+		tag = ROM
+		value = -2000
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = SLO
+		value = -2000
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = HUN
+		value = -2000
+	}
+	
+	ai_strategy = {
+		type = front_unit_request
+		tag = MOL
+		value = -2000
+	}
+
 	ai_strategy = {
 		type = front_unit_request
 		tag = RBZ
-		value = -200
+		value = -2000
+	}
+
+	ai_strategy = {
+		type = garrison
+		value = -2000
+	}
+
+	ai_strategy = {
+		type = garrison_reinforcement_priority
+		value = -2000
 	}
 }
 
+# Не защищать границу с Беларусью
+UKR_dont_defend_BLR = {
+	allowed = {
+		original_tag = UKR
+	}
+
+	enable = {
+		NOT = {
+			has_war_with = BLR
+		}
+	}
+
+	abort = {
+		has_war_with = BLR
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = BLR
+		value = -2000
+	}
+}
+
+# Не защищать границу с Приднестровье
+UKR_dont_defend_PMR = {
+	allowed = {
+		original_tag = UKR
+	}
+ 
+	enable = {
+		NOT = {
+			has_war_with = PMR
+		}
+	}
+
+	abort = {
+		has_war_with = PMR
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = PMR
+		value = -1000
+	}
+}
+
+# Подготовка к войне
 UKR_wait_the_smo = {
 	allowed = {
 		original_tag = UKR
 	}
+
 	enable = {
-		has_completed_focus = UKR_soon_war
+		always = yes
 	}
+
 	abort = {
-		has_war_with = RUS
+		always = no
 	}
+
 	ai_strategy = {
 		type = prepare_for_war
 		id = RUS
-		value = 150
+		value = 1000
+	}
+
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		value = 2
+		id = 67
+	}
+
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		value = 2
+		id = 68
 	}
 }
 
+# Война (РФ покидает Киев | 2 этап)
 UKR_counteroffensive = {
 	allowed = {
 		original_tag = UKR
 	}
+
 	enable = {
-		has_global_flag = RUS_leave_from_kiev
-	}
-	abort = {
-		NOT = {
-			has_global_flag = RUS_leave_from_kiev
+		AND = {
+			has_war_with = RUS
+			date > 2022.4.1
 		}
 	}
+    
+	abort = {
+		OR = {
+			date > 2022.5.1
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+	}
+
 	ai_strategy = {
 		type = front_control
 		tag = RUS
-		ratio = 0.1
+		ratio = 1
+		ordertype = front
+		execution_type = rush
+		manual_attack = no
+	}
+
+	ai_strategy = {
+		type = front_control
+		tag = DPR
+		ratio = 1
+		ordertype = front
+		execution_type = rush
+		manual_attack = no
+	}
+
+	ai_strategy = {
+		type = front_control
+		tag = LPR
+		ratio = 1
 		ordertype = front
 		execution_type = rush
 		manual_attack = no
 	}
 }
 
+# Война (3 этап)
 UKR_war = {
 	allowed = {
 		original_tag = UKR
 	}
+
 	enable = {
-		has_war_with = RUS
-		date < 2022.5.1
+		AND = {
+			has_war_with = RUS
+			date < 2022.5.1
+		}
 	}
     
-	abort_when_not_enabled = yes
+	abort = {
+		OR = {
+			date > 2022.7.1
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+	}
 	
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = RUS
-		value = 50
+		ratio = 1
+		ordertype = front
+		execution_type = balanced
+		manual_attack = no
 	}
+
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = DPR
-		value = 25
+		ratio = 1
+		ordertype = front
+		execution_type = balanced
+		manual_attack = no
 	}
+
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = LPR
-		value = 25
-	}
-	ai_strategy = {
-		type = garrison
-		value = -200
+		ratio = 1
+		ordertype = front
+		execution_type = balanced
+		manual_attack = no
 	}
 }
 
+# Война (4 этап)
 UKR_war_2 = {
 	allowed = {
 		original_tag = UKR
 	}
+
 	enable = {
-		has_war_with = RUS
-		date > 2022.5.5
+		AND = {
+			has_war_with = RUS
+			date > 2022.7.1
+		}
 	}
+
+	abort = {
+		always = no
+	}
+	
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = RUS
-		value = 60
+		ratio = 2
+		ordertype = front
+		execution_type = balanced
+		manual_attack = no
 	}
+
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = DPR
-		value = 25
+		ratio = 2
+		ordertype = front
+		execution_type = balanced
+		manual_attack = no
 	}
+
 	ai_strategy = {
-		type = front_unit_request
+		type = front_control
 		tag = LPR
-		value = 15
-	}
-	ai_strategy = {
-		type = garrison
-		value = -200
-	}
-  ai_strategy = {
-    type = front_unit_request
-    strategic_region = 28
-    value = -100
-}
-
-UKR_do_not_attack_the_territory_of_the_BLR = {
-	allowed = {
-		original_tag = UKR
-	}
-	enable = {
-		always = yes
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = POL
-		value = -200
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = ROM
-		value = -200
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = SLO
-		value = -200
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = HUN
-		value = -200
-	}
-	ai_strategy = {
-		type = front_unit_request
-		tag = MOL
-		value = -200
-	}
-}
-
-UKR_PMR_defend = {
-	allowed = {
-		original_tag = UKR
-	}
-	enable = {
-		NOT = {
-			has_war_with = PMR
-		}
-	}
-	abort_when_not_enabled = yes
-	ai_strategy = {
-		type = front_unit_request
-		tag = PMR
-		value = -200
-	}
-}
-
-UKR_BLR_defend = {
-	allowed = {
-		original_tag = UKR
-	}
-	enable = {
-		NOT = {
-			has_war_with = BLR
-		}
-	}
-	abort_when_not_enabled = yes
-	ai_strategy = {
-		type = front_unit_request
-		tag = BLR
-		value = -200
+		ratio = 2
+		ordertype = front
+		execution_type = balanced
+		manual_attack = no
 	}
 }
 
@@ -193,57 +288,92 @@ UKR_spy_in_Russia = {
 	allowed = {
 		original_tag = UKR
 	}
+
+	enable = {
+		always = yes
+	}
+
+	abort = {
+		always = no
+	}
+
 	ai_strategy = {
-	type = operative_mission
-	mission = build_intel_network
-	value = 2500
-	mission_target = RUS
-	num_operatives = 2
+		type = operative_mission
+		mission = build_intel_network
+		value = 2500
+		mission_target = RUS
+		num_operatives = 2
 	}
 }
+
 UKR_operations_in_Russia = {
 	allowed = {
 		original_tag = UKR
 	}
+
 	enable = {
 		has_war_with = RUS
 	}
-	ai_strategy = {
-	type = operative_operation
-	operation = operation_infiltrate_civilian
-	value = 1200
-	operation_target = RUS
+
+	abort = {
+		NOT = {
+			has_war_with = RUS
+		}
 	}
+
 	ai_strategy = {
-	type = operative_operation
-	operation = operation_infiltrate_armed_forces_army
-	value = 1200
-	operation_target = UKR
+		type = operative_operation
+		operation = operation_infiltrate_civilian
+		value = 1200
+		operation_target = RUS
 	}
+
 	ai_strategy = {
-	type = operative_operation
-	operation = operation_targeted_sabotage_infrastructure
-	value = 400
-	operation_target = RUS
+		type = operative_operation
+		operation = operation_infiltrate_armed_forces_army
+		value = 1200
+		operation_target = UKR
 	}
+
 	ai_strategy = {
-	type = operative_operation
-	operation = operation_kill_general
-	value = 600
-	operation_target = RUS
+		type = operative_operation
+		operation = operation_targeted_sabotage_infrastructure
+		value = 400
+		operation_target = RUS
 	}
+
 	ai_strategy = {
-	type = operative_operation
-	operation = operation_infiltrate_drg
-    value = 1200
-	operation_target = RUS
+		type = operative_operation
+		operation = operation_kill_general
+		value = 600
+		operation_target = RUS
+	}
+
+	ai_strategy = {
+		type = operative_operation
+		operation = operation_infiltrate_drg
+		value = 1200
+		operation_target = RUS
 	}
 }
+
 UKR_counter_intelligence = {
+	allowed = {
+		original_tag = UKR
+	}
+
+	enable = {
+		always = yes
+	}
+
+	abort = {
+		always = no
+	}
+
 	ai_strategy = {
-	type = operative_mission
-	mission = counter_intelligence
-	value = 2500
-	num_operatives = 2
+		type = operative_mission
+		mission = counter_intelligence
+		value = 2500
+		num_operatives = 1
 	}
 }
