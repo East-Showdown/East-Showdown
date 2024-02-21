@@ -908,20 +908,6 @@ focus_tree = {
 		}
 		completion_reward={
 			add_ideas = society_high
-			set_power_balance = {
-				id = RUS_power_balance
-				left_side = default_left_side
-				right_side = default_right_side
-				set_value = 0
-			}
-			WGN = {
-				set_power_balance = {
-					id = WGN_power_balance
-					left_side = default_left_side
-					right_side = default_right_side
-					set_value = 0
-				}
-			}
         	add_ideas = { RUS_RUB_1 }
        		KAZ = {
 				add_ideas = {
@@ -1589,6 +1575,9 @@ focus_tree = {
 					is_core_of = UKR
 				}
 			}
+			NOT = {
+				has_completed_focus = RUS_CMA_f
+			}
 		}
 		completion_reward = {
 		    add_political_power = 75
@@ -2250,7 +2239,7 @@ focus_tree = {
 		icon = GFX_RUS_Start_the_negotiation_process
 		relative_position_id = RUS_Lightning_strike
 		prerequisite = { focus = RUS_Lightning_strike  }
-		cost = 0.143
+		cost = 0.29
 		x = -5
 		y = 1
 		ai_will_do = {
@@ -2259,6 +2248,7 @@ focus_tree = {
 		completion_reward = {
 		    add_stability = 0.035
 			custom_effect_tooltip = RUS_Start_the_negotiation_process_cet
+			reduce_escalation_by_3_5 = yes
 			hidden_effect = {
 				add_to_variable = {	
 					var = global.SMO_progress_of_the_peace_talks
@@ -2272,11 +2262,33 @@ focus_tree = {
 		icon = GFX_RUS_Istanbul_Agreements
 		relative_position_id = RUS_Lightning_strike
 		prerequisite = { focus = RUS_Start_the_negotiation_process  }
-		cost = 0.143
+		cost = 1
 		x = -6
 		y = 2
 		ai_will_do = {
 			factor = 1
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_negotiation_process_70_tt
+				check_variable = { global.SMO_progress_of_the_peace_talks > 69 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = UKR_disrupted_the_negotiations_tt
+				NOT = {
+					has_global_flag = UKR_disrupted_the_negotiations
+				}
+			}
+		}
+		completion_reward = {
+		    add_political_power = 30
+			custom_effect_tooltip = RUS_Istanbul_Agreements_cet
+			add_to_variable = {	
+				var = global.SMO_progress_of_the_peace_talks
+				value = 15
+				tooltip = SMO_progress_of_the_peace_add_15
+			}
+			reduce_escalation_by_5 = yes
 		}
 	}
 	focus = {
@@ -2284,11 +2296,27 @@ focus_tree = {
 		icon = GFX_RUS_common_language_with_NATO
 		relative_position_id = RUS_Lightning_strike
 		prerequisite = { focus = RUS_Start_the_negotiation_process  }
-		cost = 0.143
+		cost = 2
 		x = -4
 		y = 2
 		ai_will_do = {
 			factor = 1
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_negotiation_process_70_tt
+				check_variable = { global.SMO_progress_of_the_peace_talks > 69 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = UKR_disrupted_the_negotiations_tt
+				NOT = {
+					has_global_flag = UKR_disrupted_the_negotiations
+				}
+			}
+		}
+		completion_reward = {
+		    custom_effect_tooltip = RUS_common_language_with_NATO_cet
+			reduce_escalation_by_6_5 = yes
 		}
 	}
 	focus = {
@@ -2297,11 +2325,26 @@ focus_tree = {
 		relative_position_id = RUS_Lightning_strike
 		prerequisite = { focus = RUS_common_language_with_NATO  }
 		prerequisite = { focus = RUS_Istanbul_Agreements  }
-		cost = 0.143
+		cost = 3
 		x = -5
 		y = 3
 		ai_will_do = {
 			factor = 1
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_negotiation_process_100_tt
+				check_variable = { global.SMO_progress_of_the_peace_talks > 99 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = UKR_disrupted_the_negotiations_tt
+				NOT = {
+					has_global_flag = UKR_disrupted_the_negotiations
+				}
+			}
+		}
+		completion_reward = {
+		    custom_effect_tooltip = RUS_Minsk_3_cet
 		}
 	}
 	focus = {
@@ -2315,6 +2358,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		completion_reward = {
+		    add_political_power = 50
+			add_stability = 0.075
+			custom_effect_tooltip = RUS_Politics_the_liberated_territories_cet
+		}
 	}
 	focus = {
 		id = RUS_CMA_f
@@ -2326,6 +2374,17 @@ focus_tree = {
 		y = 1
 		ai_will_do = {
 			factor = 1
+		}
+		available = {
+			NOT = {
+				has_completed_focus = RUS_Formation_of_the_new_Government_of_Ukraine
+			}
+		}
+		completion_reward = {
+		    add_political_power = 30
+			add_command_power = 15
+			custom_effect_tooltip = RUS_CMA_f_cet
+			increase_escalation_by_5 = yes
 		}
 	}
 	focus = {
@@ -2339,6 +2398,189 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_militia_units_trigger
+				OR = {
+					controls_state = 253
+					controls_state = 233
+					controls_state = 246
+					controls_state = 226
+					controls_state = 242
+					controls_state = 237
+					controls_state = 149
+					controls_state = 145
+					controls_state = 103
+					controls_state = 256
+					controls_state = 197
+					controls_state = 208
+					controls_state = 187
+				}
+			}
+		}
+		completion_reward = {
+		    add_command_power = 10
+		    custom_effect_tooltip = RUS_militia_units_cet
+			hidden_effect = {
+				load_oob = RUS_people_militia_vga
+				if = {
+					limit = {
+						controls_state = 253
+					}
+					253 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 233
+					}
+					233 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 246
+					}
+					246 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 226
+					}
+					226 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 242
+					}
+					242 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 237
+					}
+					237 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 149
+					}
+					149 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 145
+					}
+					145 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 103
+					}
+					103 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 256
+					}
+					256 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 197
+					}
+					197 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 208
+					}
+					208 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+				if = {
+					limit = {
+						controls_state = 187
+					}
+					187 = {
+					    create_unit = {
+							division = "division_template = \"Otryad narodnogo opolcheniya\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							count = 4
+						}
+					}
+				}
+			}
+		}
 	}
 	focus = {
 		id = RUS_Deukrainization
@@ -2350,6 +2592,11 @@ focus_tree = {
 		y = 2
 		ai_will_do = {
 			factor = 1
+		}
+		completion_reward = {
+		    add_political_power = 60
+			add_stability = -0.05
+			custom_effect_tooltip = RUS_Deukrainization_cet
 		}
 	}
 	focus = {
@@ -2412,6 +2659,147 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_referendum_tt
+				count_triggers = {
+					amount = 2
+					has_country_flag = Zaporozhye_cma_cf
+					has_country_flag = Kherson_cma_cf
+					has_country_flag = Kharkov_cma_cf
+					has_country_flag = Dnipro_cma_cf
+					has_country_flag = Nikolaev_cma_cf
+					has_country_flag = Odessa_cma_cf
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_referendum_2_tt
+				UKR = {
+				    NOT = {
+						controls_state = 205
+						controls_state = 173
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Zaporozhye_cma_cf
+					}
+					OR = {
+						controls_state = 226
+						controls_state = 246
+						controls_state = 242
+						controls_state = 223
+						controls_state = 208
+						controls_state = 210
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Kherson_cma_cf
+					}
+					OR = {
+						controls_state = 264
+						controls_state = 262
+						controls_state = 240
+						controls_state = 251
+						controls_state = 253
+						controls_state = 231
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Kharkov_cma_cf
+					}
+					OR = {
+						controls_state = 107
+						controls_state = 139
+						controls_state = 133
+						controls_state = 138
+						controls_state = 130
+						controls_state = 101
+						controls_state = 103
+						controls_state = 100
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Dnipro_cma_cf
+					}
+					OR = {
+						controls_state = 197
+						controls_state = 169
+						controls_state = 216
+						controls_state = 187
+						controls_state = 156
+						controls_state = 151
+						controls_state = 162
+						controls_state = 180
+						controls_state = 186
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Nikolaev_cma_cf
+					}
+					OR = {
+						controls_state = 233
+						controls_state = 215
+						controls_state = 209
+						controls_state = 202
+					}
+				}
+				if = {
+				    limit = {
+					    has_country_flag = Odessa_cma_cf
+					}
+					OR = {
+						controls_state = 203
+						controls_state = 235
+						controls_state = 227
+						controls_state = 256
+						controls_state = 271
+						controls_state = 268
+						controls_state = 296
+						controls_state = 310
+					}
+				}
+			}
+			date > 2022.9.1
+			NOT = {
+				has_country_flag = RUS_create_done_occupation_Administration_Ukraine
+			}
+		}
+		select_effect = { 
+			news_event = {
+				id = news.87
+				hours = 4
+			}
+		}
+		completion_reward = {
+		    custom_effect_tooltip = RUS_referendum_done_tt
+			increase_escalation_by_5 = yes
+			hidden_effect = {
+				set_country_flag = RUS_referendum_cf
+				if = {
+				    limit = {
+					    core_compliance = {  
+							occupied_country_tag = UKR
+							value > 50 
+						}
+					}
+					country_event = { 
+						id = rus.111
+						days = 2
+					}
+				}
+				else = {
+					country_event = { 
+						id = rus.112
+						days = 2
+					}
+				}
+			}
+		}
 	}
 	focus = {
 		id = RUS_Restoration
@@ -2423,6 +2811,13 @@ focus_tree = {
 		y = 1
 		ai_will_do = {
 			factor = 1
+		}
+		completion_reward = {
+		    add_political_power = 25
+			add_timed_idea = {
+				idea = RUS_infrastructure_restoration
+				days = 65
+			}
 		}
 	}
 	focus = {
@@ -3182,6 +3577,14 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		completion_reward={
+		    add_political_power = 60
+			add_stability = 0.065
+			add_timed_idea = {
+			    idea = RUS_forced_economic_measures
+				days = 10
+				}
+		}
 		allow_branch = {
  			has_completed_focus = RUS_SMO
         }
@@ -3194,6 +3597,41 @@ focus_tree = {
 		cost = 0.143
 		x = -6
 		y = 1
+		completion_reward = {
+		    custom_effect_tooltip = RUS_arms_plants_opening
+		    hidden_effect = {
+			    random_controlled_state = {
+			    add_building_construction = {
+			        type = arms_factory
+				    level = 1
+				    instant_build = yes
+			    }
+			}
+			random_controlled_state = {
+			    add_building_construction = {
+			        type = arms_factory
+				    level = 1
+				    instant_build = yes
+			    }
+			}
+			random_controlled_state = {
+			    add_building_construction = {
+			        type = arms_factory
+				    level = 1
+				    instant_build = yes
+			    }
+			}
+			random_controlled_state = {
+			    add_building_construction = {
+			        type = arms_factory
+				    level = 1
+				    instant_build = yes
+			    }
+			}
+		    }
+			add_political_power = 60
+			add_fuel = 10000
+		}
 		ai_will_do = {
 			factor = 1
 		}
@@ -3552,6 +3990,55 @@ focus_tree = {
 		cost = 0.143
 		x = 7
 		y = 1
+		completion_reward = {
+		    custom_effect_tooltip = RUS_subsidate_toster_promka
+		    hidden_effect = {
+			    random_controlled_state = {
+			   add_building_construction = {
+			       type = industrial_complex
+				   level = 1
+				   instant_build = yes
+			   }
+			}
+			random_controlled_state = {
+			   add_building_construction = {
+			       type = industrial_complex
+				   level = 1
+				   instant_build = yes
+			   }
+			}
+			random_controlled_state = {
+			   add_building_construction = {
+			       type = industrial_complex
+				   level = 1
+				   instant_build = yes
+			   }
+			}
+			random_controlled_state = {
+			   add_building_construction = {
+			       type = industrial_complex
+				   level = 1
+				   instant_build = yes
+			   }
+			}
+			random_controlled_state = {
+			   add_building_construction = {
+			       type = infrastructure
+				   level = 1
+				   instant_build = yes
+			   }
+			}
+			random_controlled_state = {
+			   add_building_construction = {
+			       type = infrastructure
+				   level = 1
+				   instant_build = yes
+			   }
+			}
+			}
+		    
+			add_stability = 0.05
+		}
 		ai_will_do = {
 			factor = 1
 		}
@@ -4035,7 +4522,7 @@ focus_tree = {
 			hidden_effect={
 				add_to_variable = {	
 					var = global.ukr_information_war_var_sum
-					value = 3
+					value = -3
 				}
 				if = {
                     limit = {
