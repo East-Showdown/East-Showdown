@@ -4,6 +4,234 @@ on_actions = {
 			if = {
 				limit = {
 					has_game_rule = {
+						rule = ES_RUS_BACK_AREAS
+						option = ES_RUS_BACK_AREAS_ENABLED
+					}
+				}
+				
+				RBA = {
+					transfer_state = 15
+					transfer_state = 16
+					transfer_state = 17
+					transfer_state = 18
+					transfer_state = 19
+					transfer_state = 23
+					transfer_state = 26
+					transfer_state = 28
+					transfer_state = 31
+					transfer_state = 34
+					transfer_state = 40
+					transfer_state = 41
+					transfer_state = 42
+					transfer_state = 43
+					transfer_state = 44
+					transfer_state = 51
+					transfer_state = 52
+					transfer_state = 74
+					transfer_state = 84
+					transfer_state = 171
+					transfer_state = 204
+					transfer_state = 294
+					transfer_state = 344
+					transfer_state = 441
+					transfer_state = 442
+					transfer_state = 443
+					transfer_state = 458
+					transfer_state = 459
+					transfer_state = 469
+					transfer_state = 471
+					transfer_state = 472
+					transfer_state = 473
+					transfer_state = 474	
+					transfer_state = 475
+					transfer_state = 476
+					transfer_state = 477
+					transfer_state = 478
+					transfer_state = 479
+					transfer_state = 480
+					transfer_state = 481
+					transfer_state = 482
+					transfer_state = 483
+					transfer_state = 484
+					transfer_state = 485
+					transfer_state = 486
+					transfer_state = 487
+					transfer_state = 488
+					transfer_state = 489
+					transfer_state = 490
+					transfer_state = 491
+					transfer_state = 492
+					transfer_state = 493
+					transfer_state = 494
+					transfer_state = 495
+					transfer_state = 496
+					transfer_state = 497
+					transfer_state = 498
+					transfer_state = 499
+					transfer_state = 500
+					transfer_state = 501
+					transfer_state = 502
+					transfer_state = 503
+					transfer_state = 504
+					transfer_state = 505
+					transfer_state = 506
+					transfer_state = 507
+					transfer_state = 508
+					transfer_state = 509
+					transfer_state = 510
+					transfer_state = 511
+					transfer_state = 512
+					transfer_state = 513
+					transfer_state = 514
+					transfer_state = 515
+					transfer_state = 516
+					transfer_state = 517
+					transfer_state = 518
+					transfer_state = 519
+					transfer_state = 520
+					transfer_state = 521
+					transfer_state = 522
+					transfer_state = 523
+					transfer_state = 524
+					transfer_state = 525
+					transfer_state = 526
+					transfer_state = 527
+					transfer_state = 528
+					transfer_state = 529
+					transfer_state = 530
+					transfer_state = 531
+					transfer_state = 532
+					transfer_state = 533
+					transfer_state = 534
+					transfer_state = 535
+					transfer_state = 536
+					transfer_state = 537
+					transfer_state = 538
+					transfer_state = 539
+					transfer_state = 540
+					transfer_state = 541
+					transfer_state = 542
+					transfer_state = 543
+					transfer_state = 544
+					transfer_state = 545
+					transfer_state = 546
+					transfer_state = 547
+					transfer_state = 548
+
+					set_temp_variable = { temp_max_manpower = 0 }
+
+					set_temp_variable = { arms_factories_count = 0 }
+					set_temp_variable = { industrial_complexes_count = 0 }
+					set_temp_variable = { dockyards_count = 0 }
+					
+					set_temp_variable = { ammunition_plants_count = 0 }
+					set_temp_variable = { ammunition_silos_count = 0 }
+
+					every_owned_state = {
+						add_core_of = RBA
+						
+						add_to_temp_variable = { temp_max_manpower = state_population_k }
+						log = "Current value of myVar in [THIS.GetName]: [?state_population_k]"
+						log = "Sum value is [?RBA.temp_max_manpower]"
+
+						set_temp_variable = { negative_population_k = 0 }
+						subtract_from_temp_variable = { negative_population_k = state_population_k}
+						multiply_temp_variable = { negative_population_k = 100 }
+
+						for_loop_effect = {
+							end = 10
+							log = "!!! [?negative_population_k]"
+							add_manpower = negative_population_k					
+						}
+
+						set_building_level = {
+							type = supply_node
+							level = 0
+							province = { all_provinces = yes }
+						}
+						
+						add_to_temp_variable = { arms_factories_count = building_level@arms_factory }
+						remove_building = {
+							type = arms_factory
+							level = building_level@arms_factory
+						}
+
+						add_to_temp_variable = { industrial_complexes_count = building_level@industrial_complex }
+						remove_building = {
+							type = industrial_complex
+							level = building_level@industrial_complex
+						}
+						
+						add_to_temp_variable = { dockyards_count = building_level@dockyard }
+						remove_building = {
+							type = dockyard
+							level = building_level@dockyard
+						}
+
+						add_to_temp_variable = { ammunition_plants_count = building_level@ammunition_plant }
+						remove_building = {
+							type = ammunition_plant 
+							level = building_level@ammunition_plant
+						}
+						add_to_temp_variable = { ammunition_silos_count = building_level@ammunition_silo }
+						remove_building = {
+							type = ammunition_silo 
+							level = building_level@ammunition_silo 
+						}
+
+						teleport_armies = {
+							limit = { tag = RUS }
+							to_state = 18897
+						}
+
+						RBA = {
+							give_resource_rights = { 
+								receiver = RUS 
+								state = PREV 
+							}
+						}
+					}
+					
+					log = "Result value is [?temp_max_manpower]"
+					multiply_temp_variable = { temp_max_manpower = 10 }
+					log = "Multiplied Result value is [?temp_max_manpower]"
+
+					for_loop_effect = {
+						end = 100
+						log = "!!! [?temp_max_manpower]"
+						14 = { add_manpower = temp_max_manpower }						
+					}
+
+					RUS = {
+						add_offsite_building = {
+							type = arms_factory
+							level = arms_factories_count
+						}
+						add_offsite_building = {
+							type = industrial_complex
+							level = industrial_complexes_count
+						}
+						add_offsite_building = {
+							type = dockyard
+							level = dockyards_count
+						}
+						add_offsite_building = {
+							type = ammunition_plant
+							level = ammunition_plants_count
+						}						
+						add_offsite_building = {
+							type = ammunition_silo
+							level = ammunition_silos_count
+						}
+					}
+				}
+			}
+		}
+
+		effect = {
+			if = {
+				limit = {
+					has_game_rule = {
 						rule = ES_CHE_STATUS
 						option = ES_CHE_ANNEXED
 					}
@@ -93,33 +321,15 @@ on_actions = {
 				}
 			}
 			NTO = {
-				annex_country = {
-					target = POL
-				}
-				annex_country = {
-					target = ROM
-				}
-				annex_country = {
-					target = LIT
-				}
-				annex_country = {
-					target = LAT
-				}
-				annex_country = {
-					target = BUL
-				}
-				annex_country = {
-					target = CRO
-				}
-				annex_country = {
-					target = SLO
-				}
-				annex_country = {
-					target = CZE
-				}
-				annex_country = {
-					target = HUN
-				}
+				annex_country = { target = POL }
+				annex_country = { target = ROM }
+				annex_country = { target = LIT }
+				annex_country = { target = LAT }
+				annex_country = { target = BUL }
+				annex_country = { target = CRO }
+				annex_country = { target = SLO }
+				annex_country = { target = CZE }
+				annex_country = { target = HUN }
 			}
 			NTO = {
 				every_owned_state = {
