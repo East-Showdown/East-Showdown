@@ -7040,14 +7040,27 @@ focus_tree = {
 		icon = GFX_RUS_amendments_to_the_Law_on_Mobilization
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_forced_measures }
-		cost = 0.143
+		cost = 2
 		x = 9
 		y = 2
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward={
-		    custom_effect_tooltip = in_development
+		    add_command_power = 30
+			army_experience = 15
+			custom_effect_tooltip = RUS_amendments_to_the_Law_on_Mobilization_cet
+			hidden_effect = {
+				add_to_variable = {	
+					var = RUS_VCRF_mobilization_speed
+					value = 0.05
+				}
+				add_to_variable = {	
+					var = RUS_VCRF_conscription_factor
+					value = 0.32
+				}
+				set_country_flag = RUS_amendments_to_the_Law_on_Mobilization_cf
+			}
 		}
 	}
 	
@@ -7073,16 +7086,23 @@ focus_tree = {
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_amendments_to_the_Law_on_Mobilization }
 		prerequisite = { focus = RUS_Start_covert_mobilization }
-		cost = 0.143
+		cost = 3
 		x = 9
 		y = 3
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_begin_partial_mobilization_trigger
+				has_country_flag = {  flag = RUS_amendments_to_the_Law_on_Mobilization_cf  days > 60 }
+			}
+		}
 		completion_reward={
 		    add_stability = -0.15
 			add_war_support = -0.2
 			add_manpower = 15000
+			remove_ideas = RUS_covert_mobilization
 			increase_escalation_by_10 = yes
 			custom_effect_tooltip = first_mobiks_tt
 			swap_ideas = {
@@ -7144,6 +7164,10 @@ focus_tree = {
 				load_oob = first_mobiks #To keep the front from collapsing xD
 				set_country_flag = Russian_partial_mobilization
 				country_event = super.7 #superevent
+				country_event = {
+					id = rus.166
+					days = 62
+				}
 			}
 		}
 	}
