@@ -7214,14 +7214,87 @@ focus_tree = {
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_begin_partial_mobilization }
 		prerequisite = { focus = RUS_impose_martial_law }
-		cost = 0.143
+		cost = 3
 		x = 10
 		y = 4
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_failure_SVO_trigger_tt
+				has_country_flag = RUS_failure_SVO
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_general_mobilization_trigger_tt
+				has_country_flag = {  flag = Russian_partial_mobilization  days > 360 }
+			}
+			OR = {
+				surrender_progress > 0.15
+				casualties_inflicted_by = {  opponent = UKR  thousands > 100 }
+				has_civil_war = yes
+				custom_trigger_tooltip = {
+					tooltip = RUS_forced_measures_trigger_tt
+					has_manpower < 1000
+				}
+			}
+		}
 		completion_reward={
-		    custom_effect_tooltip = in_development
+		    add_stability = -0.2
+			add_war_support = -0.3
+			add_manpower = 25000
+			increase_escalation_by_20 = yes
+			custom_effect_tooltip = first_mobiks_tt
+			swap_ideas = {
+				remove_idea = extensive_conscription
+				add_idea = all_adults_serve
+			}
+			if = {
+				limit = {
+					RUS = {
+					    OR = {
+						    has_idea = society_low
+						}
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_low
+					add_idea = society_very_low
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+					    OR = {
+						    has_idea = society_very_high
+					        has_idea = society_high
+							has_idea = society_medium
+						}
+					}
+				}
+				swap_ideas = {
+					remove_idea = society_medium
+					add_idea = society_low
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						has_idea = low_economic_mobilisation
+					}
+				}
+				swap_ideas = {
+					remove_idea = partial_economic_mobilisation
+					add_idea = war_economy
+				}
+			}
+			add_equipment_to_stockpile = {  
+			    type = infantry_equipment_0
+				amount = 15000
+			}
+			hidden_effect = {
+				load_oob = first_full_mobiks
+			}
 		}
 	}
 	
@@ -7230,14 +7303,28 @@ focus_tree = {
 		icon = GFX_RUS_People_Militia
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_general_mobilization }
-		cost = 0.143
+		cost = 2.43
 		x = 10
 		y = 5
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			OR = {
+				surrender_progress > 0.2
+				has_civil_war = yes
+				custom_trigger_tooltip = {
+					tooltip = RUS_People_Militia_trigger
+					any_core_state = {
+					    is_controlled_by = UKR
+					}
+				}
+			}
+		}
 		completion_reward={
-		    custom_effect_tooltip = in_development
+		    add_political_power = 50
+			add_war_support = 0.05
+			custom_effect_tooltip = RUS_People_Militia_cet
 		}
 	}
 	
@@ -7246,14 +7333,23 @@ focus_tree = {
 		icon = GFX_RUS_Reduce_the_draft_age
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_begin_partial_mobilization }
-		cost = 0.143
+		cost = 2
 		x = 8
 		y = 4
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_Reduce_the_draft_age_trigger
+				has_country_flag = {  flag = RUS_increase_the_upper_call_threshold_cf  days > 90 }
+			}
+		}
 		completion_reward={
-		    custom_effect_tooltip = in_development
+		    add_political_power = 45
+			add_command_power = 20
+			add_stability = -0.035
+			add_ideas = RUS_reform_of_the_military_service_idea
 		}
 	}
 	
@@ -7262,14 +7358,20 @@ focus_tree = {
 		icon = GFX_RUS_Quartering_terdefense
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_impose_martial_law }
-		cost = 0.143
+		cost = 1.43
 		x = 12
 		y = 4
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward={
-		    custom_effect_tooltip = in_development
+		    add_command_power = 30
+			add_equipment_to_stockpile = {  
+			    type = infantry_equipment_1
+				amount = 2500
+				producer = RUS 
+			}
+		    custom_effect_tooltip = RUS_Quartering_terdefense_cet
 		}
 	}
 
