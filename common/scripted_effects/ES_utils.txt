@@ -1,0 +1,128 @@
+@POSITIVE_OVERFLOW_THRESHOLD = 2147483
+@POSITIVE_OVERFLOW_THRESHOLD_K = 2147.483
+@NEGATIVE_OVERFLOW_THRESHOLD = -2147483
+@NEGATIVE_OVERFLOW_THRESHOLD_K = -2147.483
+
+transfer_manpower_between_states = {
+	set_temp_variable = { temp_state_manpower_k = PREV.state_population_k }
+	set_temp_variable = { temp_state_manpower_k_modulo = temp_state_manpower_k }
+	modulo_temp_variable = { temp_state_manpower_k_modulo = @POSITIVE_OVERFLOW_THRESHOLD_K }
+	
+	set_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k }
+	subtract_from_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k_modulo }
+	divide_temp_variable = { temp_state_manpower_k_ceil_divide = @POSITIVE_OVERFLOW_THRESHOLD_K }
+
+	# Обработка части населения больше 2147.483 тыс (защита от переполнения, @POSITIVE_OVERFLOW_THRESHOLD)
+	for_loop_effect = {
+		end = temp_state_manpower_k_ceil_divide
+		add_manpower = @POSITIVE_OVERFLOW_THRESHOLD
+		PREV = { add_manpower = @NEGATIVE_OVERFLOW_THRESHOLD }
+		subtract_from_temp_variable = { temp_state_manpower_k = @POSITIVE_OVERFLOW_THRESHOLD_K }
+	}
+
+	multiply_temp_variable = { temp_state_manpower_k = 1000 }
+	add_manpower = temp_state_manpower_k
+	multiply_temp_variable = { temp_state_manpower_k = -1 }
+	PREV = { add_manpower = temp_state_manpower_k }
+}
+
+remove_manpower_from_state = {
+	set_temp_variable = { temp_state_manpower_k = state_population_k }
+	set_temp_variable = { temp_state_manpower_k_modulo = temp_state_manpower_k }
+	modulo_temp_variable = { temp_state_manpower_k_modulo = @POSITIVE_OVERFLOW_THRESHOLD_K }
+	
+	set_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k }
+	subtract_from_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k_modulo }
+	divide_temp_variable = { temp_state_manpower_k_ceil_divide = @POSITIVE_OVERFLOW_THRESHOLD_K }
+
+	# Обработка части населения больше 2147.483 тыс (защита от переполнения, @POSITIVE_OVERFLOW_THRESHOLD)
+	for_loop_effect = {
+		end = temp_state_manpower_k_ceil_divide
+		add_manpower = @NEGATIVE_OVERFLOW_THRESHOLD
+		subtract_from_temp_variable = { temp_state_manpower_k = @POSITIVE_OVERFLOW_THRESHOLD_K }
+	}
+
+	multiply_temp_variable = { temp_state_manpower_k = -1000 }
+	PREV = { add_manpower = temp_state_manpower_k }
+}
+
+transfer_buildings_from_state_between_countries = {
+	add_offsite_building = {
+		type = arms_factory
+		level = PREV.building_level@arms_factory
+	}
+	add_offsite_building = {
+		type = industrial_complex
+		level = PREV.building_level@industrial_complex
+	}
+	add_offsite_building = {
+		type = dockyard
+		level = PREV.building_level@dockyard
+	}
+	add_offsite_building = {
+		type = ammunition_plant
+		level = PREV.building_level@ammunition_plant
+	}
+	add_offsite_building = {
+		type = ammunition_silo
+		level = PREV.building_level@ammunition_silo
+	}
+	add_offsite_building = {
+		type = nuclear_reactor
+		level = PREV.building_level@nuclear_reactor
+	}
+
+	PREV = {
+		remove_building = {
+			type = arms_factory
+			level = PREV.PREV.building_level@arms_factory
+		}
+		remove_building = {
+			type = industrial_complex
+			level = PREV.PREV.building_level@industrial_complex
+		}
+		remove_building = {
+			type = dockyard
+			level = PREV.PREV.building_level@dockyard
+		}
+		remove_building = {
+			type = ammunition_plant 
+			level = PREV.PREV.building_level@ammunition_plant
+		}
+		remove_building = {
+			type = ammunition_silo 
+			level = PREV.PREV.building_level@ammunition_silo 
+		}
+		remove_building = {
+			type = nuclear_reactor 
+			level = PREV.PREV.building_level@nuclear_reactor 
+		}
+	}
+}
+
+remove_buildings_from_state = {
+	remove_building = {
+		type = arms_factory
+		level = building_level@arms_factory
+	}
+	remove_building = {
+		type = industrial_complex
+		level = building_level@industrial_complex
+	}
+	remove_building = {
+		type = dockyard
+		level = building_level@dockyard
+	}
+	remove_building = {
+		type = ammunition_plant 
+		level = building_level@ammunition_plant
+	}
+	remove_building = {
+		type = ammunition_silo 
+		level = building_level@ammunition_silo 
+	}
+	remove_building = {
+		type = nuclear_reactor 
+		level = building_level@nuclear_reactor 
+	}
+}
