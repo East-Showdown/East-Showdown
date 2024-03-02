@@ -4,6 +4,10 @@
 @PRISONERS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 50
 @PRISONERS_OF_WAR_MIN_MULTIPLY_K_FACTOR = 20
 
+# Множители случайного перевода из тысяч потерь в единицы коллаборационист
+@COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 5
+@COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR = 2
+
 calculate_prisoners_of_war_captured_by_UKR = {
 	# Счётчик потерь для текущей страны от UKR за прошедшую неделю
 	set_variable = { casualties_temp_sum = 0 }
@@ -36,6 +40,18 @@ calculate_prisoners_of_war_captured_by_UKR = {
 		multiply_temp_variable = { temp_prisoners_of_war = casualties_temp_sum }
 		# Добавляем пленных в переменную текущей страны
 		add_to_variable = { prisoners_of_war_captured_by_UKR = temp_prisoners_of_war } 
+
+		# Выбираем рандомный множитель для перевода потерь в коллаборационистов
+		set_temp_variable_to_random = {
+			var = temp_collaborators
+			min = @COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR
+			max = @COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR
+			integer = yes
+		}
+		# Умножаем потери на множитель
+		multiply_temp_variable = { temp_collaborators = casualties_temp_sum }
+		# Добавляем коллаборационистов в переменную текущей страны
+		add_to_variable = { collaborators_captured_by_UKR = temp_collaborators } 
 	}
 
 }
@@ -65,5 +81,14 @@ calculate_prisoners_of_war_captured_by_RUS = {
 
 		multiply_temp_variable = { temp_prisoners_of_war = casualties_temp_sum }
 		add_to_variable = { prisoners_of_war_captured_by_RUS = temp_prisoners_of_war } 
+		
+		set_temp_variable_to_random = {
+			var = temp_collaborators
+			min = @COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR
+			max = @COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR
+			integer = yes
+		}
+		multiply_temp_variable = { temp_collaborators = casualties_temp_sum }
+		add_to_variable = { collaborators_captured_by_RUS = temp_collaborators } 
 	}
 }
