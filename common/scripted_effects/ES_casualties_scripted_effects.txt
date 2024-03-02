@@ -1,0 +1,94 @@
+@CASUALTIES_STEP_K = 1 
+
+# Множители случайного перевода из тысяч потерь в единицы пленных
+@PRISONERS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 60
+@PRISONERS_OF_WAR_MIN_MULTIPLY_K_FACTOR = 40
+
+# Множители случайного перевода из тысяч потерь в единицы коллаборационист
+@COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 6
+@COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR = 4
+
+calculate_prisoners_of_war_captured_by_UKR = {
+	# Счётчик потерь для текущей страны от UKR за прошедшую неделю
+	set_variable = { casualties_temp_sum = 0 }
+
+	while_loop_effect = { # Вычисляем, сколько тысяч человек было потеряно за неделю
+		limit = {
+			casualties_inflicted_by = {  opponent = UKR  thousands > next_casualties_k_by_UKR }
+		}
+
+		# Сдвигаем диапазон на следующую проверку на 1 тысячу
+		add_to_variable = { casualties_temp_sum = @CASUALTIES_STEP_K }
+
+		# Добавляем 1 тысячу в счётчик потерь текущей страны от UKR за эту неделю
+		add_to_variable = { next_casualties_k_by_UKR = @CASUALTIES_STEP_K }
+	}
+
+	if = {
+		limit = {
+			check_variable = { casualties_temp_sum > 0 }
+		}
+
+		# Выбираем рандомный множитель для перевода потерь в пленные
+		set_temp_variable_to_random = {
+			var = temp_prisoners_of_war
+			min = @PRISONERS_OF_WAR_MIN_MULTIPLY_K_FACTOR
+			max = @PRISONERS_OF_WAR_MAX_MULTIPLY_K_FACTOR
+			integer = yes
+		}
+		# Умножаем потери на множитель
+		multiply_temp_variable = { temp_prisoners_of_war = casualties_temp_sum }
+		# Добавляем пленных в переменную текущей страны
+		add_to_variable = { prisoners_of_war_captured_by_UKR = temp_prisoners_of_war } 
+
+		# Выбираем рандомный множитель для перевода потерь в коллаборационистов
+		set_temp_variable_to_random = {
+			var = temp_collaborators
+			min = @COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR
+			max = @COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR
+			integer = yes
+		}
+		# Умножаем потери на множитель
+		multiply_temp_variable = { temp_collaborators = casualties_temp_sum }
+		# Добавляем коллаборационистов в переменную текущей страны
+		add_to_variable = { collaborators_captured_by_UKR = temp_collaborators } 
+	}
+
+}
+
+calculate_prisoners_of_war_captured_by_RUS = {
+	set_variable = { casualties_temp_sum = 0 }
+
+	while_loop_effect = {
+		limit = {
+			casualties_inflicted_by = {  opponent = RUS  thousands > next_casualties_k_by_RUS }
+		}
+		add_to_variable = { casualties_temp_sum = @CASUALTIES_STEP_K }
+		add_to_variable = { next_casualties_k_by_RUS = @CASUALTIES_STEP_K }
+	}
+
+	if = {
+		limit = {
+			check_variable = { casualties_temp_sum > 0 }
+		}
+
+		set_temp_variable_to_random = {
+			var = temp_prisoners_of_war
+			min = @PRISONERS_OF_WAR_MIN_MULTIPLY_K_FACTOR
+			max = @PRISONERS_OF_WAR_MAX_MULTIPLY_K_FACTOR
+			integer = yes
+		}
+
+		multiply_temp_variable = { temp_prisoners_of_war = casualties_temp_sum }
+		add_to_variable = { prisoners_of_war_captured_by_RUS = temp_prisoners_of_war } 
+		
+		set_temp_variable_to_random = {
+			var = temp_collaborators
+			min = @COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR
+			max = @COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR
+			integer = yes
+		}
+		multiply_temp_variable = { temp_collaborators = casualties_temp_sum }
+		add_to_variable = { collaborators_captured_by_RUS = temp_collaborators } 
+	}
+}
