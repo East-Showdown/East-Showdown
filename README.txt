@@ -1,7 +1,3 @@
-Check out the installation guide on our Discord!
+﻿Скопируйте папку East-Showdown и East-Showdown.mod из архива в Документы\Paradox Interactive\Hearts of Iron IV\mod
 
-Смотрите гайд по установке мода в нашем Дискорде!
-
-https://steamcommunity.com/sharedfiles/filedetails/?id=2948642461
-
-https://discord.com/invite/tbQbCEY8M7
+Copy the folder East-Showdown and East-Showdown.mod from the archive to Documents\Paradox Interactive\Hearts of Iron IV\mod
