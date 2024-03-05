@@ -1,4 +1,20 @@
+# На 1000 человек потерь приходится:
+# ~20% убитых (200 человек)
+# ~75% раненых (750 человек), из которых:
+# 	~35% легкие (260 человек) - срок возврата в строй 1 неделя (7 суток)
+#	~30% средние (225 человек) - срок возврата в строй ~4.286 (4) недели (30 дней)
+# 	~25% тяжелые (190 человек) - срок возвращения ~12.857 (12) недель (90 дней)
+#	~10% крайне тяжелые (75 человек) - не возвращаются
+# ~5% захваченных в плен (50 человек)
+
 @CASUALTIES_STEP_K = 1 
+
+# Множитель количества раненых
+@WOUNDED_FACTOR = 0.75
+@LIGHT_WOUNDED_FACTOR = 0.35
+@MEDIUM_WOUNDED_FACTOR = 0.3
+@HEAVY_WOUNDED_FACTOR = 0.25
+@EXTREMELY_WOUNDED_FACTOR = 0.1
 
 # Множители случайного перевода из тысяч потерь в единицы пленных
 @PRISONERS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 60
@@ -7,6 +23,20 @@
 # Множители случайного перевода из тысяч потерь в единицы коллаборационист
 @COLLABORATORS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 6
 @COLLABORATORS_OF_WAR_MIN_MULTIPLY_K_FACTOR = 4
+
+debug_test_effect = {
+	resize_array = {
+		array = global.countries_indexes
+		size = global.countries^num
+	}
+
+	log = "[?global.countries_indexes^num] elements"
+	set_variable = { global.countries_indexes^10 = 10 }
+	log = "(index 10) = [?global.countries_indexes^10]"
+	set_variable = { pointer = 10 }
+	log = "(pointer index 10) = [?global.countries_indexes^pointer]"
+	log = "(var_pointer index 10) = [?global.countries_indexes^var:pointer]"
+}
 
 calculate_prisoners_of_war_captured_by_UKR = {
 	# Счётчик потерь для текущей страны от UKR за прошедшую неделю
@@ -90,5 +120,114 @@ calculate_prisoners_of_war_captured_by_RUS = {
 		}
 		multiply_temp_variable = { temp_collaborators = casualties_temp_sum }
 		add_to_variable = { collaborators_captured_by_RUS = temp_collaborators } 
+	}
+}
+
+calculate_wounded_casualties = {
+	if = {
+		limit = { has_war = yes }
+
+		# Высчитываем, сколько было потерь с момента предыдущего замера
+		set_variable = { new_casualties_k = casualties_k }
+		subtract_from_variable = { new_casualties_k = prev_casualties_k }
+		
+		log = "tag = [THIS.GetName] casualties_k = [?casualties_k] prev_casualties_k = [?prev_casualties_k] new_casualties_k = [?new_casualties_k]"
+		log = "[?medium_wounded_recovery_factor]"
+
+		if = {
+			#Если за этот промежуток времени были новые потери
+			limit = { check_variable = { new_casualties_k > 0 } }			
+
+			#Считаем, сколько было раненых
+			set_variable = { new_wounded_k = new_casualties_k }
+			multiply_variable = { new_wounded_k = @WOUNDED_FACTOR }
+			add_to_variable = { wounded_k_balance = new_wounded_k }
+			add_to_variable = { total_wounded_k = new_wounded_k }
+
+			#Считаем легкие ранения
+			set_variable = { light_wounded_k = new_wounded_k }
+			multiply_variable = { light_wounded_k = @LIGHT_WOUNDED_FACTOR }
+			set_variable = { hospitals_all_wounded_k^light_wounded_recovery_weeks = light_wounded_k }
+			multiply_variable = { light_wounded_k = light_wounded_recovery_factor }
+			set_variable = { hospitals_recoverable_wounded_k^light_wounded_recovery_weeks = light_wounded_k }
+
+			# Считаем средние ранения
+			set_variable = { medium_wounded_k = new_wounded_k }
+			multiply_variable = { medium_wounded_k = @MEDIUM_WOUNDED_FACTOR }
+			set_variable = { hospitals_all_wounded_k^medium_wounded_recovery_weeks = medium_wounded_k }
+			multiply_variable = { medium_wounded_k = medium_wounded_recovery_factor }
+			set_variable = { hospitals_recoverable_wounded_k^medium_wounded_recovery_weeks = medium_wounded_k }
+
+			# Считаем тяжелые ранения
+			set_variable = { heavy_wounded_k = new_wounded_k }
+			multiply_variable = { heavy_wounded_k = @HEAVY_WOUNDED_FACTOR }
+			set_variable = { hospitals_all_wounded_k^heavy_wounded_recovery_weeks = heavy_wounded_k }
+			multiply_variable = { heavy_wounded_k = heavy_wounded_recovery_factor }
+			set_variable = { hospitals_recoverable_wounded_k^heavy_wounded_recovery_weeks = heavy_wounded_k }
+
+			# Считаем очень тяжелые ранения
+			set_variable = { extremely_wounded_k = new_wounded_k }
+			multiply_variable = { extremely_wounded_k = @EXTREMELY_WOUNDED_FACTOR }
+			set_variable = { hospitals_all_wounded_k^extremely_wounded_recovery_weeks = extremely_wounded_k }
+			multiply_variable = { heavy_wounded_k = extremely_wounded_recovery_factor }
+			set_variable = { hospitals_recoverable_wounded_k^extremely_wounded_recovery_weeks = extremely_wounded_k }
+
+			# Начинаем новый промежуток времени
+			set_variable = { prev_casualties_k = casualties_k }
+		}
+	}
+}
+
+init_wounded_system = {
+	resize_array = { hospitals_all_wounded_k = 13 }
+	resize_array = { hospitals_recoverable_wounded_k = 13 }
+
+	set_variable = { light_wounded_recovery_factor = 1.0 }
+	set_variable = { medium_wounded_recovery_factor = 0.9 }
+	set_variable = { heavy_wounded_recovery_factor = 0.7 }
+	set_variable = { extremely_wounded_recovery_factor = 0 }
+	
+	set_variable = { light_wounded_recovery_weeks = 1 }
+	set_variable = { medium_wounded_recovery_weeks = 4 }
+	set_variable = { heavy_wounded_recovery_weeks = 12 }
+	set_variable = { extremely_wounded_recovery_weeks = 12 }
+}
+
+calculate_healed_wounded = {
+	if = {
+		# Если в госпиталях есть раненые
+		limit = { check_variable = { wounded_k_balance > 0 } }
+
+		# Высчитываем, сколько закончило лечиться в госпитале
+		set_variable = { healed_k = hospitals_all_wounded_k^0 }
+		subtract_from_variable = { wounded_k_balance = healed_k }
+		add_to_variable = { total_healed_wounded_k = healed_k }
+
+		
+		# Высчитываем, сколько вернулось в строй
+		set_variable = { recovered_k = hospitals_recoverable_wounded_k^0 }
+		add_to_variable = { total_recovered_wounded_k = recovered_k }
+
+		# Высчитываем, сколько было комиссовано
+		set_variable = { total_discharded_wounded_k = healed_k }
+		subtract_from_variable = { total_discharded_wounded_k = total_recovered_wounded_k }
+		
+		# Возвращаем в строй
+		multiply_variable = { recovered_k = 1000 }
+		add_manpower = recovered_k
+
+		# Сдвигаем промежуток времени
+		remove_from_array = {
+			array = hospitals_all_wounded_k
+			index = 0
+		}
+		add_to_array = { hospitals_all_wounded_k = 0 }
+
+		# Сдвигаем промежуток времени
+		remove_from_array = {
+			array = hospitals_recoverable_wounded_k
+			index = 0
+		}
+		add_to_array = { hospitals_recoverable_wounded_k = 0 }
 	}
 }
