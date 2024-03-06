@@ -182,18 +182,18 @@ calculate_wounded_casualties = {
 }
 
 init_wounded_system = {
-	resize_array = { hospitals_all_wounded_k = 13 }
-	resize_array = { hospitals_recoverable_wounded_k = 13 }
+	resize_array = { hospitals_all_wounded_k = 12 }
+	resize_array = { hospitals_recoverable_wounded_k = 12 }
 
 	set_variable = { light_wounded_recovery_factor = 1.0 }
 	set_variable = { medium_wounded_recovery_factor = 0.9 }
 	set_variable = { heavy_wounded_recovery_factor = 0.7 }
 	set_variable = { extremely_wounded_recovery_factor = 0 }
 	
-	set_variable = { light_wounded_recovery_weeks = 1 }
-	set_variable = { medium_wounded_recovery_weeks = 4 }
-	set_variable = { heavy_wounded_recovery_weeks = 12 }
-	set_variable = { extremely_wounded_recovery_weeks = 12 }
+	set_variable = { light_wounded_recovery_weeks = 0 }
+	set_variable = { medium_wounded_recovery_weeks = 3 }
+	set_variable = { heavy_wounded_recovery_weeks = 11 }
+	set_variable = { extremely_wounded_recovery_weeks = 11 }
 }
 
 calculate_healed_wounded = {
@@ -206,14 +206,13 @@ calculate_healed_wounded = {
 		subtract_from_variable = { wounded_k_balance = healed_k }
 		add_to_variable = { total_healed_wounded_k = healed_k }
 
-		
 		# Высчитываем, сколько вернулось в строй
 		set_variable = { recovered_k = hospitals_recoverable_wounded_k^0 }
 		add_to_variable = { total_recovered_wounded_k = recovered_k }
 
 		# Высчитываем, сколько было комиссовано
-		set_variable = { total_discharded_wounded_k = healed_k }
-		add_to_variable = { total_discharded_wounded_k = total_recovered_wounded_k }
+		set_variable = { total_discharded_wounded_k = total_healed_wounded_k }
+		subtract_from_variable = { total_discharded_wounded_k = total_recovered_wounded_k }
 		
 		# Возвращаем в строй
 		multiply_variable = { recovered_k = 1000 }
