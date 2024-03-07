@@ -447,6 +447,7 @@ country_event = {
 			552 = {
 				transfer_state_to = BLR
 			}
+			RUS_retreat_from_north_effect = yes
 			if = {
 				limit = {
 					NOT = {
@@ -465,7 +466,6 @@ country_event = {
 					give_military_access = LPR					
 				}
 			}
-			RUS_retreat_from_north_effect = yes
 		}
 	}
 }
@@ -784,67 +784,6 @@ country_event = {
 		}
 		add_war_support = 0.03
 		set_global_flag = strelkov_rus_hire
-	}
-}
-
-#blitzkrieg failed
-country_event = {
-	id = rus.33
-	title = rus.33.t
-	desc = rus.33.d
-	fire_only_once = yes
-	immediate = {
-		UKR = {
-		set_country_flag = RUS_Blitzkrieg_Failed
-	}
-	}
-	mean_time_to_happen = {
-		days = 10
-	}
-	trigger = {
-	    tag = RUS
-		RUS = {
-		    has_war_with = UKR
-		}
-		OR = {
-			has_country_flag = {
-				flag = RUS_start_SMO
-				days > 100
-		    }
-		    has_country_flag = {
-			    flag = RUS_start_war
-			    days > 100
-		    }
-		}
-		UKR = {
-			surrender_progress < 0.25
-		}
-	}
-	option = {
-		name = rus.33.a
-		add_war_support = -0.05
-		add_political_power = 30
-		add_timed_idea = {
-			idea = RUS_stop_offensive
-			days = 365
-		}
-		hidden_effect = {
-			UKR = {
-				add_ideas = UKR_the_horde_is_stopped
-			}
-		}
-	}
-	option = {
-		name = rus.33.b
-		add_war_support = 0.05
-		add_political_power = -50
-		add_stability = -0.05
-		add_ideas = RUS_continue_the_offensive
-		hidden_effect = {
-			UKR = {
-				add_ideas = UKR_the_horde_is_stopped
-			}
-		}
 	}
 }
 
@@ -1915,6 +1854,16 @@ country_event = {
 	picture = GFX_country_event_046
 	fire_only_once = no
 	is_triggered_only = yes
+	immediate = {
+		hidden_effect= {
+			set_variable_to_random = {
+				var = RUS_captive_random_var
+				min = 10
+				max = 50
+				integer = yes
+			}
+		}
+	}
 	option = {
 		name = rus.107.a
 		add_political_power = 50
@@ -1927,7 +1876,10 @@ country_event = {
 			value = 3.5
 			tooltip = IW_3_5_var_add_tt
 		}
+		custom_effect_tooltip = RUS_surrender_of_the_Ukrainian_border_guards
 		hidden_effect = {
+		    add_to_variable = { UKR.prisoners_of_war_captured_by_RUS = RUS_captive_random_var }
+			clear_variable = RUS_captive_random_var
 			add_to_variable = {	
 				var = global.ukr_information_war_var_sum
 				value = -3.5
