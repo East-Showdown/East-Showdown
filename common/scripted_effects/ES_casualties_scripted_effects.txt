@@ -122,7 +122,8 @@ calculate_country_casualties = {
 		#Считаем, сколько было раненых
 		set_temp_variable = { new_wounded_k = new_casualties_k }
 		multiply_temp_variable = { new_wounded_k = @WOUNDED_FACTOR }
-		add_to_variable = { wounded_k_balance = new_wounded_k }
+		
+		# Считаем, сколько было всего раненых
 		add_to_variable = { total_wounded_k = new_wounded_k }
 
 		# Считаем, сколько погибло/захвачено/пропало в боях
@@ -150,7 +151,7 @@ calculate_country_casualties = {
 
 		# Считаем, сколько умерло в госпиталях
 		subtract_from_temp_variable = { light_wounded_k = light_wounded_survived_k }
-		add_to_variable = { total_death_in_hospitals_k = light_wounded_k }
+		add_to_temp_variable = { death_in_hospitals_k = light_wounded_k }
 
 		# Считаем, сколько вернётся в строй
 		subtract_from_temp_variable = { light_wounded_survived_k = light_wounded_and_disabled_k }
@@ -176,7 +177,7 @@ calculate_country_casualties = {
 
 		# Считаем, сколько умерло в госпиталях
 		subtract_from_temp_variable = { medium_wounded_k = medium_wounded_survived_k }
-		add_to_variable = { total_death_in_hospitals_k = medium_wounded_k }
+		add_to_temp_variable = { death_in_hospitals_k = medium_wounded_k }
 
 		# Считаем, сколько вернётся в строй
 		subtract_from_temp_variable = { medium_wounded_survived_k = medium_wounded_and_disabled_k }
@@ -202,7 +203,7 @@ calculate_country_casualties = {
 
 		# Считаем, сколько умерло в госпиталях
 		subtract_from_temp_variable = { heavy_wounded_k = heavy_wounded_survived_k }
-		add_to_variable = { total_death_in_hospitals_k = heavy_wounded_k }
+		add_to_temp_variable = { death_in_hospitals_k = heavy_wounded_k }
 
 		# Считаем, сколько вернётся в строй
 		subtract_from_temp_variable = { heavy_wounded_survived_k = heavy_wounded_and_disabled_k }
@@ -228,11 +229,19 @@ calculate_country_casualties = {
 
 		# Считаем, сколько умерло в госпиталях
 		subtract_from_temp_variable = { extremely_wounded_k = extremely_wounded_survived_k }
-		add_to_variable = { total_death_in_hospitals_k = extremely_wounded_k }
+		add_to_temp_variable = { death_in_hospitals_k = extremely_wounded_k }
 
 		# Считаем, сколько вернётся в строй
 		subtract_from_temp_variable = { extremely_wounded_survived_k = extremely_wounded_and_disabled_k }
 		add_to_variable = { hospitals_recoverable_wounded_k^extremely_wounded_recovery_weeks = extremely_wounded_survived_k }
+
+		# Считаем, сколько всего умерло в госпиталях за неделю
+		add_to_variable = { total_death_in_hospitals_k = death_in_hospitals_k }
+
+		#Считаем, сколько выжило за неделю раненых для баланса раненых
+		subtract_from_temp_variable = { new_wounded_k = death_in_hospitals_k }
+		add_to_variable = { wounded_k_balance = new_wounded_k }
+
 
 		# Начинаем новый промежуток времени
 		set_variable = { prev_casualties_k = casualties_k }
