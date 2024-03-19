@@ -1976,6 +1976,50 @@ country_event = {
 				id = news.172
 				hours = 5
 			}
+			UKR_viktor_medvedchuk = {
+				set_portraits = {
+				    civilian = { large ="GFX_viktor_medvedchuk_RUS" }
+				}
+				set_nationality = CAU
+			}
+			CAU = {
+				add_country_leader_role = {
+					character = UKR_viktor_medvedchuk
+					country_leader = {
+						ideology = oligarchy
+						expire = "1965.1.1.1"
+						traits = { putin_friend oligarch }
+ 					}
+					promote_leader = yes
+ 				}
+				add_country_leader_role = {
+					character = UKR_viktor_medvedchuk
+					country_leader = {
+						ideology = centrism
+						expire = "1965.1.1.1"
+						traits = { putin_friend oligarch }
+ 					}
+					promote_leader = yes
+ 				}
+				add_country_leader_role = {
+					character = UKR_viktor_medvedchuk
+					country_leader = {
+						ideology = market_socialism
+						expire = "1965.1.1.1"
+						traits = { putin_friend oligarch }
+ 					}
+					promote_leader = yes
+ 				}
+				add_country_leader_role = {
+					character = UKR_viktor_medvedchuk
+					country_leader = {
+						ideology = left_nationalism
+						expire = "1965.1.1.1"
+						traits = { putin_friend oligarch }
+ 					}
+					promote_leader = yes
+ 				}
+			}
 		}
 	}
 	option = {
@@ -2031,42 +2075,8 @@ country_event = {
 					scope = UKR
 				}
 			}
-			if = {
-				limit = {
-					check_variable = { global.rus_information_war_var_sum > 100 }
-				}
-				set_variable = {	
-					var = global.rus_information_war_var_sum
-					value = 100
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { global.ukr_information_war_var_sum > 100 }
-				}
-				set_variable = {	
-					var = global.ukr_information_war_var_sum
-					value = 100
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { global.rus_information_war_var_sum < 0 }
-				}
-				set_variable = {	
-					var = global.rus_information_war_var_sum
-					value = 0
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { global.ukr_information_war_var_sum < 0 }
-				}
-				set_variable = {	
-					var = global.ukr_information_war_var_sum
-					value = 0
-				}
-			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 		}
 	}
 }
@@ -2274,6 +2284,88 @@ country_event = {
 				id = news.177
 				hours = 3
 			}
+		}
+	}
+}
+
+#Медведчук сбегает из под домашнего ареста
+country_event = {
+	id = ukr.70
+	title = ukr.70.t
+	desc = ukr.70.desc
+	picture = GFX_country_event_142
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = ukr.70.a
+		add_popularity = {
+			ideology = neutrality
+			popularity = -0.025
+		}
+		hidden_effect = {
+			UKR_viktor_medvedchuk = {
+				remove_country_leader_role = {  ideology = oligarchy }
+			}
+		}
+	}
+}
+
+#Создание ПЗЖМ
+country_event = {
+	id = ukr.71
+	title = ukr.71.t
+	desc = ukr.71.desc
+	picture = GFX_country_event_143
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = ukr.71.a
+		add_political_power = -20
+		add_stability = -0.025
+		add_popularity = {
+			ideology = neutrality
+			popularity = 0.05
+		}
+		hidden_effect = {
+			set_party_name = {
+                ideology = neutrality
+                long_name = PFLP_long_name
+                name = PFLP_name
+            }
+		}
+	}
+}
+
+#Толпы добровольцев
+country_event = {
+	id = ukr.72
+	title = ukr.72.t
+	desc = ukr.72.desc
+	picture = GFX_country_event_144
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = ukr.72.a
+		add_command_power = 10
+		custom_effect_tooltip = UKR_Crowds_ofvolunteers_cet
+		add_to_variable = {	
+			var = global.ukr_information_war_var_sum
+			value = 7.5
+			tooltip = IW_7_5_var_add_tt
+		}
+		hidden_effect = {
+		    add_manpower = 6500
+			add_dynamic_modifier = { modifier = UKR_war_volunteers }
+			add_to_variable = { UKR_war_volunteers_weekly_manpower = 500 }
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = -7.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 		}
 	}
 }
