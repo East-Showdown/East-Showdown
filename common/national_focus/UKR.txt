@@ -1,4 +1,4 @@
-#Rework of Ukraine by: Senator, Conteynerrr, Petliura
+#Rework of Ukraine by: Senator, Conteynerrr, Petliura, Belgorodec
 focus_tree = {
 	id = National_focuses_of_Ukraine
 	continuous_focus_position = {
@@ -622,6 +622,9 @@ focus_tree = {
 				days = 90
 			}
 			custom_effect_tooltip = distribute_weapons_people_t
+			hidden_effect = {
+				set_country_flag = Distribute_weapons_to_the_people_cf
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -1801,12 +1804,30 @@ focus_tree = {
 					days = 1
 				}
 				country_event = {
+					id = ukr.73
+					days = 2
+					hours = 10
+				}
+				country_event = {
 					id = ukr.65
 					days = 3
 				}
 				country_event = {
 					id = ukr.70
 					days = 9
+				}
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					activate_decision = UKR_general_mobilization
+					activate_decision = UKR_create_units_central_Ukraine
+					activate_decision = UKR_create_units_northeastern
+					activate_decision = UKR_create_units_donbass
+					activate_decision = UKR_create_units_priazovye
+					activate_decision = UKR_create_units_southern_Ukraine
+					activate_decision = UKR_create_units_western_Ukraine
+					activate_decision = UKR_reserve_corps
 				}
 			}
 		}
@@ -2007,6 +2028,49 @@ focus_tree = {
 			FOCUS_FILTER_POLITICAL
 		}
 	}
+	
+	focus = {
+		id = Increase_Zelenskys_ratings
+		icon = GFX_Increase_Zelenskys_ratings
+		prerequisite = {
+			focus = Verkhovna_Rada_Association
+		}
+		available = {
+		    volodymir_zelenskyy = {
+				is_country_leader = yes
+			}
+		}
+		x = 2
+		y = 3
+		relative_position_id = Operational_Command
+		cost = 0.8
+		completion_reward = {
+			add_political_power = 70
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.075
+			}
+			add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 3.5
+				tooltip = IW_3_5_var_add_tt
+			}
+			volodymir_zelenskyy = {
+				add_country_leader_trait = UKR_Freedom_Fighter
+			}
+			hidden_effect = {
+		    	add_to_variable = {
+					var = global.rus_information_war_var_sum
+					value = -3.5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
+		}
+		search_filters = {
+			FOCUS_FILTER_POLITICAL
+		}
+	}
 
 	focus = {
 		id = A_cry_for_help_to_the_West
@@ -2070,17 +2134,22 @@ focus_tree = {
 		id = Close_the_borders
 		icon = Close_the_borders
 		prerequisite = {
-			focus = War
+			focus = Announce_mobilization
 		}
 		x = -6
-		y = 2
+		y = 3
 		relative_position_id = War
 		cost = 0.5
 		completion_reward = {
-			add_stability = -0.10
-			
+			add_stability = -0.075
 			remove_ideas = Worker_in_Poland
-						custom_effect_tooltip = UKR_closetheborder_focus_tt
+			custom_effect_tooltip = UKR_closetheborder_focus_tt
+			hidden_effect = {
+				swap_ideas = {
+					remove_idea = borders_heavily
+					add_idea = borders_closed
+				}
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2091,14 +2160,32 @@ focus_tree = {
 		id = Announce_mobilization
 		icon = Announce_mobilization
 		prerequisite = {
-			focus = Close_the_borders
+			focus = War
 		}
-		x = 0
-		y = 1
-		relative_position_id = Close_the_borders
+		x = -6
+		y = 2
+		relative_position_id = War
 		cost = 0.5
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = UKR_Announce_mobilization_trigger
+				has_country_flag = UKR_general_mobilization_cf
+			}
+		}
 		completion_reward = {
-			add_ideas = extensive_conscription
+			add_command_power = 30
+			custom_effect_tooltip = Announce_mobilization_cet
+			hidden_effect = {
+			    add_manpower = 70500
+				add_to_variable = {
+					var = UKR_Ukraines_ground_forces_conscription_factor
+					value = 0.25
+				}
+				add_to_variable = {
+					var = UKR_Ukraines_ground_forces_conscription
+					value = 0.015
+				}
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2109,10 +2196,10 @@ focus_tree = {
 		id = Exit_quotas
 		icon = Exit_quotas
 		prerequisite = {
-			focus = Announce_mobilization
+			focus = Close_the_borders
 		}
 		x = 0
-		y = 1
+		y = 2
 		relative_position_id = Announce_mobilization
 		cost = 0.5
 		completion_reward = {
@@ -2159,6 +2246,7 @@ focus_tree = {
 		relative_position_id = Limit_banking_transactions
 		cost = 0.5
 		completion_reward = {
+		    add_stability = 0.05
 			custom_effect_tooltip = Economic_3_bonus
 			add_to_variable = { 
 				var = UKR_Economic_Collapse
@@ -2189,9 +2277,7 @@ focus_tree = {
 			}
 			if = {
 				limit = {
-					RUS = {
-					    has_idea = society_high
-					}
+					has_idea = society_high
 				}
 				swap_ideas = {
 					remove_idea = society_high
@@ -2200,9 +2286,7 @@ focus_tree = {
 			}
 			if = {
 				limit = {
-					RUS = {
-					    has_idea = society_medium
-					}
+					has_idea = society_medium
 				}
 				swap_ideas = {
 					remove_idea = society_medium
@@ -2211,9 +2295,7 @@ focus_tree = {
 			}
 			if = {
 				limit = {
-					RUS = {
-					    has_idea = society_low
-					}
+					has_idea = society_low
 				}
 				swap_ideas = {
 					remove_idea = society_low
@@ -2263,9 +2345,28 @@ focus_tree = {
 		relative_position_id = Military_volunteer_Law
 		cost = 0.5
 		completion_reward = {
-			add_political_power = 100
-			add_manpower = -3000
-			custom_effect_tooltip = Fight_against_looters_tt
+		    add_political_power = 40
+			add_stability = 0.035
+			custom_effect_tooltip = Fight_against_looters_cet
+			if = {
+				limit = {
+					has_idea = UKR_mass_looting_1
+				}
+				remove_ideas = UKR_mass_looting_1
+			}
+			if = {
+				limit = {
+					has_idea = UKR_mass_looting_2
+				}
+				remove_ideas = UKR_mass_looting_2
+			}
+			hidden_effect = {
+			    add_manpower = -3000
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -750
+				}
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2281,12 +2382,28 @@ focus_tree = {
 		x = 8
 		y = 2
 		relative_position_id = War
-		cost = 0.5
+		cost = 0.8
 		completion_reward = {
+		    add_political_power = 40
+			add_stability = 0.035
+			add_war_support = 0.04
+			add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 5
+				tooltip = IW_5_var_add_tt
+			}
 			set_country_flag = Volunteer_movement_focus_completed
 			custom_effect_tooltip = Volunteer_movement_start
 			set_variable = { UKR_volunteerACT = 300 }
 			set_country_flag = UKR_hasnt_volunteer_laws
+			hidden_effect = {
+				add_to_variable = {
+					var = global.rus_information_war_var_sum
+					value = -5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2306,6 +2423,8 @@ focus_tree = {
 		relative_position_id = Volunteer_movement
 		cost = 0.5
 		completion_reward = {
+		    add_political_power = 30
+			add_stability = 0.025
 			custom_effect_tooltip = Volunteer_3_bonus
 			add_to_variable = { 
 				var = UKR_volunteerACT
