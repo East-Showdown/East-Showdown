@@ -16748,7 +16748,247 @@ UKR_strengthening_Ukrainian_cities_category = {
 }
 
 UKR_volunteers_decision_category = {
+    UKR_volunteer_movement_agitation = {
+		icon = GFX_UKR_volunteers_fees
+		visible = {
+			original_tag = UKR
+		}
+		cost = 25
+		
+		complete_effect = {
+			custom_effect_tooltip = Volunteer_1_bonus
+			hidden_effect = {
+			    add_to_variable = { UKR_volunteerACT = 10 }
+				UKR_Volunteer_movement_scripted_effects = yes
+			}
+		}
+		fire_only_once = no
+		days_re_enable = 15
+	}
+	UKR_volunteer_movement_support_for_volunteering = {
+		icon = GFX_UKR_volunteers_fees
+		visible = {
+			original_tag = UKR
+		}
+		cost = 30
+		days_remove = 10
+		modifier = {
+			consumer_goods_factor = 0.025
+		}
+		remove_effect = {
+			add_stability = 0.05
+			add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 3.5
+				tooltip = IW_3_5_var_add_tt
+			}
+			custom_effect_tooltip = Volunteer_2_bonus
+			hidden_effect = {
+				add_to_variable = {
+					var = global.rus_information_war_var_sum
+					value = -3.5
+				}
+				clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+				add_to_variable = { UKR_volunteerACT = 25 }
+				UKR_Volunteer_movement_scripted_effects = yes
+			}
+		}
+		fire_only_once = no
+		days_re_enable = 20
+	}
+    UKR_volunteer_movement_infantry_weapons = {
+        icon = GFX_UKR_volunteers_fees
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
 
+		available = {
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			add_equipment_to_stockpile = {  
+			    type = UKR_infantry_equipment_2
+				amount = UKR_volunteer_movement_infantry_weapons_d_var
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {  
+			    type = ukr_infantry_anti_tank_equipment_0
+				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {  
+			    type = ukr_infantry_anti_air_equipment_0
+				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
+				producer = UKR 
+			}
+			hidden_effect = {
+				activate_mission = UKR_volunteer_movement_infantry_weapons
+				if = {
+					limit = {
+						
+					}
+					activate_mission = UKR_volunteer_movement_NTO_infantry_weapons
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
+			}
+		}
+    }
+	UKR_volunteer_movement_NTO_infantry_weapons = {
+        icon = GFX_UKR_volunteers_fees
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
+
+		available = {
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			add_equipment_to_stockpile = {  
+			    type = nto_infantry_equipment_3
+				amount = UKR_volunteer_movement_NTO_infantry_weapons_d_var
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {  
+			    type = nto_infantry_anti_tank_equipment_2
+				amount = UKR_volunteer_movement_NTO_infantry_weapons_1_d_var
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {  
+			    type = nto_infantry_anti_air_equipment_2
+				amount = UKR_volunteer_movement_NTO_infantry_weapons_1_d_var
+				producer = NTO 
+			}
+			hidden_effect = {
+				if = {
+					limit = {
+						
+					}
+					activate_mission = UKR_volunteer_movement_NTO_infantry_weapons
+				}
+			}
+		}
+    }
+	UKR_volunteer_movement_support_weapons = {
+        icon = GFX_UKR_volunteers_fees
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
+
+		available = {
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			add_equipment_to_stockpile = {  
+			    type = support_equipment_1
+				amount = UKR_volunteer_movement_support_d_var
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {  
+			    type = engineering_equipment_0
+				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {  
+			    type = ARV_equipment_0
+				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {  
+			    type = AMV_equipment_0
+				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
+				producer = UKR 
+			}
+			hidden_effect = {
+				activate_mission = UKR_volunteer_movement_support_weapons
+			}
+		}
+    }
+	UKR_volunteer_movement_ammunition_weapons = {
+        icon = GFX_UKR_volunteers_fees
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
+
+		available = {
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			add_to_variable = {
+				var = ammunition_variable
+				value = UKR_volunteer_movement_ammunition_d_var
+				tooltip = ammunition_add_cet
+			}
+			hidden_effect = {
+				activate_mission = UKR_volunteer_movement_ammunition_weapons
+			}
+		}
+    }
+	UKR_volunteer_movement_ammunition_weapons_1 = {
+        icon = GFX_UKR_volunteers_fees
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
+
+		available = {
+			NOT = {
+				has_war_with = RUS
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			add_to_variable = {
+				var = ammunition_variable
+				value = UKR_volunteer_movement_ammunition_d_var
+				tooltip = ammunition_add_cet
+			}
+			hidden_effect = {
+				activate_mission = UKR_volunteer_movement_ammunition_weapons
+			}
+		}
+    }
 }
 
 UKR_derussification_decision_category = {
