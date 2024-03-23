@@ -10961,6 +10961,24 @@ UKR_information_war = {
 		complete_effect = {
 		    custom_effect_tooltip = UKR_psychological_operation_cet
 		    hidden_effect = {
+			    if = {
+					limit = {
+						has_country_flag = UKR_foreign_journalism
+					}
+					add_to_variable = { var = UKR_monthly_increase_var_add value = -2.5 }
+					clear_variable = UKR_inf_war_making_bet_political_power_factor
+					clear_variable = UKR_inf_war_making_bet_war_support_weekly_factor
+				}
+				if = {
+					limit = {
+						has_country_flag = UKR_military_personnel
+					}
+					clear_variable = UKR_inf_war_making_bet_war_support_factor
+					clear_variable = UKR_inf_war_making_bet_weekly_manpower
+					clear_variable = UKR_inf_war_making_bet_command_power_gain_mult
+				}
+			    clr_country_flag = UKR_foreign_journalism
+				clr_country_flag = UKR_military_personnel
 				set_country_flag = UKR_psychological_operation
 				add_to_variable = {
 					var = UKR_monthly_increase_var_add
@@ -10970,6 +10988,95 @@ UKR_information_war = {
 					add_dynamic_modifier = { modifier = UKR_propaganda_debuff }
 					set_variable = { var = UKR_propaganda_debuff_political_power_factor value = -0.1 }
 				}
+			}
+		}	
+	}
+	UKR_foreign_journalism_bet = {
+		icon = UKR_discrediting_Russia
+		fire_only_once = no
+		cost = 40
+		available = {
+			tag = UKR
+		}
+		visible = {
+			tag = UKR
+			NOT = {
+				has_country_flag = UKR_foreign_journalism
+			}
+			has_completed_focus = Western_news_branches_in_Ukraine
+		}
+		complete_effect = {
+		    custom_effect_tooltip = UKR_foreign_journalism_cet
+		    hidden_effect = {
+			    if = {
+					limit = {
+						has_country_flag = UKR_psychological_operation
+					}
+					add_to_variable = { var = UKR_monthly_increase_var_add value = -1.5 }
+					RUS = { 
+						remove_dynamic_modifier = { modifier = UKR_propaganda_debuff }
+					}
+				}
+				if = {
+					limit = {
+						has_country_flag = UKR_military_personnel
+					}
+					clear_variable = UKR_inf_war_making_bet_war_support_factor
+					clear_variable = UKR_inf_war_making_bet_weekly_manpower
+					clear_variable = UKR_inf_war_making_bet_command_power_gain_mult
+				}
+			    clr_country_flag = UKR_psychological_operation
+				clr_country_flag = UKR_military_personnel
+				set_country_flag = UKR_foreign_journalism
+				add_to_variable = {
+					var = UKR_monthly_increase_var_add
+					value = 2.5
+				}
+				add_to_variable = { UKR_inf_war_making_bet_political_power_factor = 0.05 }
+				add_to_variable = { UKR_inf_war_making_bet_war_support_weekly_factor = 0.005 }
+			}
+		}	
+	}
+	UKR_military_personnel_bet = {
+		icon = UKR_discrediting_Russia
+		fire_only_once = no
+		cost = 40
+		available = {
+			tag = UKR
+		}
+		visible = {
+			tag = UKR
+			NOT = {
+				has_country_flag = UKR_military_personnel
+			}
+			has_completed_focus = Sponsor_loyal_telegram_channels
+		}
+		complete_effect = {
+		    custom_effect_tooltip = RUS_military_personnel_bet_cet
+		    hidden_effect = {
+			    if = {
+					limit = {
+						has_country_flag = UKR_psychological_operation
+					}
+					add_to_variable = { var = UKR_monthly_increase_var_add value = -1.5 }
+					RUS = { 
+						remove_dynamic_modifier = { modifier = UKR_propaganda_debuff }
+					}
+				}
+				if = {
+					limit = {
+						has_country_flag = UKR_foreign_journalism
+					}
+					add_to_variable = { var = UKR_monthly_increase_var_add value = -2.5 }
+					clear_variable = UKR_inf_war_making_bet_political_power_factor
+					clear_variable = UKR_inf_war_making_bet_war_support_weekly_factor
+				}
+				clr_country_flag = UKR_psychological_operation
+				clr_country_flag = UKR_foreign_journalism
+				set_country_flag = UKR_military_personnel
+				add_to_variable = { var = UKR_inf_war_making_bet_war_support_factor value = 0.075 }
+				add_to_variable = { var = UKR_inf_war_making_bet_weekly_manpower value = 100 }
+				add_to_variable = { var = UKR_inf_war_making_bet_command_power_gain_mult value = 0.05 }
 			}
 		}	
 	}
@@ -11424,7 +11531,10 @@ UKR_information_war = {
 	}
 	UKR_monthly_increase_information_influence = {
 		activation = {
-			check_variable = { UKR_monthly_increase_var_add > 0 }
+		    OR = {
+				check_variable = { UKR_monthly_increase_var_add > 0 }
+				check_variable = { UKR_monthly_increase_var_add < 0 }
+			}
 		}
 		available = {
 		    check_variable = { UKR_monthly_increase_var_add = 0 }
@@ -11432,7 +11542,7 @@ UKR_information_war = {
 		icon = UKR_discrediting_Russia
 		fire_only_once = no
 		hidden = yes
-		days_mission_timeout = 30
+		days_mission_timeout = 7
 		timeout_effect = {
 			add_to_variable = {
 				var = global.ukr_information_war_var_sum
@@ -17104,39 +17214,6 @@ UKR_derussification_decision_category = {
 				value = 5
 				tooltip = LL_OF_UKRZTIN_tt
 			}
-		}
-		}
-
-	UKR_farion = {
-		icon = GFX_UKR_ukrainization
-		fire_only_once = yes
-		available = {
-
-		}
-		visible = {
-			has_country_flag = dec_Derussification_unlock
-			check_variable = {
-				level_of_ukrainization_var > 99
-			}
-		}
-		days_remove = 20
-		cost = 25
-		ai_will_do = {
-			factor = 10
-		}
-		remove_effect = {
-			add_to_variable = {
-				var = level_of_ukrainization_var
-				value = 5
-				tooltip = LL_OF_UKRZTIN_tt
-			}
-			custom_effect_tooltip = RUS_propoganda_myzskoy_druzbi
-
-			add_to_variable = {
-				var = global.ukr_information_war_var_sum
-				value = -1.5
-				tooltip = IW_minus_1_5_var_add_tt
-			}	
 		}
 		}
 
