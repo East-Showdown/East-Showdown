@@ -1829,6 +1829,35 @@ focus_tree = {
 					activate_decision = UKR_create_units_western_Ukraine
 					activate_decision = UKR_reserve_corps
 				}
+				add_dynamic_modifier = { modifier = UKR_internal_refugees }
+				set_variable = {
+					var = UKR_internal_refugees_stability_weekly_factor
+					value = -0.005
+				}
+				set_variable = {
+					var = UKR_internal_refugees_political_power_cost
+					value = 1
+				}
+				set_variable = {
+					var = UKR_internal_refugees_stability_factor
+					value = -0.075
+				}
+				set_variable = {
+					var = UKR_internal_refugees_war_support_factor
+					value = -0.05
+				}
+				set_variable = {
+					var = UKR_internal_refugees_consumer_goods_factor
+					value = 0.015
+				}
+				set_variable = {
+					var = UKR_internal_refugees_monthly_population
+					value = -0.05
+				}
+				set_variable = {
+					var = UKR_internal_refugees_resistance_growth_on_our_occupied_states
+					value = -0.1
+				}
 			}
 		}
 		search_filters = {
@@ -2184,6 +2213,19 @@ focus_tree = {
 				add_to_variable = {
 					var = UKR_Ukraines_ground_forces_conscription
 					value = 0.015
+				}
+				add_dynamic_modifier = { modifier = UKR_escape_from_mobilization }
+				add_to_variable = {
+					var = UKR_escape_from_mobilization_conscription
+					value = -0.02
+				}
+				add_to_variable = {
+					var = UKR_escape_from_mobilization_command_power_gain_mult
+					value = -0.1
+				}
+				add_to_variable = {
+					var = UKR_escape_from_mobilization_war_support_weekly
+					value = -0.01
 				}
 			}
 		}
@@ -2735,6 +2777,8 @@ focus_tree = {
 					var = RUS.RUS_monthly_increase_var_add
 					value = -0.5
 				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 			}
 		}
 		search_filters = {
@@ -2855,13 +2899,19 @@ focus_tree = {
 		x = -27
 		y = 1
 		relative_position_id = Headquarters_of_the_Supreme_Commander_in_Chief
-		cost = 0.5
+		cost = 1
+		available = {
+			has_completed_focus = Volunteer_movement
+		}
 		completion_reward = {
-			add_political_power = 100
+			add_political_power = 50
 			custom_effect_tooltip = Volunteer_1_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 10
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 10
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
 			}
 		}
 		search_filters = {
@@ -2875,18 +2925,32 @@ focus_tree = {
 		prerequisite = {
 			focus = Decreasing_bureaucracy
 		}
-		available = {
-			has_completed_focus = Volunteer_movement
-		}
 		x = 0
 		y = 1
 		relative_position_id = Decreasing_bureaucracy
-		cost = 0.5
+		cost = 0.8
 		completion_reward = {
-			custom_effect_tooltip = Volunteer_1_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 10
+		    add_political_power = 30
+			add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 5
+				tooltip = IW_5_var_add_tt
+			}
+			custom_effect_tooltip = Volunteer_2_bonus
+			custom_effect_tooltip = Increasing_the_flow_of_volunteerism_cet
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 25
+				}
+				activate_mission = UKR_volunteer_movement_motorization
+				UKR_Volunteer_movement_scripted_effects = yes
+				add_to_variable = {
+					var = global.rus_information_war_var_sum
+					value = -5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 			}
 		}
 		search_filters = {
@@ -2906,15 +2970,19 @@ focus_tree = {
 		x = -2
 		y = 1
 		relative_position_id = Increasing_the_flow_of_volunteerism
-		cost = 0.5
+		cost = 1
 		completion_reward = {
 			custom_effect_tooltip = Volunteer_2_debuff
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = -25
-			}
-			set_country_flag = Volunteer_Laws_completed
 			custom_effect_tooltip = Volunteer_Volunteer_Laws_Bonus_t
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = -25
+				}
+				set_country_flag = Volunteer_Laws_completed
+				add_to_variable = { UKR_volunteerACT_m = 1 }
+				add_to_variable = { UKR_volunteerACT_monthly = 0.25 }
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2933,12 +3001,22 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = Increasing_the_flow_of_volunteerism
-		cost = 0.5
+		cost = 1
 		completion_reward = {
-			custom_effect_tooltip = Volunteer_2_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 25
+			custom_effect_tooltip = Volunteer_3_bonus
+			custom_effect_tooltip = Volunteer_Attracting_max_cit_Bonus_t
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 50
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
+				add_to_variable = { UKR_volunteerACT_m = -1 }
+				add_to_variable = { UKR_volunteerACT_monthly = -0.25 }
+				add_to_variable = {
+					var = UKR_escape_from_mobilization_conscription
+					value = -0.005
+				}
 			}
 		}
 		search_filters = {
@@ -2950,15 +3028,37 @@ focus_tree = {
 		id = Volunteers_enter_the_Western_Market
 		icon = Volunteers_enter_the_Western_Market
 		prerequisite = {
-			focus = Volunteer_Laws
+			focus = Freedom_of_movement_for_volunteers
 		}
 		x = 0
 		y = 1
-		relative_position_id = Volunteer_Laws
-		cost = 0.5
+		relative_position_id = Freedom_of_movement_for_volunteers
+		cost = 1.5
 		completion_reward = {
-			custom_effect_tooltip = Volunteers_enter_the_Western_Market_completed_t
-			set_country_flag = Volunteers_enter_w_m_completed_flag
+		    add_political_power = 30
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 3.5
+				tooltip = IW_3_5_var_add_tt
+			}
+		    custom_effect_tooltip = Volunteer_2_bonus
+			custom_effect_tooltip = Volunteers_enter_the_Western_Market_cet
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 25
+				}
+				add_to_variable = {
+					var = global.rus_information_war_var_sum
+					value = -3.5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+				activate_mission = UKR_volunteer_movement_NTO_infantry_weapons
+				activate_mission = UKR_volunteer_movement_NTO_motorization
+				activate_mission = UKR_volunteer_movement_NTO_drones
+				UKR_Volunteer_movement_scripted_effects = yes
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2969,20 +3069,24 @@ focus_tree = {
 		id = Attracting_maximum_citizens
 		icon = Attracting_maximum_citizens
 		prerequisite = {
-			focus = Freedom_of_movement_for_volunteers
+			focus = Volunteer_Laws
 		}
 		x = 0
 		y = 1
-		relative_position_id = Freedom_of_movement_for_volunteers
-		cost = 0.5
+		relative_position_id = Volunteer_Laws
+		cost = 1.5
 		completion_reward = {
+			add_political_power = 50
+			add_war_support = 0.05
+			add_stability = 0.035
 			custom_effect_tooltip = Volunteer_3_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 50
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 50
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
 			}
-			set_country_flag = Volunteer_Attracting_max_completed
-			custom_effect_tooltip = Volunteer_Attracting_max_cit_Bonus_t
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -2999,12 +3103,18 @@ focus_tree = {
 		x = -2
 		y = 2
 		relative_position_id = Freedom_of_movement_for_volunteers
-		cost = 0.5
+		cost = 1.5
 		completion_reward = {
+		    add_political_power = 30
 			custom_effect_tooltip = Volunteer_3_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 50
+			custom_effect_tooltip = Volunteer_Volunteer_Laws_Bonus_t
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 50
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
+				add_to_variable = { UKR_volunteerACT_m = 0.5 }
 			}
 		}
 		search_filters = {
@@ -3021,12 +3131,14 @@ focus_tree = {
 		x = -4
 		y = 1
 		relative_position_id = Volunteers_Titans
-		cost = 0.5
+		cost = 0.8
 		completion_reward = {
-			custom_effect_tooltip = Volunteer_3_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 50
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 25
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
 			}
 			if = {
 				limit = {
@@ -3039,9 +3151,13 @@ focus_tree = {
 					}
 				}
 				add_equipment_to_stockpile = {
-				type = uav_strike_equipment
-				amount = 80
-			}
+					type = URK_uav_recon_equipment_spectator
+					amount = 40
+				}
+				add_equipment_to_stockpile = {
+					type = UKR_uav_strike_equipment_gorlitsa
+					amount = 30
+				}
 			}
 			if = {
 				limit = {
@@ -3059,9 +3175,13 @@ focus_tree = {
 					}
 				}
 				add_equipment_to_stockpile = {
-				type = uav_strike_equipment
-				amount = 150
-			}
+					type = URK_uav_recon_equipment_spectator
+					amount = 80
+				}
+				add_equipment_to_stockpile = {
+					type = UKR_uav_strike_equipment_gorlitsa
+					amount = 70
+				}
 			}
 			if = {
 				limit = {
@@ -3074,11 +3194,15 @@ focus_tree = {
 					}
 				}
 				add_equipment_to_stockpile = {
-				type = uav_strike_equipment
-				amount = 300
+					type = URK_uav_recon_equipment_spectator
+					amount = 160
+				}
+				add_equipment_to_stockpile = {
+					type = UKR_uav_strike_equipment_gorlitsa
+					amount = 140
+				}
 			}
-			}
-
+            custom_effect_tooltip = Volunteer_2_bonus
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -3094,22 +3218,26 @@ focus_tree = {
 		x = -2
 		y = 2
 		relative_position_id = Volunteers_Titans
-		cost = 0.5
+		cost = 1
 		completion_reward = {
+		    add_equipment_to_stockpile = {
+				type = UKR_uav_recon_equipment_leleka
+				amount = 100
+			}
+			add_equipment_to_stockpile = {
+				type = UKR_uav_strike_equipment_gorlitsa
+				amount = 80
+			}
 			custom_effect_tooltip = Volunteer_1_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 10
+			custom_effect_tooltip = Drone_Army_cet
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 10
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
+				activate_mission = UKR_volunteer_movement_drones
 			}
-			add_equipment_to_stockpile = {
-				type = uav_strike_equipment
-				amount = 50
-			}
-			add_equipment_to_stockpile = {
-				type = uav_recon_equipment
-				amount = 150
-			}
-
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -3125,17 +3253,22 @@ focus_tree = {
 		x = 2
 		y = 2
 		relative_position_id = Volunteers_Titans
-		cost = 0.5
+		cost = 1
 		completion_reward = {
-			custom_effect_tooltip = Volunteer_1_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 10
-			}
-			add_equipment_to_stockpile = {
+		    add_equipment_to_stockpile = {
 				type = NTO_uav_strike_bayraktar
 				producer = NTO
-				amount = 6
+				amount = 56
+			}
+			custom_effect_tooltip = Volunteer_1_bonus
+			custom_effect_tooltip = Bayraktars_from_the_people_cet
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 10
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
+				activate_mission = UKR_volunteer_movement_NTO_drones_Bayraktar
 			}
 		}
 		search_filters = {
@@ -3152,14 +3285,17 @@ focus_tree = {
 		x = 4
 		y = 1
 		relative_position_id = Volunteers_Titans
-		cost = 0.5
+		cost = 1
 		completion_reward = {
-			custom_effect_tooltip = Volunteer_1_bonus
-			add_to_variable = { 
-				var = UKR_volunteerACT
-   				value = 10
+		    add_ideas = UKR_Satellite
+			custom_effect_tooltip = Volunteer_2_bonus
+			hidden_effect = {
+				add_to_variable = { 
+					var = UKR_volunteerACT
+   					value = 25
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
 			}
-			add_ideas = UKR_Satellite
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -3175,39 +3311,31 @@ focus_tree = {
 		x = 6
 		y = 1
 		relative_position_id = Decreasing_bureaucracy
-		cost = 0.5
+		cost = 1
 		completion_reward = {
-			if = {
-				limit = {
-					controls_state = 182
-					controls_state = 94
+			add_political_power = 30
+			custom_effect_tooltip = Help_for_internal_refugees_cet
+			hidden_effect = {
+				add_to_variable = {
+					var = UKR_internal_refugees_stability_weekly_factor
+					value = 0.005
 				}
-				182 = { add_manpower = -150000 }
-				94 = { add_manpower = 150000 }
-			}
-			if = {
-				limit = {
-					controls_state = 165
-					controls_state = 95
+				add_to_variable = {
+					var = UKR_internal_refugees_stability_factor
+					value = 0.05
 				}
-				165 = { add_manpower = -50000 }
-				95 = { add_manpower = 50000 }
-			}
-			if = {
-				limit = {
-					controls_state = 145
-					controls_state = 131
+				add_to_variable = {
+					var = UKR_internal_refugees_war_support_factor
+					value = 0.025
 				}
-				145 = { add_manpower = -50000 }
-				131 = { add_manpower = 50000 }
-			}
-			if = {
-				limit = {
-					controls_state = 149
-					controls_state = 108
+				add_to_variable = {
+					var = UKR_internal_refugees_consumer_goods_factor
+					value = 0.005
 				}
-				149 = { add_manpower = -200000 }
-				108 = { add_manpower = 200000 }
+				add_to_variable = {
+					var = UKR_internal_refugees_monthly_population
+					value = 0.025
+				}
 			}
 		}
 		search_filters = {
@@ -3224,16 +3352,27 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = Help_for_internal_refugees
-		cost = 0.5
+		cost = 1.5
 		completion_reward = {
-			add_political_power = 150
-			if = {
-				limit = {
-					controls_state = 103
-					controls_state = 115
+			add_political_power = 20
+			custom_effect_tooltip = Create_a_VPO_cet
+			hidden_effect = {
+				add_to_variable = {
+					var = UKR_internal_refugees_stability_factor
+					value = 0.015
 				}
-				103 = { add_manpower = -200000 }
-				115 = { add_manpower = 200000 }
+				add_to_variable = {
+					var = UKR_internal_refugees_war_support_factor
+					value = 0.025
+				}
+				add_to_variable = {
+					var = UKR_internal_refugees_political_power_cost
+					value = -0.5
+				}
+				add_to_variable = {
+					var = UKR_internal_refugees_monthly_population
+					value = 0.01
+				}
 			}
 		}
 		search_filters = {
@@ -3250,12 +3389,14 @@ focus_tree = {
 		x = -2
 		y = 1
 		relative_position_id = Create_a_VPO
-		cost = 0.5
+		cost = 2
 		completion_reward = {
-			hidden_effect = {
-			remove_ideas = UKR_derjava_vsmartfone
+			add_political_power = 30
+			add_command_power = 15
+			swap_ideas = {
+				remove_idea = UKR_derjava_vsmartfone
+				add_idea = UKR_derjava_vsmartfone_2
 			}
-			add_ideas = UKR_derjava_vsmartfone_2
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -3271,13 +3412,24 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = Create_a_VPO
-		cost = 0.5
+		cost = 1.5
 		available = {
 			
 		}
 		completion_reward = {
-			add_ideas = powestki_dia
-			add_stability = -0.10
+		    add_political_power = 50
+			add_stability = -0.05
+			custom_effect_tooltip = Agendas_via_diya_cet
+			hidden_effect = {
+				add_to_variable = {
+					var = UKR_escape_from_mobilization_conscription
+					value = 0.01
+				}
+				add_to_variable = {
+					var = UKR_escape_from_mobilization_command_power_gain_mult
+					value = 0.05
+				}
+			}
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -3293,9 +3445,13 @@ focus_tree = {
 		x = -5
 		y = 1
 		relative_position_id = Decreasing_bureaucracy
-		cost = 0.5
+		cost = 1.5
 		completion_reward = {
-		custom_effect_tooltip = Economic_1_bonus
+		    swap_ideas = {
+				remove_idea = limited_exports
+				add_idea = export_focus
+			}
+			custom_effect_tooltip = Economic_1_bonus
 			add_to_variable = { 
 				var = UKR_Economic_Collapse
    				value = -10
@@ -3315,7 +3471,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = Continue_trading
-		cost = 0.5
+		cost = 2
 		completion_reward = {
 			add_ideas = Trade_with_EU
 			custom_effect_tooltip = Economic_3_bonus
