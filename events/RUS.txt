@@ -143,6 +143,18 @@ unit_leader_event = {
 		add_stability = 0.015
     }
 }
+unit_leader_event = {
+    id = putin_mission.8
+    title = putin_mission.8.t
+    desc = putin_mission.8.desc
+
+    is_triggered_only = yes
+    fire_only_once = no
+
+    option = {
+        name = putin_mission.8.a
+    }
+}
 
 country_event = {
 	id = rus.1
@@ -369,6 +381,25 @@ country_event = {
 	option = {
 		name = rus.11.a
 		custom_effect_tooltip = RUS_leave_kiev_ce_tt
+		if = {
+			limit = {
+				NOT = {
+					OR = {
+						controls_state = 128
+						controls_state = 111
+						controls_state = 98
+						controls_state = 95
+						controls_state = 123
+						controls_state = 128
+					}
+				}
+			}
+			custom_effect_tooltip = RUS_leave_S_C_ce_tt
+			hidden_effect = {
+				RUS_retreat_from_sumy_effect = yes
+			}
+		}
+		custom_effect_tooltip = RUS_leave_kiev_ce_tt_1
 		add_political_power = -50
 		add_war_support = -0.1
 		add_stability = -0.05
@@ -447,6 +478,7 @@ country_event = {
 			552 = {
 				transfer_state_to = BLR
 			}
+			RUS_retreat_from_kiev_effect = yes
 			if = {
 				limit = {
 					NOT = {
@@ -459,10 +491,12 @@ country_event = {
 					transfer_state = 306
 					transfer_state = 377
 					transfer_state = 371
-					cancel_resistance = yes				
+					cancel_resistance = yes
+					give_military_access = RUS
+					give_military_access = DPR
+					give_military_access = LPR					
 				}
 			}
-			RUS_retreat_from_north_effect = yes
 		}
 	}
 }
@@ -681,7 +715,7 @@ country_event = {
 				var = global.ukr_information_war_var_sum
 				value = -5
 			}
-			add_to_variable = { var = global.UKR_prisoners_of_war_num_add value = 82 }
+			add_to_variable = { UKR.prisoners_of_war_captured_by_RUS = 82 }
 			news_event = {
 			    id = news.36
 				hours = 5
@@ -781,67 +815,6 @@ country_event = {
 		}
 		add_war_support = 0.03
 		set_global_flag = strelkov_rus_hire
-	}
-}
-
-#blitzkrieg failed
-country_event = {
-	id = rus.33
-	title = rus.33.t
-	desc = rus.33.d
-	fire_only_once = yes
-	immediate = {
-		UKR = {
-		set_country_flag = RUS_Blitzkrieg_Failed
-	}
-	}
-	mean_time_to_happen = {
-		days = 10
-	}
-	trigger = {
-	    tag = RUS
-		RUS = {
-		    has_war_with = UKR
-		}
-		OR = {
-			has_country_flag = {
-				flag = RUS_start_SMO
-				days > 100
-		    }
-		    has_country_flag = {
-			    flag = RUS_start_war
-			    days > 100
-		    }
-		}
-		UKR = {
-			surrender_progress < 0.25
-		}
-	}
-	option = {
-		name = rus.33.a
-		add_war_support = -0.05
-		add_political_power = 30
-		add_timed_idea = {
-			idea = RUS_stop_offensive
-			days = 365
-		}
-		hidden_effect = {
-			UKR = {
-				add_ideas = UKR_the_horde_is_stopped
-			}
-		}
-	}
-	option = {
-		name = rus.33.b
-		add_war_support = 0.05
-		add_political_power = -50
-		add_stability = -0.05
-		add_ideas = RUS_continue_the_offensive
-		hidden_effect = {
-			UKR = {
-				add_ideas = UKR_the_horde_is_stopped
-			}
-		}
 	}
 }
 
@@ -965,6 +938,115 @@ country_event = {
 		news_event = {
 			id = news.82
 			hours = 3
+		}
+	}
+}
+#Провал десанта в Гостомель
+country_event = {
+	id = rus.37
+	title = rus.37.t
+	desc = rus.37.d
+	picture = GFX_country_event_138
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.37.o
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+}
+#Провал десанта в Васильков
+country_event = {
+	id = rus.38
+	title = rus.38.t
+	desc = rus.38.d
+	picture = GFX_country_event_138
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.38.o
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+}
+#Провал десанта под Херсон
+country_event = {
+	id = rus.39
+	title = rus.39.t
+	desc = rus.39.d
+	picture = GFX_country_event_138
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.39.o
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+}
+
+#Провал десанта под Бердянск
+country_event = {
+	id = rus.40
+	title = rus.40.t
+	desc = rus.40.d
+	picture = GFX_country_event_072
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.40.o
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 		}
 	}
 }
@@ -1803,6 +1885,16 @@ country_event = {
 	picture = GFX_country_event_046
 	fire_only_once = no
 	is_triggered_only = yes
+	immediate = {
+		hidden_effect= {
+			set_variable_to_random = {
+				var = RUS_captive_random_var
+				min = 10
+				max = 50
+				integer = yes
+			}
+		}
+	}
 	option = {
 		name = rus.107.a
 		add_political_power = 50
@@ -1815,7 +1907,10 @@ country_event = {
 			value = 3.5
 			tooltip = IW_3_5_var_add_tt
 		}
+		custom_effect_tooltip = RUS_surrender_of_the_Ukrainian_border_guards
 		hidden_effect = {
+		    add_to_variable = { UKR.prisoners_of_war_captured_by_RUS = RUS_captive_random_var }
+			clear_variable = RUS_captive_random_var
 			add_to_variable = {	
 				var = global.ukr_information_war_var_sum
 				value = -3.5
@@ -5015,6 +5110,425 @@ country_event = {
                 	right_side = default_right_side
             	}
 			}
+		}
+    }
+}
+
+#ДШРГ Русич в ЧВК «Редут»
+country_event = {
+	id = rus.172
+	title = rus.172.t
+	desc = rus.172.desc
+	picture = GFX_country_event_136
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.172.a
+		hidden_effect = {
+		add_equipment_to_stockpile = {
+			type = bmp2a_chassis
+			variant_name = "БМП-2М"
+			amount = 10
+			producer = RUS
+		} 
+		add_equipment_to_stockpile = {
+			type = bronemashina1_chassis
+			variant_name = ""Выстрел""
+			amount = 10
+			producer = RUS
+		} 
+		add_equipment_to_stockpile = {
+			type = btr1_chassis
+			variant_name = "БТР-70 БМ"
+			amount = 10
+			producer = RUS
+		} 
+		add_equipment_to_stockpile = {
+			type = artillery_equipment_0	
+			amount = 6
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = engineering_equipment_0	
+			amount = 5
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = engineering_equipment_0	
+			amount = 5
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_2	
+			amount = 505
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = infantry_anti_tank_equipment_2	
+			amount = 60
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = infantry_anti_air_equipment_2	
+			amount = 21
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = atgm_1_eq	
+			amount = 10
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = mortar_2_eq	
+			amount = 10
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = motorized_equipment_1	
+			amount = 9
+			producer = RUS
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment_1	
+			amount = 100
+			producer = RUS
+		}
+		load_oob = RUS_DSHRG_Rusich
+		}
+    }
+}
+
+#Десант под Харьков
+country_event = {
+	id = rus.173
+	title = rus.173.t
+	desc = rus.173.desc
+	picture = GFX_country_event_137
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.173.a
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			103 = {
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Paratroopers batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 15111
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 11955
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 9894
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 10749
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			UKR = {
+				country_event = {
+					id = ukr.66
+					hours = 1
+				}
+			}
+		}
+    }
+}
+
+#Провал десанта под Харьков
+country_event = {
+	id = rus.174
+	title = rus.174.t
+	desc = rus.174.desc
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.174.a
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+    }
+}
+
+#Десант в Одессу
+country_event = {
+	id = rus.175
+	title = rus.175.t
+	desc = rus.175.desc
+	picture = GFX_country_event_139
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.175.a
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			256 = {
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Paratroopers batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 2796
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 16434
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 382-go otdel'nogo batal'ona morskoy pekhoty\" division_template = \"Marines batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 321
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 382-go otdel'nogo batal'ona morskoy pekhoty\" division_template = \"Marines batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 8669
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			UKR = {
+				country_event = {
+					id = ukr.67
+					hours = 1
+				}
+			}
+		}
+    }
+}
+
+#Провал десанта в Одессу
+country_event = {
+	id = rus.176
+	title = rus.176.t
+	desc = rus.176.desc
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.176.a
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+    }
+}
+
+#Десант в Николаев
+country_event = {
+	id = rus.177
+	title = rus.177.t
+	desc = rus.177.desc
+	picture = GFX_country_event_140
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.177.a
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			233 = {
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Paratroopers batalion\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 12268
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 6019
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 382-go otdel'nogo batal'ona morskoy pekhoty\" division_template = \"Marines batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 18780
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantnaya gruppa 382-go otdel'nogo batal'ona morskoy pekhoty\" division_template = \"Marines batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 18779
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			UKR = {
+				country_event = {
+					id = ukr.68
+					hours = 1
+				}
+			}
+		}
+    }
+}
+
+#Провал десанта в Николаев
+country_event = {
+	id = rus.178
+	title = rus.178.t
+	desc = rus.178.desc
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.178.a
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+    }
+}
+
+#Десант в Запорожье
+country_event = {
+	id = rus.179
+	title = rus.179.t
+	desc = rus.179.desc
+	picture = GFX_country_event_141
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.179.a
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			210 = {
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 18417
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 18419
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			222 = {
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 1316
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			208 = {
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 4291
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 9866
+					count = 1
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			UKR = {
+				country_event = {
+					id = ukr.69
+					hours = 1
+				}
+			}
+		}
+    }
+}
+
+#Провал десанта в Запорожье
+country_event = {
+	id = rus.180
+	title = rus.180.t
+	desc = rus.180.desc
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.180.a
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 		}
     }
 }

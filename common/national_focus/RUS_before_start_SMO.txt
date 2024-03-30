@@ -61,6 +61,43 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_expand_the_preparation_of_amphibious_operations
+		icon = GFX_RUS_expand_the_preparation_of_amphibious_operations
+		relative_position_id = RUS_escalation_of_conflict
+		prerequisite = { focus = RUS_Preparing_for_Preemptive_Strike }
+		cost = 1.5
+		x = 0
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		allow_branch = {
+ 			has_country_flag = RUS_expand_the_preparation_of_amphibious_operations_cf
+        }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_operational_center_of_airborne_operations_michael_teplinsky_trigger
+				has_country_flag = RUS_expand_the_preparation_of_amphibious_operations_cf
+			}
+		}
+		completion_reward={
+			army_experience = 10
+			air_experience = 5
+			custom_effect_tooltip = RUS_expand_the_preparation_of_amphibious_operations_cet
+			custom_effect_tooltip = RUS_put_aside
+			hidden_effect = {
+				add_to_variable = { global.var_SVO_landing_VDV_history = 20 }
+				add_to_variable = { global.var_SVO_landing_VDV_history_fail = -20 }
+				add_to_variable = { global.var_SVO_landing_Vasilkov = 20 }
+				add_to_variable = { global.var_SVO_landing_Vasilkov_fail = -20 }
+				clamp_variable = {  var = global.var_SVO_landing_VDV_history  min = 0 max = 100 }
+				clamp_variable = {  var = global.var_SVO_landing_VDV_history_fail  min = 0 max = 100 }
+				clamp_variable = {  var = global.var_SVO_landing_Vasilkov  min = 0 max = 100 }
+				clamp_variable = {  var = global.var_SVO_landing_Vasilkov_fail  min = 0 max = 100 }
+			}
+		}
+	}
+	focus = {
 		id = RUS_Military_assistance_to_the_Peoples_Republics
 		icon = GFX_RUS_Military_assistance_to_the_Peoples_Republics
 		relative_position_id = RUS_Preparing_for_Preemptive_Strike
@@ -364,9 +401,15 @@ focus_tree = {
 			}
 		}
 		completion_reward={
-			add_intel = { target = UKR civilian_intel = 5 army_intel = 3 airforce_intel = 2 }
+			add_intel = { target = UKR civilian_intel = 15 army_intel = 7 airforce_intel = 5 }
 			add_ideas = RUS_FSB
 			increase_escalation_by_2_5 = yes
+			if = {
+				limit  = {
+					has_completed_focus = RUS_experience_Russian_Spring
+				}
+				custom_effect_tooltip = RUS_put_aside
+			}
 		}
 	}
 	focus = {
@@ -391,6 +434,12 @@ focus_tree = {
 		completion_reward={
 		    army_experience = 15
 		    custom_effect_tooltip = RUS_experience_Russian_Spring_tt
+			if = {
+				limit  = {
+					has_completed_focus = RUS_FSB_Ukraine
+				}
+				custom_effect_tooltip = RUS_put_aside
+			}
 			hidden_effect = {
 			    add_to_variable = {	
 					var = RUS_VCRF_army_defence_factor
@@ -429,6 +478,12 @@ focus_tree = {
 		completion_reward={
 		    custom_effect_tooltip = RUS_special_operations_forces_tt
 			swap_ideas = { remove_idea = RUS_FSB add_idea = RUS_FSB_1 }
+			if = {
+				limit  = {
+					has_completed_focus = RUS_experience_Russian_Spring
+				}
+				custom_effect_tooltip = RUS_put_aside
+			}
 		}
 	}
 	focus = {
@@ -453,6 +508,12 @@ focus_tree = {
 		completion_reward={
 		    custom_effect_tooltip = RUS_prevent_violations_border_tt
 			increase_escalation_by_2_5 = yes
+			if = {
+				limit  = {
+					has_completed_focus = RUS_FSB_Ukraine
+				}
+				custom_effect_tooltip = RUS_put_aside
+			}
 		    hidden_effect = {
 			    add_to_variable = {	
 					var = RUS_VCRF_army_core_defence_factor
@@ -783,7 +844,52 @@ focus_tree = {
 				idea = RUS_training_camps
 				days = 31
 			}
+			custom_effect_tooltip = RUS_military_training_camps_cet
 			custom_effect_tooltip = RUS_put_aside
+			hidden_effect = {
+				13 = {
+					create_unit = {
+						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+						owner = RUS
+						prioritize_location = 9320
+						count = 2
+					}
+					create_unit = {
+						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+						owner = RUS
+						prioritize_location = 2277
+						count = 2
+					}
+					create_unit = {
+						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+						owner = RUS
+						prioritize_location = 4158
+						count = 2
+					}
+				}
+				random = {
+					chance = 50
+					13 = {
+						create_unit = {
+							division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+							owner = RUS
+							prioritize_location = 10654
+							count = 1
+						}
+					}
+				}
+				random = {
+					chance = 50
+					13 = {
+						create_unit = {
+							division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+							owner = RUS
+							prioritize_location = 10654
+							count = 1
+						}
+					}
+				}
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -895,7 +1001,15 @@ focus_tree = {
 			}
 			custom_trigger_tooltip = {
 				tooltip = eslation_at_least_45
-				check_variable = { 44 < global.escalation }
+				if = {
+					limit  = {
+						is_ai = yes
+					}
+					check_variable = { 39 < global.escalation }
+				}
+				else = {
+					check_variable = { 44 < global.escalation }
+				}
 			}
 			custom_trigger_tooltip = {
 				tooltip = RUS_BLR_exercises_are_over
@@ -949,10 +1063,6 @@ focus_tree = {
 						id = DPR.2
 						days = 9
 					}
-					random_list = {
-			        	50 = { country_event = { id = DPR.3 days = 31  } }
-						50 = { }
-	            	}
 				}
         	}
         	LPR = {
@@ -996,10 +1106,12 @@ focus_tree = {
 					country_event = {
 			            id = re_event_u.2 
 				        days = 1
+						hours = 5
 			        }
 					country_event = {
 			    		id = re_event_u.1
 						days = 2
+						hours = 15
 					}
 					country_event = {
 			    		id = ukr.54
@@ -1014,23 +1126,23 @@ focus_tree = {
 				set_country_flag = RUS_start_SMO
 				if = {
 				    limit = { has_country_flag = SVO_landing_Gostomel }
-					country_event = {
-						id = rus.12
-						hours = 3
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.12 hours = 3 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.37 hours = 6 } }
 					}
 				}
 				if = {
 				    limit = { has_country_flag = SVO_landing_Vasilkov }
-					country_event = {
-						id = rus.108
-						days = 2
+					random_list = {
+						global.var_SVO_landing_Vasilkov = { country_event = { id = rus.108 days = 2 } }
+						global.var_SVO_landing_Vasilkov_fail = { country_event = { id = rus.38 days = 3 } }
 					}
 				}
 				if = {
 				    limit = { has_country_flag = SVO_landing_Herson }
-					country_event = {
-						id = rus.62
-						hours = 7
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.62 hours = 7 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.39 hours = 14 } }
 					}
 				}
 				if = {
@@ -1042,9 +1154,37 @@ focus_tree = {
 				}
 				if = {
 				    limit = { has_country_flag = SVO_landing_berdyansk }
-					country_event = {
-						id = rus.121
-						days = 5
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.121 days = 5 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.40 days = 6 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SVO_landing_Kharkov }
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.173 hours = 7 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.174 hours = 12 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SVO_landing_Odessa }
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.175 days = 1 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.176 days = 2 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SVO_landing_Nikolaev }
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.177 days = 2 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.178 days = 3 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SVO_landing_Zaporozhye }
+					random_list = {
+						global.var_SVO_landing_VDV_history = { country_event = { id = rus.179 hours = 15 } }
+						global.var_SVO_landing_VDV_history_fail = { country_event = { id = rus.180 days = 17 } }
 					}
 				}
 				if = {
@@ -1109,6 +1249,7 @@ focus_tree = {
 					}
 				}
 				complete_national_focus = RUS_Lightning_strike
+				complete_national_focus = RUS_Putins_course
         	}
 			country_event = {
 				id = smo.9
@@ -1596,6 +1737,12 @@ focus_tree = {
 		    custom_effect_tooltip = RUS_Formation_of_the_new_Government_of_Ukraine_cet
 			increase_escalation_by_20 = yes
 		    hidden_effect = {
+			    UKR_viktor_medvedchuk = {
+				    set_portraits = {
+						civilian = { large ="GFX_viktor_medvedchuk_RUS" }
+					}
+					set_nationality = CAU
+				}
 		        every_controlled_state = {
                     limit = {
 					    is_fully_controlled_by = RUS
@@ -3746,7 +3893,7 @@ focus_tree = {
 	focus = {
 		id = RUS_Putins_course
 		icon = GFX_RUS_Putins_course
-		cost = 0.72
+		cost = 0.5
 		x = 40
 		y = 0
 		ai_will_do = {
@@ -3765,7 +3912,7 @@ focus_tree = {
 		icon = GFX_RUS_Intensify_advocacy
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Putins_course  }
-		cost = 1.43
+		cost = 0.8
 		x = 0
 		y = 1
 		ai_will_do = {
@@ -3778,6 +3925,25 @@ focus_tree = {
 			custom_effect_tooltip = RUS_new_category
 			hidden_effect = {
 				add_popularity = {  ideology = neutrality  popularity = 0.05 }
+				if = {
+					limit = {
+					    has_completed_focus = RUS_real_man_business
+					}
+					hidden_effect = {
+						random_list = {
+							50 = { activate_mission = RUS_fees_of_KPRF_AK }
+							50 = { activate_mission = RUS_fees_of_KPRF_support }
+						}
+						random_list = {
+							50 = { activate_mission = RUS_fees_of_LDPR_AK }
+							50 = { activate_mission = RUS_fees_of_LDPR_support }
+						}
+						random_list = {
+							50 = { activate_mission = RUS_fees_of_EDRO_AK }
+							50 = { activate_mission = RUS_fees_of_EDRO_support }
+						}
+					}
+				}
 			}
 		}
 	}
@@ -5840,7 +6006,7 @@ focus_tree = {
 		icon = GFX_RUS_Intensify_advocacys
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Putins_course  }
-		cost = 1
+		cost = 0.8
 		x = -5
 		y = 1
 		ai_will_do = {
@@ -5866,8 +6032,7 @@ focus_tree = {
 				clear_variable = RUS_inf_war_making_bet_command_power_gain_mult
 				add_to_variable = { var = RUS_inf_war_making_bet_political_power_factor value = 0.1 }
 				add_to_variable = { var = RUS_inf_war_making_bet_stability_factor value = 0.05 }
-				set_variable = { var = RUS_monthly_increase_inf_war_sum value = -1.5 }
-				add_to_variable = { var = RUS_monthly_increase_inf_war_sum value = RUS_monthly_increase_inf_war_num_1 }
+				add_to_variable = { var = RUS_monthly_increase_var_add value = -1.5 }
 			}
 		}
 	}
@@ -6382,7 +6547,7 @@ focus_tree = {
 	focus = {
 		id = RUS_real_man_business
 		icon = GFX_RUS_real_man_business
-		cost = 1
+		cost = 0.8
 		prerequisite = { focus = RUS_Putins_course }
 		x = 50
 		y = 1
@@ -6395,6 +6560,25 @@ focus_tree = {
 		    custom_effect_tooltip = RUS_real_man_business_cet
 		    hidden_effect = {
 				add_dynamic_modifier = { modifier = RUS_recruitment_of_volunteers }
+				if = {
+					limit = {
+					    has_completed_focus = RUS_for_russia_for_truth
+					}
+					hidden_effect = {
+						random_list = {
+							50 = { activate_mission = RUS_fees_of_KPRF_AK }
+							50 = { activate_mission = RUS_fees_of_KPRF_support }
+						}
+						random_list = {
+							50 = { activate_mission = RUS_fees_of_LDPR_AK }
+							50 = { activate_mission = RUS_fees_of_LDPR_support }
+						}
+						random_list = {
+							50 = { activate_mission = RUS_fees_of_EDRO_AK }
+							50 = { activate_mission = RUS_fees_of_EDRO_support }
+						}
+					}
+				}
 			}
 		}
 	}
@@ -6404,7 +6588,7 @@ focus_tree = {
 		icon = GFX_RUS_Contract_advertising
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_real_man_business }
-		cost = 2
+		cost = 1
 		x = 1
 		y = 1
 		ai_will_do = {
@@ -6427,7 +6611,7 @@ focus_tree = {
 		icon = GFX_RUS_Establish_flow_volunteers
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_real_man_business }
-		cost = 2
+		cost = 1
 		x = 3
 		y = 1
 		ai_will_do = {
@@ -6451,7 +6635,7 @@ focus_tree = {
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_Establish_flow_volunteers }
 		prerequisite = { focus = RUS_Contract_advertising }
-		cost = 2.86
+		cost = 2.43
 		x = 2
 		y = 2
 		ai_will_do = {
@@ -6580,7 +6764,7 @@ focus_tree = {
 		icon = GFX_RUS_People_Front
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_Social_support_participants }
-		cost = 2.43
+		cost = 2
 		x = 0
 		y = 2
 		ai_will_do = {
@@ -6702,7 +6886,6 @@ focus_tree = {
 			custom_effect_tooltip = RUS_Storm_Z_cet
 			hidden_effect = {
 			    set_variable = { RUS_Storm_Z_limit = 3 }
-				load_oob = RUS_Storm_Z_first
 				activate_mission = RUS_shtorm_Z_penaltys
 				add_corps_commander_role = {
                     Character = evgeny_burdinsky
@@ -6713,6 +6896,74 @@ focus_tree = {
 					planning_skill = 3
 					logistics_skill = 1
                 }
+				division_template = {
+					name = "Storm-Z"
+					division_names_group = RUS_Storm_Z_names_group
+					is_locked = yes
+					force_allow_recruiting = no
+					regiments = {
+						infantry = {
+							x = 0
+							y = 0
+						}
+						prisoners = {
+							x = 0
+							y = 1
+						}
+						prisoners = {
+							x = 0
+							y = 2
+						}
+						prisoners = {
+							x = 1
+							y = 0
+						}
+					}
+					support = {
+						engineer = {
+							x = 0
+							y = 0
+						}
+						signal_company = {
+							x = 0
+							y = 1
+						}
+						recon = {
+							x = 0
+							y = 2
+						}
+						artillery_nig = {
+							x = 1
+							y = 0
+						}		#не баг
+						sniper = {
+							x = 1
+							y = 1
+						}		#не баг
+						atgm = {
+							x = 1
+							y = 2
+						}	
+						mortar = {
+							x = 1
+							y = 3
+						}
+					}
+				}
+				61 = {
+					create_unit = {
+						division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+						owner = RUS
+						prioritize_location = 14590
+						count = 1
+					}
+					create_unit = {
+						division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+						owner = RUS
+						prioritize_location = 14590
+						count = 1
+					}
+				}
 			}
 		}
 	}
@@ -6804,11 +7055,8 @@ focus_tree = {
 		}
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = RUS_MOA_trigger_tt
-				check_variable = {
-					var = global.UKR_collaborators_num
-					value > 2499
-				}
+				tooltip = RUS_MOA_trigger_tt				
+				check_variable = { RUS.prisoners_of_war_captured_by_UKR > 2499 }
 			}
 		}
 		completion_reward={
@@ -7137,11 +7385,14 @@ focus_tree = {
 			}
 			OR = {
 				surrender_progress > 0.05
-				casualties_inflicted_by = {  opponent = UKR  thousands > 20 }
+				custom_trigger_tooltip = {
+					tooltip = RUS_forced_measures_trigger_2_tt
+					check_variable = { total_irrecoverable_loses_k > 20 }
+				}
 				has_civil_war = yes
 				custom_trigger_tooltip = {
 					tooltip = RUS_forced_measures_trigger_tt
-					has_manpower < 1000
+					has_manpower < 250
 				}
 			}
 		}
@@ -7349,11 +7600,14 @@ focus_tree = {
 			}
 			OR = {
 				surrender_progress > 0.15
-				casualties_inflicted_by = {  opponent = UKR  thousands > 100 }
+				custom_trigger_tooltip = {
+					tooltip = RUS_general_mobilization_2_tt
+					check_variable = { total_irrecoverable_loses_k > 60 }
+				}
 				has_civil_war = yes
 				custom_trigger_tooltip = {
 					tooltip = RUS_forced_measures_trigger_tt
-					has_manpower < 1000
+					has_manpower < 250
 				}
 			}
 		}
