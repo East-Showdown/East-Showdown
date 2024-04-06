@@ -1,3 +1,5 @@
+@RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR = 63
+
 on_actions = {
     on_startup = {
         effect = {
@@ -23,11 +25,21 @@ on_actions = {
 				divide_variable = { RUS_gazprom_blue_stream_incomett_divider = 10 }
 				set_variable = { RUS_gazprom_total_incomett = 763 }
 				add_dynamic_modifier = { modifier = RUS_gas_factories_modifier }
-				if = {
-					limit = { check_variable = { 693 < RUS_gazprom_total_incomett < 819 } }
-                    industrial_factory_donations = 12
-					set_variable = { RUS_gas_factories = 12 }
-				}
+
+				# Высчитываем значение дробной части (0.xxx), которое нужно будет вычесть из отношения
+				# <доход газпрома> / <фактор перевода в фабрики>
+				# К примеру 1200 / 63 - modulo = 19.048 - modulo (где modulo = 0.048)
+				set_temp_variable = { temp_RUS_gas_factoriers_modulo = RUS_gazprom_total_incomett }
+				modulo_temp_variable = { temp_RUS_gas_factoriers_modulo = @RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR }
+				divide_temp_variable = { temp_RUS_gas_factoriers_modulo = @RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR }
+
+				# Высчитываем количество фабрик
+				set_temp_variable = { temp_RUS_gas_factories = RUS_gazprom_total_incomett }
+				divide_temp_variable = { temp_RUS_gas_factories = @RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR }
+				subtract_from_temp_variable = { temp_RUS_gas_factories = temp_RUS_gas_factoriers_modulo }
+
+				set_variable = { RUS_gas_factories = temp_RUS_gas_factories }
+
 				set_variable = { BLR_gas_tranzit_incomett = 113 }
 				set_variable = { global.BLR_gas_factories = 3 }
 				set_variable = { UKR_gas_tranzit_incomett = 193 }
@@ -83,208 +95,69 @@ on_actions = {
 					limit = { RUS = { has_country_flag = { flag = GAZ_6_TIME_30 days > 30 } } }
                     clr_country_flag = GAZ_6_TIME_30
 				}
-			    if = {
-					limit = { check_variable = { 1197 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 1260 } }
-                    industrial_factory_donations = 19
-					set_variable = { RUS_gas_factories = 19 }
-				}
-			    if = {
-					limit = { check_variable = { 1134 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 1197 } }
-                    industrial_factory_donations = 18
-					set_variable = { RUS_gas_factories = 18 }
-				}
-			    if = {
-					limit = { check_variable = { 1071 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 1134 } }
-                    industrial_factory_donations = 17
-					set_variable = { RUS_gas_factories = 17 }
-				}
-			    if = {
-					limit = { check_variable = { 1008 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 1071 } }
-                    industrial_factory_donations = 16
-					set_variable = { RUS_gas_factories = 16 }
-				}
-			    if = {
-					limit = { check_variable = { 945 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 1008 } }
-                    industrial_factory_donations = 15
-					set_variable = { RUS_gas_factories = 15 }
-				}
-			    if = {
-					limit = { check_variable = { 882 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 945 } }
-                    industrial_factory_donations = 14
-					set_variable = { RUS_gas_factories = 14 }
-				}
-			    if = {
-					limit = { check_variable = { 819 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 882 } }
-                    industrial_factory_donations = 13
-					set_variable = { RUS_gas_factories = 13 }
-				}
-				if = {
-					limit = { check_variable = { 693 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 819 } }
-                    industrial_factory_donations = 12
-					set_variable = { RUS_gas_factories = 12 }
-				}
-				if = {
-					limit = { check_variable = { 635 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 693 } }
-                    industrial_factory_donations = 11
-					set_variable = { RUS_gas_factories = 11 }
-				}
-				if = {
-					limit = { check_variable = { 577 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 635 } }
-                    industrial_factory_donations = 10
-					set_variable = { RUS_gas_factories = 10 }
-				}
-				if = {
-					limit = { check_variable = { 519 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 577 } }
-                    industrial_factory_donations = 9
-					set_variable = { RUS_gas_factories = 9 }
-				}
-				if = {
-					limit = { check_variable = { 461 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 519 } }
-                    industrial_factory_donations = 8
-					set_variable = { RUS_gas_factories = 8 }
-				}
-				if = {
-					limit = { check_variable = { 403 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 461 } }
-                    industrial_factory_donations = 7
-					set_variable = { RUS_gas_factories = 7 }
-				}
-				if = {
-					limit = { check_variable = { 345 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 403 } }
-                    industrial_factory_donations = 6
-					set_variable = { RUS_gas_factories = 6 }
-				}
-				if = {
-					limit = { check_variable = { 287 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 345 } }
-                    industrial_factory_donations = 5
-					set_variable = { RUS_gas_factories = 5 }
-				}
-				if = {
-					limit = { check_variable = { 229 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 287 } }
-                    industrial_factory_donations = 4
-					set_variable = { RUS_gas_factories = 4 }
-				}
-				if = {
-					limit = { check_variable = { 171 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 229 } }
-                    industrial_factory_donations = 3
-					set_variable = { RUS_gas_factories = 3 }
-				}
-				if = {
-					limit = { check_variable = { 114 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 171 } }
-                    industrial_factory_donations = 2
-					set_variable = { RUS_gas_factories = 2 }
-				}
-				if = {
-					limit = { check_variable = { 57 < RUS_gazprom_total_incomett } check_variable = { RUS_gazprom_total_incomett < 114 } }
-					set_variable = { RUS_gas_factories = 1 }
-				}
-				if = {
-					limit = { check_variable = { RUS_gazprom_total_incomett < 57 } }
-					set_variable = { RUS_gas_factories = 0 }
-				}
-				else_if = {
-					limit = { check_variable = { 1260 < RUS_gazprom_total_incomett } }
-                    industrial_factory_donations = 20
-					set_variable = { RUS_gas_factories = 20 }
-				}
+
+				# Высчитываем значение дробной части (0.xxx), которое нужно будет вычесть из отношения
+				# <доход газпрома> / <фактор перевода в фабрики>
+				# К примеру 1200 / 63 - modulo = 19.048 - modulo (где modulo = 0.048)
+				set_temp_variable = { temp_RUS_gas_factoriers_modulo = RUS_gazprom_total_incomett }
+				modulo_temp_variable = { temp_RUS_gas_factoriers_modulo = @RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR }
+				divide_temp_variable = { temp_RUS_gas_factoriers_modulo = @RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR }
+
+				# Высчитываем количество фабрик
+				set_temp_variable = { temp_RUS_gas_factories = RUS_gazprom_total_incomett }
+				divide_temp_variable = { temp_RUS_gas_factories = @RUS_GAZPROM_TOTAL_INCOMETT_TO_GAS_FACTORIES_FACTOR }
+				subtract_from_temp_variable = { temp_RUS_gas_factories = temp_RUS_gas_factoriers_modulo }
+
+				set_variable = { RUS_gas_factories = temp_RUS_gas_factories }
 			}
 			RUS = {
 				if = {
 					limit = { check_variable = { UKR_gas_tranzit_incomett = 193 } }
 					set_variable = { global.UKR_gas_factories = 5 }
 				}
-			    if = {
+			    else_if = {
 					limit = { check_variable = { UKR_gas_tranzit_incomett = 98 } }
 					set_variable = { global.UKR_gas_factories = 3 }
 				}
-				if = {
+				else_if = {
 					limit = { check_variable = { UKR_gas_tranzit_incomett = 0 } }
 					set_variable = { global.UKR_gas_factories = 0 }
 				}
+
 				if = {
 					limit = { has_country_flag = { flag = RUS_corruption_among_officials_fix_idea days > 40 } }
-					set_variable = {	
-			            var = RUS_corruption_among_officials_modifier_command_power_gain_mult
-			            value = 0.1
-		            }
-					set_variable = {	
-						var = RUS_corruption_among_officials_modifier_experience_gain_army_factor
-						value = 0.05
-					}
-					set_variable = {	
-						var = RUS_corruption_among_officials_modifier_consumer_goods_factor
-						value = -0.025
-					}
+					set_variable = { RUS_corruption_among_officials_modifier_command_power_gain_mult = 0.1 }
+					set_variable = { RUS_corruption_among_officials_modifier_experience_gain_army_factor = 0.05 }
+					set_variable = { RUS_corruption_among_officials_modifier_consumer_goods_factor = -0.025 }
 				}
 				if = {
 					limit = { has_country_flag = { flag = RUS_corruption_higher_academy_fix_idea days > 40 } }
-					set_variable = {	
-			            var = RUS_corruption_higher_academy_modifier_command_power_gain_mult
-			            value = 0.05
-		            }
-					set_variable = {	
-						var = RUS_corruption_higher_academy_modifier_experience_gain_army_factor
-						value = 0.1
-					}
-					set_variable = {	
-						var = RUS_corruption_higher_academy_modifier_consumer_goods_factor
-						value = -0.025
-					}
+					set_variable = { RUS_corruption_higher_academy_modifier_command_power_gain_mult = 0.05 }
+					set_variable = { RUS_corruption_higher_academy_modifier_experience_gain_army_factor = 0.1 }
+					set_variable = { RUS_corruption_higher_academy_modifier_consumer_goods_factor = -0.025 }
 				}
 				if = {
 					limit = { has_country_flag = { flag = RUS_fraud_with_public_procurement_fix_idea days > 40 } }
-					set_variable = {	
-			            var = RUS_fraud_with_public_procurement_modifier_command_power_gain_mult
-			            value = 0.05
-		            }
-					set_variable = {	
-						var = RUS_fraud_with_public_procurement_modifier_production_factory_max_efficiency_factor
-						value = 0.1
-					}
-					set_variable = {	
-						var = RUS_fraud_with_public_procurement_modifier_consumer_goods_factor
-						value = -0.025
-					}
+					set_variable = { RUS_fraud_with_public_procurement_modifier_command_power_gain_mult = 0.05 }
+					set_variable = { RUS_fraud_with_public_procurement_modifier_production_factory_max_efficiency_factor = 0.1 }
+					set_variable = { RUS_fraud_with_public_procurement_modifier_consumer_goods_factor = -0.025 }
 				}
 				if = {
 					limit = { has_country_flag = { flag = RUS_fraud_with_state_contract_fix_idea days > 40 } }
-					set_variable = {	
-			            var = RUS_fraud_with_state_contract_modifier_command_power_gain_mult
-			            value = 0.05
-		            }
-					set_variable = {	
-						var = RUS_fraud_with_state_contract_modifier_production_factory_max_efficiency_factor
-						value = 0.1
-					}
-					set_variable = {	
-						var = RUS_fraud_with_state_contract_modifier_consumer_goods_factor
-						value = -0.025
-					}
-					set_variable = {	
-						var = RUS_fraud_with_state_contract_modifier_production_factory_efficiency_gain_factor
-						value = 0.15
-					}
+					set_variable = { RUS_fraud_with_state_contract_modifier_command_power_gain_mult = 0.05 }
+					set_variable = { RUS_fraud_with_state_contract_modifier_production_factory_max_efficiency_factor = 0.1 }
+					set_variable = { RUS_fraud_with_state_contract_modifier_consumer_goods_factor = -0.025 }
+					set_variable = { RUS_fraud_with_state_contract_modifier_production_factory_efficiency_gain_factor = 0.15 }
 				}
 				if = {
 					limit = { has_country_flag = { flag = RUS_noncompliance_with_safety_standards_fix_idea days > 20 } }
-					set_variable = {	
-			            var = RUS_noncompliance_with_safety_standards_modifier_army_org_factor
-			            value = 0.05
-		            }
-					set_variable = {	
-						var = RUS_noncompliance_with_safety_standards_modifier_army_morale_factor
-						value = 0.1
-					}
-					set_variable = {	
-						var = RUS_noncompliance_with_safety_standards_modifier_experience_gain_army_factor
-						value = 0.05
-					}
+					set_variable = { RUS_noncompliance_with_safety_standards_modifier_army_org_factor = 0.05 }
+					set_variable = { RUS_noncompliance_with_safety_standards_modifier_army_morale_factor = 0.1 }
+					set_variable = { RUS_noncompliance_with_safety_standards_modifier_experience_gain_army_factor = 0.05 }
 				}
 				if = {
 					limit = { has_country_flag = { flag = RUS_military_health_fix_idea days > 15 } }
-					set_variable = {	
-			            var = RUS_military_health_modifier_army_morale_factor
-			            value = 0.1
-		            }
+					set_variable = { RUS_military_health_modifier_army_morale_factor = 0.1 }
 				}
 			}
 		}
