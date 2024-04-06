@@ -1,436 +1,77 @@
 on_actions = {
-	on_daily = {
+	on_daily_BOR = {
 		effect = {
 			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > -1 }
-					check_variable = { global.ukr_information_war_var_sum < 10 }
-				}
+				limit = { RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign } }
+
+				# Вычисляем суммарное информационное влияние обеих сторон
+				set_temp_variable = { global.iw_sum_influence = global.rus_information_war_var_sum }
+				add_to_temp_variable = { global.iw_sum_influence = global.ukr_information_war_var_sum }
+
+				# Высчитываем, соотношение <рус_влияние>/<сум_влияние>.
+				# К примеру, 0.6 - это 60% рус. влияние и 40% укр. влияние
+				set_variable = { global.iw_RUS_supremacy = global.rus_information_war_var_sum }
+				divide_variable = { global.iw_RUS_supremacy = global.iw_sum_influence }
+
 				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_0
-						}
-					}
+					limit = { NOT = { check_variable = { global.iw_RUS_supremacy = global.iw_RUS_supremacy_prev } } }
 					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-						remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-					    remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_0
+					log = "New iw_RUS_supremacy: [?global.iw_RUS_supremacy] (prev was: [?global.iw_RUS_supremacy_prev])"
+					set_variable = { global.iw_RUS_supremacy_prev = global.iw_RUS_supremacy } 
+					RUS = { remove_SMO_information_war_ideas = yes }
+					UKR = { remove_SMO_information_war_ideas = yes }
+
+					if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.1 } }
+						RUS = { add_ideas = SMO_information_war_idea_0 }
+						UKR = { add_ideas = SMO_information_war_idea_8 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.25 } }
+						RUS = { add_ideas = SMO_information_war_idea_1 }
+						UKR = { add_ideas = SMO_information_war_idea_7 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.375 } }
+						RUS = { add_ideas = SMO_information_war_idea_2 }
+						UKR = { add_ideas = SMO_information_war_idea_6 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.475 } }
+						RUS = { add_ideas = SMO_information_war_idea_3 }
+						UKR = { add_ideas = SMO_information_war_idea_5 }
+					} 
+					else_if = { # Нейтральный случай
+						limit = { 
+							check_variable = { global.iw_RUS_supremacy > 0.474 } 
+							check_variable = { global.iw_RUS_supremacy < 0.526 } 
+						}
+						RUS = { add_ideas = SMO_information_war_idea_4 }
+						UKR = { add_ideas = SMO_information_war_idea_4 }	
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy > 0.525 } }
+						RUS = { add_ideas = SMO_information_war_idea_5 }
+						UKR = { add_ideas = SMO_information_war_idea_3 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy > 0.625 } }
+						RUS = { add_ideas = SMO_information_war_idea_6 }
+						UKR = { add_ideas = SMO_information_war_idea_2 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy > 0.75 } }
+						RUS = { add_ideas = SMO_information_war_idea_7 }
+						UKR = { add_ideas = SMO_information_war_idea_1 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy > 0.9 } }
+						RUS = { add_ideas = SMO_information_war_idea_8 }
+						UKR = { add_ideas = SMO_information_war_idea_0 }
 					}
 				}
 			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > 9 }
-					check_variable = { global.ukr_information_war_var_sum < 25 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_1
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_2
-						remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-					    remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_1
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > 24 }
-					check_variable = { global.ukr_information_war_var_sum < 35 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_2
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-						remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-					    remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_2
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > 34 }
-					check_variable = { global.ukr_information_war_var_sum < 50 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_3
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-						remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-					    remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_3
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum = 50 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_4
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_4
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > 50 }
-					check_variable = { global.ukr_information_war_var_sum < 75 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_5
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_5
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > 74 }
-					check_variable = { global.ukr_information_war_var_sum < 90 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_6
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_6
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.ukr_information_war_var_sum > 89 }
-					check_variable = { global.ukr_information_war_var_sum < 101 }
-				}
-				if = {
-					limit = {
-					    UKR = {
-							has_idea = SMO_information_war_idea_7
-						}
-					}
-					
-				}
-				else = {
-				    UKR = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-						remove_ideas = SMO_information_war_idea_6
-					    add_ideas = SMO_information_war_idea_7
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > -1 }
-					check_variable = { global.rus_information_war_var_sum < 10 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_0
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_0
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > 9 }
-					check_variable = { global.rus_information_war_var_sum < 25 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_1
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_1
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > 24 }
-					check_variable = { global.rus_information_war_var_sum < 35 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_2
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_2
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > 34 }
-					check_variable = { global.rus_information_war_var_sum < 50 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_3
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_3
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum = 50 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_4
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_4
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > 50 }
-					check_variable = { global.rus_information_war_var_sum < 75 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_5
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_6
-						remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_5
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > 74 }
-					check_variable = { global.rus_information_war_var_sum < 90 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_6
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-						remove_ideas = SMO_information_war_idea_5
-					    remove_ideas = SMO_information_war_idea_7
-					    add_ideas = SMO_information_war_idea_6
-					}
-				}
-			}
-			if = {
-				limit = {
-				    RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
-					check_variable = { global.rus_information_war_var_sum > 89 }
-					check_variable = { global.rus_information_war_var_sum < 101 }
-				}
-				if = {
-					limit = {
-					    RUS = {
-							has_idea = SMO_information_war_idea_7
-						}
-					}
-					
-				}
-				else = {
-				    RUS = {
-				        remove_ideas = SMO_information_war_idea_0
-					    remove_ideas = SMO_information_war_idea_1
-					    remove_ideas = SMO_information_war_idea_2
-					    remove_ideas = SMO_information_war_idea_3
-					    remove_ideas = SMO_information_war_idea_4
-					    remove_ideas = SMO_information_war_idea_5
-						remove_ideas = SMO_information_war_idea_6
-					    add_ideas = SMO_information_war_idea_7
-					}
-				}
-			}
+
 			# Ракетные удары
 			if = {
 				limit = {
