@@ -596,7 +596,7 @@ NProduction = {
 	RAILWAY_GUN_REPAIR_SPEED = 8.0,			-- Railway gun strength repair speed per factory
 	EFFICIENCY_LOSS_PER_UNUSED_DAY = 1,		-- Daily loss of efficiency for unused factory slots ( efficiency is tracked per factory slot in the production line )
 	RESOURCE_PENALTY_WARNING_CRITICAL_RATIO =  0.8, -- Switch to red progress bar if penalty is over threshold
-	BASE_FACTORY_SPEED = 5, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
+	BASE_FACTORY_SPEED = 2, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 	BASE_FACTORY_SPEED_MIL = 4.50, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 	BASE_FACTORY_SPEED_NAV = 2.5, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 	BASE_FACTORY_START_EFFICIENCY_FACTOR = 10,	-- Base start efficiency for factories expressed in %.
@@ -2361,19 +2361,19 @@ NAI = {
 
 	-- these are all 3 numbers for min, desired, max unit need weights for area defense
 	AREA_DEFENSE_CAPITAL_PEACE_VP_WEIGHT = { 1.0, 1.0, 1.0 },
-	AREA_DEFENSE_CAPITAL_VP_WEIGHT = { 0.0, 1.0, 2.0 },
-	AREA_DEFENSE_HOME_VP_WEIGHT = { 0.0, 0.5, 1.0 },
-	AREA_DEFENSE_OTHER_VP_WEIGHT = { 0.0, 0.0, 1.0 },
+	AREA_DEFENSE_CAPITAL_VP_WEIGHT = { 0.0, 0.0, 0.0 },
+	AREA_DEFENSE_HOME_VP_WEIGHT = { 0.0, 0.0, 0.0 },
+	AREA_DEFENSE_OTHER_VP_WEIGHT = { 0.0, 0.0, 0.0 },
 
 	AREA_DEFENSE_CAPITAL_PEACE_COAST_WEIGHT = { 0.0, 0.0, 0.0 },
-	AREA_DEFENSE_CAPITAL_COAST_WEIGHT = { 0.0, 0.2, 0.7 },
-	AREA_DEFENSE_HOME_COAST_WEIGHT = { 0.0, 0.1, 0.5 },
+	AREA_DEFENSE_CAPITAL_COAST_WEIGHT = { 0.0, 0.0, 0.0 },
+	AREA_DEFENSE_HOME_COAST_WEIGHT = { 0.0, 0.0, 0.0 },
 	AREA_DEFENSE_OTHER_COAST_WEIGHT = { 0.0, 0.0, 0.0 },
 
 	AREA_DEFENSE_CAPITAL_PEACE_BASE_WEIGHT = { 0.0, 0.0, 0.0 },
-	AREA_DEFENSE_CAPITAL_BASE_WEIGHT = { 0.5, 1.0, 1.5 },
-	AREA_DEFENSE_HOME_BASE_WEIGHT = { 0.5, 1.0, 1.0 },
-	AREA_DEFENSE_OTHER_BASE_WEIGHT = { 0.5, 0.5, 1.0 },
+	AREA_DEFENSE_CAPITAL_BASE_WEIGHT = { 0.0, 0.0, 0.0 },
+	AREA_DEFENSE_HOME_BASE_WEIGHT = { 0.0, 0.0, 0.0 },
+	AREA_DEFENSE_OTHER_BASE_WEIGHT = { 0.0, 0.0, 0.0 },
 
 	ESTIMATED_CONVOYS_PER_DIVISION = 6,			-- Not always correct, but mainly used to make sure AI does not go crazy
 	ENTRENCHMENT_WEIGHT = 2.0,					-- AI should favour units with less entrenchment when assigning units around.
