@@ -1,4 +1,20 @@
+# На 1000 человек потерь приходится:
+# ~20% убитых (200 человек)
+# ~75% раненых (750 человек), из которых:
+# 	~35% легкие (260 человек) - срок возврата в строй 1 неделя (7 суток)
+#	~30% средние (225 человек) - срок возврата в строй ~4.286 (4) недели (30 дней)
+# 	~25% тяжелые (190 человек) - срок возвращения ~12.857 (12) недель (90 дней)
+#	~10% крайне тяжелые (75 человек) - не возвращаются
+# ~5% захваченных в плен (50 человек)
+
 @CASUALTIES_STEP_K = 1 
+
+# Множитель количества раненых
+@WOUNDED_FACTOR = 0.75
+@LIGHT_WOUNDED_FACTOR = 0.35
+@MEDIUM_WOUNDED_FACTOR = 0.3
+@HEAVY_WOUNDED_FACTOR = 0.25
+@EXTREMELY_WOUNDED_FACTOR = 0.1
 
 # Множители случайного перевода из тысяч потерь в единицы пленных
 @PRISONERS_OF_WAR_MAX_MULTIPLY_K_FACTOR = 60
@@ -90,5 +106,222 @@ calculate_prisoners_of_war_captured_by_RUS = {
 		}
 		multiply_temp_variable = { temp_collaborators = casualties_temp_sum }
 		add_to_variable = { collaborators_captured_by_RUS = temp_collaborators } 
+	}
+}
+
+calculate_country_casualties = {
+	if = {
+		limit = { has_war = yes }
+
+		set_variable = { current_casualties_k = casualties_k }
+
+		# Высчитываем, сколько было потерь с момента предыдущего замера
+		set_temp_variable = { new_casualties_k = current_casualties_k }
+		subtract_from_temp_variable = { new_casualties_k = prev_casualties_k }
+		
+		#Считаем, сколько было раненых
+		set_temp_variable = { new_wounded_k = new_casualties_k }
+		multiply_temp_variable = { new_wounded_k = @WOUNDED_FACTOR }
+		
+		# Считаем, сколько было всего раненых
+		add_to_variable = { total_wounded_k = new_wounded_k }
+
+		# Считаем, сколько погибло/захвачено/пропало в боях
+		set_temp_variable = { irrecoverable_loses_k = new_casualties_k }
+		subtract_from_temp_variable = { irrecoverable_loses_k = new_wounded_k }
+		add_to_variable = { total_irrecoverable_loses_k = irrecoverable_loses_k }
+		
+		# ========================
+		# ==== Легкие ранения ====
+		# ========================
+
+		# Считаем, сколько получило ранения
+		set_temp_variable = { light_wounded_k = new_wounded_k }
+		multiply_temp_variable = { light_wounded_k = @LIGHT_WOUNDED_FACTOR }
+
+		# Считаем, сколько выжило в госпиталях
+		set_temp_variable = { light_wounded_survived_k = light_wounded_k }
+		multiply_temp_variable = { light_wounded_survived_k = light_wounded_survive_factor }
+		add_to_variable = { hospitals_all_wounded_k^light_wounded_recovery_weeks = light_wounded_survived_k }
+
+		# Считаем, сколько получило инвалидность
+		set_temp_variable = { light_wounded_and_disabled_k = light_wounded_k }
+		multiply_temp_variable = { light_wounded_and_disabled_k = light_wounded_disability_factor }
+		add_to_variable = { total_disabled_k = light_wounded_and_disabled_k }
+
+		# Считаем, сколько умерло в госпиталях
+		subtract_from_temp_variable = { light_wounded_k = light_wounded_survived_k }
+		add_to_temp_variable = { death_in_hospitals_k = light_wounded_k }
+
+		# Считаем, сколько вернётся в строй
+		subtract_from_temp_variable = { light_wounded_survived_k = light_wounded_and_disabled_k }
+		add_to_variable = { hospitals_recoverable_wounded_k^light_wounded_recovery_weeks = light_wounded_survived_k }
+
+		# ========================
+		# ==== Средние ранения ===
+		# ========================
+
+		# Считаем, сколько получило ранения
+		set_temp_variable = { medium_wounded_k = new_wounded_k }
+		multiply_temp_variable = { medium_wounded_k = @MEDIUM_WOUNDED_FACTOR }
+
+		# Считаем, сколько выжило в госпиталях
+		set_temp_variable = { medium_wounded_survived_k = medium_wounded_k }
+		multiply_temp_variable = { medium_wounded_survived_k = medium_wounded_survive_factor }
+		add_to_variable = { hospitals_all_wounded_k^medium_wounded_recovery_weeks = medium_wounded_survived_k }
+
+		# Считаем, сколько получило инвалидность
+		set_temp_variable = { medium_wounded_and_disabled_k = medium_wounded_k }
+		multiply_temp_variable = { medium_wounded_and_disabled_k = medium_wounded_disability_factor }
+		add_to_variable = { total_disabled_k = medium_wounded_and_disabled_k }
+
+		# Считаем, сколько умерло в госпиталях
+		subtract_from_temp_variable = { medium_wounded_k = medium_wounded_survived_k }
+		add_to_temp_variable = { death_in_hospitals_k = medium_wounded_k }
+
+		# Считаем, сколько вернётся в строй
+		subtract_from_temp_variable = { medium_wounded_survived_k = medium_wounded_and_disabled_k }
+		add_to_variable = { hospitals_recoverable_wounded_k^medium_wounded_recovery_weeks = medium_wounded_survived_k }
+		
+		# ========================
+		# ==== Тяжелые ранения ===
+		# ========================
+		
+		# Считаем, сколько получило ранения
+		set_temp_variable = { heavy_wounded_k = new_wounded_k }
+		multiply_temp_variable = { heavy_wounded_k = @HEAVY_WOUNDED_FACTOR }
+
+		# Считаем, сколько выжило в госпиталях
+		set_temp_variable = { heavy_wounded_survived_k = heavy_wounded_k }
+		multiply_temp_variable = { heavy_wounded_survived_k = heavy_wounded_survive_factor }
+		add_to_variable = { hospitals_all_wounded_k^heavy_wounded_recovery_weeks = heavy_wounded_survived_k }
+
+		# Считаем, сколько получило инвалидность
+		set_temp_variable = { heavy_wounded_and_disabled_k = heavy_wounded_k }
+		multiply_temp_variable = { heavy_wounded_and_disabled_k = heavy_wounded_disability_factor }
+		add_to_variable = { total_disabled_k = heavy_wounded_and_disabled_k }
+
+		# Считаем, сколько умерло в госпиталях
+		subtract_from_temp_variable = { heavy_wounded_k = heavy_wounded_survived_k }
+		add_to_temp_variable = { death_in_hospitals_k = heavy_wounded_k }
+
+		# Считаем, сколько вернётся в строй
+		subtract_from_temp_variable = { heavy_wounded_survived_k = heavy_wounded_and_disabled_k }
+		add_to_variable = { hospitals_recoverable_wounded_k^heavy_wounded_recovery_weeks = heavy_wounded_survived_k }
+		
+		# ========================
+		# = Оч. тяжелые ранения ==
+		# ========================
+		
+		# Считаем, сколько получило ранения
+		set_temp_variable = { extremely_wounded_k = new_wounded_k }
+		multiply_temp_variable = { extremely_wounded_k = @EXTREMELY_WOUNDED_FACTOR }
+
+		# Считаем, сколько выжило в госпиталях
+		set_temp_variable = { extremely_wounded_survived_k = extremely_wounded_k }
+		multiply_temp_variable = { extremely_wounded_survived_k = extremely_wounded_survive_factor }
+		add_to_variable = { hospitals_all_wounded_k^extremely_wounded_recovery_weeks = extremely_wounded_survived_k }
+
+		# Считаем, сколько получило инвалидность
+		set_temp_variable = { extremely_wounded_and_disabled_k = extremely_wounded_k }
+		multiply_temp_variable = { extremely_wounded_and_disabled_k = extremely_wounded_disability_factor }
+		add_to_variable = { total_disabled_k = extremely_wounded_and_disabled_k }
+
+		# Считаем, сколько умерло в госпиталях
+		subtract_from_temp_variable = { extremely_wounded_k = extremely_wounded_survived_k }
+		add_to_temp_variable = { death_in_hospitals_k = extremely_wounded_k }
+
+		# Считаем, сколько вернётся в строй
+		subtract_from_temp_variable = { extremely_wounded_survived_k = extremely_wounded_and_disabled_k }
+		add_to_variable = { hospitals_recoverable_wounded_k^extremely_wounded_recovery_weeks = extremely_wounded_survived_k }
+
+		# Считаем, сколько всего умерло в госпиталях за неделю
+		add_to_variable = { total_death_in_hospitals_k = death_in_hospitals_k }
+
+		#Считаем, сколько выжило за неделю раненых для баланса раненых
+		subtract_from_temp_variable = { new_wounded_k = death_in_hospitals_k }
+		add_to_variable = { wounded_k_balance = new_wounded_k }
+
+
+		# Начинаем новый промежуток времени
+		set_variable = { prev_casualties_k = casualties_k }
+	}
+}
+
+init_wounded_system = {
+	# Легкие ранения
+	set_variable = { light_wounded_survive_factor = 1.0 }		# % выживаемости в госпиталях
+	set_variable = { light_wounded_disability_factor = 0.0 } 	# % инвалидности от всех ранений
+
+	# Средние ранения
+	set_variable = { medium_wounded_survive_factor = 0.95 }		# % выживаемости в госпиталях
+	set_variable = { medium_wounded_disability_factor = 0.05 } 	# % инвалидности от всех ранений
+
+	# Тяжелые ранения
+	set_variable = { heavy_wounded_survive_factor = 0.9 }		# % выживаемости в госпиталях
+	set_variable = { heavy_wounded_disability_factor = 0.2 } 	# % инвалидности от всех ранений
+
+	# Очень тяжелые ранения
+	set_variable = { extremely_wounded_survive_factor = 0.6 }	 # % выживаемости в госпиталях
+	set_variable = { extremely_wounded_disability_factor = 0.6 } # % инвалидности от всех ранений
+	
+	resize_array = { hospitals_all_wounded_k = 12 }				# Количество недель в госпиталях
+	resize_array = { hospitals_recoverable_wounded_k = 12 }		# Количество недель в госпиталях
+
+	set_variable = { light_wounded_recovery_weeks = 0 }			# Срок лечения легких ранений (недели)
+	set_variable = { medium_wounded_recovery_weeks = 3 }		# Срок лечения средних ранений (недели)
+	set_variable = { heavy_wounded_recovery_weeks = 11 }		# Срок лечения тяжелых ранений (недели)
+	set_variable = { extremely_wounded_recovery_weeks = 11 }	# Срок лечения очень тяжелых ранений (недели)
+}
+
+calculate_healed_wounded = {
+	if = {
+		# Если в госпиталях есть раненые
+		limit = { check_variable = { wounded_k_balance > 0 } }
+
+		# Высчитываем, сколько закончило лечиться в госпитале
+		set_variable = { healed_k = hospitals_all_wounded_k^0 }
+		subtract_from_variable = { wounded_k_balance = healed_k }
+		add_to_variable = { total_healed_wounded_k = healed_k }
+
+		# Высчитываем, сколько вернулось в строй
+		set_variable = { recovered_k = hospitals_recoverable_wounded_k^0 }
+		add_to_variable = { total_recovered_k = recovered_k }
+
+		# Высчитываем, сколько было комиссовано
+		set_variable = { total_discharded_wounded_k = total_healed_wounded_k }
+		subtract_from_variable = { total_discharded_wounded_k = total_recovered_k }
+		
+		# Возвращаем в строй
+		set_temp_variable = { temp_recovered = recovered_k }
+		multiply_temp_variable = { temp_recovered = 1000 }
+		add_manpower = temp_recovered
+
+		# Сдвигаем промежуток времени
+		remove_from_array = {
+			array = hospitals_all_wounded_k
+			index = 0
+		}
+		add_to_array = { hospitals_all_wounded_k = 0 }
+
+		# Сдвигаем промежуток времени
+		remove_from_array = {
+			array = hospitals_recoverable_wounded_k
+			index = 0
+		}
+		add_to_array = { hospitals_recoverable_wounded_k = 0 }
+	}
+}
+
+calculate_returned_prisoners_of_war = {
+	if = {
+		limit = { check_variable = { new_returned_prisoners_of_war_k > 0 } }
+
+		add_to_variable = { total_returned_prisoners_of_war_k = new_returned_prisoners_of_war_k	}
+		subtract_from_variable = { total_irrecoverable_loses_k = new_returned_prisoners_of_war_k }
+
+		set_temp_variable = { temp_new_returned_prisoners_of_war = new_returned_prisoners_of_war_k }
+		multiply_temp_variable = { temp_new_returned_prisoners_of_war = 1000 }
+		add_manpower = temp_new_returned_prisoners_of_war
 	}
 }

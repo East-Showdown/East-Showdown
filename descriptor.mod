@@ -73,5 +73,6 @@ tags={
 	"Graphics"
 }
 picture="showdown.jpg"
-supported_version="1.14.6"
+supported_version="1.13.7"
 remote_file_id="2948642461"
+path="mod/East-Showdown"
