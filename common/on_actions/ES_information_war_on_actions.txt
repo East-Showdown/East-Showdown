@@ -1,0 +1,72 @@
+on_actions = {
+	on_daily_BOR = {
+		effect = {
+			if = {
+				limit = { RUS = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign } }
+
+				# Вычисляем суммарное информационное влияние обеих сторон
+				set_temp_variable = { global.iw_sum_influence = global.rus_information_war_var_sum }
+				add_to_temp_variable = { global.iw_sum_influence = global.ukr_information_war_var_sum }
+
+				# Высчитываем, соотношение <рус_влияние>/<сум_влияние>.
+				# К примеру, 0.6 - это 60% рус. влияние и 40% укр. влияние
+				set_variable = { global.iw_RUS_supremacy = global.rus_information_war_var_sum }
+				divide_variable = { global.iw_RUS_supremacy = global.iw_sum_influence }
+
+				if = {
+					limit = { NOT = { check_variable = { global.iw_RUS_supremacy = global.iw_RUS_supremacy_prev } } }
+					
+					log = "[GetDateText]: [Root.GetName]: New iw_RUS_supremacy: [?global.iw_RUS_supremacy] (prev was: [?global.iw_RUS_supremacy_prev])"
+					set_variable = { global.iw_RUS_supremacy_prev = global.iw_RUS_supremacy } 
+					RUS = { remove_SMO_information_war_ideas = yes }
+					UKR = { remove_SMO_information_war_ideas = yes }
+
+					if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.101 } }
+						RUS = { add_ideas = SMO_information_war_idea_0 }
+						UKR = { add_ideas = SMO_information_war_idea_8 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.251 } }
+						RUS = { add_ideas = SMO_information_war_idea_1 }
+						UKR = { add_ideas = SMO_information_war_idea_7 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.376 } }
+						RUS = { add_ideas = SMO_information_war_idea_2 }
+						UKR = { add_ideas = SMO_information_war_idea_6 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.476 } }
+						RUS = { add_ideas = SMO_information_war_idea_3 }
+						UKR = { add_ideas = SMO_information_war_idea_5 }
+					} 
+					else_if = { # Нейтральный случай
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.525 } }
+						RUS = { add_ideas = SMO_information_war_idea_4 }
+						UKR = { add_ideas = SMO_information_war_idea_4 }	
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.625 } }
+						RUS = { add_ideas = SMO_information_war_idea_5 }
+						UKR = { add_ideas = SMO_information_war_idea_3 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.755 } }
+						RUS = { add_ideas = SMO_information_war_idea_6 }
+						UKR = { add_ideas = SMO_information_war_idea_2 }
+					}
+					else_if = {
+						limit = { check_variable = { global.iw_RUS_supremacy < 0.900 } }
+						RUS = { add_ideas = SMO_information_war_idea_7 }
+						UKR = { add_ideas = SMO_information_war_idea_1 }
+					}
+					else = {
+						RUS = { add_ideas = SMO_information_war_idea_8 }
+						UKR = { add_ideas = SMO_information_war_idea_0 }
+					}
+				}
+			}
+		}
+	}
+}

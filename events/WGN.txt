@@ -51,6 +51,40 @@ unit_leader_event = {
 	}
 }
 
+unit_leader_event = {
+	id = WGN_mission.4
+	title = WGN_mission.4.t
+	desc = WGN_mission.4.d
+	immediate = {
+		hidden_effect = {
+			Andrey_Troshev = {
+				remove_advisor_role = {
+    				slot = army_chief
+				}
+				set_nationality = RUS
+			}
+		}
+	}
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN_mission.4.a
+		hidden_effect = {
+			RUS = {
+				Andrey_Troshev = {
+				    set_portraits = {
+						army = { large ="GFX_Andrey_Troshev_redoubt" }
+					}
+					unit_leader_event = {
+						id = putin_mission.8
+						days = 0
+					}
+				}
+			}
+		}
+	}
+}
+
 country_event = {
 	id = WGN.1
 	title = WGN.1.t
@@ -112,28 +146,6 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = WGN.4.a
-		WGN = {
-			every_army_leader = {
-				remove_trait = {
-					trait = wgn_commander
-				}
-				remove_trait = {
-					trait = wgn_leader
-				}
-				promote_leader = yes
-			}
-			every_unit_leader = {
-				limit = { NOT = { is_character = evgeniy_prigozhin} }
-				set_nationality = RUS
-			}
-			remove_power_balance = {
-				id = WGN_power_balance
-			}
-			set_nationality = {
-				target_country = RUS
-				character = evgeniy_prigozhin
-			}
-		}
 		RUS = {
 			if = {
 				limit = {
@@ -160,6 +172,35 @@ country_event = {
 			random_army_leader = {
 				retire = yes
 			}
+		}
+		WGN = {
+			every_army_leader = {
+				remove_trait = {
+					trait = wgn_commander
+				}
+				remove_trait = {
+					trait = wgn_leader
+				}
+				promote_leader = yes
+			}
+			every_unit_leader = {
+				limit = { NOT = { is_character = evgeniy_prigozhin} }
+				set_nationality = RUS
+			}
+			remove_power_balance = {
+				id = WGN_power_balance
+			}
+		}
+		RUS = {
+			retire_ideology_leader = fascism
+			add_country_leader_role = {
+				character = RUS_evgeniy_prigozhin
+				promote_leader = yes
+				country_leader = {
+					ideology = prigozhin_war_junta
+					traits = { oligarch_winner criminal_oligarch }
+				}
+			}
 			set_politics = {
 				ruling_party = fascism
 				elections_allowed = no
@@ -177,19 +218,6 @@ country_event = {
 			remove_ideas = state_of_stability
 			add_ideas = { WGN_council_idea }
 			set_cosmetic_tag = RUS_neutrality
-			retire_ideology_leader = fascism
-			evgeniy_prigozhin = {
-				promote_character = yes
-			}
-			add_country_leader_role = {
-				character = evgeniy_prigozhin
-				promote_leader = yes
-				country_leader = {
-					ideology = prigozhin_war_junta
-					traits = { oligarch_winner criminal_oligarch }
-				}
-			}
-			set_country_leader_ideology = prigozhin_war_junta
 			change_tag_from = WGN
 		}
 		BOR = {
@@ -202,6 +230,46 @@ country_event = {
 				    id = super.6
 				    hours = 4
 			    }
+				remove_advisor_role = {
+					slot = high_command
+					character = dmitry_utkin
+				}
+				add_advisor_role = {
+					character = RUS_evgeniy_prigozhin
+					advisor={
+						cost = 150
+						slot = high_command
+						idea_token = WGN_evgeniy_prigozhin
+						ledger = army
+						allowed = {
+							original_tag = RUS
+						}
+						traits = {
+							army_chief_morale_2
+						}
+					}
+				}
+				add_advisor_role = {
+					character = dmitry_utkin
+					advisor={
+						cost = 100
+						slot = army_chief
+						idea_token = WGN_dmitry_utkin
+						ledger = army
+						allowed = {
+							original_tag = RUS
+						}
+						traits = {
+							army_chief_offensive_1
+						}
+					}
+				}
+				activate_advisor = WGN_evgeniy_prigozhin
+				activate_advisor = WGN_dmitry_utkin
+			}
+			set_variable = {	
+				var = global.loyalty_of_the_military_elite
+				value = 100
 			}
 		}
 	}
@@ -260,7 +328,7 @@ country_event = {
 			id = WGN_power_balance
 		}
 		hidden_effect = {
-			remove_ideas = WGN_shell_hunger_idea_3
+			clr_global_flag = WGN_shell_hunger_flag
 		}
 		RUS = {
 			retire_character = sergei_shoigy
@@ -592,8 +660,16 @@ country_event = {
 	option = {
 		name = WGN.16.b
 		ai_chance = { base = 45 }
+		trigger = {
+			Andrey_Troshev = {
+				is_advisor = yes
+			}
+		}
 		custom_effect_tooltip = WGN_Andrey_Troshev_power
 		hidden_effect = {
+		    anton_elizarov = {
+				promote_leader = yes
+			}
 		    set_politics = {
 				ruling_party = neutrality
 			}
@@ -889,4 +965,24 @@ country_event = {
 		air_experience = 10
 		add_command_power = 15
 	}
+}
+
+
+#ДШРГ Русич в ЧВК «Редут»
+country_event = {
+	id = WGN.25
+	title = WGN.25.t
+	desc = WGN.25.desc
+	picture = GFX_country_event_136
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.25.a
+		hidden_effect = {
+			delete_unit_template_and_units = {
+        	    division_template = "DSHRG Rusich"
+        	    disband = no
+        	}
+		}
+    }
 }
