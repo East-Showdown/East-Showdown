@@ -1501,16 +1501,32 @@ focus_tree = {
 	focus = {
 		id = DPR_modernization_of_PM
 		icon = GFX_goal_unknown
+		relative_position_id = DPR_warriors_from_the_east
 		cost = 0.2
-		x = 53
-		y = 18
-		completion_reward = {
-			add_political_power = 100
-			army_experience = 25
-			add_ideas = DPR_militia_modernization_effort
+		x = 10
+		y = -1
+		allow_branch = {
+			has_war_with = UKR
 		}
- ai_will_do = { factor = 1 }
-
+		available = {
+			custom_trigger_tooltip = { 
+				tooltip = DPR_modernization_of_PM_trigger_tt 
+				hidden_trigger = {
+					custom_trigger_tooltip = { tooltip = DPR_modernization_of_PM_trigger_tt }
+					has_completed_focus = DPR_Lessons_from_the_first_months
+				}
+			}
+		}
+		completion_reward = {
+			add_command_power = 75
+			army_experience = 45
+			custom_effect_tooltip = DPR_modernization_of_PM_tt
+			add_dynamic_modifier = { modifier = DPR_NM_DNR_modernisation_modifier }
+			set_variable = { DPR_modernisation_army_core_defence_factor = 0.015 }
+			set_variable = { DPR_modernisation_army_morale_factor = 0.02 }
+			set_variable = { DPR_modernisation_cas_damage_reduction = 0.02 }
+		}
+ 		ai_will_do = { factor = 1 }
 	}
 	focus = {
 		id = DPR_activ_use_drons
@@ -1519,22 +1535,29 @@ focus_tree = {
 		prerequisite = {
 			focus = DPR_modernization_of_PM
 		}
-		x = 53
-		y = 19
-completion_reward = {
-	add_equipment_to_stockpile = {
+		relative_position_id = DPR_modernization_of_PM
+		x = 0
+		y = 1
+		completion_reward = {
+			add_command_power = 45
+			air_experience = 35
+			add_equipment_to_stockpile = {
 				type = uav_strike_equipment_2
-				amount = 25
+				amount = 15
 				producer = RUS
 			}
 			add_equipment_to_stockpile = {
 				type = uav_recon_equipment_2
-				amount = 30
+				amount = 70
 				producer = RUS
 			}
-			add_timed_idea = { idea = DPR_drone_usage_effort days = 75}
-}
- ai_will_do = { factor = 1 }
+			custom_effect_tooltip = DPR_active_use_of_drons_cet
+			set_variable = { DPR_modernisation_coordination_bonus = 0.075 }
+			set_variable = { DPR_modernisation_initiative_factor = 0.045 }
+			set_variable = { DPR_modernisation_recon_factor = 0.05 }
+			set_variable = { DPR_modernisation_planning_speed = 0.095 }
+		}
+ 		ai_will_do = { factor = 1 }
 	}
 	
 	focus = {
@@ -1544,16 +1567,19 @@ completion_reward = {
 		prerequisite = {
 			focus = DPR_modernization_of_PM
 		}
-		x = 56
-		y = 20
+		relative_position_id = DPR_modernization_of_PM
+		x = 2
+		y = 1
 		completion_reward = {
-	army_experience = 15
-	custom_effect_tooltip =  DPR_russian_spring_tt
-    custom_effect_tooltip  =  DPR_war_has_changed_tooltip2
-    
-}
- ai_will_do = { factor = 1 }
-
+			
+			army_experience = 15
+			add_command_power = 45
+			set_variable = { DPR_modernisation_army_attack_against_major_factor = 0.025}
+			set_variable = { DPR_modernisation_army_breakthrough_against_major_factor = 0.035 }
+			custom_effect_tooltip = DPR_russian_spring_tt
+			custom_effect_tooltip = DPR_war_has_changed_cet
+    	}
+ 		ai_will_do = { factor = 1 }
 	}
 	focus = {
 		id = DPR_form_new_image_of_militia
@@ -1562,82 +1588,56 @@ completion_reward = {
 		prerequisite = {
 			focus = DPR_war_has_changed
 		}
-		x = 55
-		y = 21
-completion_reward = {
-	division_template = {
-	name = "Novoe Opolchenie"
-	force_allow_recruiting = yes
-	regiments = {
-		infantry = {
-			x = 0
-			y = 0
-		}
-		infantry = {
-			x = 0
-			y = 1
-		}
-		infantry = {
-			x = 0
-			y = 2
-		}
-		BTR = {
-			x = 1
-			y = 1
-		}
-		BMP_1 = {
-			x = 1
-			y = 0
-		}
-	}
-	support = {
-		engineer = {
-			x = 0
-			y = 0
-		}
-		field_hospital = {
-			x = 0
-			y = 1
-		}
-		signal_company = {
-			x = 0
-			y = 2
-		}
-		recon = {
-			x = 0
-			y = 3
-		}
-		logistics_company = {
-			x = 0
-			y = 4
-		}
-		artillery_nig = {
-			x = 0
-			y = 5
-		}
-		maintenance_company = {
-			x = 1
-			y = 0
-		}		#Не баг
-		atgm = {
-			x = 1
-			y = 1
-		}	
-		mortar = {
-			x = 1
-			y = 2
-		}
-		sniper = {
-			x = 1
-			y = 3
-		}
-		artillery = {
-			x = 1
-			y = 4
-		}
-	}
-}
-custom_effect_tooltip = DPR_new_militia_image_tt	
+		relative_position_id = DPR_war_has_changed
+		x = -1
+		y = 1
+		completion_reward = {
+			army_experience = 55
+			add_command_power = 35
+			add_manpower = 700
+			division_template = {
+				name = "Territorial'naya oborona novogo obrazca"
+				is_locked = yes
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 0 y = 3 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+	    		support = {
+					engineer = { x = 0 y = 0 }
+					field_hospital = { x = 0 y = 1 }
+					signal_company = { x = 0 y = 2 }
+					recon = { x = 0 y = 3 }
+					logistics_company = { x = 0 y = 4 }
+					maintenance_company = { x = 1 y = 0 }		#Не баг
+					mortar = { x = 1 y = 1 }
+					atgm = { x = 1 y = 2 }
+					artillery = { x = 1 y = 3 }
+				}
+			}
+			custom_effect_tooltip = DPR_new_militia_image_tt
+			custom_effect_tooltip = DPR_russian_spring_tt
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_2
+				amount = 2500
+				producer = rus
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_anti_tank_equipment_1
+				amount = 100
+				producer = rus
+			}
+			add_equipment_to_stockpile = {
+				type = mortar_1_eq
+				amount = 20
+				producer = rus
+			}
+			set_variable = { DPR_modernisation_experience_gain_army_unit_factor = 0.045 }
+			set_variable = { DPR_modernisation_mobilization_speed = 0.125 }	
+			custom_effect_tooltip = DPR_form_new_image_of_militia_cet
 		}
 	}
 	focus = {
@@ -1647,8 +1647,9 @@ custom_effect_tooltip = DPR_new_militia_image_tt
 		prerequisite = {
 			focus = DPR_war_has_changed
 		}
-		x = 58
-		y = 21
+		relative_position_id = DPR_war_has_changed
+		x = 1
+		y = 1
 		completion_reward = {
 	add_political_power = 50
 	add_timed_idea = { idea = DPR_our_defenders_idea days = 100}
@@ -1664,8 +1665,9 @@ custom_effect_tooltip = DPR_new_militia_image_tt
 		prerequisite = {
 			focus =  DPR_our_defenders
 		}
-		x = 58
-		y = 22
+		relative_position_id = DPR_our_defenders
+		x = 0
+		y = 1
  completion_reward = {
         add_ideas = DPR_know_how_to_fight_idea
         army_experience = 15
@@ -1678,12 +1680,13 @@ custom_effect_tooltip = DPR_new_militia_image_tt
 		prerequisite = {
 			focus = DPR_form_new_image_of_militia
 		}
+		relative_position_id = DPR_form_new_image_of_militia
 		completion_reward = {
 		add_timed_idea = { idea = DPR_discipline_return days = 120 }
 		}
 		
-		x = 55
-		y = 22
+		x = 0
+		y = 1
 
 	}
 	focus = {
@@ -1693,8 +1696,9 @@ custom_effect_tooltip = DPR_new_militia_image_tt
 		prerequisite = {
 			focus = DPR_modernization_of_PM
 		}
-		x = 50
-		y = 20
+		relative_position_id = DPR_modernization_of_PM
+		x = -2
+		y = 1
 completion_reward = {
 	add_political_power = 30
 	add_equipment_to_stockpile = {
@@ -1714,8 +1718,9 @@ completion_reward = {
 		prerequisite = {
 			focus = DPR_tech_support_from_russia
 		}
-		x = 48
-		y = 21
+		relative_position_id = DPR_tech_support_from_russia
+		x = -1
+		y = 1
 		available = {
 	RUS = {
 	has_equipment = {
@@ -1768,12 +1773,13 @@ completion_reward = {
 		prerequisite = {
 			focus = DPR_russian_surplus
 		}
+		relative_position_id = DPR_russian_surplus
 		completion_reward = {
 		set_country_flag = DPR_arms_supplies
 		custom_effect_tooltip = DPR_regular_arms_supplies_tt
 		}
-		x = 45
-		y = 22
+		x = -2
+		y = 1
 
 	}
 	focus = {
@@ -1783,6 +1789,7 @@ completion_reward = {
 		prerequisite = {
 			focus = DPR_russian_surplus
 		}
+		relative_position_id = DPR_russian_surplus
 		completion_reward = {
 		set_country_flag = DPR_postavki
 		add_tech_bonus = {
@@ -1791,8 +1798,8 @@ completion_reward = {
     category = infantry_weapons
 }
 		}
-		x = 48
-		y = 22
+		x = 0
+		y = 1
 	}
 	focus = {
 		id = DPR_Modernisation_t64_and_t72
@@ -1801,8 +1808,9 @@ completion_reward = {
 		prerequisite = {
 			focus = DPR_tech_support_from_russia
 		}
-		x = 51
-		y = 21
+		relative_position_id = DPR_tech_support_from_russia
+		x = 1
+		y = 1
  completion_reward = {
  create_equipment_variant = {
 	name = "Т-64М"
@@ -1866,8 +1874,9 @@ create_equipment_variant = {
 		prerequisite = {
 			focus = DPR_Modernisation_t64_and_t72
 		}
-		x = 51
-		y = 22
+		relative_position_id = DPR_Modernisation_t64_and_t72
+		x = 0
+		y = 1
 		completion_reward = {
 		create_equipment_variant = {
 	name = "РСЗО Чебурашка"
@@ -1937,8 +1946,9 @@ focus = {
 		prerequisite = {
 			focus = DPR_bring_back_army_discipline
 		}
-		x = 53
-		y = 23
+		relative_position_id = DPR_bring_back_army_discipline
+		x = -1
+		y = 1
 	completion_reward = {
     	add_ideas = DPR_liberators_propaganda
 	}
