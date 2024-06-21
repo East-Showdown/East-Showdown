@@ -372,6 +372,11 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Refugee_camps"
 			custom_effect_tooltip = Pol_refugee_camp_tt
 			custom_effect_tooltip = Pol_we_will_be_ready_to_kal
+			hidden_effect = {
+				add_ideas = {
+					POL_Refugee_camp_preparation
+				}
+			}
 		}
 		cost = 0.5
 		x = 2
@@ -455,6 +460,7 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Transfer_of_an_American_brigade_to_Poland
+		icon = GFX_POL_Transfer_of_an_American_brigade_to_Poland
 		prerequisite = { 
 			focus = POL_Give_Ukraine_amm_and_AT 
 		}
@@ -475,6 +481,7 @@ focus_tree = {
     }
 	    focus = {
 		id = POL_New_format_of_Ukr_Pol_GB_relations
+		icon = GFX_POL_New_format_of_Ukr_Pol_GB_relations
 		prerequisite = { 
 			focus = POL_Transfer_of_an_American_brigade_to_Poland
 		}
@@ -493,6 +500,7 @@ focus_tree = {
     }
 		focus = {
 		id = POL_Meeting_of_leaders_of_France_Germany_Poland
+		icon = 
 		prerequisite = { 
 			focus = POL_Transfer_of_an_American_brigade_to_Poland 
 		}
@@ -505,8 +513,9 @@ focus_tree = {
 		y = 9
 		relative_position_id = POL_Happy_New_Year_Poland
     }
-			focus = {
+	focus = {
 		id = POL_Declare_the_end_of_the_pandemic
+		icon = GFX_POL_Declare_the_end_of_the_pandemic
 		prerequisite = { 
 			focus = POL_Transfer_of_an_American_brigade_to_Poland 
 		}
@@ -519,8 +528,9 @@ focus_tree = {
 		y = 9
 		relative_position_id = POL_Happy_New_Year_Poland
     }
-		    focus = {
+	focus = {
 		id = POL_Urgent_OSCE_meeting
+		icon = GFX_POL_Urgent_OSCE_meeting
 		prerequisite = {
 			focus = POL_New_format_of_Ukr_Pol_GB_relations 
 		}
@@ -534,8 +544,9 @@ focus_tree = {
 		y = 10
 		relative_position_id = POL_Happy_New_Year_Poland
     }
-		focus = {
+	focus = {
 		id = POL_Shout_to_the_EU
+		icon = GFX_POL_Shout_to_the_EU
 		prerequisite = {
 			focus = POL_Meeting_of_leaders_of_France_Germany_Poland
 		 }
@@ -550,6 +561,7 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Approve_Ukraine_EU_membership
+		icon = GFX_POL_Approve_Ukraine_EU_membership
 		prerequisite = { 
 		    focus = POL_Urgent_OSCE_meeting 
 		}
@@ -581,6 +593,7 @@ focus_tree = {
     }
 		focus = {
 		id = POL_War_in_a_neighboring_country
+		icon = GFX_POL_War_in_a_neighboring_country
 		prerequisite = { 
 			focus = POL_Approve_Ukraine_EU_membership 
 		}
@@ -613,6 +626,7 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Preparing_for_war_with_Russia
+		icon = GFX_POL_Preparing_for_war_with_Russia
 		prerequisite = { 
 			focus = POL_War_in_a_neighboring_country
 		}
@@ -2047,6 +2061,17 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Organize_a_refugee_assistance_center"
+			remove_ideas = {
+				POL_refugees_from_ukraine_always
+				POL_Refugee_camp_preparation
+			}
+			set_variable = {var = POL_refugee_centers_consumer_goods_factor value = 0.15}
+			set_variable = {var = POL_refugee_centers_political_power_factor value = -0.15}
+			set_variable = {var = POL_refugee_monthly_population value = 0.1}
+			set_variable = {var = POL_refugee_stability_factor value = -0.15}
+			add_dynamic_modifier = {
+				modifier = POL_refugee_centers
+			}
 		}
 		cost = 0.5
 		x = 2
@@ -2738,6 +2763,19 @@ focus = {
 	prerequisite = { 
 		focus = POL_Issue_of_Ukrainian_grain
 	}
+	mutually_exclusive = {
+		focus = POL_Accept_grain
+	}
+	completion_reward = {
+		add_power_balance_value = {
+			id = POL_power_balance
+			value = 0.05
+		}
+		add_opinion_modifier = {
+			target = UKR
+			modifier = POL_grain_scandal_UKR
+		}
+	}
 	cost = 0.5
 	x = -1
 	y = 1
@@ -2746,17 +2784,17 @@ focus = {
 focus = {
 	id = POL_Grain_tranche_agreement_to_other_countries
 	prerequisite = { 
-		focus = POL_Issue_of_Ukrainian_grain
+		focus = POL_Grain_scandal
 	}
-	cost = 0.5
-	x = -1
-	y = 1
-	relative_position_id = POL_Issue_of_Ukrainian_grain
-}
-focus = {
-	id = POL_Agreement_on_grain_shipment_to_other_countries
-	prerequisite = { 
-		focus = POL_Grain_tranche_agreement_to_other_countries
+	completion_reward = {
+		add_power_balance_value = {
+			id = POL_power_balance
+			value = 0.05
+		}
+		add_opinion_modifier = {
+			target = UKR
+			modifier = POL_Grain_tranche_agreement_to_other_countries_opinion
+		}
 	}
 	cost = 0.5
 	x = -1
@@ -2768,6 +2806,25 @@ focus = {
 	prerequisite = { 
 		focus = POL_Issue_of_Ukrainian_grain
 	}
+	mutually_exclusive = {
+		focus = POL_Grain_scandal
+	}
+	completion_reward = {
+		add_power_balance_value = {
+			id = POL_power_balance
+			value = -0.05
+		}
+		add_opinion_modifier = {
+			target = UKR
+			modifier = POL_accept_grain_UKR
+		}
+		UKR = {
+			add_opinion_modifier = {
+				target = UKR
+				modifier = POL_accept_grain_UKR
+			}
+		}
+	}
 	cost = 0.5
 	x = 1
 	y = 1
@@ -2778,10 +2835,148 @@ focus = {
 	prerequisite = { 
 		focus = POL_Accept_grain
 	}
+	completion_reward = {
+		add_power_balance_value = {
+			id = POL_power_balance
+			value = -0.05
+		}
+		add_opinion_modifier = {
+			target = UKR
+			modifier = POL_european_aid_UKR
+		}
+		UKR = {
+			add_opinion_modifier = {
+				target = UKR
+				modifier = POL_european_aid_UKR
+			}
+		}
+	}
 	cost = 0.5
 	x = 1
 	y = 2
 	relative_position_id = POL_Issue_of_Ukrainian_grain
+}
+focus = {
+	id = POL_Farmers_are_blocking_borders
+	prerequisite = { 
+	}
+	allow_branch = {
+		has_country_flag = POL_farmer_strikes_on_border
+	}
+	cost = 0.5
+	x = 30
+	y = 2
+}
+focus = {
+	id = POL_try_to_negotate
+	prerequisite = { 
+		focus = POL_Farmers_are_blocking_borders
+	}
+	cost = 0.5
+	x = 0
+	y = 1
+	relative_position_id = POL_Farmers_are_blocking_borders
+}
+focus = {
+	id = POL_ignore_farmers
+	prerequisite = { 
+		focus = POL_try_to_negotate
+	}
+	cost = 0.5
+	x = 0
+	y = 1
+	relative_position_id = POL_try_to_negotate
+}
+focus = {
+	id = POL_runaway_attempts
+	prerequisite = { 
+		focus = POL_ignore_farmers
+	}
+	cost = 0.5
+	x = 0
+	y = 1
+	relative_position_id = POL_ignore_farmers
+}
+focus = {
+	id = POL_send_police
+	prerequisite = { 
+		focus = POL_try_to_negotate
+	}
+	completion_reward = {
+		add_stability = -0.03
+		#ивент
+	}
+	cost = 0.5
+	x = -2
+	y = 1
+	relative_position_id = POL_try_to_negotate
+}
+focus = {
+	id = POL_Anti_farmer_rhetoric_in_media
+	prerequisite = { 
+		focus = POL_send_police
+	}
+	cost = 0.5
+	x = 0
+	y = 1
+	relative_position_id = POL_send_police
+}
+focus = {
+	id = POL_initiate_judicial_arrests
+	prerequisite = { 
+		focus = POL_Anti_farmer_rhetoric_in_media
+		focus = POL_runaway_attempts
+	}
+	cost = 0.5
+	x = 1
+	y = 1
+	relative_position_id = POL_Anti_farmer_rhetoric_in_media
+}
+focus = {
+	id = POL_solve_the_farmer_problem
+	prerequisite = { 
+		focus = POL_initiate_judicial_arrests
+	}
+	cost = 0.5
+	x = 0
+	y = 1
+	relative_position_id = POL_initiate_judicial_arrests
+}
+focus = {
+	id = POL_support_farmers
+	prerequisite = { 
+		focus = POL_try_to_negotate
+	}
+	available = {
+		ROOT = {
+			is_power_balance_side_active = {
+				id = POL_power_balance
+				side = POL_middle_right_side_range
+			}
+		}
+	}
+	completion_reward = {
+		remove_ideas = {
+			POL_farmer_strikes_on_border
+		}
+	}
+	cost = 0.5
+	x = 2
+	y = 1
+	relative_position_id = POL_try_to_negotate
+}
+focus = {
+	id = POL_organize_more_marches
+	prerequisite = { 
+		focus = POL_support_farmers
+	}
+	completion_reward = {
+		#дебаф тут
+	}
+	cost = 0.5
+	x = 0
+	y = 1
+	relative_position_id = POL_support_farmers
 }
 focus = {
 	id = POL_Investments_in_renewable_energy
