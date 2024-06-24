@@ -837,7 +837,6 @@ focus_tree = {
 	
 			}
 			custom_effect_tooltip = cool_border_with_belarus_2
-	
 		}
 		cost = 0.5
 		x = 2
@@ -851,7 +850,9 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Mobilization"
-			add_manpower = 15000
+			UKR = {
+				add_manpower = 1500
+			}
 		}
 		cost = 0.5
 		x = 3
@@ -885,9 +886,6 @@ focus_tree = {
 		}
 		prerequisite = { 
 			focus = POL_Incident_in_Przewodow
-		}
-		mutually_exclusive = {
-			focus = POL_Strengthen_air_defense
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_The_question_of_peacekeepers"
@@ -928,6 +926,12 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Prepare"
+			add_war_support = -0.025
+			set_country_flag = focus_POL_Prepare_complete
+			add_timed_idea = {
+				idea = POL_korpus
+				days = 30
+			}
 		}
 		cost = 0.5
 		x = 0
@@ -937,11 +941,26 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Proposal_to_NATO
+		available = {
+			has_country_flag = focus_POL_Prepare_complete
+			NOT = { has_country_flag = focus_POL_Proposal_to_NATO_delay }
+		}
 		prerequisite = { 
 			focus = POL_Prepare
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Proposal_to_NATO"
+			random_list = {
+				0.80 = {
+					country_event = pol.20
+				}
+				0.15 = {
+					country_event = pol.21
+				}
+				0.05 = {
+					country_event = pol.22
+				}
+			}
 		}
 		cost = 0.5
 		x = 0
@@ -959,6 +978,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Peacekeepers_in_the_Ukrainian_Armed_Forces"
+			add_ideas = POL_our_peacekeepers
 		}
 		cost = 0.5
 		x = -1
@@ -976,6 +996,10 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_increase_corpus"
+			swap_ideas = {
+				remove_idea = POL_peacekeepers
+				add_idea = POL_peacekeepers_two
+			}
 		}
 		cost = 0.5
 		x = 0
@@ -1008,9 +1032,6 @@ focus_tree = {
 		}
 		prerequisite = { 
 			focus = POL_Incident_in_Przewodow
-		}
-		mutually_exclusive = {
-			focus = POL_The_question_of_peacekeepers
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Strengthen_air_defense"
