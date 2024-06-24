@@ -845,12 +845,13 @@ focus_tree = {
 		relative_position_id = POL_increase_the_army_budget
     }
 	focus = {
-		id = POL_Send_planes_to_Ukraine
+		id = POL_Mobilization
 		prerequisite = {
 			focus = POL_Increase_in_NATO_army_in_Poland
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus POL_Send_planes_to_Ukraine"
+			log = "[GetDateText]: [Root.GetName]: Focus POL_Mobilization"
+			add_manpower = 15000
 		}
 		cost = 0.5
 		x = 3
@@ -859,36 +860,67 @@ focus_tree = {
 		
     }
 	focus = {
-		id = POL_Send_helicopters_to_Ukraine
+		id = POL_Incident_in_Przewodow
+		available = {
+			date = 2022.11.15
+		}
 		prerequisite = { 
-			focus = POL_Send_planes_to_Ukraine
+			focus = POL_Mobilization
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus POL_Send_helicopters_to_Ukraine"
+			log = "[GetDateText]: [Root.GetName]: Focus POL_Incident_in_Przewodow"
+			add_stability = -0.05
+			increase_escalation_by_1 = yes
 		}
 		cost = 0.5
 		x = 0
 		y = 1
-		relative_position_id = POL_Send_planes_to_Ukraine
+		relative_position_id = POL_Mobilization
 		
     }
 	focus = {
 		id = POL_The_question_of_peacekeepers
+		available = {
+			has_country_flag = option_a_selected
+		}
 		prerequisite = { 
-			focus = POL_Send_helicopters_to_Ukraine
+			focus = POL_Incident_in_Przewodow
 		}
 		mutually_exclusive = {
 			focus = POL_Strengthen_air_defense
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_The_question_of_peacekeepers"
+			add_ideas = POL_peacekeepers
 		}
 		cost = 0.5
 		x = 5
 		y = 1
-		relative_position_id = POL_Send_helicopters_to_Ukraine
+		relative_position_id = POL_Incident_in_Przewodow
 		
     }
+
+	focus = {
+		id = POL_nichego
+		available = {
+			NOT = {
+				has_country_flag = pol19
+			}
+		}
+		prerequisite = { 
+			focus = POL_Incident_in_Przewodow
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus POL_nichego"
+			add_stability = 0.15
+		}
+		cost = 0.5
+		x = 2
+		y = 0
+		relative_position_id = POL_The_question_of_peacekeepers
+
+	}
+
 	focus = {
 		id = POL_Prepare
 		prerequisite = { 
@@ -971,8 +1003,11 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Strengthen_air_defense
+		available = {
+			has_country_flag = option_b_selected
+		}
 		prerequisite = { 
-			focus = POL_Send_helicopters_to_Ukraine
+			focus = POL_Incident_in_Przewodow
 		}
 		mutually_exclusive = {
 			focus = POL_The_question_of_peacekeepers
@@ -999,7 +1034,7 @@ focus_tree = {
 		cost = 0.5
 		x = -3
 		y = 2
-		relative_position_id = POL_Send_planes_to_Ukraine
+		relative_position_id = POL_Mobilization
 		
     }
 	focus = {
@@ -2645,6 +2680,7 @@ focus = {
 		focus = POL_Development_of_airports
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Investments_in_resource_excavation"
 		add_ideas = {
 			POL_trade_deepening_with_UKR
 		}
@@ -2670,6 +2706,7 @@ focus = {
 		focus = POL_Increase_in_trade_with_Ukraine
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Entry_of_our_small_business_into_Ukraine"
 		add_political_power = -50
 	}
 	cost = 0.5
@@ -2683,6 +2720,7 @@ focus = {
 		focus = POL_Increase_in_trade_with_Ukraine
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Simplify_taxes_for_Ukrainian_business_in_our_country"
 		add_political_power = -50
 		add_timed_idea = {
 			idea = POL_ukrainian_business_development
@@ -2700,6 +2738,7 @@ focus = {
 		focus = POL_Expansion_of_the_military_industry
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Contracts_with_Rheinmetall"
 		set_country_flag = POL_contracts_with_rheinmetall
 	}
 	cost = 0.5
@@ -2739,6 +2778,7 @@ focus = {
 		focus = POL_Accept_grain
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Grain_scandal"
 		add_power_balance_value = {
 			id = POL_power_balance
 			value = 0.05
@@ -2759,6 +2799,7 @@ focus = {
 		focus = POL_Grain_scandal
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Grain_tranche_agreement_to_other_countries"
 		add_power_balance_value = {
 			id = POL_power_balance
 			value = 0.05
@@ -2782,6 +2823,7 @@ focus = {
 		focus = POL_Grain_scandal
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Accept_grain"
 		add_power_balance_value = {
 			id = POL_power_balance
 			value = -0.05
@@ -2808,6 +2850,7 @@ focus = {
 		focus = POL_Accept_grain
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_Request_European_aid"
 		add_power_balance_value = {
 			id = POL_power_balance
 			value = -0.05
@@ -2844,6 +2887,9 @@ focus = {
 	prerequisite = { 
 		focus = POL_Farmers_are_blocking_borders
 	}
+	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_try_to_negotate"
+	}
 	cost = 0.5
 	x = 0
 	y = 1
@@ -2875,6 +2921,7 @@ focus = {
 		focus = POL_try_to_negotate
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_send_police"
 		add_stability = -0.03
 		#ивент
 	}
@@ -2928,6 +2975,7 @@ focus = {
 		}
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_support_farmers"
 		remove_ideas = {
 			POL_farmer_strikes_on_border
 		}
@@ -2943,6 +2991,7 @@ focus = {
 		focus = POL_support_farmers
 	}
 	completion_reward = {
+		log = "[GetDateText]: [Root.GetName]: POL_organize_more_marches"
 		#дебаф тут
 	}
 	cost = 0.5
