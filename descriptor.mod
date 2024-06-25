@@ -74,5 +74,4 @@ tags={
 }
 picture="showdown.jpg"
 supported_version="1.14.*"
-path="C:/Users/kaledin/Documents/Paradox Interactive/Hearts of Iron IV/mod/East-Showdown"
 remote_file_id="2948642461"
