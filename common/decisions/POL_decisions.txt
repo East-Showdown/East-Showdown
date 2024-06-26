@@ -1199,5 +1199,1099 @@ POL_Deploy_Patriots_category = {
 		}
 	}
 
-
 }
+	POL_hybrid_invasion_into_Belarus_category = {
+
+
+		# Political power cost
+		# lvl 1 rail_way/infrastructure  - 50  * -10 for each lvl  
+		# lvl 2 supply_hub/ammunition_plant - 60 * -10 for each lvl
+		# lvl 3 ammunition_silo/industrial_complex/synthetic_refinery/fuel_silo - 70 * -10 for each lvl
+		# lvl 4 arms_factory/air_base  - 80 * -10 for each lvl
+		# lvl 5 anti_air_building/radar_station - 100   
+		# days_remove time
+		# lvl 1 rail_way/infrastructure  - 12  * -2 for each lvl  
+		# lvl 2 supply_hub/ammunition_plant - 15 * -2 for each lvl
+		# lvl 3 ammunition_silo/industrial_complex/synthetic_refinery/fuel_silo - 20 * -3 for each lvl
+		# lvl 4 arms_factory/air_base  - 25 * -5 for each lvl
+		# lvl 5 anti_air_building/radar_station - 30   
+		# Vars name
+		# lvl 1 POL_SSO_damage_railway_cost_var/POL_SSO_damage_infrastructure_cost_var
+		# lvl 2 POL_SSO_damage_supply_hub_cost_var/POL_SSO_damage_ammunition_plant_cost_var
+		# lvl 3 POL_SSO_damage_ammunition_silo_cost_var/POL_SSO_damage_industrial_complex_cost_var/POL_SSO_damage_synthetic_refinery_cost_var/POL_SSO_damage_fuel_silo_cost_var
+		# lvl 4 POL_SSO_damage_arms_factory_cost_var / POL_SSO_damage_air_base_cost_var
+		# lvl 5 POL_SSO_damage_anti_air_building_cost_var/POL_SSO_damage_radar_station_cost_var
+		
+		
+		POL_Belarus_start_operation = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+				
+			}
+			visible = {
+			}
+		
+			cost = 10
+			fire_only_once = yes
+			remove_effect = { 
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_increase_sf: remove_effect"
+				set_country_flag = POL_blr_hybr_operation_started
+			}	
+		}
+
+		POL_Belarus_increase_sf = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+				check_variable = {
+					POL_sso_in_belarus_lvl < 5
+				}			
+			}
+			visible = {
+				has_country_flag = POL_blr_hybr_operation_started
+			}
+		
+			cost = 10
+			remove_effect = { 
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_increase_sf: remove_effect"
+				add_to_variable = { POL_sso_in_belarus_lvl = 1 }
+				POL_saboteurs_in_belarus_scripted_effects = yes
+				POL_saboteurs_in_belarus_buildings_price_scripted_effects = yes
+				POL_saboteurs_in_belarus_buildings_damage_days_remove_scripted_effects = yes
+				POL_saboteurs_in_belarus_buildings_damage_days_re_enable_scripted_effects = yes
+			}	
+		}
+
+		POL_Belarus_Hybinv_open_railway_category = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = {
+					railway_category = 0
+				}
+			}				
+			fire_only_once = no
+			complete_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_open_railway_category: complete_effect"
+				set_variable = { railway_category = 1 }
+				
+			}
+		}
+
+		POL_Belarus_Hybinv_close_railway_category = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = {
+					railway_category = 1
+				}
+			}				
+			fire_only_once = no
+			complete_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_close_railway_category: complete_effect"
+				set_variable = { railway_category = 0 }
+				
+			}
+		}
+
+
+		POL_Belarus_Hybinv_railway_30 = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = { railway_category = 1 }
+			}
+	
+			highlight_states = {
+				highlight_state_targets = {
+					state = 30
+				}
+				highlight_color_while_active = 3
+			 	highlight_color_before_active = 2
+			}
+			
+			fire_only_once = no
+			days_re_enable = POL_SSO_damage_tier_1_re_enable
+			days_remove = POL_SSO_damage_railway_days_remove_var
+			cost = POL_SSO_damage_railway_cost_var?50
+			remove_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_railway_30: remove_effect"
+				30 = {
+					damage_building = {
+						type = rail_way
+						damage = 1
+					}
+				}
+				
+			}
+		}
+		POL_Belarus_Hybinv_railway_49 = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = { railway_category = 1 }
+			}
+	
+			highlight_states = {
+				highlight_state_targets = {
+					state = 49
+				}
+				highlight_color_while_active = 3
+			 	highlight_color_before_active = 2
+			}
+			
+			fire_only_once = no
+			days_re_enable = POL_SSO_damage_tier_1_re_enable
+			days_remove = POL_SSO_damage_railway_days_remove_var
+			cost = POL_SSO_damage_railway_cost_var?50
+			remove_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_railway_49: remove_effect"
+				49 = {
+					damage_building = {
+						type = rail_way
+						damage = 1
+					}
+				}
+				
+			}
+		}
+		POL_Belarus_Hybinv_railway_351 = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = { railway_category = 1 }
+			}
+	
+			highlight_states = {
+				highlight_state_targets = {
+					state = 351
+				}
+				highlight_color_while_active = 3
+			 	highlight_color_before_active = 2
+			}
+			
+			fire_only_once = no
+			days_re_enable = POL_SSO_damage_tier_1_re_enable
+			days_remove = POL_SSO_damage_railway_days_remove_var
+			cost = POL_SSO_damage_railway_cost_var?50
+			remove_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_railway_351: remove_effect"
+				351 = {
+					damage_building = {
+						type = rail_way
+						damage = 1
+					}
+				}
+				
+			}
+		}
+		POL_Belarus_Hybinv_railway_50 = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = { railway_category = 1 }
+			}
+	
+			highlight_states = {
+				highlight_state_targets = {
+					state = 50
+				}
+				highlight_color_while_active = 3
+			 	highlight_color_before_active = 2
+			}
+			
+			fire_only_once = no
+			days_re_enable = POL_SSO_damage_tier_1_re_enable
+			days_remove = POL_SSO_damage_railway_days_remove_var
+			cost = POL_SSO_damage_railway_cost_var?50
+			remove_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_railway_50: remove_effect"
+				50 = {
+					damage_building = {
+						type = rail_way
+						damage = 1
+					}
+				}
+				
+			}
+		}
+
+		POL_Belarus_Hybinv_railway_8 = {
+			icon = GFX_Belarus
+			fire_only_once = no
+			available = {
+			}
+			visible = {
+				check_variable = {
+				POL_sso_in_belarus_lvl > 0
+				}
+				check_variable = { railway_category = 1 }
+			}
+	
+			highlight_states = {
+				highlight_state_targets = {
+					state = 8
+				}
+				highlight_color_while_active = 3
+			 	highlight_color_before_active = 2
+			}
+			
+			fire_only_once = no
+			days_re_enable = POL_SSO_damage_tier_1_re_enable
+			days_remove = POL_SSO_damage_railway_days_remove_var
+			cost = POL_SSO_damage_railway_cost_var?50
+			remove_effect = {
+				log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_railway_8: remove_effect"
+				8 = {
+					damage_building = {
+						type = rail_way
+						damage = 1
+					}
+				}
+				
+			}
+		}
+			POL_Belarus_Hybinv_railway_29 = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = { railway_category = 1 }
+				}
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 29
+					}
+					highlight_color_while_active = 3
+					 highlight_color_before_active = 2
+				}
+				
+				fire_only_once = no
+				days_re_enable = POL_SSO_damage_tier_1_re_enable
+				days_remove = POL_SSO_damage_railway_days_remove_var
+				cost = POL_SSO_damage_railway_cost_var?50
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_railway_29: remove_effect"
+					29 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					
+				}
+			}
+
+			POL_Belarus_Hybinv_open_infrastructure_category = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = {
+						infrastructure_category = 0
+					}
+				}				
+				fire_only_once = no
+				complete_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_open_infrastructure_category: complete_effect"
+					set_variable = { infrastructure_category = 1 }
+					
+				}
+			}
+	
+			POL_Belarus_Hybinv_close_infrastructure_category = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = {
+						infrastructure_category = 1
+					}
+				}				
+				fire_only_once = no
+				complete_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_close_infrastructure_category: complete_effect"
+					set_variable = { infrastructure_category = 0 }
+					
+				}
+			}
+
+			POL_Belarus_Hybinv_infrastructure_30 = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = { infrastructure_category = 1 }
+				}
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 30
+					}
+					highlight_color_while_active = 3
+					 highlight_color_before_active = 2
+				}
+				
+				fire_only_once = no
+				days_re_enable = POL_SSO_damage_tier_1_re_enable
+				days_remove = POL_SSO_damage_infrastructure_days_remove_var
+				cost = POL_SSO_damage_infrastructure_cost_var?50
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_infrastructure_30: remove_effect"
+					30 = {
+						damage_building = {
+							type = infrastructure
+							damage = 1
+						}
+					}
+					
+				}
+			}
+			POL_Belarus_Hybinv_infrastructure_49 = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = { infrastructure_category = 1 }
+				}
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 49
+					}
+					highlight_color_while_active = 3
+					 highlight_color_before_active = 2
+				}
+				
+				fire_only_once = no
+				days_re_enable = POL_SSO_damage_tier_1_re_enable
+				days_remove = POL_SSO_damage_infrastructure_days_remove_var
+				cost = POL_SSO_damage_infrastructure_cost_var?50
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_infrastructure_49: remove_effect"
+					49 = {
+						damage_building = {
+							type = infrastructure
+							damage = 1
+						}
+					}
+					
+				}
+			}
+			POL_Belarus_Hybinv_infrastructure_351 = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = { infrastructure_category = 1 }
+				}
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 351
+					}
+					highlight_color_while_active = 3
+					 highlight_color_before_active = 2
+				}
+				
+				fire_only_once = no
+				days_re_enable = POL_SSO_damage_tier_1_re_enable
+				days_remove = POL_SSO_damage_infrastructure_days_remove_var
+				cost = POL_SSO_damage_infrastructure_cost_var?50
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_infrastructure_351: remove_effect"
+					351 = {
+						damage_building = {
+							type = infrastructure
+							damage = 1
+						}
+					}
+					
+				}
+			}
+			POL_Belarus_Hybinv_infrastructure_50 = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = { infrastructure_category = 1 }
+				}
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 50
+					}
+					highlight_color_while_active = 3
+					 highlight_color_before_active = 2
+				}
+				
+				fire_only_once = no
+				days_re_enable = POL_SSO_damage_tier_1_re_enable
+				days_remove = POL_SSO_damage_infrastructure_days_remove_var
+				cost = POL_SSO_damage_infrastructure_cost_var?50
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_infrastructure_50: remove_effect"
+					50 = {
+						damage_building = {
+							type = infrastructure
+							damage = 1
+						}
+					}
+					
+				}
+			}
+	
+			POL_Belarus_Hybinv_infrastructure_8 = {
+				icon = GFX_Belarus
+				fire_only_once = no
+				available = {
+				}
+				visible = {
+					check_variable = {
+					POL_sso_in_belarus_lvl > 0
+					}
+					check_variable = { infrastructure_category = 1 }
+				}
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 8
+					}
+					highlight_color_while_active = 3
+					 highlight_color_before_active = 2
+				}
+				
+				fire_only_once = no
+				days_re_enable = POL_SSO_damage_tier_1_re_enable
+				days_remove = POL_SSO_damage_infrastructure_days_remove_var
+				cost = POL_SSO_damage_infrastructure_cost_var?50
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_infrastructure_8: remove_effect"
+					8 = {
+						damage_building = {
+							type = infrastructure
+							damage = 1
+						}
+					}
+					
+				}
+			}
+				POL_Belarus_Hybinv_infrastructure_29 = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 0
+						}
+						check_variable = { infrastructure_category = 1 }
+					}
+			
+					highlight_states = {
+						highlight_state_targets = {
+							state = 29
+						}
+						highlight_color_while_active = 3
+						 highlight_color_before_active = 2
+					}
+					
+					fire_only_once = no
+					days_re_enable = POL_SSO_damage_tier_1_re_enable
+					days_remove = POL_SSO_damage_infrastructure_days_remove_var
+					cost = POL_SSO_damage_infrastructure_cost_var?50
+					remove_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_infrastructure_29: remove_effect"
+						29 = {
+							damage_building = {
+								type = infrastructure
+								damage = 1
+							}
+						}
+						
+					}
+				}
+
+				
+				#Тир 2
+
+				POL_Belarus_Hybinv_open_supply_hub_category = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 1
+						}
+						check_variable = {
+							supply_hub_category = 0
+						}
+					}				
+					fire_only_once = no
+					complete_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_open_supply_hub_category: complete_effect"
+						set_variable = { supply_hub_category = 1 }
+						
+					}
+				}
+		
+				POL_Belarus_Hybinv_close_supply_hub_category = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 1
+						}
+						check_variable = {
+							supply_hub_category = 1
+						}
+					}				
+					fire_only_once = no
+					complete_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_close_supply_hub_category: complete_effect"
+						set_variable = { supply_hub_category = 0 }
+						
+					}
+				}
+
+				POL_Belarus_Hybinv_supply_hub_30 = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 0
+						}
+						check_variable = { supply_hub_category = 1 }
+					}
+			
+					highlight_states = {
+						highlight_state_targets = {
+							state = 30
+						}
+						highlight_color_while_active = 3
+						 highlight_color_before_active = 2
+					}
+					
+					fire_only_once = no
+					days_re_enable = POL_SSO_damage_tier_2_re_enable
+					days_remove = POL_SSO_damage_supply_hub_days_remove_var
+					cost = POL_SSO_damage_supply_hub_cost_var?60
+					remove_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_supply_hub_30: remove_effect"
+						30 = {
+							damage_building = {
+								type = supply_node
+								damage = 1
+							}
+						}
+						
+					}
+				}
+				POL_Belarus_Hybinv_supply_hub_49 = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 1
+						}
+						check_variable = { supply_hub_category = 1 }
+					}
+			
+					highlight_states = {
+						highlight_state_targets = {
+							state = 49
+						}
+						highlight_color_while_active = 3
+						 highlight_color_before_active = 2
+					}
+					
+					fire_only_once = no
+					days_re_enable = POL_SSO_damage_tier_2_re_enable
+					days_remove = POL_SSO_damage_supply_hub_days_remove_var
+					cost = POL_SSO_damage_supply_hub_cost_var?60
+					remove_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_supply_hub_49: remove_effect"
+						49 = {
+							damage_building = {
+								type = supply_node
+								damage = 1
+							}
+						}
+						
+					}
+				}
+				POL_Belarus_Hybinv_supply_hub_351 = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 1
+						}
+						check_variable = { supply_hub_category = 1 }
+					}
+			
+					highlight_states = {
+						highlight_state_targets = {
+							state = 351
+						}
+						highlight_color_while_active = 3
+						 highlight_color_before_active = 2
+					}
+					
+					fire_only_once = no
+					days_re_enable = POL_SSO_damage_tier_2_re_enable
+					days_remove = POL_SSO_damage_supply_hub_days_remove_var
+					cost = POL_SSO_damage_supply_hub_cost_var?60
+					remove_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_supply_hub_351: remove_effect"
+						351 = {
+							damage_building = {
+								type = supply_node
+								damage = 1
+							}
+						}
+						
+					}
+				}
+				POL_Belarus_Hybinv_supply_hub_50 = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 1
+						}
+						check_variable = { supply_hub_category = 1 }
+					}
+			
+					highlight_states = {
+						highlight_state_targets = {
+							state = 50
+						}
+						highlight_color_while_active = 3
+						 highlight_color_before_active = 2
+					}
+					
+					fire_only_once = no
+					days_re_enable = POL_SSO_damage_tier_2_re_enable
+					days_remove = POL_SSO_damage_supply_hub_days_remove_var
+					cost = POL_SSO_damage_supply_hub_cost_var?60
+					remove_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_supply_hub_50: remove_effect"
+						50 = {
+							damage_building = {
+								type = supply_node
+								damage = 1
+							}
+						}
+						
+					}
+				}
+		
+				POL_Belarus_Hybinv_supply_hub_8 = {
+					icon = GFX_Belarus
+					fire_only_once = no
+					available = {
+					}
+					visible = {
+						check_variable = {
+						POL_sso_in_belarus_lvl > 1
+						}
+						check_variable = { supply_hub_category = 1 }
+					}
+			
+					highlight_states = {
+						highlight_state_targets = {
+							state = 8
+						}
+						highlight_color_while_active = 3
+						 highlight_color_before_active = 2
+					}
+					
+					fire_only_once = no
+					days_re_enable = POL_SSO_damage_tier_2_re_enable
+					days_remove = POL_SSO_damage_supply_hub_days_remove_var
+					cost = POL_SSO_damage_supply_hub_cost_var?60
+					remove_effect = {
+						log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_supply_hub_8: remove_effect"
+						8 = {
+							damage_building = {
+								type = supply_node
+								damage = 1
+							}
+						}
+						
+					}
+				}
+					POL_Belarus_Hybinv_supply_hub_29 = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = { supply_hub_category = 1 }
+						}
+				
+						highlight_states = {
+							highlight_state_targets = {
+								state = 29
+							}
+							highlight_color_while_active = 3
+							 highlight_color_before_active = 2
+						}
+						
+						fire_only_once = no
+						days_re_enable = POL_SSO_damage_tier_2_re_enable
+						days_remove = POL_SSO_damage_supply_hub_days_remove_var
+						cost = POL_SSO_damage_supply_hub_cost_var?60
+						remove_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_supply_hub_29: remove_effect"
+							29 = {
+								damage_building = {
+									type = supply_node
+									damage = 1
+								}
+							}
+							
+						}
+					}
+
+
+					POL_Belarus_Hybinv_open_ammunition_plant_category = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = {
+								supply_hub_category = 0
+							}
+						}				
+						fire_only_once = no
+						complete_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_open_supply_hub_category: complete_effect"
+							set_variable = { supply_hub_category = 1 }
+							
+						}
+					}
+			
+					POL_Belarus_Hybinv_close_ammunition_plant_category = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = {
+								supply_hub_category = 1
+							}
+						}				
+						fire_only_once = no
+						complete_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_close_supply_hub_category: complete_effect"
+							set_variable = { supply_hub_category = 0 }
+							
+						}
+					}
+	
+					POL_Belarus_Hybinv_ammunition_plant_30 = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 0
+							}
+							check_variable = { supply_hub_category = 1 }
+						}
+				
+						highlight_states = {
+							highlight_state_targets = {
+								state = 30
+							}
+							highlight_color_while_active = 3
+							 highlight_color_before_active = 2
+						}
+						
+						fire_only_once = no
+						days_re_enable = POL_SSO_damage_tier_2_re_enable
+						days_remove = POL_SSO_damage_ammunition_plant_days_remove_var
+						cost = POL_SSO_damage_ammunition_plant_cost_var?60
+						remove_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_ammunition_plant_30: remove_effect"
+							30 = {
+								damage_building = {
+									type = supply_node
+									damage = 1
+								}
+							}
+							
+						}
+					}
+					POL_Belarus_Hybinv_ammunition_plant_49 = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = { supply_hub_category = 1 }
+						}
+				
+						highlight_states = {
+							highlight_state_targets = {
+								state = 49
+							}
+							highlight_color_while_active = 3
+							 highlight_color_before_active = 2
+						}
+						
+						fire_only_once = no
+						days_re_enable = POL_SSO_damage_tier_2_re_enable
+						days_remove = POL_SSO_damage_ammunition_plant_days_remove_var
+						cost = POL_SSO_damage_ammunition_plant_cost_var?60
+						remove_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_ammunition_plant_49: remove_effect"
+							49 = {
+								damage_building = {
+									type = supply_node
+									damage = 1
+								}
+							}
+							
+						}
+					}
+					POL_Belarus_Hybinv_ammunition_plant_351 = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = { supply_hub_category = 1 }
+						}
+				
+						highlight_states = {
+							highlight_state_targets = {
+								state = 351
+							}
+							highlight_color_while_active = 3
+							 highlight_color_before_active = 2
+						}
+						
+						fire_only_once = no
+						days_re_enable = POL_SSO_damage_tier_2_re_enable
+						days_remove = POL_SSO_damage_ammunition_plant_days_remove_var
+						cost = POL_SSO_damage_ammunition_plant_cost_var?60
+						remove_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_ammunition_plant_351: remove_effect"
+							351 = {
+								damage_building = {
+									type = supply_node
+									damage = 1
+								}
+							}
+							
+						}
+					}
+					POL_Belarus_Hybinv_ammunition_plant_50 = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = { supply_hub_category = 1 }
+						}
+				
+						highlight_states = {
+							highlight_state_targets = {
+								state = 50
+							}
+							highlight_color_while_active = 3
+							 highlight_color_before_active = 2
+						}
+						
+						fire_only_once = no
+						days_re_enable = POL_SSO_damage_tier_2_re_enable
+						days_remove = POL_SSO_damage_ammunition_plant_days_remove_var
+						cost = POL_SSO_damage_ammunition_plant_cost_var?60
+						remove_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_ammunition_plant_50: remove_effect"
+							50 = {
+								damage_building = {
+									type = supply_node
+									damage = 1
+								}
+							}
+							
+						}
+					}
+			
+					POL_Belarus_Hybinv_ammunition_plant_8 = {
+						icon = GFX_Belarus
+						fire_only_once = no
+						available = {
+						}
+						visible = {
+							check_variable = {
+							POL_sso_in_belarus_lvl > 1
+							}
+							check_variable = { supply_hub_category = 1 }
+						}
+				
+						highlight_states = {
+							highlight_state_targets = {
+								state = 8
+							}
+							highlight_color_while_active = 3
+							 highlight_color_before_active = 2
+						}
+						
+						fire_only_once = no
+						days_re_enable = POL_SSO_damage_tier_2_re_enable
+						days_remove = POL_SSO_damage_ammunition_plant_days_remove_var
+						cost = POL_SSO_damage_ammunition_plant_cost_var?60
+						remove_effect = {
+							log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_ammunition_plant_8: remove_effect"
+							8 = {
+								damage_building = {
+									type = supply_node
+									damage = 1
+								}
+							}
+							
+						}
+					}
+						POL_Belarus_Hybinv_ammunition_plant_29 = {
+							icon = GFX_Belarus
+							fire_only_once = no
+							available = {
+							}
+							visible = {
+								check_variable = {
+								POL_sso_in_belarus_lvl > 1
+								}
+								check_variable = { supply_hub_category = 1 }
+							}
+					
+							highlight_states = {
+								highlight_state_targets = {
+									state = 29
+								}
+								highlight_color_while_active = 3
+								 highlight_color_before_active = 2
+							}
+							
+							fire_only_once = no
+							days_re_enable = POL_SSO_damage_tier_2_re_enable
+							days_remove = POL_SSO_damage_ammunition_plant_days_remove_var
+							cost = POL_SSO_damage_ammunition_plant_cost_var?60
+							remove_effect = {
+								log = "[GetDateText]: [Root.GetName]: Decision POL_Belarus_Hybinv_ammunition_plant_29: remove_effect"
+								29 = {
+									damage_building = {
+										type = supply_node
+										damage = 1
+									}
+								}
+								
+							}
+						}
+	
+	
+
+	
+		}
+
+
+	 
+	 
+	 
+
+
