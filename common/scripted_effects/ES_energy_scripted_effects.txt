@@ -43,13 +43,14 @@ init_global_energy_data = {
 	set_variable = { global.local_blackout_treshold_factor = 0.8 }
 	set_variable = { global.global_blackout_treshold_factor = 0.8 }
 	
-	# Эффекты при 100% глобальном блэкауте
+	# Эффекты для модификаторов при 100% глобальном блэкауте
 	set_variable = { global.energy_blackout_stability_factor = -0.3 }
 	set_variable = { global.energy_blackout_production_factory_efficiency_gain_factor = -1 }
-	set_variable = { global.energy_blackout_industrial_capacity_factory = -1 }
+	set_variable = { global.energy_blackout_industrial_capacity_factory_factor = -1 }
+	set_variable = { global.energy_blackout_ammunition_plants_efficiency_factor = -1 }
 	set_variable = { global.energy_blackout_production_speed_buildings_factor = -1 }
-	set_variable = { global.energy_blackout_industrial_capacity_dockyard = -1 }
 	set_variable = { global.energy_blackout_industry_free_repair_factor = -1 }
+	set_variable = { global.energy_blackout_industrial_capacity_dockyard = -1 }
 	set_variable = { global.energy_blackout_production_oil_factor = -1 }
 }
 
@@ -252,19 +253,69 @@ calculate_global_blackout_effects = {
 	set_temp_variable = { energy_debuff_factor = energy_country_netto_factor }
 	divide_temp_variable = { energy_debuff_factor = global.global_blackout_treshold_factor }
 
-	set_variable = { energy_blackout_stability_factor = global.energy_blackout_stability_factor }
-	set_variable = { energy_blackout_production_factory_efficiency_gain_factor = global.energy_blackout_production_factory_efficiency_gain_factor }
-	set_variable = { energy_blackout_industrial_capacity_factory = global.energy_blackout_industrial_capacity_factory }
-	set_variable = { energy_blackout_production_speed_buildings_factor = global.energy_blackout_production_speed_buildings_factor }
-	set_variable = { energy_blackout_industrial_capacity_dockyard = global.energy_blackout_industrial_capacity_dockyard }
-	set_variable = { energy_blackout_industry_free_repair_factor = global.energy_blackout_industry_free_repair_factor }
-	set_variable = { energy_blackout_production_oil_factor = global.energy_blackout_production_oil_factor }
+	# TODO Добавить каким-либо образом учёт всех других эффектов от модификаторов, чтобы можно было полностью отключать производство и т.п.
 
+	# Эффект на стабильность от энергоснабжения населения
+	set_variable = { energy_blackout_stability_factor = max_manpower_k }
+	subtract_from_variable = { energy_blackout_stability_factor = energy_blackout_population_k }
 	multiply_variable = { energy_blackout_stability_factor = energy_debuff_factor }
+	add_to_variable = { energy_blackout_stability_factor = energy_blackout_population_k }
+	multiply_variable = { energy_blackout_stability_factor = global.energy_blackout_stability_factor }
+	divide_variable = { energy_blackout_stability_factor = max_manpower_k }
+
+	# Эффект на ускорение производства на военных заводах
+	set_variable = { energy_blackout_production_factory_efficiency_gain_factor = non_damaged_building_level@arms_factory }
+	subtract_from_variable = { energy_blackout_production_factory_efficiency_gain_factor = energy_blackout_arms_factories }
 	multiply_variable = { energy_blackout_production_factory_efficiency_gain_factor = energy_debuff_factor }
-	multiply_variable = { energy_blackout_industrial_capacity_factory = energy_debuff_factor }
+	add_to_variable = { energy_blackout_production_factory_efficiency_gain_factor = energy_blackout_arms_factories }
+	multiply_variable = { energy_blackout_production_factory_efficiency_gain_factor = global.energy_blackout_production_factory_efficiency_gain_factor }
+	divide_variable = { energy_blackout_production_factory_efficiency_gain_factor = non_damaged_building_level@arms_factory }
+
+	# Эффект на производство на военных заводы
+	set_variable = { energy_blackout_industrial_capacity_factory_factor = non_damaged_building_level@arms_factory }
+	subtract_from_variable = { energy_blackout_industrial_capacity_factory_factor = energy_blackout_arms_factories }
+	multiply_variable = { energy_blackout_industrial_capacity_factory_factor = energy_debuff_factor }
+	add_to_variable = { energy_blackout_industrial_capacity_factory_factor = energy_blackout_arms_factories }
+	multiply_variable = { energy_blackout_industrial_capacity_factory_factor = global.energy_blackout_industrial_capacity_factory_factor }
+	divide_variable = { energy_blackout_industrial_capacity_factory_factor = non_damaged_building_level@arms_factory }
+
+	# Эффект на заводы боеприпасов
+	set_variable = { energy_blackout_ammunition_plants_efficiency_factor = non_damaged_building_level@ammunition_plant }
+	subtract_from_variable = { energy_blackout_ammunition_plants_efficiency_factor = energy_blackout_ammunition_plants }
+	multiply_variable = { energy_blackout_ammunition_plants_efficiency_factor = energy_debuff_factor }
+	add_to_variable = { energy_blackout_ammunition_plants_efficiency_factor = energy_blackout_ammunition_plants }
+	multiply_variable = { energy_blackout_ammunition_plants_efficiency_factor = global.energy_blackout_ammunition_plants_efficiency_factor }
+	divide_variable = { energy_blackout_ammunition_plants_efficiency_factor = non_damaged_building_level@ammunition_plant }
+
+	# Эффект на гражданское строительство
+	set_variable = { energy_blackout_production_speed_buildings_factor = non_damaged_building_level@industrial_complex }
+	subtract_from_variable = { energy_blackout_production_speed_buildings_factor = energy_blackout_industrial_complexes }
 	multiply_variable = { energy_blackout_production_speed_buildings_factor = energy_debuff_factor }
-	multiply_variable = { energy_blackout_industrial_capacity_dockyard = energy_debuff_factor }
+	add_to_variable = { energy_blackout_production_speed_buildings_factor = energy_blackout_industrial_complexes }
+	multiply_variable = { energy_blackout_production_speed_buildings_factor = global.energy_blackout_production_speed_buildings_factor }
+	divide_variable = { energy_blackout_production_speed_buildings_factor = non_damaged_building_level@industrial_complex }
+
+	# Эффект на бесплатный ремонт
+	set_variable = { energy_blackout_industry_free_repair_factor = non_damaged_building_level@industrial_complex }
+	subtract_from_variable = { energy_blackout_industry_free_repair_factor = energy_blackout_industrial_complexes }
 	multiply_variable = { energy_blackout_industry_free_repair_factor = energy_debuff_factor }
+	add_to_variable = { energy_blackout_industry_free_repair_factor = energy_blackout_industrial_complexes }
+	multiply_variable = { energy_blackout_industry_free_repair_factor = global.energy_blackout_industry_free_repair_factor }
+	divide_variable = { energy_blackout_industry_free_repair_factor = non_damaged_building_level@industrial_complex }
+	
+	# Эффект на верфи
+	set_variable = { energy_blackout_industrial_capacity_dockyard = non_damaged_building_level@dockyard }
+	subtract_from_variable = { energy_blackout_industrial_capacity_dockyard = energy_blackout_dockyards }
+	multiply_variable = { energy_blackout_industrial_capacity_dockyard = energy_debuff_factor }
+	add_to_variable = { energy_blackout_industrial_capacity_dockyard = energy_blackout_dockyards }
+	multiply_variable = { energy_blackout_industrial_capacity_dockyard = global.energy_blackout_industrial_capacity_dockyard }
+	divide_variable = { energy_blackout_industrial_capacity_dockyard = non_damaged_building_level@dockyard }
+
+	# Эффект на НПЗ
+	set_variable = { energy_blackout_production_oil_factor = non_damaged_building_level@synthetic_refinery }
+	subtract_from_variable = { energy_blackout_production_oil_factor = energy_blackout_synthetic_refineries }
 	multiply_variable = { energy_blackout_production_oil_factor = energy_debuff_factor }
+	add_to_variable = { energy_blackout_production_oil_factor = energy_blackout_synthetic_refineries }
+	multiply_variable = { energy_blackout_production_oil_factor = global.energy_blackout_production_oil_factor }
+	divide_variable = { energy_blackout_production_oil_factor = non_damaged_building_level@synthetic_refinery }
 }
