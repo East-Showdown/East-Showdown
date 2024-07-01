@@ -1,3 +1,270 @@
-calculate_energy = {
+# ==== COUNTRY SCOPES VARIABLES ====
+# energy_population_consumption - потребление энергии населением
+# energy_buildings_consumption - потребление энергии постройками
+# energy_country_consumption - суммарное потребление энергии
+#
+# energy_country_generation - генерация энергии постройками
+#
+# energy_country_netto - баланс энергии в стране
+# energy_country_netto_factor - множитель баланса энергии в стране (процент обеспечения потребления)
+
+
+# ==== STATE SCOPES VARIABLES ====
+# energy_population_consumption - потребление энергии населением
+# energy_buildings_consumption - потребление энергии постройками
+# energy_local_consumption - суммарное потребление энергии
+#
+# energy_local_generation - генерация энергии постройками
+#
+# energy_local_transfer_capacity - пропускная способность подстанций
+# energy_local_free_transfer_capacity - свободная пропускная способность подстанций
+#
+# energy_local_netto - баланс энергии в области
+# energy_local_netto_factor - множитель баланса энергии в области (процент обеспечения потребления)
+
+
+# Should be fired once in the game start
+init_global_energy_data = {
+	set_variable = { global.energy_population_k_consumption_divider = 100 }
+	set_variable = { global.energy_population_k_consumption_factor = 0.012 }
+
+	set_variable = { global.energy_arms_factory_consumption_factor = 0.1 }
+	set_variable = { global.energy_ammunition_plant_consumption_factor = 0.1 }
+	set_variable = { global.energy_industrial_complex_consumption_factor = 0.1 }
+	set_variable = { global.energy_dockyard_consumption_factor = 0.1 }
+	set_variable = { global.energy_synthetic_refinery_consumption_factor = 0.05 }
+
+	set_variable = { global.energy_nuclear_power_plant_generation_factor = 0.65 }
+	set_variable = { global.energy_thermal_power_plant_generation_factor = 0.2 }
+	set_variable = { global.energy_solar_power_plant_generation_factor = 0.1 }
+	set_variable = { global.energy_wind_power_plant_generation_factor = 0.05 }
+
+	set_variable = { global.electrical_substation_transfer_capacity_factor = 0.5 }
+	set_variable = { global.local_blackout_treshold_factor = 0.8 }
+	set_variable = { global.global_blackout_treshold_factor = 0.8 }
 	
+	# Эффекты при 100% глобальном блэкауте
+	set_variable = { global.energy_blackout_stability_factor = -0.3 }
+	set_variable = { global.energy_blackout_production_factory_efficiency_gain_factor = -1 }
+	set_variable = { global.energy_blackout_industrial_capacity_factory = -1 }
+	set_variable = { global.energy_blackout_production_speed_buildings_factor = -1 }
+	set_variable = { global.energy_blackout_industrial_capacity_dockyard = -1 }
+	set_variable = { global.energy_blackout_industry_free_repair_factor = -1 }
+	set_variable = { global.energy_blackout_production_oil_factor = -1 }
+}
+
+# THIS is country scope
+calculate_energy_in_country = {
+	precalculate_energy_in_country = yes
+	all_controlled_state = { calculate_energy_in_state = yes }
+	postcalculate_energy_in_country = yes
+}
+
+
+# THIS is country scope
+precalculate_energy_in_country = {
+	
+	set_variable = { energy_population_consumption = 0 }
+	set_variable = { energy_buildings_consumption = 0 }
+	set_variable = { energy_country_consumption = 0 }
+	set_variable = { energy_country_generation = 0 }
+
+	set_variable = { energy_country_netto = 0 }
+
+	set_variable = { energy_blackout_population_k = 0 }
+	set_variable = { energy_blackout_arms_factories = 0 }
+	set_variable = { energy_blackout_ammunition_plants = 0 }
+	set_variable = { energy_blackout_industrial_complexes = 0 }
+	set_variable = { energy_blackout_dockyards = 0 }
+	set_variable = { energy_blackout_synthetic_refineries = 0 }
+}	
+
+# PREV is a country scope
+# THIS is state scope
+calculate_energy_in_state = {
+	# Сколько тратит население
+	set_variable = { energy_population_consumption = state_population_k }
+	divide_variable = { energy_population_consumption = energy_population_k_consumption_divider }
+	multiply_variable = { energy_population_consumption = global.energy_population_k_consumption_factor }
+
+	# Сколько тратят постройки
+	set_temp_variable = { energy_arms_factories_consumption = non_damaged_building_level@arms_factory }
+	multiply_temp_variable = { energy_arms_factories_consumption = global.energy_arms_factory_consumption_factor }
+	set_variable = { energy_buildings_consumption = energy_arms_factories_consumption }
+
+	set_temp_variable = { energy_ammunition_plants_consumption = non_damaged_building_level@ammunition_plant }
+	multiply_temp_variable = { energy_ammunition_plants_consumption = global.energy_ammunition_plant_consumption_factor }
+	add_to_variable = { energy_buildings_consumption = energy_ammunition_plants_consumption }
+
+	set_temp_variable = { energy_industrial_complexes_consumption = non_damaged_building_level@industrial_complex }
+	multiply_temp_variable = { energy_industrial_complexes_consumption = global.energy_industrial_complex_consumption_factor }
+	add_to_variable = { energy_buildings_consumption = energy_industrial_complexes_consumption }
+
+	set_temp_variable = { energy_dockyards_consumption = non_damaged_building_level@dockyard }
+	multiply_temp_variable = { energy_dockyards_consumption = global.energy_dockyard_consumption_factor }
+	add_to_variable = { energy_buildings_consumption = energy_dockyards_consumption }
+
+	set_temp_variable = { energy_synthetic_refineries_consumption = non_damaged_building_level@synthetic_refinery }
+	multiply_temp_variable = { energy_synthetic_refineries_consumption = global.energy_synthetic_refinery_consumption_factor }
+	add_to_variable = { energy_buildings_consumption = energy_synthetic_refineries_consumption }
+
+	# Сумарные локальные затраты энергии
+	set_variable = { energy_local_consumption = energy_population_consumption }
+	add_to_variable = { energy_local_consumption = energy_buildings_consumption }
+
+	# Суммарные глобальные затраты энергии
+	add_to_variable = { PREV.energy_population_consumption = energy_population_consumption }
+	add_to_variable = { PREV.energy_buildings_consumption = energy_buildings_consumption }
+	add_to_variable = { PREV.energy_country_consumption = energy_local_consumption }
+
+	# Сколько генерируют постройки
+	set_temp_variable = { energy_nuclear_power_plants_generation = non_damaged_building_level@nuclear_reactor }
+	multiply_temp_variable = { energy_nuclear_power_plants_generation = global.energy_nuclear_power_plant_generation_factor }
+	set_variable = { energy_local_generation = energy_nuclear_power_plants_generation }
+
+	set_temp_variable = { energy_thermal_power_plants_generation = non_damaged_building_level@thermal_power_plant }
+	multiply_temp_variable = { energy_thermal_power_plants_generation = global.energy_thermal_power_plant_generation_factor }
+	add_to_variable = { energy_local_generation = energy_thermal_power_plants_generation }
+
+	set_temp_variable = { energy_solar_power_plants_generation = non_damaged_building_level@solar_power_plant }
+	multiply_temp_variable = { energy_solar_power_plants_generation = global.energy_solar_power_plant_generation_factor }
+	add_to_variable = { energy_local_generation = energy_solar_power_plants_generation }
+
+	set_temp_variable = { energy_wind_power_plants_generation = non_damaged_building_level@wind_power_plant }
+	multiply_temp_variable = { energy_wind_power_plants_generation = global.energy_wind_power_plant_generation_factor }
+	add_to_variable = { energy_local_generation = energy_wind_power_plants_generation }
+
+	# Глобальная генерация энергии в стране
+	add_to_variable = { PREV.energy_country_generation = energy_local_generation }
+
+	# Сколько передают подстанции
+	set_variable = { energy_local_transfer_capacity = non_damaged_building_level@electrical_substation }
+	multiply_variable = { energy_local_transfer_capacity = global.electrical_substation_transfer_capacity_factor }
+	
+	# Считаем свободную пропускную способность трансформаторов
+	set_variable = { energy_local_free_transfer_capacity = energy_local_transfer_capacity }
+	subtract_from_variable = { energy_local_free_transfer_capacity = energy_local_consumption }
+
+	if = { # Если полностью использована пропускная способность трансформаторов		
+		limit = { check_variable = { energy_local_free_transfer_capacity < 0 }
+		# Ограничиваем  генерацию энергии пропускной способностью
+		add_to_variable = { energy_local_generation = energy_local_free_transfer_capacity }
+	
+		# Считаем баланс энергии в стейте
+		set_variable = { energy_local_netto = energy_local_generation }
+		subtract_from_variable = { energy_local_netto = energy_local_consumption }
+
+		# Высчитываем фактор обеспечения электричеством
+		set_variable = { energy_local_netto_factor = energy_local_generation }
+		divide_variable = { energy_local_netto_factor = energy_local_consumption }
+	}
+	else # Иначе пропускная способность не использована полностью и она положительна
+	{
+		# Считаем баланс энергии в стейте
+		set_variable = { energy_local_netto = energy_local_generation }
+		subtract_from_variable = { energy_local_netto = energy_local_consumption }
+
+		if = { # Высчитываем ограничение на импорт локальной энергии из энергосети страны
+			limit = { check_variable = { energy_local_netto < 0 } }
+			
+			# Высчитываем, сколько из разницы в нетто энергии может быть передано электросетью
+			set_temp_variable = { energy_global_to_local_transfer_cap = energy_local_free_transfer_capacity }
+			multiply_temp_variable = { energy_global_to_local_transfer_cap = -1 }
+			if = {
+				limit = { check_variable = { energy_global_to_local_transfer_cap < energy_local_netto } }
+				set_temp_variable = { energy_global_to_local_transfer_cap = energy_local_netto }
+			}			
+		}
+		else # Высчитываем ограничение на экспорт локальной энергии в энергосеть страны
+		{
+			# Высчитываем, сколько из разницы в нетто энергии может быть передано электросетью
+			set_temp_variable = { energy_global_to_local_transfer_cap = energy_local_free_transfer_capacity }
+			if = {
+				limit = { check_variable = { energy_global_to_local_transfer_cap > energy_local_netto } }
+				set_temp_variable = { energy_global_to_local_transfer_cap = energy_local_netto }
+			}
+		}
+
+		# Выполняем импорт энергии из энергосети страны в локальную энергосеть
+		add_to_variable = { PREV.energy_country_netto = energy_global_to_local_transfer_cap }
+		subtract_from_variable = { energy_local_netto = energy_global_to_local_transfer_cap }
+
+		# Высчитываем фактор обеспечения электричеством
+		set_variable = { energy_local_netto_factor = energy_local_generation }
+		divide_variable = { energy_local_netto_factor = energy_local_consumption }
+	}
+	
+	# Эффект локального блекаута
+	if = {
+		limit = { check_variable = { energy_local_netto_factor < global.local_blackout_treshold_factor } }
+
+		#TODO Добавить эффект блекаута
+		
+		add_to_variable = { PREV.energy_blackout_population_k = state_population_k }
+		add_to_variable = { PREV.energy_blackout_arms_factories = non_damaged_building_level@arms_factory }
+		add_to_variable = { PREV.energy_blackout_ammunition_plants = non_damaged_building_level@ammunition_plant }
+		add_to_variable = { PREV.energy_blackout_industrial_complexes = non_damaged_building_level@industrial_complex }
+		add_to_variable = { PREV.energy_blackout_dockyards = non_damaged_building_level@dockyard }
+		add_to_variable = { PREV.energy_blackout_synthetic_refineries = non_damaged_building_level@synthetic_refinery }
+	}
+	else 
+	{
+		#TODO Снять эффект блекаута
+	}
+}
+
+# THIS is country scope
+postcalculate_energy_in_country = {
+	# Высчитываем фактор обеспечения электричеством
+	set_variable = { energy_country_netto_factor = energy_country_consumption }
+	add_to_variable = { energy_country_netto_factor = energy_country_netto }
+	divide_variable = { energy_country_netto_factor = energy_country_consumption }
+
+	# Эффект глобального блекаута
+	if = {
+		limit = { check_variable = { energy_country_netto_factor < global.global_blackout_treshold_factor } }
+
+		# Считаем дебафы от локальных блекаутов
+		calculate_global_blackout_effects = yes
+
+		#TODO Обновление эффектов
+		if = {
+			limit = { } # Для оптимизации проверять наличие нацдуха с глобальными блекаутами
+
+			#TODO Добавить эффект глобального блекаута	
+			all_controlled_state = { 
+				
+			}
+		}
+	}
+	else_if
+	{
+		limit = { } # Для оптимизации проверять отсутствие нацдуха с глобальными блекаутами
+
+		#TODO Снять эффект глобального блекаута		
+		all_controlled_state = { } # Снятие эффекта глобального блекаута
+	}
+}
+
+# THIS scope is country
+calculate_global_blackout_effects = {
+	# Высчитываем размер дэбафа
+	set_temp_variable = { energy_debuff_factor = energy_country_netto_factor }
+	divide_temp_variable = { energy_debuff_factor = global.global_blackout_treshold_factor }
+
+	set_variable = { energy_blackout_stability_factor = global.energy_blackout_stability_factor }
+	set_variable = { energy_blackout_production_factory_efficiency_gain_factor = global.energy_blackout_production_factory_efficiency_gain_factor }
+	set_variable = { energy_blackout_industrial_capacity_factory = global.energy_blackout_industrial_capacity_factory }
+	set_variable = { energy_blackout_production_speed_buildings_factor = global.energy_blackout_production_speed_buildings_factor }
+	set_variable = { energy_blackout_industrial_capacity_dockyard = global.energy_blackout_industrial_capacity_dockyard }
+	set_variable = { energy_blackout_industry_free_repair_factor = global.energy_blackout_industry_free_repair_factor }
+	set_variable = { energy_blackout_production_oil_factor = global.energy_blackout_production_oil_factor }
+
+	multiply_variable = { energy_blackout_stability_factor = energy_debuff_factor }
+	multiply_variable = { energy_blackout_production_factory_efficiency_gain_factor = energy_debuff_factor }
+	multiply_variable = { energy_blackout_industrial_capacity_factory = energy_debuff_factor }
+	multiply_variable = { energy_blackout_production_speed_buildings_factor = energy_debuff_factor }
+	multiply_variable = { energy_blackout_industrial_capacity_dockyard = energy_debuff_factor }
+	multiply_variable = { energy_blackout_industry_free_repair_factor = energy_debuff_factor }
+	multiply_variable = { energy_blackout_production_oil_factor = energy_debuff_factor }
 }
