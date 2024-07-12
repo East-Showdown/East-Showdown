@@ -58,7 +58,7 @@ init_global_energy_data = {
 # THIS is country scope
 calculate_energy_in_country = {
 	precalculate_energy_in_country = yes
-	all_controlled_state = { calculate_energy_in_state = yes }
+	every_controlled_state = { calculate_energy_in_state = yes }
 	postcalculate_energy_in_country = yes
 }
 
@@ -149,7 +149,7 @@ calculate_energy_in_state = {
 	subtract_from_variable = { energy_local_free_transfer_capacity = energy_local_consumption }
 
 	if = { # Если полностью использована пропускная способность трансформаторов		
-		limit = { check_variable = { energy_local_free_transfer_capacity < 0 }
+		limit = { check_variable = { energy_local_free_transfer_capacity < 0 } }
 		# Ограничиваем  генерацию энергии пропускной способностью
 		add_to_variable = { energy_local_generation = energy_local_free_transfer_capacity }
 	
@@ -161,8 +161,8 @@ calculate_energy_in_state = {
 		set_variable = { energy_local_netto_factor = energy_local_generation }
 		divide_variable = { energy_local_netto_factor = energy_local_consumption }
 	}
-	else # Иначе пропускная способность не использована полностью и она положительна
-	{
+	# Иначе пропускная способность не использована полностью и она положительна
+	else = {
 		# Считаем баланс энергии в стейте
 		set_variable = { energy_local_netto = energy_local_generation }
 		subtract_from_variable = { energy_local_netto = energy_local_consumption }
@@ -178,8 +178,8 @@ calculate_energy_in_state = {
 				set_temp_variable = { energy_global_to_local_transfer_cap = energy_local_netto }
 			}			
 		}
-		else # Высчитываем ограничение на экспорт локальной энергии в энергосеть страны
-		{
+		# Высчитываем ограничение на экспорт локальной энергии в энергосеть страны
+		else = {
 			# Высчитываем, сколько из разницы в нетто энергии может быть передано электросетью
 			set_temp_variable = { energy_global_to_local_transfer_cap = energy_local_free_transfer_capacity }
 			if = {
@@ -211,8 +211,7 @@ calculate_energy_in_state = {
 		add_to_variable = { PREV.energy_blackout_dockyards = non_damaged_building_level@dockyard }
 		add_to_variable = { PREV.energy_blackout_synthetic_refineries = non_damaged_building_level@synthetic_refinery }
 	}
-	else 
-	{
+	else = {
 		#TODO Снять эффект блекаута
 	}
 }
@@ -236,17 +235,16 @@ postcalculate_energy_in_country = {
 			limit = { } # Для оптимизации проверять наличие нацдуха с глобальными блекаутами
 
 			#TODO Добавить эффект глобального блекаута	
-			all_controlled_state = { 
+			every_controlled_state = {
 				
 			}
 		}
 	}
-	else_if
-	{
+	else_if =  {
 		limit = { } # Для оптимизации проверять отсутствие нацдуха с глобальными блекаутами
 
 		#TODO Снять эффект глобального блекаута		
-		all_controlled_state = { } # Снятие эффекта глобального блекаута
+		every_controlled_state = { } # Снятие эффекта глобального блекаута
 	}
 }
 
