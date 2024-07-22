@@ -273,9 +273,9 @@ calculate_energy_in_state = {
 	if = {
 		limit = { check_variable = { energy_local_netto_factor < global.local_blackout_treshold_factor } }
 
-		#TODO Добавить эффект блекаута
-		add_to_variable = { PREV.num_controlled_states_with_local_energy_blackout = 1 }
+		add_dynamic_modifier = { modifier = energy_local_blackout }
 
+		add_to_variable = { PREV.num_controlled_states_with_local_energy_blackout = 1 }
 		add_to_variable = { PREV.energy_blackout_population_k = state_population_k }
 		add_to_variable = { PREV.energy_blackout_arms_factories = non_damaged_building_level@arms_factory }
 		add_to_variable = { PREV.energy_blackout_ammunition_plants = non_damaged_building_level@ammunition_plant }
@@ -284,7 +284,7 @@ calculate_energy_in_state = {
 		add_to_variable = { PREV.energy_blackout_synthetic_refineries = non_damaged_building_level@synthetic_refinery }
 	}
 	else = {
-		#TODO Снять эффект блекаута
+		remove_dynamic_modifier = { modifier = energy_local_blackout }
 	}
 }
 
@@ -305,21 +305,21 @@ postcalculate_energy_in_country = {
 		# Считаем дебафы от локальных блекаутов
 		calculate_global_blackout_effects = yes
 
-		#TODO Обновление эффектов
 		if = {
-			limit = { } # Для оптимизации проверять наличие нацдуха с глобальными блекаутами
-
-			#TODO Добавить эффект глобального блекаута	
+			limit = { NOT = { has_dynamic_modifier = { modifier = energetics_flaw } } } # Для оптимизации проверять наличие нацдуха с глобальными блекаутами
+			add_dynamic_modifier = { modifier = energetics_flaw }
 			every_controlled_state = {
-				
+				add_dynamic_modifier = { modifier = energy_global_blackout }
 			}
 		}
 	}
 	else_if =  {
-		limit = { } # Для оптимизации проверять отсутствие нацдуха с глобальными блекаутами
-
-		#TODO Снять эффект глобального блекаута		
-		every_controlled_state = { } # Снятие эффекта глобального блекаута
+		limit = { has_dynamic_modifier = { modifier = energetics_flaw} } # Для оптимизации проверять отсутствие нацдуха с глобальными блекаутами
+		remove_dynamic_modifier = { modifier = energetics_flaw }
+		# Снятие эффекта глобального блекаута	
+		every_controlled_state = { 
+			remove_dynamic_modifier = { modifier = energy_global_blackout }
+		} 
 	}
 }
 
