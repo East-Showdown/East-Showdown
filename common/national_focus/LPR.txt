@@ -116,7 +116,7 @@ focus_tree = {
 	}
 	focus = {
 		id = LPR_Disarm_the_GUR_cells
-		icon = 404
+		icon = GFX_LPR_Disarm_the_GUR_cells
 		cost = 0.5
 		x = 4
 		y = 3
@@ -333,7 +333,7 @@ focus_tree = {
 	}
 	focus = {
 		id = LPR_SMO_start
-		icon = 404
+		icon = GFX_LPR_SMO_start
 		cost = 0.3
 		x = 0
 		y = 6
@@ -360,7 +360,20 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            custom_effect_tooltip = DPR_donetsk_recovery_tt
+			custom_effect_tooltip = DPR_we_must_be_in_safe_tt
+			set_variable = { DPR_hum_static_anti_air_damage_factor = 0.05 }
+			set_variable = { DPR_hum_static_anti_air_hit_chance_factor = 0.05 }
+			173 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_political_power = 35
+			add_stability = 0.025
+			add_war_support = 0.025
 		}
 	}
 
@@ -424,7 +437,25 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            add_political_power = 35
+			add_fuel = 5000
+			custom_effect_tooltip = LPR_new_electric_stations_tt
+			add_to_variable = { DPR_hum_civilian_factory_use = -1 }
+			add_to_variable = { DPR_hum_consumer_goods_factor = 0.015 }
+			add_timed_idea = { idea = recovery_of_energy_idea days = 7}
+			custom_effect_tooltip = DPR_Organize_work_to_repair_energy_infrastructure_tt
+			hidden_effect = {
+				189 = {
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+					}
+				}
+			}
 		}
 	}
 
@@ -538,7 +569,23 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            add_stability = 0.025
+        	add_political_power = 55
+			hidden_effect = {
+				add_dynamic_modifier = { modifier = DPR_liberated_territories_modifier }
+			}
+			custom_effect_tooltip = DPR_liberated_territory_cet
+			set_variable = { DPR_liberated_territories_industry_repair_factor = 0.05 }		
+			set_variable = { DPR_liberated_territories_consumer_goods_factor = -0.025 }	
+			set_variable = { DPR_liberated_territories_recruitable_population_factor = 0.015 }				
+			random_controlled_state  = { 
+				add_building_construction = {
+    				type = infrastructure
+    				level = 1
+    				instant_build = yes
+        		}
+				add_extra_state_shared_building_slots = 2
+			}
 		}
 	}
 
@@ -554,7 +601,38 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            add_stability = 0.025
+        	add_political_power = 75
+			custom_effect_tooltip = LPR_show_them_russian_world_tt
+			hidden_effect = {
+				add_popularity = { ideology = fascism popularity = 0.05 }
+				add_popularity = { ideology = neutrality popularity = 0.05 }
+			}
+			add_ideas = DPR_showcase_russian_world_spirit
+			if = {
+				limit = {
+					has_idea = society_very_low
+				}
+				add_ideas = society_low
+			}
+			if = {
+				limit = {
+					has_idea = society_low
+				}
+				add_ideas = society_medium
+			}
+			if = {
+				limit = {
+					has_idea = society_high
+				}
+				add_ideas = society_very_high
+			}
+			if = {
+				limit = {
+					has_idea = society_medium
+				}
+				add_ideas = society_high
+			}
 		}
 	}
 
@@ -563,14 +641,23 @@ focus_tree = {
 		icon = 404
 		prerequisite = { focus = LPR_expel_Bandera }
 		relative_position_id = LPR_expel_Bandera
-		x = 2
+		x = -2
 		y = 1
 		cost = 0.3
-
+        select_effect = {
+			add_ideas = DPR_filtration_process_idea
+		}
 		ai_will_do = { factor = 1 }
 
-		completion_reward = {
-
+		completion_reward={
+			custom_effect_tooltip = DPR_filtration_process_cet_1
+			custom_effect_tooltip = DPR_filtration_process_cet_2
+			add_political_power = 50
+        	add_war_support = 0.045
+			random_controlled_state = {
+				add_manpower = -2500
+			}
+			hidden_effect = { remove_ideas = DPR_filtration_process_idea }
 		}
 	}
 
@@ -586,7 +673,13 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            custom_effect_tooltip = DPR_mgb_modernisation_tt
+			add_command_power = 65
+			add_stability = 0.035
+			set_variable = { DPR_liberated_territories_resistance_activity = -0.055 }
+			set_variable = { DPR_liberated_territories_required_garrison_factor = -0.1 }
+			set_variable = { DPR_liberated_territories_resistance_target = -0.07 }	
+			custom_effect_tooltip = DPR_continue_fight_with_saboteurs_cet				
 		}
 	}
 
@@ -602,7 +695,11 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            custom_effect_tooltip = DPR_mgb_modernisation_tt
+			custom_effect_tooltip = DPR_judge_the_Kiev_butchers_tt
+			add_command_power = 75
+			add_political_power = 35
+            add_war_support = 0.065
 		}
 	}
 
@@ -611,14 +708,33 @@ focus_tree = {
 		icon = 404
 		prerequisite = { focus = LPR_expel_Bandera }
 		relative_position_id = LPR_expel_Bandera
-		x = -2
+		x = 2
 		y = 1
 		cost = 0.3
 
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            add_stability = 0.035
+        	add_political_power = 85
+			custom_effect_tooltip = DPR_help_with_restoration_cet
+			set_variable = { DPR_liberated_territories_repair_speed_infrastructure_factor = 0.075 }
+			set_variable = { DPR_liberated_territories_production_speed_buildings_factor = 0.095 }
+			set_variable = { DPR_liberated_territories_production_speed_infrastructure_factor = 0.15 }
+			random_controlled_state = {
+			    limit = {
+					non_damaged_building_level = {
+   						building = infrastructure
+   						level < 5
+   					}
+				}
+				add_building_construction = {
+    				type = infrastructure
+    				level = 1
+    				instant_build = yes
+        		}
+				add_extra_state_shared_building_slots = 2
+			}
 		}
 	}
 
@@ -630,11 +746,55 @@ focus_tree = {
 		x = 1
 		y = 1
 		cost = 0.3
-
+        select_effect = {
+			add_ideas = LPR_restore_enterprises_HI
+		}
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            custom_effect_tooltip = LPR_restore_enterprises_cet
+			if = {
+			    limit = {
+					controls_state = 173
+				}
+				173 = {
+			    	add_extra_state_shared_building_slots = 3
+					add_building_construction = { type = industrial_complex level = 2 instant_build = yes }
+					add_building_construction = { type = arms_factory level = 1 instant_build = yes }
+				}
+			}
+			if = {
+			    limit = {
+					controls_state = 293
+				}
+				293 = {
+			    	add_extra_state_shared_building_slots = 1
+					add_building_construction = { type = arms_factory level = 1 instant_build = yes }
+				}
+			}
+			if = {
+			    limit = {
+					controls_state = 194
+				}
+				194 = {
+			    	add_extra_state_shared_building_slots = 1
+					add_building_construction = { type = industrial_complex level = 1 instant_build = yes }
+				}
+			}
+			if = {
+			    limit = {
+					controls_state = 183
+				}
+				183 = {
+			    	add_extra_state_shared_building_slots = 1
+					add_building_construction = { type = industrial_complex level = 1 instant_build = yes }
+				}
+			}
+			swap_ideas = {
+				remove_idea = DNB_assets_of_Russian_oligarchs
+				add_idea = DNB_assets_of_Russian_oligarchs_1
+			}
+			hidden_effect = { remove_ideas = LPR_restore_enterprises_HI }
 		}
 	}
 
@@ -650,7 +810,37 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+            custom_effect_tooltip = DPR_recover_the_infrastructure_tt
+			add_political_power = 50
+			add_stability = 0.015
+			hidden_effect = {
+				random_controlled_state = {
+			        limit = {
+					    non_damaged_building_level = {
+   						    building = infrastructure
+   						    level < 5
+   					    }
+					}
+					add_building_construction = { type = industrial_complex level = 1 instant_build = yes }
+					add_building_construction = { type = infrastructure level = 1 instant_build = yes }
+					add_extra_state_shared_building_slots = 1
+				}
+				random_controlled_state = {
+			        limit = {
+					    non_damaged_building_level = {
+   						    building = infrastructure
+   						    level < 5
+   					    }
+					}
+					add_building_construction = { type = industrial_complex level = 1 instant_build = yes }
+					add_building_construction = { type = infrastructure level = 1 instant_build = yes }
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			add_to_variable = { DPR_liberated_territories_production_speed_infrastructure_factor = 0.035 }
+			add_to_variable = { DPR_liberated_territories_industry_repair_factor = 0.03 }
+			add_to_variable = { DPR_liberated_territories_consumer_goods_factor = -0.025 }
+			custom_effect_tooltip = DPR_recover_the_infrastructure_cet	
 		}
 	}
 
