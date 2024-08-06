@@ -1,7 +1,6 @@
 on_actions = {
 	on_startup = {
         effect = {
-
 			if = {
 				limit = {
 					NOT = { has_global_flag = RBA_created }
@@ -17,7 +16,6 @@ on_actions = {
 					country_event = { id = utils.1 }
 				}
 			}
-
 
 			set_global_flag = SMO_exchange_prisoners_soon_gf
 			set_global_flag = word_name_not_start
@@ -1006,6 +1004,95 @@ on_actions = {
 	on_monthly_UKR = {
 		effect = {
 		    add_to_variable = { UKR_volunteerACT_m = UKR_volunteerACT_monthly }
+		}
+	}
+	on_capitulation = {
+		effect = { 
+		    RUS = {
+				divide_variable = {
+                    var = RUS_recruitment_of_volunteers_weekly_manpower
+                    value = 2
+                }
+			}
+			if = {
+				limit = {
+					ROOT = {
+						original_tag = UKR
+					}
+					FROM = {
+						original_tag = RUS
+					}
+				}
+				UKR = {
+				    every_owned_state = {
+			            transfer_state_to = RUS
+			        }
+				}
+				if = {
+					limit = {
+						DPR = {
+							exists = yes
+						}
+					}
+					DPR = {
+						transfer_state = 237
+						transfer_state = 213
+						transfer_state = 182
+						transfer_state = 149
+						transfer_state = 165
+					}
+				}
+				if = {
+					limit = {
+						LPR = {
+							exists = yes
+						}
+					}
+					LPR = {
+						transfer_state = 145
+						transfer_state = 116
+						transfer_state = 125
+						transfer_state = 154
+						transfer_state = 176
+					}
+				}
+				RUS = {
+				    if = {
+						limit = {
+							NOT = {
+								has_completed_focus = RUS_referendum
+							}
+						}
+						country_event = {
+			    			id = rus.183
+							days = 4
+						}
+					}
+					else = {
+						Novorossia_united_SE = yes
+						every_owned_state = {
+			    			limit = {
+				    			OR = {
+									is_core_of = DPR
+									is_core_of = LPR
+								}
+							}
+							add_core_of = RUS
+						}
+						every_owned_state = {
+							add_compliance = 40
+						}
+					}
+			        country_event = {
+			    		id = rus.182
+						days = 2
+					}
+					country_event = {
+			    		id = rus.185
+						hours = 3
+					}
+			    }
+			}
 		}
 	}
 }
