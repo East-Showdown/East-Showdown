@@ -40,7 +40,8 @@ init_global_energy_data = {
 	set_variable = { global.energy_solar_power_plant_generation_power = 0.01 }
 	set_variable = { global.energy_wind_power_plant_generation_power = 0.02 }
 
-	set_variable = { global.energy_substation_transfer_capacity_power = 0.15 }
+	set_variable = { global.energy_substation_transfer_capacity_power = 0.1 }
+	set_variable = { global.energy_substation_big_transfer_capacity_power = 0.75 }
 	set_variable = { global.energy_blackout_treshold_factor = 0.8 }
 	
 	# Эффекты для модификаторов при 100% глобальном блэкауте
@@ -99,7 +100,7 @@ precalculate_energy_in_country = {
 	set_variable = { energy_blackout_dockyards = 0 }
 	set_variable = { energy_blackout_synthetic_refineries = 0 }
 
-	set_variable = { hydro_power_plant_operating_units = 0 }
+	set_variable = { energy_hydro_power_plant_operating_units = 0 }
 	set_variable = { energy_hydro_power_plant_units_generation = 0 }
 }	
 
@@ -162,6 +163,10 @@ recalculate_country_energy_data = {
 	multiply_variable = { energy_substation_transfer_capacity_power = modifier@energy_substation_transfer_capacity_power }
 	clamp_variable = { var = energy_substation_transfer_capacity_power min = 0 }
 
+	set_variable = { energy_substation_big_transfer_capacity_power = global.energy_substation_big_transfer_capacity_power }
+	multiply_variable = { energy_substation_big_transfer_capacity_power = modifier@energy_substation_big_transfer_capacity_power }
+	clamp_variable = { var = energy_substation_big_transfer_capacity_power min = 0 }
+
 	# ============ Пороговое значение блекаута ============
 	set_variable = { energy_blackout_treshold_factor = global.energy_blackout_treshold_factor }
 	multiply_variable = { energy_blackout_treshold_factor = modifier@energy_blackout_treshold_factor }
@@ -190,13 +195,13 @@ calculate_energy_local_generation = {
 	add_to_variable = { energy_generation = energy_wind_power_plants_generation }
 	
 	if = {
-		limit = { check_variable = { hydro_power_plant_all_units > 0 } }
+		limit = { check_variable = { energy_hydro_power_plant_all_units > 0 } }
 
-		set_variable = { energy_hydro_power_plant_units_generation = hydro_power_plant_operating_units }
+		set_variable = { energy_hydro_power_plant_units_generation = energy_hydro_power_plant_operating_units }
 		multiply_variable = { energy_hydro_power_plant_units_generation = energy_hydro_power_plant_unit_generation_power }
 		multiply_variable = { energy_hydro_power_plant_units_generation = PREV.energy_hydro_power_plant_unit_generation_factor }
 		multiply_variable = { energy_hydro_power_plant_units_generation = energy_hydro_power_plant_unit_generation_factor }
-		add_to_variable = { PREV.hydro_power_plant_operating_units = hydro_power_plant_operating_units	}
+		add_to_variable = { PREV.energy_hydro_power_plant_operating_units = energy_hydro_power_plant_operating_units	}
 		add_to_variable = { PREV.energy_hydro_power_plant_units_generation = energy_hydro_power_plant_units_generation }
 		add_to_variable = { energy_generation = energy_hydro_power_plant_units_generation }
 	}
@@ -300,6 +305,10 @@ calculate_energy_in_state = {
 	# Сколько передают подстанции
 	set_variable = { energy_transfer_capacity = non_damaged_building_level@electrical_substation }
 	multiply_variable = { energy_transfer_capacity = PREV.energy_substation_transfer_capacity_power }
+
+	set_temp_variable = { temp_energy_transfer_capacity_big = non_damaged_building_level@electrical_substation_big }
+	multiply_temp_variable = { temp_energy_transfer_capacity_big = PREV.energy_substation_big_transfer_capacity_power }
+	add_to_variable = { energy_transfer_capacity = temp_energy_transfer_capacity_big }
 	
 	# Считаем свободную пропускную способность трансформаторов
 	set_variable = { energy_free_transfer_capacity = energy_transfer_capacity }
@@ -542,113 +551,113 @@ calculate_global_blackout_effects = {
 init_all_hydro_power_plants = {
 	#Днепр
 	644 = { # Каховская ГЭС
-		set_variable = { hydro_power_plant_all_units = 6 }
-		set_variable = { hydro_power_plant_operating_units = 6 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 6 }
+		set_variable = { energy_hydro_power_plant_operating_units = 6 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.056 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	671 = { # ДнепроГЭС-1
-		set_variable = { hydro_power_plant_all_units = 9 }
-		set_variable = { hydro_power_plant_operating_units = 9 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 9 }
+		set_variable = { energy_hydro_power_plant_operating_units = 9 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.072 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	208 = { # ДнепроГЭС-2		
-		set_variable = { hydro_power_plant_all_units = 8 }
-		set_variable = { hydro_power_plant_operating_units = 8 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 8 }
+		set_variable = { energy_hydro_power_plant_operating_units = 8 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.125 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	169 = { # Среднеднепровская ГЭС	
-		set_variable = { hydro_power_plant_all_units = 8 } #2 из 8 на реконструкции. Вероятно, не работают?
-		set_variable = { hydro_power_plant_operating_units = 6 }
-		set_variable = { hydro_power_plant_reconstruction_units = 2 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 8 } #2 из 8 на реконструкции. Вероятно, не работают?
+		set_variable = { energy_hydro_power_plant_operating_units = 6 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 2 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.05 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	158 = { # Кременчугская ГЭС
-		set_variable = { hydro_power_plant_all_units = 24 }
-		set_variable = { hydro_power_plant_operating_units = 24 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 24 }
+		set_variable = { energy_hydro_power_plant_operating_units = 24 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.021 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	73 = { # Киевская ГЭС
-		set_variable = { hydro_power_plant_all_units = 20 }
-		set_variable = { hydro_power_plant_operating_units = 20 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 20 }
+		set_variable = { energy_hydro_power_plant_operating_units = 20 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.022 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 
 	#Волга
 	74 = { # Волжская ГЭС
-		set_variable = { hydro_power_plant_all_units = 32 }
-		set_variable = { hydro_power_plant_operating_units = 32 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 32 }
+		set_variable = { energy_hydro_power_plant_operating_units = 32 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.085 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	515 = { # Саратовская ГЭС
-		set_variable = { hydro_power_plant_all_units = 24 }
-		set_variable = { hydro_power_plant_operating_units = 24 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 24 }
+		set_variable = { energy_hydro_power_plant_operating_units = 24 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.061 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	42 = { # Жигулёвская ГЭС
-		set_variable = { hydro_power_plant_all_units = 20 }
-		set_variable = { hydro_power_plant_operating_units = 20 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 20 }
+		set_variable = { energy_hydro_power_plant_operating_units = 20 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.124 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	}
 	17 = { # Чебоксарская ГЭС
-		set_variable = { hydro_power_plant_all_units = 18 }
-		set_variable = { hydro_power_plant_operating_units = 18 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 18 }
+		set_variable = { energy_hydro_power_plant_operating_units = 18 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.076 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	} 
 	16 = { # Нижегородская ГЭС
-		set_variable = { hydro_power_plant_all_units = 8 }
-		set_variable = { hydro_power_plant_operating_units = 8 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 8 }
+		set_variable = { energy_hydro_power_plant_operating_units = 8 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.066 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	} 
 
 	444 = { # Цимлянская ГЭС
-		set_variable = { hydro_power_plant_all_units = 5 }
-		set_variable = { hydro_power_plant_operating_units = 5 }
-		set_variable = { hydro_power_plant_reconstruction_units = 0 }
-		set_variable = { hydro_power_plant_damaged_units = 0 }
-		set_variable = { hydro_power_plant_destoyed_units = 0 }
+		set_variable = { energy_hydro_power_plant_all_units = 5 }
+		set_variable = { energy_hydro_power_plant_operating_units = 5 }
+		set_variable = { energy_hydro_power_plant_reconstruction_units = 0 }
+		set_variable = { energy_hydro_power_plant_damaged_units = 0 }
+		set_variable = { energy_hydro_power_plant_destoyed_units = 0 }
 		set_variable = { energy_hydro_power_plant_unit_generation_power = 0.042 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
 	} 	
