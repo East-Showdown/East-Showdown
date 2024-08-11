@@ -46,7 +46,6 @@ focus_tree = {
 		relative_position_id = LPR_8_years_of_struggle
 		prerequisite = { focus = LPR_Prepare_for_the_critical_phase_of_the_conflict }
 		completion_reward={
-			custom_effect_tooltip = DPR_civilian_reforms_tt
 			custom_effect_tooltip = DPR_our_autonomy_tt
 			add_political_power = 90
 			add_stability = 0.025
@@ -62,7 +61,6 @@ focus_tree = {
 		relative_position_id = LPR_8_years_of_struggle
 		prerequisite = { focus = LPR_Cooperate_with_the_Government_of_the_Russian_Federation }
 		completion_reward={
-			custom_effect_tooltip = DPR_civilian_reforms_tt
 			add_political_power = 95
 			add_command_power = 45
 			army_experience = 10
@@ -79,7 +77,6 @@ focus_tree = {
 		relative_position_id = LPR_8_years_of_struggle
 		prerequisite = { focus = LPR_Cooperate_with_the_Government_of_the_Russian_Federation }
 		completion_reward={
-			custom_effect_tooltip = LPR_decisions_of_the_people_militia
 			add_command_power = 75
 			army_experience = 55
 			custom_effect_tooltip = LPR_cooperate_with_VS_RF_cet
@@ -126,6 +123,7 @@ focus_tree = {
 		    add_stability = 0.035
 			add_command_power = 15
 			custom_effect_tooltip = LPR_Disarm_the_GUR_cells_cet
+			set_country_flag = LPR_Disarm_GUR
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -286,7 +284,6 @@ focus_tree = {
 		prerequisite = { focus = LPR_Coordinate_actions_with_General_Staff focus = LPR_Expand_the_staff_of_curators_from_the_FSB }
 		completion_reward={
 			custom_effect_tooltip = DPR_general_moblization_tt
-			custom_effect_tooltip = LPR_decisions_of_the_people_militia
 			add_war_support = -0.1
 			hidden_effect = {
 			    swap_ideas = {
@@ -1566,58 +1563,65 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+			add_stability = 0.005
+			add_political_power = 50
 		}
 	}
 
 	focus = {
-		id = LPR_ban_mission_of_OSCE # ОБСЕ
-		icon = 404
-		prerequisite = { focus = LPR_MIA_policy }
-		relative_position_id = LPR_MIA_policy
-		x = 5
-		y = 1
-		cost = 0.3
+        id = LPR_ban_mission_of_OSCE # ОБСЕ
+        icon = 404
+        prerequisite = { focus = LPR_MIA_policy }
+        relative_position_id = LPR_MIA_policy
+        x = 5
+        y = 1
+        cost = 0.3
 
-		ai_will_do = { factor = 1 }
+        ai_will_do = { factor = 1 }
 
-		completion_reward = {
+        completion_reward = {
+            news_event = news.192
+        }
+    }
 
-		}
-	}
-
-	focus = {
-		id = LPR_crime_registry
-		icon = 404
-		prerequisite = { focus = LPR_ban_mission_of_OSCE }
-		relative_position_id = LPR_ban_mission_of_OSCE
-		x = 0
-		y = 1
-		cost = 0.3
-
-		ai_will_do = { factor = 1 }
-
-		completion_reward = {
-
-		}
-	}
 
 	focus = {
-		id = LPR_bribes_to_security_forces
-		icon = 404
-		prerequisite = { focus = LPR_MIA_policy }
-		mutually_exclusive = { focus = LPR_fight_against_corruption }
-		relative_position_id = LPR_MIA_policy
-		x = 3
-		y = 1
-		cost = 0.3
+        id = LPR_crime_registry
+        icon = 404
+        prerequisite = { focus = LPR_ban_mission_of_OSCE }
+        relative_position_id = LPR_ban_mission_of_OSCE
+        x = 0
+        y = 1
+        cost = 0.3
 
-		ai_will_do = { factor = 1 }
+        ai_will_do = { factor = 1 }
 
-		completion_reward = {
+        completion_reward = {
+            add_to_variable = {
+            var = global.rus_information_war_var_sum
+            value = 2.5
+            tooltip = LPR_crime_registry_tt
+            }
+        }
+    }
 
-		}
-	}
+	focus = {
+        id = LPR_bribes_to_security_forces
+        icon = 404
+        prerequisite = { focus = LPR_MIA_policy }
+        mutually_exclusive = { focus = LPR_fight_against_corruption }
+        relative_position_id = LPR_MIA_policy
+        x = 3
+        y = 1
+        cost = 0.3
+
+        ai_will_do = { factor = 1 }
+
+        completion_reward = {
+            add_to_variable = { corruption_level = -50 }
+            custom_effect_tooltip = LPR_bribes_to_security_forces_tt
+        }
+    }
 
 	focus = {
 		id = LPR_fight_against_corruption
@@ -1632,26 +1636,27 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+			add_political_power = 250
+			custom_effect_tooltip = LPR_corruption_higher_tt
+			add_to_variable = { corruption_level = 50 }
 		}
 	}
 
 	focus = {
-		id = LPR_order_in_authorities
-		icon = 404
-		prerequisite = { focus = LPR_fight_against_corruption }
-		prerequisite = { focus = LPR_bribes_to_security_forces }
-		relative_position_id = LPR_fight_against_corruption
-		x = 1
-		y = 1
-		cost = 0.3
+        id = LPR_order_in_authorities
+        icon = 404
+        prerequisite = { focus = LPR_fight_against_corruption focus = LPR_bribes_to_security_forces }
+        relative_position_id = LPR_fight_against_corruption
+        x = 1
+        y = 1
+        cost = 0.3
 
-		ai_will_do = { factor = 1 }
+        ai_will_do = { factor = 1 }
 
-		completion_reward = {
-
-		}
-	}
+        completion_reward = {
+            remove_ideas = LPR_banditry_law_enforcement_agencies 
+        }
+    }
 
 	focus = {
 		id = LPR_fight_against_bandits
@@ -1665,7 +1670,8 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+			custom_effect_tooltip = fight_against_corruption_effect_small_tt
+			add_to_variable = { corruption_level = -25}
 		}
 	}
 
@@ -1681,7 +1687,8 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-
+			custom_effect_tooltip = fight_against_corruption_effect_small_tt
+			add_to_variable = { corruption_level = -25}
 		}
 	}
 
