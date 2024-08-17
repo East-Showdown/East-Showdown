@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
+    //Даже после "успешной отработки" программы требуется частично ручками поработать
     private static final double ENERGY_PER_ARMS_FACTORY = 0.075;
     private static final double ENERGY_PER_INDUSTRIAL_COMPLEX = 0.075;
     private static final double ENERGY_PER_AMMUNITION_PLANT = 0.075;
@@ -17,8 +18,10 @@ public class Main {
     private static final double SUBSTATION_BIG_CAPACITY = 0.75;
     private static final double SUBSTATION_CAPACITY = 0.10;
 
+    private static final double EXTRA_ENERGY_CONSUMPTION = 0.0; //Если необходимо (что бы подстанции размещались с "запасом")
+
     public static void main(String[] args) {
-        File folder = new File("C:/Users/ksyx7/Documents/GitHub/East-Showdown/history/states");
+        File folder = new File("C:/Users/ksyx7/Documents/GitHub/East-Showdown/history/states"); //офк, тут должен быть ваш путь
         File[] stateFiles = folder.listFiles((dir, name) -> name.endsWith(".txt"));
 
         int totalFiles = 0;
@@ -83,6 +86,7 @@ public class Main {
         }
 
         totalEnergyConsumption += (manpower / 100000) * ENERGY_PER_100K_POPULATION;
+        totalEnergyConsumption += EXTRA_ENERGY_CONSUMPTION;
 
         int bigSubstations = (int) (totalEnergyConsumption / SUBSTATION_BIG_CAPACITY);
         double remainingEnergy = totalEnergyConsumption % SUBSTATION_BIG_CAPACITY;
