@@ -18,8 +18,6 @@ public class Main {
     private static final double SUBSTATION_BIG_CAPACITY = 0.75;
     private static final double SUBSTATION_CAPACITY = 0.10;
 
-    private static final double EXTRA_ENERGY_CONSUMPTION = 0.0; //Если необходимо (что бы подстанции размещались с "запасом")
-
     public static void main(String[] args) {
         File folder = new File("C:/Users/ksyx7/Documents/GitHub/East-Showdown/history/states"); //офк, тут должен быть ваш путь
         File[] stateFiles = folder.listFiles((dir, name) -> name.endsWith(".txt"));
@@ -85,22 +83,27 @@ public class Main {
             }
         }
 
-        totalEnergyConsumption += (manpower / 100000) * ENERGY_PER_100K_POPULATION;
-        totalEnergyConsumption += EXTRA_ENERGY_CONSUMPTION;
+        totalEnergyConsumption += (manpower / 100000.0) * ENERGY_PER_100K_POPULATION;
 
         int bigSubstations = (int) (totalEnergyConsumption / SUBSTATION_BIG_CAPACITY);
         double remainingEnergy = totalEnergyConsumption % SUBSTATION_BIG_CAPACITY;
         int smallSubstations = (int) Math.ceil(remainingEnergy / SUBSTATION_CAPACITY);
 
-        // Logging
         System.out.println("File: " + stateFile.getFileName());
+        System.out.println("Total Energy Consumption: " + totalEnergyConsumption);
         System.out.println("Big Substations needed: " + bigSubstations + ", Small Substations needed: " + smallSubstations);
         System.out.println("Big Substations present: " + hasBigSubstation + ", Small Substations present: " + hasSmallSubstation);
+
+        if (bigSubstations == 0 && smallSubstations == 0 && totalEnergyConsumption > 0) {
+            smallSubstations = 1;
+        }
 
         if ((!hasBigSubstation && bigSubstations > 0) || (!hasSmallSubstation && smallSubstations > 0)) {
             addSubstations(lines, bigSubstations, smallSubstations);
             Files.write(stateFile, lines);
             modified = true;
+        } else {
+            System.out.println("File: " + stateFile.getFileName() + " has too low energy consumption.");
         }
 
         return modified;
