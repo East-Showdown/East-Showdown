@@ -229,6 +229,24 @@ calculate_energy_country_generation = {
 	add_to_variable = { energy_generation = energy_hydro_power_plant_units_generation }
 }
 
+calculate_energy_country_offsite_generation = {
+	set_temp_variable = { energy_offsite_nuclear_power_plants_generation = offsite_nuclear_power_plants }
+	multiply_temp_variable = { energy_offsite_nuclear_power_plants_generation = energy_nuclear_power_plant_generation_power }
+	add_to_variable = { energy_netto = energy_offsite_nuclear_power_plants_generation }
+
+	set_temp_variable = { energy_offsite_thermal_power_plants_generation = offsite_thermal_power_plants }
+	multiply_temp_variable = { energy_offsite_thermal_power_plants_generation = energy_thermal_power_plant_generation_power }
+	add_to_variable = { energy_netto = energy_offsite_thermal_power_plants_generation }
+
+	set_temp_variable = { energy_offsite_solar_power_plants_generation = offsite_solar_power_plants }
+	multiply_temp_variable = { energy_offsite_solar_power_plants_generation = energy_solar_power_plant_generation_power }
+	add_to_variable = { energy_netto = energy_offsite_solar_power_plants_generation }
+
+	set_temp_variable = { energy_offsite_wind_power_plants_generation = offsite_wind_power_plants }
+	multiply_temp_variable = { energy_offsite_wind_power_plants_generation = energy_wind_power_plant_generation_power }
+	add_to_variable = { energy_netto = energy_offsite_wind_power_plants_generation }
+}
+
 # PREV is country scope
 # THIS is state scope
 calculate_energy_local_consumption = {
@@ -295,6 +313,28 @@ calculate_energy_country_consumption = {
 	# Сумарные локальные затраты энергии
 	set_variable = { energy_consumption = energy_population_consumption }
 	add_to_variable = { energy_consumption = energy_buildings_consumption }
+}
+
+calculate_energy_country_offsite_consumption = {
+	set_temp_variable = { energy_offsite_arms_factories_consumption = offsite_arms_factories }
+	multiply_temp_variable = { energy_offsite_arms_factories_consumption = energy_arms_factory_consumption_power }
+	add_to_variable = { energy_consumption = energy_offsite_arms_factories_consumption }
+
+	set_temp_variable = { energy_offsite_ammunition_plants_consumption = offsite_ammunition_plants }
+	multiply_temp_variable = { energy_offsite_ammunition_plants_consumption = energy_ammunition_plant_consumption_power }
+	add_to_variable = { energy_consumption = energy_offsite_ammunition_plants_consumption }
+
+	set_temp_variable = { energy_offsite_industrial_complexes_consumption = offsite_industrial_complexes }
+	multiply_temp_variable = { energy_offsite_industrial_complexes_consumption = energy_industrial_complex_consumption_power }
+	add_to_variable = { energy_consumption = energy_offsite_industrial_complexes_consumption }
+
+	set_temp_variable = { energy_offsite_dockyards_consumption = offsite_dockyards }
+	multiply_temp_variable = { energy_offsite_dockyards_consumption = energy_dockyard_consumption_power }
+	add_to_variable = { energy_consumption = energy_dockyards_consumption }
+
+	set_temp_variable = { energy_offsite_synthetic_refineries_consumption = offsite_synthetic_refineries }
+	multiply_temp_variable = { energy_offsite_synthetic_refineries_consumption = energy_synthetic_refinery_consumption_power }
+	add_to_variable = { energy_consumption = energy_synthetic_refineries_consumption }
 }
 
 # PREV is a country scope
@@ -406,7 +446,9 @@ calculate_energy_in_state = {
 # THIS is country scope
 postcalculate_energy_in_country = {
 	calculate_energy_country_generation = yes
+	calculate_energy_country_offsite_generation = yes
 	calculate_energy_country_consumption = yes
+	calculate_energy_country_offsite_consumption = yes
 
 	# Высчитываем фактор обеспечения электричеством
 	set_variable = { energy_netto_factor = energy_connected_consumption }
