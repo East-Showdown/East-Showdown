@@ -22,7 +22,7 @@ public class StateUpdater {
         energyConsumptionMap.put("ammunition_plant", 0.075);
         energyConsumptionMap.put("dockyard", 0.1);
         energyConsumptionMap.put("synthetic_refinery", 0.05);
-        energyConsumptionMap.put("nuclear_reactor", 1.0);
+        energyConsumptionMap.put("nuclear_power_plant", 1.0);
         energyConsumptionMap.put("thermal_power_plant", 0.2);
         energyConsumptionMap.put("solar_power_plant", 0.01);
         energyConsumptionMap.put("wind_power_plant", 0.02);
