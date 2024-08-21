@@ -1,4 +1,11 @@
 # Подготовка к войне
+
+#front_unit_request Использует искусственный интеллект для переброски большего количества юнитов на заданную линию фронта.	Одновременно можно использовать более одного типа целей, 
+#и в этом случае необходимо соответствовать каждому из них.
+
+#тип приказа = <фронт|вторжение> #order type = <front|invasion>
+#Если этот параметр установлен, стратегия ИИ будет применяться только при сухопутных или морских вторжениях соответственно
+
 RUS_wait_war_with_ukr = {
 	allowed = {
 		original_tag = RUS
@@ -165,8 +172,8 @@ RUS_front_control_2 = {
 		ratio = 1
 		priority = 100
 		ordertype = front
-		execution_type = balanced
-		manual_attack = no
+		execution_type = balanced 
+		manual_attack =  yes  #no
 	}
 
 	ai_strategy = {
@@ -176,7 +183,7 @@ RUS_front_control_2 = {
 		priority = 10
 		ordertype = front
 		execution_type = balanced
-		manual_attack = no
+		manual_attack = yes  #no
 	}
 }
 
@@ -221,7 +228,7 @@ RUS_leave_kiev = {
 #set_country_flag = RUS_retreated_from_Kyiv  
 
 
-#оброна херсона после уход из  киева 
+#оброна херсона с начала сво чтоб не пропушили  
 RUS_defend_kheson_oblst = {
 	allowed = {
 		original_tag = RUS
@@ -229,7 +236,7 @@ RUS_defend_kheson_oblst = {
 
 	enable = {
 		OR = {
-			set_country_flag = RUS_retreated_from_Kyiv
+			set_country_flag = RUS_start_SMO
 		    is_historical_focus_on = yes
 			has_war_with = UKR
 		}		
@@ -237,7 +244,7 @@ RUS_defend_kheson_oblst = {
 
 	abort = {
 		OR = {
-			date > 2022.9.1
+			set_country_flag = RUS_start_SMO
 		}
 	}
 
@@ -263,7 +270,7 @@ RUS_defend_kheson_oblst = {
 
 	ai_strategy = {
 		type = front_control
-		strategic_region = 56
+		strategic_region = 56 #херсонская
 		strategic_region = 58
 		ordertype = front
 		execution_type = rush
@@ -273,14 +280,59 @@ RUS_defend_kheson_oblst = {
 
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 58
-		value = 50
+		strategic_region = 56
+		value = 90
 	}
-
 
 }
 
 
+
+#оброна херсона 2 этап + крім
+RUS_defend_kheson_oblst2 = {
+	allowed = {
+		original_tag = RUS
+	}
+
+	enable = {
+		OR = {
+			set_country_flag = RUS_retreated_from_Kyiv
+		    is_historical_focus_on = yes
+			has_war_with = UKR
+		}		
+	}
+
+	abort_when_not_enabled = yes
+
+
+	ai_strategy = {
+		type = front_control
+		strategic_region = 56  #херсонская
+		strategic_region = 28 #крым
+		ordertype = front
+		execution_type = careful #окуратно  #Если задано, позволяет ИИ либо принудительно выполнить основной заказ, либо заставить его никогда не выполняться
+		manual_attack = yes
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 56
+		value = 70
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+#атака луганс донетск
 RUS_atack_donetsk_oblst = {
 	allowed = {
 		original_tag = RUS
@@ -307,18 +359,18 @@ RUS_atack_donetsk_oblst = {
 		#execute_order = yes
 	#}
 
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 31 #donetsk
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
+#	ai_strategy = {
+	#	type = front_control
+	#	tag = UKR
+	#	strategic_region = 31 #donetsk
+	#	ordertype = front
+		#execution_type = rush
+		#execute_order = yes
 		#manual_attack = yes
-	}
+	#}
 
 	ai_strategy = {
-		type = front_control
+		type = invasion_unit_request
 		strategic_region = 63  #lugansk
 		ordertype = front
 		execution_type = rush
@@ -328,7 +380,7 @@ RUS_atack_donetsk_oblst = {
 
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 31
+		strategic_region = 63
 		value = 50
 	}
 
@@ -341,14 +393,14 @@ RUS_atack_donetsk_oblst = {
 
 
 
-
+#атака на харьков
 RUS_attack_kharkov = {
 	allowed = {
 		original_tag = RUS
 	}
 
 	enable = {
-		set_country_flag = RUS_retreated_from_Kyiv
+		set_country_flag = RUS_start_SMO
 		is_historical_focus_on = yes
 		has_war_with = UKR	
 	}
@@ -374,14 +426,6 @@ RUS_attack_kharkov = {
 		#manual_attack = yes
 	#}
 ##############################################
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		#manual_attack = yes
-	}
 
 	ai_strategy = {
 		type = front_control
@@ -390,12 +434,15 @@ RUS_attack_kharkov = {
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
+		value = 100
+		ratio = 0.1  #Какое соотношение фронтов должно быть у указанного фронта в качестве 
+		#требования для включения стратегии. Значение по умолчанию равно 0.
 	}
 
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 44
-		value = 50
+		strategic_region = 44  #харьковская
+		value = 100
 	}
 
 }
