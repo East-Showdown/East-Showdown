@@ -860,22 +860,22 @@ NDefines_Graphics = {
 		NAMES_GROUP_MAX_NAME_LIST_ENTRIES = 25,	-- Max example name entries in ship and railway gun name list in production menu
 	
 		WEATHER_DISTANCE_CUTOFF = 3000, -- At what distance weather effects are hidden
-		WEATHER_DISTANCE_FADE_LENGTH = 1, -- How far the fade out distance should be
-		WEATHER_ZOOM_IN_CUTOFF = 1, -- At what distance weather effects are faded out the most when zooming in
+		WEATHER_DISTANCE_FADE_LENGTH = 100, -- How far the fade out distance should be
+		WEATHER_ZOOM_IN_CUTOFF = 0, -- At what distance weather effects are faded out the most when zooming in
 		WEATHER_ZOOM_IN_FADE_LENGTH = 220, -- How far the zoom in fade out distance should be
-		WEATHER_ZOOM_IN_FADE_FACTOR = 0.0, -- How much the weather effects should fade out when maximum zoomed in
-		WEATHER_PLAYBACK_RATE = 0.1, -- Playback rate at maximum distance
-		WEATHER_PLAYBACK_RATE_CUTOFF = 500, -- Playback rate maximum distance
+		WEATHER_ZOOM_IN_FADE_FACTOR = 1.0, -- How much the weather effects should fade out when maximum zoomed in
+		WEATHER_PLAYBACK_RATE = 0.5, -- Playback rate at maximum distance
+		WEATHER_PLAYBACK_RATE_CUTOFF = 10, -- Playback rate maximum distance
 		WEATHER_PLAYBACK_RATE_LENGTH = 1000, -- For how long to fade between normal playback rate and maximum distance playback rate
 	
 		POSTEFFECT_PER_PROVINCE_MIN_SNOW = 0.25,
 		POSTEFFECT_PER_PROVINCE_MAX_SNOW = 0.5,
 		POSTEFFECT_TOTAL_MIN_SNOW = 0.0,
-		POSTEFFECT_TOTAL_MAX_SNOW = 0.05,
+		POSTEFFECT_TOTAL_MAX_SNOW = 0.15,
 		POSTEFFECT_FEATHER_MIN_DISTANCE = 1000.0,
 		POSTEFFECT_FEATHER_MAX_DISTANCE = 4000.0,
-		POSTEFFECT_FEATHER_AT_MIN = 0.06,
-		POSTEFFECT_FEATHER_AT_MAX = 0.160,
+		POSTEFFECT_FEATHER_AT_MIN = 0.12,
+		POSTEFFECT_FEATHER_AT_MAX = 0.320,
 	
 		LAND_COMBAT_BALANCED_COLOR = { 1.0, 1.0, 0.0, 1.0 },
 		LAND_COMBAT_LOSING_COLOR = { 1.0, 0.0, 0.0, 1.0 },
