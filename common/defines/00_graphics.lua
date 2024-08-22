@@ -102,6 +102,8 @@ NDefines_Graphics = {
 		PEACE_CLAIMED_STATE_COLOR_INDEX = 2 , -- Border color of claimed states in Peace conference. Refers to the colors in BORDER_COLOR_CUSTOM_HIGHLIGHTS.
 		SELECTION_HOVERED_STATE_COLOR_INDEX_CONTROLLED = 5, -- Border color of hovered controlled states in various select mapmodes. Refers to the colors in BORDER_COLOR_CUSTOM_HIGHLIGHTS.
 		SELECTION_HOVERED_STATE_COLOR_INDEX_FOREIGN = 6,	-- Border color of hovered foreign states in various select mapmodes. Refers to the colors in BORDER_COLOR_CUSTOM_HIGHLIGHTS.
+
+
 	},
 	
 	NMapIcons = {
@@ -603,6 +605,7 @@ NDefines_Graphics = {
 		TRAIN_MAP_SPEED = 3.0,							-- Trains will move at this relative speed. This has no gameplay implications. Changing this value (originally 4.0) may cause audio effects to lose sync with animation.
 		TUNNELBANA_TIMETABLE = { 9200, 12000 },			-- Frequency range in milliseconds for regular train service. Adjust this if changing speed to avoid LONGTRAIN
 	
+
 		MAX_MESHES_LOADED_PER_FRAME = 10,
 		MESH_POPUP_SCALE_UP_SPEED = 5.0,
 		MESH_POPUP_SCALE_DOWN_SPEED = 2.1,
@@ -856,23 +859,23 @@ NDefines_Graphics = {
 		DIVISION_NAMES_GROUP_MAX_TOOLTIP_ENTRIES = 15,	-- Max entries to display the names in the tooltip, when mouse over the division-names-group in the division template designer.
 		NAMES_GROUP_MAX_NAME_LIST_ENTRIES = 25,	-- Max example name entries in ship and railway gun name list in production menu
 	
-		WEATHER_DISTANCE_CUTOFF = 1500, -- At what distance weather effects are hidden
-		WEATHER_DISTANCE_FADE_LENGTH = 400, -- How far the fade out distance should be
-		WEATHER_ZOOM_IN_CUTOFF = 358, -- At what distance weather effects are faded out the most when zooming in
+		WEATHER_DISTANCE_CUTOFF = 3000, -- At what distance weather effects are hidden
+		WEATHER_DISTANCE_FADE_LENGTH = 1, -- How far the fade out distance should be
+		WEATHER_ZOOM_IN_CUTOFF = 1, -- At what distance weather effects are faded out the most when zooming in
 		WEATHER_ZOOM_IN_FADE_LENGTH = 220, -- How far the zoom in fade out distance should be
 		WEATHER_ZOOM_IN_FADE_FACTOR = 0.0, -- How much the weather effects should fade out when maximum zoomed in
-		WEATHER_PLAYBACK_RATE = 0.15, -- Playback rate at maximum distance
+		WEATHER_PLAYBACK_RATE = 0.1, -- Playback rate at maximum distance
 		WEATHER_PLAYBACK_RATE_CUTOFF = 500, -- Playback rate maximum distance
-		WEATHER_PLAYBACK_RATE_LENGTH = 200, -- For how long to fade between normal playback rate and maximum distance playback rate
+		WEATHER_PLAYBACK_RATE_LENGTH = 1000, -- For how long to fade between normal playback rate and maximum distance playback rate
 	
-		POSTEFFECT_PER_PROVINCE_MIN_SNOW = 0.1,
-		POSTEFFECT_PER_PROVINCE_MAX_SNOW = 0.2,
+		POSTEFFECT_PER_PROVINCE_MIN_SNOW = 0.25,
+		POSTEFFECT_PER_PROVINCE_MAX_SNOW = 0.5,
 		POSTEFFECT_TOTAL_MIN_SNOW = 0.0,
 		POSTEFFECT_TOTAL_MAX_SNOW = 0.05,
-		POSTEFFECT_FEATHER_MIN_DISTANCE = 300.0,
-		POSTEFFECT_FEATHER_MAX_DISTANCE = 2000.0,
-		POSTEFFECT_FEATHER_AT_MIN = 0.03,
-		POSTEFFECT_FEATHER_AT_MAX = 0.80,
+		POSTEFFECT_FEATHER_MIN_DISTANCE = 1000.0,
+		POSTEFFECT_FEATHER_MAX_DISTANCE = 4000.0,
+		POSTEFFECT_FEATHER_AT_MIN = 0.06,
+		POSTEFFECT_FEATHER_AT_MAX = 0.160,
 	
 		LAND_COMBAT_BALANCED_COLOR = { 1.0, 1.0, 0.0, 1.0 },
 		LAND_COMBAT_LOSING_COLOR = { 1.0, 0.0, 0.0, 1.0 },
@@ -891,8 +894,8 @@ NDefines_Graphics = {
 		HDR_ADJUSTMENT_SPEED = 15.0, -- 6
 		TONE_MAP_MIDDLE_GREY = 0.5, --0.7
 		TONE_MAP_LUMINANCE_WHITE = 1.0, --
-		MOON_HEIGHT = 600, -- higher means softer shadows and more intense light
-		SUN_HEIGHT  = 600, -- higher means softer shadows and more intense light
+		MOON_HEIGHT = 1200, -- higher means softer shadows and more intense light
+		SUN_HEIGHT  = 1200, -- higher means softer shadows and more intense light
 		MOON_HEIGHT_WATER = 550,   -- higher means softer shadows and more intense light
 		SUN_HEIGHT_WATER  = 5000,  -- higher means softer shadows and more intense light
 		MOON_LATITUDE = 0, -- NOT USED
@@ -909,8 +912,8 @@ NDefines_Graphics = {
 		AMBIENT_LIGHT_NEG_Z = { 0.55, 0.1, 0.9 }, -- bottom
 	
 		SUN_DIFFUSE_COLOR   	= {0.14, 0.0, 1.0},
-		SUN_INTENSITY 			= 1.0; -- 0.4
-		SUN_SPECULAR_INTENSITY 	= 1.0;
+		SUN_INTENSITY 			= 0.8; -- 0.4
+		SUN_SPECULAR_INTENSITY 	= 0.7;
 		MOON_DIFFUSE_COLOR  	= {0.58, 0.5, 1.0},
 		MOON_INTENSITY 			= 2.5;
 	
