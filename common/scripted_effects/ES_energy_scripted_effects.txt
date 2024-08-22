@@ -39,6 +39,7 @@ init_global_energy_data = {
 	set_variable = { global.energy_thermal_power_plant_generation_power = 0.2 }
 	set_variable = { global.energy_solar_power_plant_generation_power = 0.01 }
 	set_variable = { global.energy_wind_power_plant_generation_power = 0.02 }
+	set_variable = { global.energy_mobile_gas_turbine_power_plant_unit_generation_power = 0.1 }
 
 	set_variable = { global.energy_substation_transfer_capacity_power = 0.1 }
 	set_variable = { global.energy_substation_big_transfer_capacity_power = 0.75 }
@@ -61,10 +62,14 @@ init_country_energy_data = {
 	set_variable = { energy_thermal_power_plant_generation_factor = 1 }
 	set_variable = { energy_solar_power_plant_generation_factor = 1 }
 	set_variable = { energy_wind_power_plant_generation_factor = 1 }
+	set_variable = { energy_mobile_gas_turbine_power_plant_unit_generation_factor = 1 }
 }
 
 # THIS is country scope
 calculate_energy_in_country = {
+	add_to_variable = {
+		energy_mobile_gas_turbine_power_plant_units = 10
+	}
 	precalculate_energy_in_country = yes
 	every_controlled_state = { calculate_energy_in_state = yes }
 	postcalculate_energy_in_country = yes
@@ -157,6 +162,11 @@ recalculate_country_energy_data = {
 	multiply_variable = { energy_wind_power_plant_generation_power = energy_wind_power_plant_generation_factor }
 	multiply_variable = { energy_wind_power_plant_generation_power = modifier@energy_buldings_generation_factor }
 	clamp_variable = { var = energy_wind_power_plant_generation_power min = 0 }
+	
+	set_variable = { energy_mobile_gas_turbine_power_plant_unit_generation_power = global.energy_mobile_gas_turbine_power_plant_unit_generation_power }
+	multiply_variable = { energy_mobile_gas_turbine_power_plant_unit_generation_power = energy_mobile_gas_turbine_power_plant_unit_generation_factor }
+	multiply_variable = { energy_mobile_gas_turbine_power_plant_unit_generation_power = modifier@energy_buldings_generation_factor }
+	clamp_variable = { var = energy_mobile_gas_turbine_power_plant_unit_generation_power min = 0 }
 
 	# ============ Пропускная способность подстанций ============
 	set_variable = { energy_substation_transfer_capacity_power = global.energy_substation_transfer_capacity_power }
@@ -227,6 +237,11 @@ calculate_energy_country_generation = {
 	add_to_variable = { energy_generation = energy_wind_power_plants_generation }
 
 	add_to_variable = { energy_generation = energy_hydro_power_plant_units_generation }
+
+	set_variable = { energy_mobile_gas_turbine_power_plant_units_generation = energy_mobile_gas_turbine_power_plant_units }
+	multiply_variable = { energy_mobile_gas_turbine_power_plant_units_generation = energy_mobile_gas_turbine_power_plant_unit_generation_power }
+	add_to_variable = { energy_generation = energy_mobile_gas_turbine_power_plant_units_generation }
+	add_to_variable = { energy_netto = energy_mobile_gas_turbine_power_plant_units_generation }
 }
 
 calculate_energy_country_offsite_generation = {
