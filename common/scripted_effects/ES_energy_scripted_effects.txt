@@ -403,7 +403,8 @@ calculate_energy_in_state = {
 			else = { # Иначе подстанции не могут обеспечить полный импорт электроэнергии
 				add_to_variable = { PREV.energy_sum_local_shortages = energy_netto }				
 				subtract_from_variable = { PREV.energy_sum_local_shortages = energy_transfer_cap }
-			}	
+			}
+			add_to_variable = { energy_free_transfer_capacity = energy_netto }
 		}
 		# Высчитываем ограничение на экспорт локальной энергии в энергосеть страны
 		else = {
@@ -413,6 +414,7 @@ calculate_energy_in_state = {
 				limit = { check_variable = { energy_transfer_cap > energy_netto } }
 				set_variable = { energy_transfer_cap = energy_netto }
 			}
+			subtract_from_variable = { energy_free_transfer_capacity = energy_transfer_cap }
 		}
 
 		# Выполняем передачу энергии между энергосетью страны в локальной энергосетью
@@ -423,6 +425,7 @@ calculate_energy_in_state = {
 		set_variable = { energy_netto_factor = energy_consumption }
 		add_to_variable = { energy_netto_factor = energy_netto }
 		divide_variable = { energy_netto_factor = energy_consumption }
+		clamp_variable = { var = energy_netto_factor min = 0 max = 1 }
 	}
 	
 	# Эффект локального блекаута
