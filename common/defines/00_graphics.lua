@@ -864,7 +864,7 @@ NDefines_Graphics = {
 		WEATHER_ZOOM_IN_CUTOFF = 0, -- At what distance weather effects are faded out the most when zooming in
 		WEATHER_ZOOM_IN_FADE_LENGTH = 220, -- How far the zoom in fade out distance should be
 		WEATHER_ZOOM_IN_FADE_FACTOR = 1.0, -- How much the weather effects should fade out when maximum zoomed in
-		WEATHER_PLAYBACK_RATE = 0.5, -- Playback rate at maximum distance
+		WEATHER_PLAYBACK_RATE = 0.4, -- Playback rate at maximum distance
 		WEATHER_PLAYBACK_RATE_CUTOFF = 10, -- Playback rate maximum distance
 		WEATHER_PLAYBACK_RATE_LENGTH = 1000, -- For how long to fade between normal playback rate and maximum distance playback rate
 	
