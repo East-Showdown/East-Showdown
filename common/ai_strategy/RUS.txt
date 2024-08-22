@@ -121,7 +121,7 @@ RUS_front_control_1 = {
 	ai_strategy = {
 		type = front_control
 		area = left_kiev
-		priority = 1000
+		priority = 100
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -149,43 +149,7 @@ RUS_front_control_1 = {
 	}
 }
 
-# Контроль фронта (После 20 марта 2022 года)
-RUS_front_control_2 = { 
-	allowed = {
-		original_tag = RUS
-	}
 
-	enable = {
-		date > 2022.3.20
-	}
-	
-	abort = {
-		always = no
-	}
-
-	ai_strategy = {
-		type = front_control
-		area = donbass
-		area = crimea
-		area = left_kherson
-		area = left_zaporozie
-		ratio = 1
-		priority = 100
-		ordertype = front
-		execution_type = balanced 
-		manual_attack =  yes  #no
-	}
-
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ratio = 1
-		priority = 10
-		ordertype = front
-		execution_type = balanced
-		manual_attack = yes  #no
-	}
-}
 
 
 
@@ -228,7 +192,7 @@ RUS_leave_kiev = {
 #set_country_flag = RUS_retreated_from_Kyiv  
 
 
-#оброна херсона с начала сво чтоб не пропушили  
+#оброна херсона с начала сво чтоб не пропушили  + пушинг 
 RUS_defend_kheson_oblst = {
 	allowed = {
 		original_tag = RUS
@@ -242,46 +206,40 @@ RUS_defend_kheson_oblst = {
 		}		
 	}
 
-	abort = {
-		OR = {
-			set_country_flag = RUS_start_SMO
-		}
-	}
+	abort_when_not_enabled = yes
 
-#	ai_strategy = {
-	#	type = front_unit_request
-	#	strategic_region = 58
-		#strategic_region = 56
-		#value = 1000
-		#ordertype = front
-		#execution_type = balanced
-		#manual_attack = yes
-		#execute_order = yes
-	#}
 
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		#manual_attack = yes
-	}
-
-	ai_strategy = {
-		type = front_control
-		strategic_region = 56 #херсонская
-		strategic_region = 58
-		ordertype = front
-		execution_type = rush
+		priority = 100
+		ordertype = front  #front
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
+
+	 #ratio = 0.04  #0.1
 	}
+
+	#ai_strategy = {
+		#type = front_control
+		#strategic_region = 56 #херсонская
+		#ordertype = front
+		#execution_type = rush   #rush
+		#execute_order = yes
+		#ratio = 0.4  #0.1
+	#}
 
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 56
-		value = 90
+		value = 1000
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 24
+		value = 1000
 	}
 
 }
@@ -289,14 +247,15 @@ RUS_defend_kheson_oblst = {
 
 
 #оброна херсона 2 этап + крім
-RUS_defend_kheson_oblst2 = {
+RUS_defend_kheson_oblst2 = { 
 	allowed = {
 		original_tag = RUS
 	}
 
 	enable = {
 		OR = {
-			set_country_flag = RUS_retreated_from_Kyiv
+			date > 2023.3.20
+			#set_country_flag = RUS_retreated_from_Kyiv
 		    is_historical_focus_on = yes
 			has_war_with = UKR
 		}		
@@ -318,6 +277,7 @@ RUS_defend_kheson_oblst2 = {
 		type = front_unit_request
 		strategic_region = 56
 		value = 70
+		ratio = 0.2
 	}
 
 }
@@ -340,7 +300,7 @@ RUS_atack_donetsk_oblst = {
 
 	enable = {
 		OR = {
-			set_country_flag = RUS_retreated_from_Kyiv
+			set_country_flag = RUS_start_SMO
 		    is_historical_focus_on = yes
 			has_war_with = UKR
 		}		
@@ -373,15 +333,15 @@ RUS_atack_donetsk_oblst = {
 		type = invasion_unit_request
 		strategic_region = 63  #lugansk
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
-		manual_attack = yes
+		manual_attack = no
 	}
 
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 63
-		value = 50
+		value = 90
 	}
 
 
@@ -407,7 +367,7 @@ RUS_attack_kharkov = {
 
 	abort = {
 		OR = {
-			date > 2022.9.1
+			date > 2022.7.1
 		}
 	}
 
@@ -431,12 +391,12 @@ RUS_attack_kharkov = {
 		type = front_control
 		strategic_region = 44
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		value = 100
-		ratio = 0.1  #Какое соотношение фронтов должно быть у указанного фронта в качестве 
+		ratio = 0.2  #Какое соотношение фронтов должно быть у указанного фронта в качестве 
 		#требования для включения стратегии. Значение по умолчанию равно 0.
+		value = 200
 	}
 
 	ai_strategy = {
@@ -446,6 +406,13 @@ RUS_attack_kharkov = {
 	}
 
 }
+
+
+
+
+
+
+
 
 
 
