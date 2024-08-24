@@ -78,7 +78,7 @@ RUS_more_army_on_front = {
 	# Херсон
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
-		value = 5
+		value = 10
 		id = 253
 	}
 
@@ -121,7 +121,7 @@ RUS_front_control_1 = {
 	ai_strategy = {
 		type = front_control
 		area = left_kiev
-		priority = 100
+		priority = 20
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -131,8 +131,8 @@ RUS_front_control_1 = {
 		type = front_control
 		area = donbass
 		area = crimea
-		area = left_kherson
-		area = left_zaporozie
+		#area = left_kherson
+		#area = left_zaporozie
 		priority = 100
 		ordertype = front
 		execution_type = rush
@@ -193,94 +193,82 @@ RUS_leave_kiev = {
 
 
 #оброна херсона с начала сво чтоб не пропушили  + пушинг 
-RUS_defend_kheson_oblst = {
+
+
+RUS_atack_kheson_oblst = {
 	allowed = {
 		original_tag = RUS
 	}
 
 	enable = {
 		OR = {
+			date > 2022.2.24
 			set_country_flag = RUS_start_SMO
 		    is_historical_focus_on = yes
 			has_war_with = UKR
 		}		
 	}
 
-	abort_when_not_enabled = yes
-
+	abort = {
+		OR = {
+			date < 2022.12.1
+			NOT = {
+				has_war_with = UKR
+			}
+		}
+	}
 
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		priority = 100
+		priority = 1000
 		ordertype = front  #front
-		execution_type = rush_weak
+		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-
-	 #ratio = 0.04  #0.1
+		ratio =  3
+	 strategic_region = 27 #херсон
 	}
 
-	#ai_strategy = {
-		#type = front_control
-		#strategic_region = 56 #херсонская
-		#ordertype = front
-		#execution_type = rush   #rush
-		#execute_order = yes
-		#ratio = 0.4  #0.1
-	#}
+
+####26 marta 26.03 блицкриг все
+
 
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 56
+		strategic_region = 27 #херсон
 		value = 1000
 	}
 
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 24
-		value = 1000
+		strategic_region = 24 #николаевская
+		value = -1000
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 60 #кировоградская
+		value = -1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 57 #левый берег запородье
+		value = 900
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 58 #правый берег запородье
+		value = 800
 	}
 
 }
 
 
 
-#оброна херсона 2 этап + крім
-RUS_defend_kheson_oblst2 = { 
-	allowed = {
-		original_tag = RUS
-	}
+#оброна хер сона 2 этап + крім
 
-	enable = {
-		OR = {
-			date > 2023.3.20
-			#set_country_flag = RUS_retreated_from_Kyiv
-		    is_historical_focus_on = yes
-			has_war_with = UKR
-		}		
-	}
-
-	abort_when_not_enabled = yes
-
-
-	ai_strategy = {
-		type = front_control
-		strategic_region = 56  #херсонская
-		strategic_region = 28 #крым
-		ordertype = front
-		execution_type = careful #окуратно  #Если задано, позволяет ИИ либо принудительно выполнить основной заказ, либо заставить его никогда не выполняться
-		manual_attack = yes
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 56
-		value = 70
-		ratio = 0.2
-	}
-
-}
 
 
 
@@ -308,104 +296,40 @@ RUS_atack_donetsk_oblst = {
 
 	abort_when_not_enabled = yes
 
-#	ai_strategy = {
-	#	type = front_unit_request
-	#	strategic_region = 58
-		#strategic_region = 56
-		#value = 1000
-		#ordertype = front
-		#execution_type = balanced
-		#manual_attack = yes
-		#execute_order = yes
-	#}
-
-#	ai_strategy = {
-	#	type = front_control
-	#	tag = UKR
-	#	strategic_region = 31 #donetsk
-	#	ordertype = front
-		#execution_type = rush
-		#execute_order = yes
-		#manual_attack = yes
-	#}
-
-	ai_strategy = {
-		type = invasion_unit_request
-		strategic_region = 63  #lugansk
-		ordertype = front
-		execution_type = rush_weak
-		execute_order = yes
-		manual_attack = no
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 63
-		value = 90
-	}
 
 
-}
-
-
-
-
-
-
-
-#атака на харьков
-RUS_attack_kharkov = {
-	allowed = {
-		original_tag = RUS
-	}
-
-	enable = {
-		set_country_flag = RUS_start_SMO
-		is_historical_focus_on = yes
-		has_war_with = UKR	
-	}
-
-	abort = {
-		OR = {
-			date > 2022.7.1
-		}
-	}
-
-#	ai_strategy = {
-#		type = invasion_unit_request
-	#	strategic_region = 44
-	#	value = 1000
-	#}
-
-#	ai_strategy = {
-		#type = front_rush
-		#ratio = 1
-	#	#priority = 1000
-		#ordertype = front
-		#execution_type = balanced
-		#manual_attack = yes
-	#}
-##############################################
 
 	ai_strategy = {
 		type = front_control
-		strategic_region = 44
 		ordertype = front
-		execution_type = rush_weak
+		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-		ratio = 0.2  #Какое соотношение фронтов должно быть у указанного фронта в качестве 
-		#требования для включения стратегии. Значение по умолчанию равно 0.
-		value = 200
+		states = {
+		237
+	656 #донецкая область
+	660
+     666
+	 233
+ 	    }
 	}
 
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 44  #харьковская
-		value = 100
+		strategic_region = 31   #donetsk #lugansk
+		value = 500
 	}
 
+
 }
+
+
+
+
+
+
+
+
 
 
 
