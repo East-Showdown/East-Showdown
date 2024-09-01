@@ -1033,6 +1033,9 @@ country_event = {
 	fire_only_once = yes
 	trigger = { 
 		tag = UKR
+		NOT = {
+			has_global_flag = SMO_war_is_over
+		}
 		RUS = {
 			has_country_flag = RUS_bucha_rezna
 		}
@@ -1459,7 +1462,7 @@ country_event = {
 		name = ukr.40.a
 		log = "[GetDateText]: [This.GetName]: ukr.40.a executed"
 		hidden_effect = {
-			load_oob = dci
+			load_oob = UKR_dci
 		}
 	}
 }
@@ -2065,50 +2068,6 @@ country_event = {
 				id = news.172
 				hours = 5
 			}
-			UKR_viktor_medvedchuk = {
-				set_portraits = {
-				    civilian = { large ="GFX_viktor_medvedchuk_RUS" }
-				}
-				set_nationality = CAU
-			}
-			CAU = {
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = oligarchy
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = centrism
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = market_socialism
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = left_nationalism
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-			}
 		}
 	}
 	option = {
@@ -2406,6 +2365,7 @@ country_event = {
 			popularity = -0.025
 		}
 		hidden_effect = {
+		    set_global_flag = UKR_viktor_medvedchuk_gb_NL
 			UKR_viktor_medvedchuk = {
 				remove_country_leader_role = {  ideology = oligarchy }
 			}
@@ -2718,6 +2678,15 @@ country_event = {
     option = {
         name = ukr.83.a
 
+		hidden_effect = {
+			UKR = {
+                country_event = { 
+                    id = ukr.83
+                    days = 90
+                }
+            }
+		}
+
 		IF = {
 			limit = { 
 				has_completed_focus = Kolomoisky_case
@@ -2837,68 +2806,7 @@ country_event = {
 
     option = {
         name = ukr.85.a
-		IF = {
-			limit = {
-				ROOT = { 
-					has_idea = miserable_corruption_level
-				}
-			}
-			else_if = {
-				limit = {
-					ROOT = { 
-						has_idea = low_corruption_level
-					}
-				}
-				swap_ideas = {
-					remove_idea = low_corruption_level
-					add_idea = miserable_corruption_level
-				}
-			}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = medium_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = medium_corruption_level
-						add_idea = low_corruption_level
-					}
-				}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = high_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = high_corruption_level
-						add_idea = medium_corruption_level
-					}
-				}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = destructive_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = destructive_corruption_level
-						add_idea = high_corruption_level
-					}
-				}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = total_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = total_corruption_level
-						add_idea = destructive_corruption_level
-					}
-				}
-			}
+        add_to_variable = { corruption_level = -25}
 	}
 }
 #Коррупция увеличилась
@@ -2913,69 +2821,7 @@ country_event = {
 
     option = {
         name = ukr.86.a
-		IF = {
-			limit = {
-				ROOT = { 
-					has_idea = miserable_corruption_level
-				}
-			}
-			swap_ideas = {
-				remove_idea = miserable_corruption_level
-				add_idea = low_corruption_level
-			}
-
-			else_if = {
-				limit = {
-					ROOT = { 
-						has_idea = low_corruption_level
-					}
-				}
-				swap_ideas = {
-					remove_idea = low_corruption_level
-					add_idea = medium_corruption_level
-				}
-			}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = medium_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = medium_corruption_level
-						add_idea = high_corruption_level
-					}
-				}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = high_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = high_corruption_level
-						add_idea = destructive_corruption_level
-					}
-				}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = destructive_corruption_level
-						}
-					}
-					swap_ideas = {
-						remove_idea = destructive_corruption_level
-						add_idea = total_corruption_level
-					}
-				}
-				else_if = {
-					limit = {
-						ROOT = { 
-							has_idea = total_corruption_level
-						}
-					}
-				}
-			}
+	    add_to_variable = { corruption_level = 25}
 	}
 }
 
@@ -3475,5 +3321,87 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = ukr.97.a
+	}
+}
+
+country_event = {
+    id = ukr.98
+    title = ukr.98.t
+    desc = ukr.98.desc
+	picture = GFX_country_event_113
+	is_triggered_only = yes
+	option = {
+		name = ukr.98.a
+		add_political_power = -100
+		hidden_effect = {
+		    set_global_flag = SMO_war_is_over
+			set_global_flag = UKR_NEW_FOCUS_TREE
+			mark_focus_tree_layout_dirty = yes
+			RUS = {
+			    annex_country = RBZ
+			    add_stability = 0.1
+				add_popularity = { ideology = neutrality popularity = 0.1 }
+			}
+			BLR = {
+			    transfer_state = 552
+				transfer_state = 551
+				transfer_state = 550
+				transfer_state = 549
+				transfer_state = 401
+				transfer_state = 400
+				transfer_state = 399
+				transfer_state = 398
+				transfer_state = 402
+			}
+		    UKR = {
+			    add_stability = -0.5
+			    give_military_access = RUS
+				white_peace = RUS
+			}
+			DPR = {
+			    remove_ideas = ukrainian_shellings
+			    transfer_state = 237
+				transfer_state = 213
+				transfer_state = 182
+				transfer_state = 149
+				transfer_state = 165
+				every_state = {
+					add_compliance = 20
+				}
+			}
+			LPR = {
+			    remove_ideas = ukrainian_shellings
+			    transfer_state = 145
+				transfer_state = 176
+				transfer_state = 154
+				transfer_state = 125
+				transfer_state = 116
+				every_state = {
+					add_compliance = 20
+				}
+			}
+			volodymir_zelenskyy = {
+				remove_country_leader_role = { ideology = controlled_democracy }
+			}
+			ermak = {
+				promote_character = yes
+			}
+			news_event = {
+				id = news.191
+				hours = 5
+			}
+		}
+	}
+	option = {
+		name = ukr.98.b
+		add_political_power = 50
+		hidden_effect = {
+			RUS = {
+				country_event = {
+					id = rus.186
+					days = 1
+				}
+			}
+		}
 	}
 }

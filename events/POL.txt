@@ -1,13 +1,673 @@
 add_namespace = pol
 add_namespace = pol_hidden
-
 country_event = {
 	id = pol.1
-	title = pol.1.t
-    desc = pol.1.desc
+	title = "TEST"
+	desc = "TEST1"
+	fire_only_once = yes
 	is_triggered_only = yes
-    fire_only_once = yes
 	option = {
-		name = pol.1.a
+		name = "test"
+		add_political_power = 20
 	}
+}
+country_event = {
+	id = pol.2
+	title = "test"
+	desc = "test2"
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = "test"
+		add_political_power = 20
+	}
+}
+country_event = {
+	id = pol.3
+	title = "TEST"
+	desc = "TEST1"
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = "test"
+		add_political_power = 20
+	}
+}
+country_event = {
+	id = pol.4
+	title = "BOBR KURWA"
+	desc = "JA PERDOLE"
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = "test"
+		UKR = {
+			add_equipment_to_stockpile = {
+				type = infantry_anti_tank_equipment
+				amount = 500
+			}
+		}
+	}
+}
+country_event = {
+	id = pol.5
+	title = "O KURWA ZELENSKY"
+	desc = "BRUHMAN"
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = "test"
+		add_opinion_modifier = {
+			target = UKR
+			modifier = POL_new_format_UA_POL
+		}
+	}
+	
+}
+
+country_event = {
+	id = pol.6
+	title = pol.6.t
+    desc = pol.6.d
+	
+    fire_only_once = yes
+	is_triggered_only = yes
+	
+    option = {
+        name = pol.6.a
+    }
+
+}
+#Запрос снаряги у НАТО
+country_event = {
+	id = pol.7
+	title = pol.7.t
+    desc = pol.7.d
+	picture = GFX_country_event_149
+    fire_only_once = yes
+	is_triggered_only = yes
+	
+    option = {
+        name = pol.7.a
+		random_list = {
+            50 = {
+                country_event = {
+					id = pol.8
+					days = 1
+				}
+			}
+			50 = {
+				country_event = {
+					id = pol.9
+					days = 1
+				}
+			}
+		}
+    }
+}
+#Запрос на снарягу успешно приняли
+country_event = {
+	id = pol.8
+	title = pol.8.t
+    desc = pol.8.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+	
+    option = {
+        name = pol.8.a
+
+		add_equipment_to_stockpile = {
+			type = infantry_weapons_3
+			amount = 10000
+			producer = POL
+		} 
+		add_equipment_to_stockpile = {
+			type = support_equipment_1
+			amount = 400
+			producer = POL
+		} 
+		add_equipment_to_stockpile = {
+			type = artillery_equipment_0
+			amount = 50
+			producer = POL
+		}
+		add_equipment_to_stockpile = {
+			type = atgm_2_eq
+			amount = 300
+			producer = POL
+		}
+		# Не нашел ПЗРК, временно выдаю мортиры
+		add_equipment_to_stockpile = {
+			type = mortar_2_eq
+			amount = 300
+			producer = POL
+		}
+		add_equipment_to_stockpile = {
+			type = mortar_2_eq
+			amount = 300
+			producer = POL
+		}
+		add_equipment_to_stockpile = {
+			type = abrams_chassis_0
+			variant_name = "M1A2 SEP V2"
+			amount = 25
+			producer = POL
+		} 
+		add_equipment_to_stockpile = {
+			type = leopard2_chassis
+			variant_name = "Leopard 2A6"
+			amount = 25
+			producer = POL
+		} 
+		add_equipment_to_stockpile = {
+			type = NTO_fighter_equipment_f16
+			amount = 10
+			producer = POL
+		} 
+    }
+}
+#Не приняли запрос на снарягу
+country_event = {
+	id = pol.9
+	title = pol.9.t
+    desc = pol.9.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+	
+    option = {
+        name = pol.9.a
+		ROOT = {
+		add_opinion_modifier = {
+			target = NTO
+			modifier = POL_NATO_declined_negotations_of_equipment
+		}
+		}
+    }
+}
+#Ивент на развитеё западных регионов
+country_event = {
+	id = pol.10
+	title = pol.10.t
+    desc = pol.10.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+	
+    option = {
+        name = pol.10.a
+		add_offsite_building = { 
+			type = industrial_complex 
+			level = 11
+		}
+		add_offsite_building = { 
+			type = arms_factory 
+			level = 3
+		}
+		add_offsite_building = { 
+			type = dockyard 
+			level = 1
+		}
+    }
+}
+#Ивент на подготовку к парламентским Выборам
+country_event = {
+	id = pol.11
+	title = pol.11.t
+    desc = pol.11.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.11.a
+		hidden_effect = {
+			set_country_flag = POL_parlament_elections_started
+			set_variable = {
+				var = POL_pis_support
+				value = 50
+			}
+			set_variable = {
+				var = POL_platform_support
+				value = 0
+			}
+			mark_focus_tree_layout_dirty = yes
+		}
+		complete_national_focus = POL_Start_race
+		activate_mission = lose_of_popularity
+		activate_mission = POL_elections
+    }
+}
+
+#Результат выборов победа Платформы
+country_event = {
+	id = pol.12
+	title = pol.12.t
+    desc = pol.12.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.12.a
+
+		clr_country_flag = POL_2_kabinet_moravetskogo
+		set_country_flag = POL_3_kabinet_tuska
+
+		set_country_flag = POL_parlament_elections_ended
+		clr_country_flag = POL_parlament_elections_started
+		complete_national_focus = POL_Pobeda_platforms
+		
+		activate_advisor = POL_Donald_Tusk
+		activate_advisor = POL_Dariusz_Klimczak
+		activate_advisor = POL_Wladyslaw_Kosiniak
+		activate_advisor = POL_Andrzej_Domanski
+		#activate_advisor = POL_Adam_Bodnar
+		activate_advisor = POL_Tomasz_Siemoniak
+    }
+}
+#Результат выборов частичная победа ПиС
+country_event = {
+	id = pol.13
+	title = pol.13.t
+    desc = pol.13.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.13.a
+
+		activate_advisor = POL_Alvin_Gayadur
+		activate_advisor = POL_Wladyslaw_Kosiniak
+		activate_advisor = POL_Andrzej_Kostowniak
+		activate_advisor = POL_Szymon_Szynkowski
+
+		clr_country_flag = POL_2_kabinet_moravetskogo
+		set_country_flag = POL_3_kabinet_moravetskogo
+
+		set_country_flag = POL_parlament_elections_ended
+		clr_country_flag = POL_parlament_elections_started
+		complete_national_focus = POL_Partial_victory_PiS
+
+		activate_mission = third_kabinet_tuska
+    }
+}
+#Результат выборов победа ПиС
+country_event = {
+	id = pol.14
+	title = pol.14.t
+    desc = pol.14.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.14.a
+        
+		clr_country_flag = POL_2_kabinet_moravetskogo
+		set_country_flag = POL_3_kabinet_moravetskogo
+
+		set_country_flag = POL_parlament_elections_ended
+		clr_country_flag = POL_parlament_elections_started
+		complete_national_focus = POL_Complete_Victory_PiS
+
+		activate_advisor = POL_Alvin_Gayadur
+		activate_advisor = POL_Wladyslaw_Kosiniak
+		activate_advisor = POL_Andrzej_Kostowniak
+		activate_advisor = POL_Szymon_Szynkowski
+    }
+}
+#3 Кабинет туска
+country_event = {
+	id = pol.15
+	title = pol.15.t
+    desc = pol.15.d
+	picture = GFX_country_event_149
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.15.a
+		clr_country_flag = POL_3_kabinet_moravetskogo
+		set_country_flag = POL_3_kabinet_tuska
+		deactivate_advisor = POL_Mateusz_Morawiecki
+		deactivate_advisor = POL_Alvin_Gayadur
+		deactivate_advisor = POL_Wladyslaw_Kosiniak
+		deactivate_advisor = POL_Andrzej_Kostowniak
+		deactivate_advisor = POL_Szymon_Szynkowski
+		
+		activate_advisor = POL_Donald_Tusk
+
+		activate_advisor = POL_Dariusz_Klimczak
+		activate_advisor = POL_Wladyslaw_Kosiniak
+		activate_advisor = POL_Andrzej_Domanski
+		activate_advisor = POL_Adam_Bodnar
+		activate_advisor = POL_Tomasz_Siemoniak
+    }
+}
+
+country_event = {
+	id = pol.16
+	title = pol.16.t
+    desc = pol.16.d
+	picture = GFX_country_event_pol_016
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.16.a
+		set_country_flag = POL_farmer_strikes_on_border
+		custom_effect_tooltip = POL_farmer_stikes_tt
+		set_power_balance = {
+	        id = POL_power_balance
+        }
+		hidden_effect = {
+			mark_focus_tree_layout_dirty = yes
+			complete_national_focus = POL_Farmers_are_blocking_borders
+			ROOT = {
+				add_ideas = {
+					POL_farmer_strikes_on_border
+				}
+			}
+			UKR = {
+				add_ideas = {
+					UKR_farmer_strikes_on_border
+				}
+			}
+		}
+    }
+}
+
+country_event = {
+	id = pol.17
+	title = pol.17.t
+    desc = pol.17.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.17.a
+    }
+}
+
+country_event = {
+	id = pol.18
+	title = pol.18.t
+    desc = pol.18.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.18.a
+    }
+}
+
+country_event = {
+	id = pol.19
+	title = pol.19.t
+	desc = pol.19.d
+	fire_only_once = no
+	is_triggered_only = yes
+	picture = GFX_country_event_150
+
+    option = {
+        name = pol.19.a
+		log = "[GetDateText]: [This.GetName]: pol.19.a executed"
+		custom_effect_tooltip = pol19a_tt
+        ai_chance = { factor = 20 }
+		unlock_national_focus = POL_Incident_in_Przewodow
+        set_country_flag = option_a_selected
+		set_country_flag = pol19
+    }
+    option = {
+        name = pol.19.b
+		log = "[GetDateText]: [This.GetName]: pol.19.b executed"
+		custom_effect_tooltip = pol19b_tt
+        ai_chance = { factor = 20 }
+		unlock_national_focus = POL_Incident_in_Przewodow
+        set_country_flag = option_b_selected
+		set_country_flag = pol19
+    }
+    option = {
+        name = pol.19.c
+		log = "[GetDateText]: [This.GetName]: pol.19.c executed"
+		custom_effect_tooltip = pol19c_tt
+        ai_chance = { factor = 60 }
+		unlock_national_focus = POL_Incident_in_Przewodow
+		unlock_national_focus = POL_nichego
+    }
+}
+
+country_event = {
+	id = pol.20
+	title = pol.20.t
+    desc = pol.20.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.20.a
+    }
+}
+
+country_event = {
+	id = pol.21
+	title = pol.21.t
+    desc = pol.21.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.21.a
+		log = "[GetDateText]: [This.GetName]: pol.21.a executed"
+		custom_effect_tooltip = POL_event_21_tt
+        hidden_effect = {
+			NTO = {
+				load_oob = POL_NTO_help2
+			}
+		}
+    }
+}
+
+country_event = {
+	id = pol.22
+	title = pol.22.t
+    desc = pol.22.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.22.a
+		log = "[GetDateText]: [This.GetName]: pol.22.a executed"
+		custom_effect_tooltip = POL_event_22_tt
+		hidden_effect = {
+			NTO = {
+				load_oob = POL_NTO_help3
+			}
+		}
+    }
+}
+
+country_event = {
+	id = pol.23
+	title = pol.23.t
+    desc = pol.23.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.23.a
+		log = "[GetDateText]: [This.GetName]: pol.23.a executed"
+		custom_effect_tooltip = POL_ban_confederate_party_tt
+		add_political_power = -100
+		hidden_effect = {
+			set_party_name = {
+				ideology = fascism
+				long_name = Party_Forbidden_name
+				name = Party_Forbidden_name
+			}
+			add_stability = 0.05
+			add_war_support = -0.05
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.5
+			}
+		}
+    }
+	option = {
+        name = pol.23.b
+		log = "[GetDateText]: [This.GetName]: pol.23.b executed"
+		add_political_power = 50
+    }
+}
+
+country_event = {
+	id = pol.24
+	title = pol.24.t
+    desc = pol.24.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.24.a
+		log = "[GetDateText]: [This.GetName]: pol.24.a executed"
+		108 = {
+			add_manpower = -30
+		}
+		112 = {
+			add_manpower = -30
+		}
+		137 = {
+			add_manpower = -20
+		}
+		167 = {
+			add_manpower = -25
+		}
+
+		85 = {
+			add_manpower = 55
+		}
+		58 = {
+			add_manpower = 55
+		}
+		hidden_effect = {
+			ROOT = {
+				country_event = {
+					id = pol.25
+					days = 31
+				}
+			}
+		}
+    }
+	option = {
+        name = pol.24.b
+		log = "[GetDateText]: [This.GetName]: pol.24.b executed"
+		add_political_power = -30
+		hidden_effect = {
+			ROOT = {
+				country_event = {
+					id = pol.25
+					days = 31
+				}
+			}
+		}
+    }
+}
+
+country_event = {
+	id = pol.25
+	title = pol.25.t
+    desc = pol.25.d
+    fire_only_once = no
+	is_triggered_only = yes
+
+	trigger = {
+	}
+	
+    option = {
+        name = pol.25.a
+		log = "[GetDateText]: [This.GetName]: pol.25.a executed"
+		108 = {
+			add_manpower = -30
+		}
+		112 = {
+			add_manpower = -30
+		}
+		137 = {
+			add_manpower = -20
+		}
+		167 = {
+			add_manpower = -25
+		}
+
+		85 = {
+			add_manpower = 55
+		}
+		58 = {
+			add_manpower = 55
+		}
+		hidden_effect = {
+			ROOT = {
+				country_event = {
+					id = pol.25
+					days = 31
+				}
+			}
+		}
+    }
+	option = {
+        name = pol.25.b
+		log = "[GetDateText]: [This.GetName]: pol.25.b executed"
+		add_political_power = -30
+		hidden_effect = {
+			ROOT = {
+				country_event = {
+					id = pol.25
+					days = 31
+				}
+			}
+		}
+    }
 }

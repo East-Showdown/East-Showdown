@@ -1087,41 +1087,9 @@ scripted_map_modes = {
 		update_daily = yes
 	}
 
-	more_mapmodes_majors_map_mode = {
+	more_mapmodes_blackout_map_mode = {
 		top = {
-			type = country
-
-			color = {
-				FROM = {
-					set_temp_variable = { alpha = 1.0 }
-					set_temp_variable = { thickness = 10.0 }
-					set_temp_variable = { highlighted = 1.0 }
-					set_temp_variable = { red = 1.0 }
-					set_temp_variable = { green = 0.8 }
-					set_temp_variable = { blue = 0.0 }
-				}
-			}
-
-			targets = {
-				target_array = global.majors
-			}
-
-			thickness = yes
-		}
-
-		bottom = {
-			type = game_map_mode_country
-		}
-
-		far_text = country
-		near_text = state
-
-		update_daily = yes
-	}
-
-	more_mapmodes_world_war_map_mode = {
-		top = {
-			type = country
+			type = state
 
 			color = {
 				FROM = {
@@ -1129,209 +1097,31 @@ scripted_map_modes = {
 					set_temp_variable = { thickness = 1.0 }
 					if = {
 						limit = {
-							has_war = yes
-						}
-						set_temp_variable = { red = 1.0 }
-						set_temp_variable = { green = 0.0 }
-						set_temp_variable = { blue = 0.0 }
-					}
-					else = {
-						set_temp_variable = { red = 0.0 }
-						set_temp_variable = { green = 1.0 }
-						set_temp_variable = { blue = 0.0 }
-					}
-				}
-			}
-
-			thickness = yes
-		}
-
-		bottom = {
-			type = country
-
-			color = {
-				set_temp_variable = { alpha = 0.2 }
-				set_temp_variable = { thickness = 1.0 }
-				set_temp_variable = { red = 0.33 }
-				set_temp_variable = { green = 0.33 }
-				set_temp_variable = { blue = 0.33 }
-			}
-
-			thickness = yes
-		}
-
-		far_text = country
-		near_text = state
-
-		update_daily = no
-	}
-
-	more_mapmodes_spymasters_map_mode = {
-		top = {
-			type = country
-
-			color = {
-				FROM = {
-					set_temp_variable = { alpha = 1.0 }
-					set_temp_variable = { thickness = 1.0 }
-					set_temp_variable = { red = 0.5 }
-					set_temp_variable = { green = 0.0 }
-					set_temp_variable = { blue = 0.7 }
-				}
-			}
-
-			thickness = yes
-
-			targets = {
-				target_array = global.countries
-				target_trigger = {
-					FROM = {
-						is_spymaster = yes
-					}
-				}
-			}
-		}
-
-		bottom = {
-			type = country
-
-			color = {
-				FROM = {
-					set_temp_variable = { alpha = 0.1 }
-					set_temp_variable = { thickness = 1.0 }
-					set_temp_variable = { red = 0.8 }
-					set_temp_variable = { green = 0.8 }
-					set_temp_variable = { blue = 0.8 }
-				}
-			}
-
-			thickness = yes
-		}
-
-		far_text = country
-		near_text = state
-
-		update_daily = yes
-	}
-
-	more_mapmodes_guarantees_map_mode = {
-		top = {
-			type = country
-
-			color = {
-				var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
-					set_temp_variable = { alpha = 1.0 }
-					set_temp_variable = { thickness = 1.0 }
-					if = {
-						limit = {
-							tag = FROM
-						}
-						set_temp_variable = { red = 0.08 }
-						set_temp_variable = { green = 0.8 }
-						set_temp_variable = { blue = 0.17 }
-					}
-					else_if = {
-						limit = {
-							has_guaranteed = FROM
+							has_dynamic_modifier = {
+								modifier = energy_global_blackout
+							}
 						}
 						set_temp_variable = { red = 0.9 }
 						set_temp_variable = { green = 0.9 }
 						set_temp_variable = { blue = 0.0 }
-					}
-					else = {
-						set_temp_variable = { red = 0.0 }
-						set_temp_variable = { green = 0.5 }
-						set_temp_variable = { blue = 0.9 }
-					}
-				}
-			}
-
-			thickness = yes
-
-			targets = {
-				target_array = global.countries
-				target_trigger = {
-					var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
-						OR = {
-							tag = FROM
-							is_guaranteed_by = FROM
-							has_guaranteed = FROM
-						}
-					}
-				}
-			}
-		}
-
-		bottom = {
-			type = none
-		}
-
-		far_text = country
-		near_text = state
-
-		update_daily = yes
-	}
-
-	more_mapmodes_subjects_map_mode = {
-		top = {
-			type = country
-
-			color = {
-				var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
-					set_temp_variable = { alpha = 1.0 }
-					set_temp_variable = { thickness = 1.0 }
-					if = {
+					} else_if = {
 						limit = {
-							tag = FROM
-						}
-						set_temp_variable = { red = 0.08 }
-						set_temp_variable = { green = 0.8 }
-						set_temp_variable = { blue = 0.17 }
-					}
-					else_if = {
-						limit = {
-							is_subject_of = FROM
-						}
-						set_temp_variable = { red = 0.2 }
-						set_temp_variable = { green = 0.8 }
-						set_temp_variable = { blue = 0.8 }
-					}
-					else_if = {
-						limit = {
-							FROM = { is_subject_of = PREV }
-						}
-						set_temp_variable = { red = 0.2 }
-						set_temp_variable = { green = 0.8 }
-						set_temp_variable = { blue = 0.6 }
-					}
-					else = {
-						set_temp_variable = { red = 0.6 }
-						set_temp_variable = { green = 0.8 }
-						set_temp_variable = { blue = 0.6 }
-					}
-				}
-			}
-
-			thickness = yes
-
-			targets = {
-				target_array = global.countries
-				target_trigger = {
-					var:ROOT.more_mapmodes_country_map_mode_target?ROOT.id = {
-						OR = {
-							tag = FROM
-							is_subject_of = FROM
-							FROM = { is_subject_of = PREV }
-							AND = {
-								is_subject = yes
-								OVERLORD = {
-									FROM = { is_subject_of = PREV }
-								}
+							has_dynamic_modifier = {
+								modifier = energy_local_blackout
 							}
 						}
+						set_temp_variable = { red = 1.0 }
+						set_temp_variable = { green = 0.0 }
+						set_temp_variable = { blue = 0.0 }
+					} else = {
+						set_temp_variable = { red = 0.0 }
+						set_temp_variable = { green = 0.8 }
+						set_temp_variable = { blue = 0.2 }
 					}
 				}
 			}
+
+			thickness = yes
 		}
 
 		bottom = {
@@ -1343,4 +1133,5 @@ scripted_map_modes = {
 
 		update_daily = yes
 	}
+
 }
