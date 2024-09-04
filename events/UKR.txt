@@ -24,6 +24,8 @@ country_event = {
 	}
 }
 
+
+
 country_event = {
 	id = ukr.2
 	title = ukr.2.t
@@ -1035,6 +1037,9 @@ country_event = {
 	fire_only_once = yes
 	trigger = { 
 		tag = UKR
+		NOT = {
+			has_global_flag = SMO_war_is_over
+		}
 		RUS = {
 			has_country_flag = RUS_bucha_rezna
 		}
@@ -1461,7 +1466,7 @@ country_event = {
 		name = ukr.40.a
 		log = "[GetDateText]: [This.GetName]: ukr.40.a executed"
 		hidden_effect = {
-			load_oob = dci
+			load_oob = UKR_dci
 		}
 	}
 }
@@ -2078,50 +2083,6 @@ country_event = {
 				id = news.172
 				hours = 5
 			}
-			UKR_viktor_medvedchuk = {
-				set_portraits = {
-				    civilian = { large ="GFX_viktor_medvedchuk_RUS" }
-				}
-				set_nationality = CAU
-			}
-			CAU = {
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = oligarchy
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = centrism
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = market_socialism
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-				add_country_leader_role = {
-					character = UKR_viktor_medvedchuk
-					country_leader = {
-						ideology = left_nationalism
-						expire = "1965.1.1.1"
-						traits = { putin_friend oligarch }
- 					}
-					promote_leader = yes
- 				}
-			}
 		}
 	}
 	option = {
@@ -2222,12 +2183,14 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: ukr.64.a executed"
 		custom_effect_tooltip = UKR_Zaluzhny_plan_choice_cet
 		set_country_flag = UKR_Zaluzhny_plan_cf
+		set_country_flag = CIC_Zalusniy
 	}
 	option = {
 		name = ukr.64.b
 		log = "[GetDateText]: [This.GetName]: ukr.64.b executed"
 		custom_effect_tooltip = UKR_old_school_plan_choice_cet
 		set_country_flag = UKR_old_school_plan_cf
+		set_country_flag = CIC_Sirskyy
 	}
 }
 
@@ -2417,6 +2380,7 @@ country_event = {
 			popularity = -0.025
 		}
 		hidden_effect = {
+		    set_global_flag = UKR_viktor_medvedchuk_gb_NL
 			UKR_viktor_medvedchuk = {
 				remove_country_leader_role = {  ideology = oligarchy }
 			}
@@ -2595,6 +2559,868 @@ country_event = {
 			news_event = {
 				id = news.180
 				hours = 5
+			}
+		}
+	}
+}
+#Ивент на фокус "Подрыв Крымского моста"
+country_event = {
+    id = ukr.78
+    title = ukr.78.t
+    desc = ukr.78.desc
+	picture = GFX_country_event_150
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.78.a
+		trigger = {
+			NOT = {
+				check_variable = {
+					var = ukraine_rockets
+					value = 10
+					compare = less_than
+				}
+			}
+		}
+		hidden_effect = {
+			subtract_from_variable = {
+				var = ukraine_rockets
+				value = 10
+			}
+			random_list = {
+				5 = {
+					country_event = {
+						id = ukr.79
+					}
+				}
+				95 = {
+					country_event = {
+						id = ukr.80
+					}
+				}
+			}
+		}
+	}
+	option = {
+        name = ukr.78.b
+		hidden_effect = {
+
+		}
+	}
+	option = {
+        name = ukr.78.c
+		hidden_effect = {
+
+		}
+	}
+}
+#Подрыв Крымского моста с помощью Ракет
+country_event = {
+    id = ukr.79
+    title = ukr.79.t
+    desc = ukr.79.desc
+	picture = GFX_country_event_150
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.79.a
+		hidden_effect = {
+			set_global_flag = CRIMEA_STRAIT_BLOCKED
+			set_global_flag = Crimea_bridge_is_destroyed
+			RUS = {
+				country_event = rus.181
+			}
+		}
+	}
+}
+#Провал подрыва Крымского моста с помощью Ракет
+country_event = {
+    id = ukr.80
+    title = ukr.80.t
+    desc = ukr.80.desc
+	picture = GFX_country_event_150
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.80.a
+	}
+}
+#Заспрос на закрытии неба
+country_event = {
+    id = ukr.81
+    title = ukr.81.t
+    desc = ukr.81.desc
+	picture = GFX_country_event_151
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.81.a
+		# Пока-что отказ 100 процентов
+		country_event = {
+			id = ukr.82
+			days = 1
+		}
+	}
+}
+#Отказ на закрытии неба
+country_event = {
+    id = ukr.82
+    title = ukr.82.t
+    desc = ukr.82.desc
+	picture = GFX_country_event_151
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.82.a
+	}
+}
+
+#Дела с коррупцией
+country_event = {
+    id = ukr.83
+    title = ukr.83.t
+    desc = ukr.83.desc
+	picture = GFX_country_event_155
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.83.a
+
+		hidden_effect = {
+			UKR = {
+                country_event = { 
+                    id = ukr.83
+                    days = 90
+                }
+            }
+		}
+
+		IF = {
+			limit = { 
+				has_completed_focus = Kolomoisky_case
+				has_completed_focus = Motorsich_case
+			}
+
+			random_list = {
+				60 = {
+					ROOT = {
+						country_event = ukr.84
+					}
+				}
+				30 = {
+					ROOT = {
+						country_event = ukr.85
+					}
+				}
+				10 = {
+					ROOT = {
+						country_event = ukr.86
+					}
+				}
+			}
+
+			else_if = {
+				limit = { 
+					has_completed_focus = Motorsich_case
+				}
+
+				random_list = {
+					55 = {
+						ROOT = {
+							country_event = ukr.84
+						}
+					}
+					25 = {
+						ROOT = {
+							country_event = ukr.85
+						}
+					}
+					20 = {
+						ROOT = {
+							country_event = ukr.86
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = { 
+					has_completed_focus = Kolomoisky_case
+				}
+
+				random_list = {
+					55 = {
+						ROOT = {
+							country_event = ukr.84
+						}
+					}
+					25 = {
+						ROOT = {
+							country_event = ukr.85
+						}
+					}
+					20 = {
+						ROOT = {
+							country_event = ukr.86
+						}
+					}
+				}
+			}
+
+			else = {
+				random_list = {
+					50 = {
+						ROOT = {
+							country_event = ukr.84
+						}
+					}
+					20 = {
+						ROOT = {
+							country_event = ukr.85
+						}
+					}
+					30 = {
+						ROOT = {
+							country_event = ukr.86
+						}
+					}
+				}
+			}
+		}
+	}
+}
+#Ничего не поменялось
+country_event = {
+    id = ukr.84
+    title = ukr.84.t
+    desc = ukr.84.desc
+	picture = GFX_country_event_154
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.84.a
+	}
+}
+#Коррупция уменьшилась
+country_event = {
+    id = ukr.85
+    title = ukr.85.t
+    desc = ukr.85.desc
+	picture = GFX_country_event_152
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.85.a
+        add_to_variable = { corruption_level = -25}
+	}
+}
+#Коррупция увеличилась
+country_event = {
+    id = ukr.86
+    title = ukr.86.t
+    desc = ukr.86.desc
+	picture = GFX_country_event_153
+
+    fire_only_once = no
+    is_triggered_only = yes
+
+    option = {
+        name = ukr.86.a
+	    add_to_variable = { corruption_level = 25}
+	}
+}
+
+country_event = {
+    id = ukr.89
+    title = ukr.89.t
+    desc = ukr.89.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	trigger = {
+		NOT = {
+			RUS = {
+				has_completed_focus = RUS_SMO	
+			}
+		}
+	}
+	option = {
+		name = ukr.89.a
+		add_political_power = -100
+		random_list = {
+		0.3 = {
+			country_event = { 
+				id = ukr.90
+				days = 3
+			}
+		}			
+
+		0.7 = {
+			country_event = { 
+				id = ukr.91
+				days = 1
+			}
+
+		}
+		}
+	}
+	option = {
+		name = ukr.89.b
+		set_country_flag = UKR_mazynyk_bb
+	}
+}
+
+country_event = {
+    id = ukr.90
+    title = ukr.90.t
+    desc = ukr.90.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.90.a
+		set_country_flag = UKR_mazynyk_hello  
+	}
+}
+
+country_event = {
+    id = ukr.91
+    title = ukr.91.t
+    desc = ukr.91.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.91.a
+		set_country_flag = UKR_mazynyk_bb
+	}
+}
+
+country_event = {
+    id = ukr.92
+    title = ukr.92.t
+    desc = ukr.92.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.92.a
+	}
+}
+
+
+country_event = {
+    id = ukr.93
+    title = ukr.93.t
+    desc = ukr.93.desc
+	is_triggered_only = yes
+	option = {
+		name = ukr.93.a
+		240 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+		
+	264 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	262 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	251 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	289 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	226 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	246 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	223 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	242 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	643 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	646 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	642 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	644 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	413 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}			
+	647 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}		
+	648 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	645 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	649 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	655 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	650 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	659 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	657 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	662 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	661 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	666 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	664 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	665 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	663 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	660 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	656 = {	add_dynamic_modifier = {
+			modifier = UKR_no_step_back_south
+			scope = RUS
+			days = 14
+		}		
+		}
+
+
+	}
+	option = {
+		name = ukr.93.b
+
+		240 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+		
+	264 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	262 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	251 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	289 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	226 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	246 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	223 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	242 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	643 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	646 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	642 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	644 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	413 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}			
+	647 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}		
+	648 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	645 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	649 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	655 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	650 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	659 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	657 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}	
+	662 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	661 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	666 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	664 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	665 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	663 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	660 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+		}
+	656 = {	add_dynamic_modifier = {
+			modifier = UKR_fallback_south
+			scope = RUS
+			days = 14
+		}		
+
+		}	
+	}
+}
+#возвращение генералов
+country_event = {
+    id = ukr.94
+    title = ukr.94.t
+    desc = ukr.94.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.94.a
+		recruit_character = mikola_balan
+	}
+}
+#возвращение генералов отказ
+country_event = {
+    id = ukr.95
+    title = ukr.95.t
+    desc = ukr.95.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.95.a
+	}
+}
+
+country_event = {
+    id = ukr.96
+    title = ukr.96.t
+    desc = ukr.96.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.96.a
+	}
+}
+
+country_event = {
+    id = ukr.97
+    title = ukr.97.t
+    desc = ukr.97.desc
+	picture = GFX_404
+	is_triggered_only = yes
+	option = {
+		name = ukr.97.a
+	}
+}
+
+country_event = {
+    id = ukr.98
+    title = ukr.98.t
+    desc = ukr.98.desc
+	picture = GFX_country_event_113
+	is_triggered_only = yes
+	option = {
+		name = ukr.98.a
+		add_political_power = -100
+		hidden_effect = {
+		    set_global_flag = SMO_war_is_over
+			set_global_flag = UKR_NEW_FOCUS_TREE
+			mark_focus_tree_layout_dirty = yes
+			RUS = {
+			    annex_country = RBZ
+			    add_stability = 0.1
+				add_popularity = { ideology = neutrality popularity = 0.1 }
+			}
+			BLR = {
+			    transfer_state = 552
+				transfer_state = 551
+				transfer_state = 550
+				transfer_state = 549
+				transfer_state = 401
+				transfer_state = 400
+				transfer_state = 399
+				transfer_state = 398
+				transfer_state = 402
+			}
+		    UKR = {
+			    add_stability = -0.5
+			    give_military_access = RUS
+				white_peace = RUS
+			}
+			DPR = {
+			    remove_ideas = ukrainian_shellings
+			    transfer_state = 237
+				transfer_state = 213
+				transfer_state = 182
+				transfer_state = 149
+				transfer_state = 165
+				every_state = {
+					add_compliance = 20
+				}
+			}
+			LPR = {
+			    remove_ideas = ukrainian_shellings
+			    transfer_state = 145
+				transfer_state = 176
+				transfer_state = 154
+				transfer_state = 125
+				transfer_state = 116
+				every_state = {
+					add_compliance = 20
+				}
+			}
+			volodymir_zelenskyy = {
+				remove_country_leader_role = { ideology = controlled_democracy }
+			}
+			ermak = {
+				promote_character = yes
+			}
+			news_event = {
+				id = news.191
+				hours = 5
+			}
+		}
+	}
+	option = {
+		name = ukr.98.b
+		add_political_power = 50
+		hidden_effect = {
+			RUS = {
+				country_event = {
+					id = rus.186
+					days = 1
+				}
 			}
 		}
 	}
