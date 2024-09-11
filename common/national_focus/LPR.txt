@@ -1613,8 +1613,9 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-			add_stability = 0.005
-			add_political_power = 50
+			add_political_power = 35
+		    add_command_power = 25
+			army_experience = 5
 		}
 	}
 
@@ -1630,6 +1631,11 @@ focus_tree = {
         ai_will_do = { factor = 1 }
 
         completion_reward = {
+			add_political_power = 45
+			add_war_support = 0.015
+			add_stability = -0.005
+			increase_escalation_by_2 = yes
+			custom_effect_tooltip = DPR_OSCE_leave_the_country
             news_event = news.192
         }
     }
@@ -1647,6 +1653,9 @@ focus_tree = {
         ai_will_do = { factor = 1 }
 
         completion_reward = {
+			add_political_power = 55
+			add_war_support = 0.045
+			custom_effect_tooltip = DPR_Kievs_crimes_tt
             add_to_variable = {
             var = global.rus_information_war_var_sum
             value = 2.5
@@ -1668,6 +1677,12 @@ focus_tree = {
         ai_will_do = { factor = 1 }
 
         completion_reward = {
+			add_political_power = 15
+			add_command_power = -35
+			swap_ideas = {
+				remove_idea = LPR_banditry_law_enforcement_agencies
+				add_idea = LPR_banditry_law_enforcement_agencies_2
+			}
             add_to_variable = { corruption_level = -50 }
             custom_effect_tooltip = LPR_bribes_to_security_forces_tt
         }
@@ -1686,7 +1701,12 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-			add_political_power = 250
+			add_political_power = 55
+			add_command_power = -10
+			swap_ideas = {
+				remove_idea = LPR_banditry_law_enforcement_agencies
+				add_idea = LPR_banditry_law_enforcement_agencies_1
+			}
 			custom_effect_tooltip = LPR_corruption_higher_tt
 			add_to_variable = { corruption_level = 50 }
 		}
@@ -1704,7 +1724,37 @@ focus_tree = {
         ai_will_do = { factor = 1 }
 
         completion_reward = {
-            remove_ideas = LPR_banditry_law_enforcement_agencies 
+			add_political_power = 35
+		    add_command_power = 15
+            if = {
+				limit = {
+					NOT = {
+						OR = {
+							has_completed_focus = LPR_bribes_to_security_forces
+							has_completed_focus = LPR_fight_against_corruption
+						}
+					}
+				}
+				custom_effect_tooltip = DPR_restore_order_in_authorities_tt
+			}
+			if = {
+				limit = {
+					has_completed_focus = LPR_fight_against_corruption
+				}
+				swap_ideas = {
+					remove_idea = LPR_banditry_law_enforcement_agencies_1
+					add_idea = LPR_banditry_law_enforcement_agencies_3
+				}
+			}
+			else_if = {
+				limit = {
+					has_completed_focus = LPR_bribes_to_security_forces
+				}
+				swap_ideas = {
+					remove_idea = LPR_banditry_law_enforcement_agencies_2
+					add_idea = LPR_banditry_law_enforcement_agencies_4
+				}
+			}
         }
     }
 
@@ -1719,8 +1769,17 @@ focus_tree = {
 
 		ai_will_do = { factor = 1 }
 
+		select_effect = {
+			add_ideas = LPR_fight_the_gangs_idea
+		}
+
 		completion_reward = {
-			custom_effect_tooltip = fight_against_corruption_effect_small_tt
+			custom_effect_tooltip = DPR_struggle_against_bandit_gangs_se_tt
+		    add_political_power = 25
+			add_command_power = 15
+			add_stability = 0.035
+			add_popularity = { ideology = neutrality popularity = 0.025 }
+			hidden_effect = { remove_ideas = LPR_fight_the_gangs_idea }
 			add_to_variable = { corruption_level = -25}
 		}
 	}
@@ -1737,6 +1796,10 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
+			add_political_power = 25
+			add_command_power = 35
+			add_stability = 0.055
+			add_ideas = LPR_stopped_drug_trafficking_idea
 			custom_effect_tooltip = fight_against_corruption_effect_small_tt
 			add_to_variable = { corruption_level = -25}
 		}
