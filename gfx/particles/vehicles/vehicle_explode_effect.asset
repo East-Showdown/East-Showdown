@@ -1,0 +1,289 @@
+particle={
+	name="vehicle_explode_file"
+	
+		subsystem={
+			name="fire"
+			max_amount=20
+			slave_particles=0
+			sort="depth"
+			emitter_type="point"
+			invert=no
+			trail=no
+			local_space=no
+			billboard=yes
+			hide=no
+			texture={
+				file="gfx/particles/fire03.dds"
+				x=1
+				y=1
+				shader="ParticleAdditive"
+			}
+			color={
+				x=255
+				y=100
+				z=50
+				alpha=50,fade_alpha
+			}
+			position={
+				x=0
+				y=0
+				z=0
+			}
+			start=0.000
+			duration=0.100
+			emitter_yaw={ 0 0 }
+			emitter_pitch={ 0 0 }
+			velocity_pitch={ 45 0 }
+			velocity_yaw={ 0 180 }
+			velocity={ 25 10 }
+			life={ 0.300 0.100 }
+			emission=200
+			size={ 1.500,increase_size 0.500 }
+			rotation={ 0 90 }
+			force=firedrag
+		}
+		subsystem={
+			name="shockwave"
+			max_amount=1
+			slave_particles=0
+			sort="depth"
+			emitter_type="point"
+			invert=no
+			trail=no
+			local_space=no
+			billboard=no
+			hide=no
+			texture={
+				file="gfx/particles/bubble.dds"
+				x=1
+				y=1
+				shader="ParticleAdditive"
+			}
+			color={
+				x=255
+				y=220
+				z=220
+				alpha=100,fade_alpha_shockwave
+			}
+			position={
+				x=0
+				y=0
+				z=0
+			}
+			start=0.000
+			duration=0.100
+			emitter_yaw={ 0 0 }
+			emitter_pitch={ 0 0 }
+			velocity_pitch={ 0 0 }
+			velocity_yaw={ 0 0 }
+			velocity={ 0 0 }
+			life={ 0.200 0 }
+			emission=100
+			size={ 15,increase_size_shockwave 0 }
+			particle_pitch=90
+			rotation={ 0 90 }
+		}
+		subsystem={
+			name="smoke_horizontal"
+			max_amount=100
+			slave_particles=0
+			sort="depth"
+			emitter_type="point"
+			invert=no
+			trail=no
+			local_space=no
+			billboard=yes
+			hide=no
+			texture={
+				file="gfx/particles/cloud_2.dds"
+				x=1
+				y=1
+				shader="ParticleAlphaBlend"
+			}
+			color={
+				x=150
+				y=140
+				z=120
+				alpha=150,fade_smoke
+			}
+			position={
+				x=0
+				y=0
+				z=0
+			}
+			start=0.000
+			duration=0.100
+			emitter_yaw={ 0 180 }
+			emitter_pitch={ 0 0 }
+			velocity_pitch={ 0 0 }
+			velocity_yaw={ 0 180 }
+			velocity={ 20 0 }
+			life={ 2.500 0 }
+			emission=200
+			size={ 1.500,increase_size_smoke 0.200 }
+			rotation={ 0,rotate 30 }
+			force=drag
+		}
+	
+	animation={
+		name="fade_smoke"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 0.100 0.100 1 0.600 1 1 0 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="fade_alpha"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 0.100 0.200 1 0.500 0 0.800 1 1 0 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="fade_alpha_shockwave"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 1 1 0 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="bomb_fade"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 1 0.950 1 1 0 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="increase_size"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 0.100 0.100 0.500 0.500 0.500 1 1 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="increase_size_smoke"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 0.100 0.200 1 0.500 1.400 1 1.500 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="increase_size_shockwave"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=1
+		curve={
+			0 0.100 1 1 
+		}
+		op="MUL"
+		time="life"
+	}
+	animation={
+		name="rotate"
+		start=0
+		duration=1
+		repeat=no
+		minValue=0
+		maxValue=3
+		curve={
+			0 0 0.350 0.500 1 1 
+		}
+		op="MUL"
+		time="life"
+	}
+	force={
+		type="planar"
+		name="upforce"
+		position={
+			0 0 0 
+		}
+		direction={
+			0 1 0 
+		}
+		local_force=yes
+		yaw=0
+		division=16
+		amount=6.500
+	}
+	force={
+		type="planar"
+		name="gravity"
+		position={
+			0 0 0 
+		}
+		direction={
+			0 -1 0 
+		}
+		local_force=yes
+		yaw=0
+		division=16
+		amount=20
+	}
+	force={
+		type="friction"
+		name="drag"
+		position={
+			0 0 0 
+		}
+		direction={
+			0 1 0 
+		}
+		local_force=yes
+		yaw=0
+		division=16
+		amount=8
+	}
+	force={
+		type="friction"
+		name="firedrag"
+		position={
+			0 0 0 
+		}
+		direction={
+			0 1 0 
+		}
+		local_force=yes
+		yaw=0
+		division=16
+		amount=15
+	}
+}
+
