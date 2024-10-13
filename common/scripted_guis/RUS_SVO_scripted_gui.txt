@@ -331,8 +331,164 @@ scripted_gui = {
 					RUS_missile_attacks_script_effect = yes
 				}
 			}
+			BZ_manpower_button_click = { add_to_variable = { BZ_manpower = 1 } }
+			BZ_manpower_button_right_click = { subtract_from_variable = { BZ_manpower = 1 } }
+			BZ_manpower_button_shift_click = { add_to_variable = { BZ_manpower = 10 } }
+			BZ_manpower_button_shift_right_click = { subtract_from_variable = { BZ_manpower = 10 } }
+			BZ_manpower_button_control_click = { add_to_variable = { BZ_manpower = 100 } }
+			BZ_manpower_button_control_right_click = { subtract_from_variable = { BZ_manpower = 100 } }
+			BZ_manpower_button_alt_click = { add_to_variable = { BZ_manpower = 1000 } }
+			BZ_manpower_button_alt_right_click = { subtract_from_variable = { BZ_manpower = 1000 } }
+			BZ_confirm_manpower_button_click = {
+				#RUS states
+				if = { limit = { check_variable = {ukraine_region_selected = 3} } set_variable = { BZ_manpower_bryansk = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 19} } set_variable = { BZ_manpower_kursk = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 1} } set_variable = { BZ_manpower_belgorod = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 30} } set_variable = { BZ_manpower_voronezh = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 26} } set_variable = { BZ_manpower_rostov = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				#UKR states
+				else_if = { limit = { check_variable = {ukraine_region_selected = 5} } set_variable = { BZ_manpower_chernigov = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 27} } set_variable = { BZ_manpower_sumy = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 13} } set_variable = { BZ_manpower_kharkov = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				#UKR got Crimea
+				else_if = { limit = { check_variable = {ukraine_region_selected = 18} } set_variable = { BZ_manpower_krasnodar = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 7} } set_variable = { BZ_manpower_crimea = BZ_manpower } set_variable = { BZ_manpower = 0 } }
+			}
+			BZ_prepare_offensive_button_click = {
+				set_country_flag = BZ_prepare_offensive_category_visible	
+				if = { limit = { check_variable = {ukraine_region_selected = 3} } set_country_flag = BZ_prepare_offensive_bryansk }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 19} } set_country_flag = BZ_prepare_offensive_kursk }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 1} } set_country_flag = BZ_prepare_offensive_belgorod }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 30} } set_country_flag = BZ_prepare_offensive_voronezh }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 26} } set_country_flag = BZ_prepare_offensive_rostov }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 5} } set_country_flag = BZ_prepare_offensive_chernigov } 
+				else_if = { limit = { check_variable = {ukraine_region_selected = 27} } set_country_flag = BZ_prepare_offensive_sumy }
+				else_if = { limit = { check_variable = {ukraine_region_selected = 13} } set_country_flag = BZ_prepare_offensive_kharkov } 
+				else_if = { limit = { check_variable = {ukraine_region_selected = 18} } set_country_flag = BZ_prepare_offensive_krasnodar } 
+				else_if = { limit = { check_variable = {ukraine_region_selected = 7} } set_country_flag = BZ_prepare_offensive_crimea }
+			}
 		}
 		triggers = {
+			BZ_resources_visible = {
+				OR = {
+					check_variable = {ukraine_region_selected = 3}
+					check_variable = {ukraine_region_selected = 19}
+					check_variable = {ukraine_region_selected = 1}
+					check_variable = {ukraine_region_selected = 30}
+					check_variable = {ukraine_region_selected = 26}	
+					check_variable = {ukraine_region_selected = 5}
+					check_variable = {ukraine_region_selected = 27}
+					check_variable = {ukraine_region_selected = 13}
+					AND = {
+						RBZ = {
+							controls_state = 414
+						}
+						OR = {
+							check_variable = {ukraine_region_selected = 18}
+							check_variable = {ukraine_region_selected = 7}
+						}
+					}
+				}
+			}
+			BZ_manpower_button_visible = {
+				OR = {
+					AND = {
+						original_tag = RUS
+						check_variable = {ukraine_region_selected = 3}
+						check_variable = {ukraine_region_selected = 19}
+						check_variable = {ukraine_region_selected = 1}
+						check_variable = {ukraine_region_selected = 30}
+						check_variable = {ukraine_region_selected = 26}	
+					}
+					AND = {
+						original_tag = UKR
+						check_variable = {ukraine_region_selected = 5}
+						check_variable = {ukraine_region_selected = 27}
+						check_variable = {ukraine_region_selected = 13}
+					}
+					AND = {
+						RBZ = {
+							controls_state = 414
+						}
+						OR = {
+							AND = {
+								original_tag = RUS
+								check_variable = {ukraine_region_selected = 18}
+							}
+							AND = {
+								original_tag = UKR
+								check_variable = {ukraine_region_selected = 7}
+							}
+						}
+					}
+				}
+			}
+			BZ_confirm_manpower_button_visible = {
+				OR = {
+					AND = {
+						original_tag = RUS
+						check_variable = {ukraine_region_selected = 3}
+						check_variable = {ukraine_region_selected = 19}
+						check_variable = {ukraine_region_selected = 1}
+						check_variable = {ukraine_region_selected = 30}
+						check_variable = {ukraine_region_selected = 26}	
+					}
+					AND = {
+						original_tag = UKR
+						check_variable = {ukraine_region_selected = 5}
+						check_variable = {ukraine_region_selected = 27}
+						check_variable = {ukraine_region_selected = 13}
+					}
+					AND = {
+						RBZ = {
+							controls_state = 414
+						}
+						OR = {
+							AND = {
+								original_tag = RUS
+								check_variable = {ukraine_region_selected = 18}
+							}
+							AND = {
+								original_tag = UKR
+								check_variable = {ukraine_region_selected = 7}
+							}
+						}
+					}
+				}
+			}
+			BZ_prepare_offensive_button_visible = {
+				OR = {
+					AND = {
+						original_tag = UKR
+						check_variable = {ukraine_region_selected = 3}
+						check_variable = {ukraine_region_selected = 19}
+						check_variable = {ukraine_region_selected = 1}
+						check_variable = {ukraine_region_selected = 30}
+						check_variable = {ukraine_region_selected = 26}	
+					}
+					AND = {
+						original_tag = RUS
+						check_variable = {ukraine_region_selected = 5}
+						check_variable = {ukraine_region_selected = 27}
+						check_variable = {ukraine_region_selected = 13}
+					}
+					AND = {
+						RBZ = {
+							controls_state = 414
+						}
+						OR = {
+							AND = {
+								original_tag = UKR
+								check_variable = {ukraine_region_selected = 18}
+							}
+							AND = {
+								original_tag = RUS
+								check_variable = {ukraine_region_selected = 7}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
