@@ -1,0 +1,129 @@
+
+bz_init_constants = {
+	set_variable = { global.bz_border_guards_manpower_per_division = 300 }
+}
+
+bz_ensure_border_guards_template = {
+	if = {
+		limit = { NOT = { has_template = "Border Guards" } }
+		division_template = {
+			name = "Border Guards"
+			is_locked = yes
+
+			regiments = { 
+				border_guard = { x = 0 y = 0 }
+				border_guard = { x = 0 y = 1 }
+				border_guard = { x = 0 y = 2 }
+			}
+		}
+	}
+}
+
+# THIS scope is Country
+bz_start_states_breach = {
+	resize_temp_array = { bz_temp_manpower_factors = 1 }
+	set_temp_variable = { breach_initiator_country = THIS }
+	
+	bz_calculate_manpower_pools_use_factors = yes
+}
+
+# THIS scope must be Country that initiate BZ breach
+# THIS scope must contain temp arrays: "bz_temp_manpower_factors" and "breach_initiator_country"
+bz_calculate_manpower_pools_use_factors = {
+	# Идём в цикле по всем выбранным пограничным зонам
+	for_each_loop = {
+		array = bz_selected_states
+		value = bz_selected_state
+
+		bz_selected_state = {
+			owner = {
+				if = {
+					# Проверка на то, что в стейте есть непроходимая погранзона
+					limit = { NOT = { has_war_with = breach_initiator_country } }
+
+					PREV = {
+						for_each_loop = {
+							array = bz_manpower_pools_indexes
+							value = manpower_pool_index
+							
+							for_loop_effect = {
+								end = bz_temp_manpower_factors^num
+
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# TODO implement calculation of manpower pool factor [0; 1]
+}
+
+# PREV scope is COUNTRY
+# PREV scope must contain temp_variable "temp_target_country"
+# THIS scope is STATE
+# THIS scope must contain temp_variable "temp_manpower_for_units"
+bz_state_spawn_units = {
+	owner = {
+		if = { # Если погранзона-союзник
+			limit = { OR = {
+				is_ally_with = var:temp_target_country
+				gives_military_access_to = var:temp_target_country
+			} }
+
+			# Считаем, сколько юнитов пограничников можно заспавнить в зоне
+			set_temp_variable = { temp_units_to_spawn = temp_manpower_for_units}
+			set_temp_variable = { temp_units_to_spawn_fractial = temp_units_to_spawn }
+			modulo_temp_variable = { temp_units_to_spawn_fractial = global.bz_border_guards_manpower_per_division }
+			divide_temp_variable = { temp_units_to_spawn = global.bz_border_guards_manpower_per_division }
+			subtract_from_temp_variable = { temp_units_to_spawn = temp_units_to_spawn_fractial }
+
+			for_loop_effect = {
+				end = temp_units_to_spawn
+				PREV = { bz_create_border_guards_unit_in_state = yes }
+			}
+		}
+		else = { # Иначе погранзона - союзник врага
+			for_loop_effect = {
+				array = PREV.
+				value = state_id
+			}
+		}
+	}
+}
+
+# THIS scope must be STATE
+# THIS scope must contain temp_variables:
+# 1. "temp_owner"
+bz_create_border_guards_unit_in_state = {
+	bz_ensure_border_guards_template = yes
+	meta_effect = {
+		text = {
+			create_unit = {
+				division = "name = \"Border Guards\" division_template = \"Border Guards\" start_experience_factor = 0.5"
+				owner = [OWNER]
+			}
+		}
+		OWNER = "[?temp_owner]"
+	}
+}
+
+# THIS scope must be STATE
+# THIS scope must contain temp_variables:
+# 1. "temp_owner"
+# 2. "temp_province_id"
+bz_create_border_guards_unit_in_province = {
+	bz_ensure_border_guards_template = yes	
+	meta_effect = {
+		text = {
+			create_unit = {
+				division = "name = \"Border Guards\" division_template = \"Border Guards\" start_experience_factor = 0.5"
+				owner = [OWNER]
+				prioritize_location = [PROVINCE_ID]
+			}
+		}
+		OWNER = "[?temp_owner]"
+		PROVINCE_ID = "[?temp_province_id]"
+	}
+}
