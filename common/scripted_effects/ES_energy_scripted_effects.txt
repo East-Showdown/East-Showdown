@@ -268,6 +268,12 @@ calculate_energy_local_consumption = {
 	set_variable = { energy_population_consumption = state_population_k }
 	divide_variable = { energy_population_consumption = PREV.energy_population_k_consumption_divider }
 	multiply_variable = { energy_population_consumption = PREV.energy_population_k_consumption_factor }
+
+	# Умножаем потребление энергии населением на модификаторы
+	set_variable = { energy_population_consumption_factor = 1 }
+	add_to_variable = { energy_population_consumption_factor = modifier@energy_population_consumption_factor }
+	multiply_variable = { energy_population_consumption = energy_population_consumption_factor }
+
 	clamp_variable = { var = energy_population_consumption min = 0.001 }
 
 	# Сколько тратят постройки
@@ -293,15 +299,17 @@ calculate_energy_local_consumption = {
 
 	# Сумарные локальные затраты энергии
 	set_variable = { energy_consumption = energy_population_consumption }
+	add_to_variable = { PREV.energy_population_consumption = energy_population_consumption }
+
 	add_to_variable = { energy_consumption = energy_buildings_consumption }
 }
 
 # THIS is country scope
 calculate_energy_country_consumption = {
-	# Сколько тратит население
-	set_variable = { energy_population_consumption = max_manpower_k }
-	divide_variable = { energy_population_consumption = energy_population_k_consumption_divider }
-	multiply_variable = { energy_population_consumption = energy_population_k_consumption_factor }
+	# Сколько тратит население (ОТКЛЮЧЕНО, Т.К. ВЫСЧИТЫВАЕТСЯ ПО СУММЕ ОТ СТЕЙТОВ)
+	# set_variable = { energy_population_consumption = max_manpower_k }
+	# divide_variable = { energy_population_consumption = energy_population_k_consumption_divider }
+	# multiply_variable = { energy_population_consumption = energy_population_k_consumption_factor }
 
 	# Сколько тратят постройки
 	set_variable = { energy_arms_factories_consumption = modifier@arms_factories }
