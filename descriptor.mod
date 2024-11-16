@@ -73,5 +73,5 @@ tags={
 	"Graphics"
 }
 picture="showdown.jpg"
-supported_version="1.14.*"
+supported_version="1.15.*"
 remote_file_id="2948642461"
