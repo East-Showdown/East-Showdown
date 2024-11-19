@@ -103,7 +103,9 @@ NDefines_Graphics = {
 		SELECTION_HOVERED_STATE_COLOR_INDEX_CONTROLLED = 5, -- Border color of hovered controlled states in various select mapmodes. Refers to the colors in BORDER_COLOR_CUSTOM_HIGHLIGHTS.
 		SELECTION_HOVERED_STATE_COLOR_INDEX_FOREIGN = 6,	-- Border color of hovered foreign states in various select mapmodes. Refers to the colors in BORDER_COLOR_CUSTOM_HIGHLIGHTS.
 
-
+		PREPARING_RAID_ARROW_COLOR = { 0.7, 0.7, 0.7, 1.0 },							    -- Color of the arrow drawn in the raid map mode for raids that are still preparing.
+		READY_RAID_ARROW_COLOR = { 0.7, 0.7, 0, 0.9},							        -- Color of the arrow drawn in the raid map mode for raids that can be launched.
+		ACTIVE_RAID_ARROW_COLOR = { 1, 0, 0, 0.9 },
 	},
 	
 	NMapIcons = {
@@ -1135,6 +1137,34 @@ NDefines_Graphics = {
 		INTEL_LEDGER_GRAPH_GREEN = { 0.0, 1.0, 0.0, 1.0 },
 	
 		DEFAULT_NUDGE_FLOATING_HARBOR_DIST = 7.0,	-- Default distance of floating harbors from the coast in pixels, for nudger
+		RAID_SOURCE_MAP_STRIPES_COLOR = { 0.0, 1.0, 1.0, 0.4 },
+		RAID_SOURCE_MAP_STRIPES_HOVERED_COLOR = { 0.3, 1.0, 1.0, 0.7 },
+
+		RAID_ARROW_BALLISTIC_SHAPE = 0.02,              -- Higher value = curved trajectories, lower value = flat trajectories
+		RAID_ARROW_BALLISTIC_MAX_HEIGHT = 30,			-- Maximum altitude reached by ballistic trajectories
+		RAID_ARROW_BALLISTIC_MAX_SEGMENT_LENGTH = 1,	-- Maximum length of arrow segment (less = smoother curve)
+		RAID_ARROW_BALLISTIC_MAX_SEGMENTS = 100,		-- Max segments per arrow (overrides max segment length)
+
+		RAID_ARROW_AIR_HEIGHT = 10.0,                   -- Highest altitude above max(source, target)
+		RAID_ARROW_AIR_SLOPE_SOURCE_STEEPNESS = 0.2,    -- Higher value = steeper angle [0,1]
+		RAID_ARROW_AIR_SLOPE_SOURCE_LENGTH = 50.0,      -- Higher value = more time to reach the highest altitude
+		RAID_ARROW_AIR_SLOPE_TARGET_STEEPNESS = 0.2,    -- Same as above but for the target
+		RAID_ARROW_AIR_SLOPE_TARGET_LENGTH = 0.0,       -- Same as above but for the target (a value of zero means it ends above the target)
+		RAID_ARROW_AIR_MAX_SEGMENT_LENGTH = 1,			-- Maximum length of arrow segment (less = smoother curve)
+		RAID_ARROW_AIR_MAX_SEGMENTS = 100,				-- Max segments per arrow (overrides max segment length)
+
+		RAID_ARROW_NAVAL_SUBDIVISIONS = 20,             -- Number of subdivisions for the path spline (more = smoother, but slower to render)
+		RAID_ARROW_NAVAL_SHARP_TURN_SMOOTHNESS = 0.10,  -- Amount of smoothness that is applied to smooth out sharp turns (0 = off)
+		RAID_ARROW_NAVAL_USE_MIDPOINTS = true,          -- Whether to use midpoints between provinces to build the path
+		RAID_UNIT_ENTITY_BASE_SCALE = 2.0,              -- Base scale of the raid unit entity used to show the progress of the raid (can be further modifier in raid script)
+		RAID_UNIT_ENTITY_OFFSET = { 0.0, 0.0, 0.0 },    -- Raid entity offset from the arrow spline position
+		RAID_CONVOY_ENTITY_START_OFFSET = 15.0,         -- Offset along the arrow where the convoy entity starts (to avoid being placed on land)
+
+		RAID_MAP_ICON_DRAW_DISTANCE_MIN = 10.0,                      -- Below this distance, raid map icons are hidden
+		RAID_MAP_ICON_DRAW_DISTANCE_MAX = 500.0,                     -- Above this distance, raid map icons are hidden in normal map modes
+		RAID_MAP_ICON_MAX_DRAW_DISTANCE_IN_RAID_MAP_MODE = 1600.0,   -- Above this distance, raid map icons are hidden in raid map mode
+
+		RAID_TARGET_ZOOM_HEIGHT = 200.0,				-- The height for the map carmera to zoom in to a raid target
 	},
 	
 	NInterface = {
