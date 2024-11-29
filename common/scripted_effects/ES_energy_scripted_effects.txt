@@ -268,6 +268,12 @@ calculate_energy_local_consumption = {
 	set_variable = { energy_population_consumption = state_population_k }
 	divide_variable = { energy_population_consumption = PREV.energy_population_k_consumption_divider }
 	multiply_variable = { energy_population_consumption = PREV.energy_population_k_consumption_factor }
+
+	# Умножаем потребление энергии населением на модификаторы
+	set_variable = { energy_population_consumption_factor = 1 }
+	add_to_variable = { energy_population_consumption_factor = modifier@energy_population_consumption_factor }
+	multiply_variable = { energy_population_consumption = energy_population_consumption_factor }
+
 	clamp_variable = { var = energy_population_consumption min = 0.001 }
 
 	# Сколько тратят постройки
@@ -293,15 +299,17 @@ calculate_energy_local_consumption = {
 
 	# Сумарные локальные затраты энергии
 	set_variable = { energy_consumption = energy_population_consumption }
+	add_to_variable = { PREV.energy_population_consumption = energy_population_consumption }
+
 	add_to_variable = { energy_consumption = energy_buildings_consumption }
 }
 
 # THIS is country scope
 calculate_energy_country_consumption = {
-	# Сколько тратит население
-	set_variable = { energy_population_consumption = max_manpower_k }
-	divide_variable = { energy_population_consumption = energy_population_k_consumption_divider }
-	multiply_variable = { energy_population_consumption = energy_population_k_consumption_factor }
+	# Сколько тратит население (ОТКЛЮЧЕНО, Т.К. ВЫСЧИТЫВАЕТСЯ ПО СУММЕ ОТ СТЕЙТОВ)
+	# set_variable = { energy_population_consumption = max_manpower_k }
+	# divide_variable = { energy_population_consumption = energy_population_k_consumption_divider }
+	# multiply_variable = { energy_population_consumption = energy_population_k_consumption_factor }
 
 	# Сколько тратят постройки
 	set_variable = { energy_arms_factories_consumption = modifier@arms_factories }
@@ -613,9 +621,7 @@ init_all_hydro_power_plants = {
 	644 = { # Каховская ГЭС
 		set_variable = { state_id = 644 }
 		set_variable = { energy_hydro_power_plant_unit_generation_factor = 1 }
-
-		#Кол-во типов генераторов
-		set_variable = { energy_hydro_power_plant_units_type_count = 1 } 		
+		
 		# 6 генераторов по 55.8 МВт*ч
 		add_to_array = { energy_hydro_power_plant_operating_units_arr = 6 }
 		add_to_array = { energy_hydro_power_plant_unit_generation_power_arr = 0.056 }
@@ -828,7 +834,7 @@ recalculate_state_hydro_power_plant = {
 	set_temp_variable = { gen_count_temp = 0 }
 
 	for_loop_effect = {
-		end = energy_hydro_power_plant_units_type_count
+		end = energy_hydro_power_plant_operating_units_arr^num
 		value = index
 
 		add_to_variable = { energy_hydro_power_plant_operating_units = energy_hydro_power_plant_operating_units_arr^index }
