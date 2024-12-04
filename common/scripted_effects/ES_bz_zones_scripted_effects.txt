@@ -1,3 +1,12 @@
+# THIS scope is STATE
+bz_calculate_border_states_per_oblast_indexes = {
+	for_each_loop = {
+		array = bz_manpower_pools_indexes
+		value = pointer
+		
+		add_to_variable = { global.bz_border_states_per_oblast_indexes^pointer = 1 }
+	}
+}
 
 bz_init_constants = {
 	set_variable = { global.bz_border_guards_manpower_per_division = 300 }
@@ -126,4 +135,43 @@ bz_create_border_guards_unit_in_province = {
 		OWNER = "[?temp_owner]"
 		PROVINCE_ID = "[?temp_province_id]"
 	}
+}
+
+
+BZ_confirm_manpower = {
+	#RUS states
+	if = { limit = { check_variable = { selected_region = global.selected_region_bryanskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_bryanskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_kurskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_kurskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_belgorodskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_belgorodskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_voronezhskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_voronezhskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_rostovskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_rostovskaya_oblast_index = BZ_manpower } 
+	}
+	#UKR states
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_chernigovskaya_oblast_index } }
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_chernigovskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_sumskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_sumskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_kharkovskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_kharkovskaya_oblast_index = BZ_manpower } 
+	}
+	#UKR got Crimea
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_krasnodarskaya_oblast_index } } 
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_krasnodarskaya_oblast_index = BZ_manpower } 
+	}
+	else_if = { limit = { check_variable = { selected_region = global.selected_region_crimea_index } }
+		set_variable = { bz_manpower_pools^global.bz_manpower_pool_crimea_index = BZ_manpower } 
+	}
+
+	set_variable = { BZ_manpower = 0 } 
 }
