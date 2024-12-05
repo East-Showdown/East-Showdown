@@ -1,0 +1,51 @@
+on_actions = {
+	on_daily_UKR = {
+		effect = {
+			#clear_array = global.test_array
+			#add_to_array = { global.test_array = 623 }
+			#add_to_array = { global.test_array = 622 }
+
+			if = {
+				limit = {
+					always = yes
+					#has_country_flag = bz_prepare_breakthrough 
+				}
+
+				clear_array = bz_states_can_breakthrough
+				set_temp_variable = { initiator_country = THIS }
+
+				for_each_scope_loop = { # THIS scope is bz STATE
+					array = global.bz_states_ids
+					#array = global.test_array
+					
+					if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
+						limit = { check_variable = { bz_owner = initiator_country } }
+
+						for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
+							array = bz_adjacent_states_ids
+							break = break_flag
+
+							if = { # Если владелец смежной области в войне с страной-инициатором
+								limit = { owner = { has_war_with = initiator_country } }
+
+								# Добавляем id стейта погранзоны в массив доступных прорывов в стране
+								add_to_array = { PREV.PREV.bz_states_can_breakthrough = THIS }
+								set_temp_variable = { break_flag = 1 }
+							}
+						}
+
+					} 
+					else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
+						limit = { 
+							NOT = { owner = { has_war_with = initiator_country } }
+							bz_owner = { has_war_with = initiator_country }
+						}
+
+						# Добавляем id стейта погранзоны в массив доступных прорывов в стране
+						add_to_array = { PREV.bz_states_can_breakthrough = THIS }
+					}
+				}
+			}
+		}
+	}
+}
