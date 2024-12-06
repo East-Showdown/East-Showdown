@@ -4,7 +4,10 @@ bz_calculate_border_states_per_oblast_indexes = {
 		array = bz_manpower_pools_indexes
 		value = pointer
 		
-		add_to_variable = { global.bz_border_states_per_oblast_indexes^pointer = 1 }
+		meta_effect = {
+			text = { add_to_array = { bz_manpower_pool_[REGION_INDEX]_bz_states = THIS } }
+			REGION_INDEX = "[?p]"
+		}
 	}
 }
 
@@ -28,37 +31,29 @@ bz_ensure_border_guards_template = {
 	}
 }
 
-# THIS scope is Country
-bz_start_states_breach = {
-	resize_temp_array = { bz_temp_manpower_factors = 1 }
-	set_temp_variable = { breach_initiator_country = THIS }
-	
-	bz_calculate_manpower_pools_use_factors = yes
-}
-
+# Calculates factors of manpower use from allocated BZ resources
+#
 # THIS scope must be Country that initiate BZ breach
-# THIS scope must contain temp arrays: "bz_temp_manpower_factors" and "breach_initiator_country"
 bz_calculate_manpower_pools_use_factors = {
+	set_temp_variable = { initiator_country = THIS }
+
 	# Идём в цикле по всем выбранным пограничным зонам
-	for_each_loop = {
+	for_each_scope_loop = {
 		array = bz_selected_states
-		value = bz_selected_state
 
-		bz_selected_state = {
-			owner = {
-				if = {
-					# Проверка на то, что в стейте есть непроходимая погранзона
-					limit = { NOT = { has_war_with = breach_initiator_country } }
+		owner = {
+			if = {
+				# Проверка на то, что в стейте есть непроходимая погранзона
+				limit = { NOT = { has_war_with = breach_initiator_country } }
 
-					PREV = {
-						for_each_loop = {
-							array = bz_manpower_pools_indexes
-							value = manpower_pool_index
-							
-							for_loop_effect = {
-								end = bz_temp_manpower_factors^num
+				PREV = {
+					for_each_loop = {
+						array = bz_manpower_pools_indexes
+						value = manpower_pool_index
+						
+						for_loop_effect = {
+							end = bz_temp_manpower_factors^num
 
-							}
 						}
 					}
 				}
@@ -69,39 +64,94 @@ bz_calculate_manpower_pools_use_factors = {
 	# TODO implement calculation of manpower pool factor [0; 1]
 }
 
+
+# THIS scope is Country
+bz_start_states_breach = {
+	for_each_scope_loop = {
+		array = bz_selected_states
+		bz_state_spawn_units = yes
+
+		# Передаём БЗ зону её реальному владельцу (убираем непроходимость для врага)
+		transfer_state_to = bz_owner
+	}
+
+	# Updates manpower for countries that has spawned units for BZ breach
+	for_each_scope_loop = {
+		array = bz_spawned_country_tags
+		BZ_update_new_manpower = yes
+	}
+	clear_array = bz_spawned_country_tags
+}
+
+# Spawn units in specific target BZ state
+#
 # PREV scope is COUNTRY
-# PREV scope must contain temp_variable "temp_target_country"
-# THIS scope is STATE
-# THIS scope must contain temp_variable "temp_manpower_for_units"
+# THIS scope is BZ STATE
 bz_state_spawn_units = {
-	owner = {
-		if = { # Если погранзона-союзник
-			limit = { OR = {
-				is_ally_with = var:temp_target_country
-				gives_military_access_to = var:temp_target_country
-			} }
+	set_temp_variable = { initiator_country = PREV }
 
-			# Считаем, сколько юнитов пограничников можно заспавнить в зоне
-			set_temp_variable = { temp_units_to_spawn = temp_manpower_for_units}
-			set_temp_variable = { temp_units_to_spawn_fractial = temp_units_to_spawn }
-			modulo_temp_variable = { temp_units_to_spawn_fractial = global.bz_border_guards_manpower_per_division }
-			divide_temp_variable = { temp_units_to_spawn = global.bz_border_guards_manpower_per_division }
-			subtract_from_temp_variable = { temp_units_to_spawn = temp_units_to_spawn_fractial }
+	if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
+		limit = { check_variable = { bz_owner = initiator_country } }
 
-			for_loop_effect = {
-				end = temp_units_to_spawn
-				PREV = { bz_create_border_guards_unit_in_state = yes }
+		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
+			array = bz_adjacent_states_ids
+
+			if = { # Если владелец смежной области в войне с страной-инициатором
+				limit = { owner = { has_war_with = initiator_country } }
+
+				# Действия с областью, пренадлежащей противнику, при прорыве дружественной стране-инициатору погранзоны
 			}
 		}
-		else = { # Иначе погранзона - союзник врага
-			for_loop_effect = {
-				array = PREV.
-				value = state_id
+
+	} 
+	else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
+		limit = { 
+			NOT = { owner = { has_war_with = initiator_country } }
+			bz_owner = { has_war_with = initiator_country }
+		}
+
+		# Действия с погранзоной, пренадлежащей противнику
+		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
+			array = bz_adjacent_states_ids
+
+			if = { # Если владелец смежной области принадлежит стране-инициатору
+				limit = { check_variable = { initiator_country = owner } }
+
+				# Действия с областью, пренадлежащей стране-инициатору, при прорыве не дружественной стране-инициатору погранзоны
 			}
 		}
 	}
+
+#	owner = {
+#		if = { # Если погранзона-союзник
+#			limit = { OR = {
+#				is_ally_with = var:temp_target_country
+#				gives_military_access_to = var:temp_target_country
+#			} }
+#
+#			# Считаем, сколько юнитов пограничников можно заспавнить в зоне
+#			set_temp_variable = { temp_units_to_spawn = temp_manpower_for_units}
+#			set_temp_variable = { temp_units_to_spawn_fractial = temp_units_to_spawn }
+#			modulo_temp_variable = { temp_units_to_spawn_fractial = global.bz_border_guards_manpower_per_division }
+#			divide_temp_variable = { temp_units_to_spawn = global.bz_border_guards_manpower_per_division }
+#			subtract_from_temp_variable = { temp_units_to_spawn = temp_units_to_spawn_fractial }
+#
+#			for_loop_effect = {
+#				end = temp_units_to_spawn
+#				PREV = { bz_create_border_guards_unit_in_state = yes }
+#			}
+#		}
+#		else = { # Иначе погранзона - союзник врага
+#			for_loop_effect = {
+#				array = PREV.
+#				value = state_id
+#			}
+#		}
+#	}
 }
 
+# Create UNIT in specific STATE
+#
 # THIS scope must be STATE
 # THIS scope must contain temp_variables:
 # 1. "temp_owner"
@@ -118,6 +168,8 @@ bz_create_border_guards_unit_in_state = {
 	}
 }
 
+# Creates UNIT in specific PROVINCE
+#
 # THIS scope must be STATE
 # THIS scope must contain temp_variables:
 # 1. "temp_owner"
@@ -137,41 +189,36 @@ bz_create_border_guards_unit_in_province = {
 	}
 }
 
-
+# Sets the manpower to specific region of REGIONS MAP
 BZ_confirm_manpower = {
-	#RUS states
-	if = { limit = { check_variable = { selected_region = global.selected_region_bryanskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_bryanskaya_oblast_index = BZ_manpower } 
+	meta_effect = {
+		text = { set_variable = { bz_manpower_pool_[REGION_INDEX] = BZ_manpower } }
+		REGION_INDEX = "[?selected_region]"
 	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_kurskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_kurskaya_oblast_index = BZ_manpower } 
-	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_belgorodskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_belgorodskaya_oblast_index = BZ_manpower } 
-	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_voronezhskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_voronezhskaya_oblast_index = BZ_manpower } 
-	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_rostovskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_rostovskaya_oblast_index = BZ_manpower } 
-	}
-	#UKR states
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_chernigovskaya_oblast_index } }
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_chernigovskaya_oblast_index = BZ_manpower } 
-	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_sumskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_sumskaya_oblast_index = BZ_manpower } 
-	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_kharkovskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_kharkovskaya_oblast_index = BZ_manpower } 
-	}
-	#UKR got Crimea
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_krasnodarskaya_oblast_index } } 
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_krasnodarskaya_oblast_index = BZ_manpower } 
-	}
-	else_if = { limit = { check_variable = { selected_region = global.selected_region_crimea_index } }
-		set_variable = { bz_manpower_pools^global.bz_manpower_pool_crimea_index = BZ_manpower } 
-	}
-
 	set_variable = { BZ_manpower = 0 } 
+}
+
+# Updates manpower in bz_manpower_pools after units creation
+BZ_update_new_manpower = {
+	for_loop_effect = {
+		end = selected_region_indexes_count
+		value = p
+
+		if = {
+			limit = { 
+				meta_trigger = {
+					text = { has_variable = bz_new_manpower_[REGION_INDEX] }
+					REGION_INDEX = "[?p]"
+				}
+			}
+
+			meta_effect = {
+				text = { 
+					set_variable = { bz_manpower_pool_[REGION_INDEX] = bz_new_manpower_pool_[REGION_INDEX] }
+					clear_variable = bz_new_manpower_pool_[REGION_INDEX]
+				}
+				REGION_INDEX = "[?p]"
+			}
+		}
+	}
 }
