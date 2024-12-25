@@ -1,945 +1,1035 @@
-bz_prepare_breakthrough_category = {
-    BZ_start_offensive = {
+bz_breakthrough_category = {
+
+	test = {
 		icon = generic_formable_nations
+		visible = { always = yes }
+
+		complete_effect = {
+			552 = {
+				log = "bz_manpower_owner_pool_index: [?bz_manpower_owner_pool_index]"
+				log = "bz_manpower_other_pool_index: [?bz_manpower_other_pool_index]"
+			}
+		}	
+	}
+
+	bz_start_planning_breakthrough_fast = {
+		icon = generic_formable_nations
+		available = { 
+			check_variable = { bz_selected_states^num > 0 }
+			#check_variable = { bz_selected_states^num < 3 }
+		}
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }
+
+		complete_effect = { 
+			set_country_flag = bz_is_planning_breakthrough_fast
+			clr_country_flag = bz_is_selecting_breakthrough_states
+		}	
+	}
+	bz_start_planning_breakthrough_medium = {
+		icon = generic_formable_nations
+		available = { 
+			check_variable = { bz_selected_states^num > 0 }
+			#check_variable = { bz_selected_states^num < 6 }
+		}
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }
+
+		complete_effect = { 
+			set_country_flag = bz_is_planning_breakthrough_medium
+			clr_country_flag = bz_is_selecting_breakthrough_states
+		}	
+	}
+	bz_start_planning_breakthrough_slow = {
+		icon = generic_formable_nations
+		available = { 
+			check_variable = { bz_selected_states^num > 0 }
+		}
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }
+
+		complete_effect = { 
+			set_country_flag = bz_is_planning_breakthrough_slow
+			clr_country_flag = bz_is_selecting_breakthrough_states
+		}	
+	}
+
+    bz_start_selecting_breakthrough_states = {
+		icon = generic_formable_nations
+		visible = { 
+			NOT = { 
+				has_country_flag = bz_is_selecting_breakthrough_states 
+				has_country_flag = bz_is_planning_breakthrough_fast
+				has_country_flag = bz_is_planning_breakthrough_medium
+				has_country_flag = bz_is_planning_breakthrough_slow
+			}
+		}
+
+		complete_effect = { set_country_flag = bz_is_selecting_breakthrough_states }	
+	}
+	bz_cancel_selecting_breakthrough_states = {
+		icon = generic_formable_nations
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }	
+
+		complete_effect = { 
+			clr_country_flag = bz_is_selecting_breakthrough_states
+			clr_country_flag = bz_is_planning_breakthrough_fast
+			clr_country_flag = bz_is_planning_breakthrough_medium
+			clr_country_flag = bz_is_planning_breakthrough_slow
+			clear_array = bz_selected_states
+		}	
+	}
+
+	bz_plan_breakthrough_fast_mission = {
+		icon = generic_formable_nations
+		days_mission_timeout = 3 #15
+		available = { always = no }
+		activation = { has_country_flag = bz_is_planning_breakthrough_fast }
+		cancel_trigger = { NOT = { has_country_flag = bz_is_planning_breakthrough_fast } }
 		
-		cost = 0
-		fire_only_once = yes
+		timeout_effect = { bz_initiate_breakthrough = yes }
+	}
+	bz_plan_breakthrough_medium_mission = {
+		icon = generic_formable_nations
+		days_mission_timeout = 30
+		available = { always = no }
+		activation = { has_country_flag = bz_is_planning_breakthrough_medium }
+		cancel_trigger = { NOT = { has_country_flag = bz_is_planning_breakthrough_medium } }
+		
+		timeout_effect = { bz_initiate_breakthrough = yes }
+	}
+	bz_plan_breakthrough_slow_mission = {
+		icon = generic_formable_nations
+		days_mission_timeout = 50
+		available = { always = no }
+		activation = { has_country_flag = bz_is_planning_breakthrough_slow }
+		cancel_trigger = { NOT = { has_country_flag = bz_is_planning_breakthrough_slow } }
+		
+		timeout_effect = { bz_initiate_breakthrough = yes }
+	}
 
-		visible = {
-	    }
-
-		available = {
+	bz_cancel_planing_offensive = {
+		icon = generic_formable_nations
+		visible = { 
+			OR = {
+				has_country_flag = bz_is_planning_breakthrough_fast 
+				has_country_flag = bz_is_planning_breakthrough_medium
+				has_country_flag = bz_is_planning_breakthrough_slow
+			}
 		}
 		
 		complete_effect = {
-			if = { limit = { has_country_flag = bz_prepare_breakthrough_bryansk } set_country_flag = BZ_choose_offensive_bryansk }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_kursk } set_country_flag = BZ_choose_offensive_kursk }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_belgorod } set_country_flag = BZ_choose_offensive_belgorod }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_voronezh } set_country_flag = BZ_choose_offensive_voronezh }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_rostov } set_country_flag = BZ_choose_offensive_rostov }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_chernigov } set_country_flag = BZ_choose_offensive_chernigov }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_sumy } set_country_flag = BZ_choose_offensive_sumy }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_kharkov } set_country_flag = BZ_choose_offensive_kharkov }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_krasnodar } set_country_flag = BZ_choose_offensive_krasnodar }
-			else_if = { limit = { has_country_flag = bz_prepare_breakthrough_crimea } set_country_flag = BZ_choose_offensive_crimea }
+			clr_country_flag = bz_is_planning_breakthrough_fast 
+			clr_country_flag = bz_is_planning_breakthrough_medium
+			clr_country_flag = bz_is_planning_breakthrough_slow
+			set_country_flag = bz_is_selecting_breakthrough_states
 		}	
 	}
-	BZ_start_offensive_mission = {
+
+	bz_initiate_offensive_mission = {
 		icon = generic_formable_nations
 		
 		is_good = no
 		days_mission_timeout = 30
 		selectable_mission = no
-		activation = {
-			OR = {
-				has_country_flag = BZ_choose_offensive_bryansk
-				has_country_flag = BZ_choose_offensive_kursk
-				has_country_flag = BZ_choose_offensive_belgorod
-				has_country_flag = BZ_choose_offensive_voronezh
-				has_country_flag = BZ_choose_offensive_rostov
-				has_country_flag = BZ_choose_offensive_chernigov
-				has_country_flag = BZ_choose_offensive_sumy
-				has_country_flag = BZ_choose_offensive_kharkov
-				has_country_flag = BZ_choose_offensive_krasnodar
-				has_country_flag = BZ_choose_offensive_crimea
-			}
-		}
+		activation = { has_country_flag = test }
+
 		timeout_effect = {
-			clear_array = bz_attack_tags
-			clear_array = bz_defence_tags
-			add_to_array = { bz_attack_tags = UKR }
-			add_to_array = { bz_attack_tags = RUS }
-			add_to_array = { bz_defence_tags = UKR }
-			add_to_array = { bz_defence_tags = RUS }
 		}	
 	}
 
+	#bz_test_units = {
+	#	icon = generic_formable_nations
+	#	visible = {}		
+	#	complete_effect = {
+	#		set_temp_variable = { temp_owner = RUS }
+	#		573 = {	bz_create_border_guards_unit_in_state = yes }
+	#	}			
+	#}
+
 	# Bryansk - Chernigov
-	bz_prepare_breakthrough_302 = {
+	bz_select_breakthrough_302 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 302 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 302 } }
 			302 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 302 } }	
 	}
-	BZ_cancel_breakthrough_302 = {
+	bz_cancel_breakthrough_302 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 302 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 302 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 302 } }	
 	}
 
-	bz_prepare_breakthrough_634 = {
+	bz_select_breakthrough_634 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 634 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 634 } }
 			634 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 634 } }	
 	}
-	BZ_cancel_breakthrough_634 = {
+	bz_cancel_breakthrough_634 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 634 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 634 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 634 } }	
 	}
 
-	bz_prepare_breakthrough_633 = {
+	bz_select_breakthrough_633 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 633 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 633 } }
 			633 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 633 } }	
 	}
-	BZ_cancel_breakthrough_633 = {
+	bz_cancel_breakthrough_633 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 633 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 633 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 633 } }	
 	}
 
-	bz_prepare_breakthrough_632 = {
+	bz_select_breakthrough_632 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 632 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 632 } }
 			632 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 632 } }	
 	}
-	BZ_cancel_breakthrough_632 = {
+	bz_cancel_breakthrough_632 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 632 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 632 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 632 } }	
 	}
 
 	# Bryansk - Sumy
-	bz_prepare_breakthrough_272 = {
+	bz_select_breakthrough_272 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 272 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 272 } }
 			272 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 272 } }	
 	}
-	BZ_cancel_breakthrough_272 = {
+	bz_cancel_breakthrough_272 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 272 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 272 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 272 } }	
 	}
 
-	bz_prepare_breakthrough_631 = {
+	bz_select_breakthrough_631 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 631 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 631 } }
 			631 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 631 } }	
 	}
-	BZ_cancel_breakthrough_631 = {
+	bz_cancel_breakthrough_631 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 631 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 631 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 631 } }	
 	}
 
-	bz_prepare_breakthrough_630 = {
+	bz_select_breakthrough_630 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 630 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 630 } }
 			630 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 630 } }	
 	}
-	BZ_cancel_breakthrough_630 = {
+	bz_cancel_breakthrough_630 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 630 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 630 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 630 } }	
 	}
 	
 	# Kursk - Sumy
-	bz_prepare_breakthrough_306 = {
+	bz_select_breakthrough_306 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 306 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 306 } }
 			306 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 306 } }	
 	}
-	BZ_cancel_breakthrough_306 = {
+	bz_cancel_breakthrough_306 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 306 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 306 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 306 } }	
 	}
 
-	bz_prepare_breakthrough_629 = {
+	bz_select_breakthrough_629 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 629 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 629 } }
 			629 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 629 } }	
 	}
-	BZ_cancel_breakthrough_629 = {
+	bz_cancel_breakthrough_629 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 629 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 629 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 629 } }	
 	}
 
-	bz_prepare_breakthrough_377 = {
+	bz_select_breakthrough_377 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 377 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 377 } }
 			377 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 377 } }	
 	}
-	BZ_cancel_breakthrough_377 = {
+	bz_cancel_breakthrough_377 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 377 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 377 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 377 } }	
 	}
 
-	bz_prepare_breakthrough_627 = {
+	bz_select_breakthrough_627 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 627 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 627 } }
 			627 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 627 } }	
 	}
-	BZ_cancel_breakthrough_627 = {
+	bz_cancel_breakthrough_627 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 627 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 627 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 627 } }	
 	}
 
-	bz_prepare_breakthrough_626 = {
+	bz_select_breakthrough_626 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 626 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 626 } }
 			626 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 626 } }	
 	}
-	BZ_cancel_breakthrough_626 = {
+	bz_cancel_breakthrough_626 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 626 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 626 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 626 } }	
 	}
 
-	bz_prepare_breakthrough_628 = {
+	bz_select_breakthrough_628 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 628 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 628 } }
 			628 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 628 } }	
 	}
-	BZ_cancel_breakthrough_628 = {
+	bz_cancel_breakthrough_628 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 628 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 628 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 628 } }	
 	}
 
-	bz_prepare_breakthrough_625 = {
+	bz_select_breakthrough_625 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 625 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 625 } }
 			625 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 625 } }	
 	}
-	BZ_cancel_breakthrough_625 = {
+	bz_cancel_breakthrough_625 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 625 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 625 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 625 } }	
 	}
 
 	# Belgorod - Sumy
-	bz_prepare_breakthrough_371 = {
+	bz_select_breakthrough_371 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 371 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 371 } }
 			371 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 371 } }	
 	}
-	BZ_cancel_breakthrough_371 = {
+	bz_cancel_breakthrough_371 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 371 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 371 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 371 } }	
 	}
 
-	bz_prepare_breakthrough_624 = {
+	bz_select_breakthrough_624 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 624 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 624 } }
 			624 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 624 } }	
 	}
-	BZ_cancel_breakthrough_624 = {
+	bz_cancel_breakthrough_624 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 624 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 624 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 624 } }	
 	}
 
-	bz_prepare_breakthrough_623 = {
+	bz_select_breakthrough_623 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 623 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 623 } }
 			623 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 623 } }	
 	}
-	BZ_cancel_breakthrough_623 = {
+	bz_cancel_breakthrough_623 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 623 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 623 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 623 } }	
 	}
 
 	# Belgorod - Kharkov
-	bz_prepare_breakthrough_622 = {
+	bz_select_breakthrough_622 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 622 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 622 } }
 			622 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 622 } }	
 	}
-	BZ_cancel_breakthrough_622 = {
+	bz_cancel_breakthrough_622 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 622 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 622 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 622 } }	
 	}
 
-	bz_prepare_breakthrough_617 = {
+	bz_select_breakthrough_617 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 617 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 617 } }
 			617 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 617 } }	
 	}
-	BZ_cancel_breakthrough_617 = {
+	bz_cancel_breakthrough_617 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 617 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 617 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 617 } }	
 	}
 
-	bz_prepare_breakthrough_336 = {
+	bz_select_breakthrough_336 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 336 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 336 } }
 			336 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 336 } }	
 	}
-	BZ_cancel_breakthrough_336 = {
+	bz_cancel_breakthrough_336 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 336 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 336 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 336 } }	
 	}
 
-	bz_prepare_breakthrough_120 = {
+	bz_select_breakthrough_120 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 120 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 120 } }
 			120 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 120 } }	
 	}
-	BZ_cancel_breakthrough_120 = {
+	bz_cancel_breakthrough_120 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 120 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 120 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 120 } }	
 	}
 
-	bz_prepare_breakthrough_621 = {
+	bz_select_breakthrough_621 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 621 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 621 } }
 			621 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 621 } }	
 	}
-	BZ_cancel_breakthrough_621 = {
+	bz_cancel_breakthrough_621 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 621 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 621 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 621 } }	
 	}
 
-	bz_prepare_breakthrough_620 = {
+	bz_select_breakthrough_620 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 620 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 620 } }
 			620 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 620 } }	
 	}
-	BZ_cancel_breakthrough_620 = {
+	bz_cancel_breakthrough_620 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 620 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 620 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 620 } }	
 	}
 
-	bz_prepare_breakthrough_619 = {
+	bz_select_breakthrough_619 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 619 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 619 } }
 			619 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 619 } }	
 	}
-	BZ_cancel_breakthrough_619 = {
+	bz_cancel_breakthrough_619 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 619 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 619 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 619 } }	
 	}
 
 	# Belgorod - Lugansk
-	bz_prepare_breakthrough_618 = {
+	bz_select_breakthrough_618 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 618 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 618 } }
 			618 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 618 } }	
 	}
-	BZ_cancel_breakthrough_618 = {
+	bz_cancel_breakthrough_618 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 618 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 618 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 618 } }	
 	}
 
-	bz_prepare_breakthrough_122 = {
+	bz_select_breakthrough_122 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 122 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 122 } }
 			122 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 122 } }	
 	}
-	BZ_cancel_breakthrough_122 = {
+	bz_cancel_breakthrough_122 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 122 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 122 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 122 } }	
 	}
 
-	bz_prepare_breakthrough_635 = {
+	bz_select_breakthrough_635 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 635 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 635 } }
 			635 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 635 } }	
 	}
-	BZ_cancel_breakthrough_635 = {
+	bz_cancel_breakthrough_635 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 635 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 635 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 635 } }	
 	}
 
 	# Voronezh - Lugansk
-	bz_prepare_breakthrough_636 = {
+	bz_select_breakthrough_636 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 636 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 636 } }
 			636 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 636 } }	
 	}
-	BZ_cancel_breakthrough_636 = {
+	bz_cancel_breakthrough_636 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 636 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 636 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 636 } }	
 	}
 
-	bz_prepare_breakthrough_117 = {
+	bz_select_breakthrough_117 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 117 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 117 } }
 			117 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 117 } }	
 	}
-	BZ_cancel_breakthrough_117 = {
+	bz_cancel_breakthrough_117 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 117 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 117 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 117 } }	
 	}
 
 	# Rostov - Lugansk
-	bz_prepare_breakthrough_126 = {
+	bz_select_breakthrough_126 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 126 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 126 } }
 			126 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 126 } }	
 	}
-	BZ_cancel_breakthrough_126 = {
+	bz_cancel_breakthrough_126 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 126 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 126 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 126 } }	
 	}
 	
-	bz_prepare_breakthrough_638 = {
+	bz_select_breakthrough_638 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 638 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 638 } }
 			638 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 638 } }	
 	}
-	BZ_cancel_breakthrough_638 = {
+	bz_cancel_breakthrough_638 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 638 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 638 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 638 } }	
 	}
 	
-	bz_prepare_breakthrough_637 = {
+	bz_select_breakthrough_637 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 637 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 637 } }
 			637 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 637 } }	
 	}
-	BZ_cancel_breakthrough_637 = {
+	bz_cancel_breakthrough_637 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 637 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 637 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 637 } }	
 	}
 	
-	bz_prepare_breakthrough_641 = {
+	bz_select_breakthrough_641 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 641 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 641 } }
 			641 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 641 } }	
 	}
-	BZ_cancel_breakthrough_641 = {
+	bz_cancel_breakthrough_641 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 641 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 641 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 641 } }	
 	}
 	
-	bz_prepare_breakthrough_397 = {
+	bz_select_breakthrough_397 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 397 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 397 } }
 			397 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 397 } }	
 	}
-	BZ_cancel_breakthrough_397 = {
+	bz_cancel_breakthrough_397 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 397 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 397 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 397 } }	
 	}
 	
-	bz_prepare_breakthrough_396 = {
+	bz_select_breakthrough_396 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 396 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 396 } }
 			396 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 396 } }	
 	}
-	BZ_cancel_breakthrough_396 = {
+	bz_cancel_breakthrough_396 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 396 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 396 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 396 } }	
 	}
 	
-	bz_prepare_breakthrough_707 = {
+	bz_select_breakthrough_707 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 707 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 707 } }
 			707 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 707 } }	
 	}
-	BZ_cancel_breakthrough_707 = {
+	bz_cancel_breakthrough_707 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 707 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 707 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 707 } }	
 	}
 	
 	# Rostov - Donetsk
-	bz_prepare_breakthrough_640 = {
+	bz_select_breakthrough_640 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 640 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 640 } }
 			640 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 640 } }	
 	}
-	BZ_cancel_breakthrough_640 = {
+	bz_cancel_breakthrough_640 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 640 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 640 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 640 } }	
 	}
 	
-	bz_prepare_breakthrough_395 = {
+	bz_select_breakthrough_395 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 395 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 395 } }
 			395 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 395 } }	
 	}
-	BZ_cancel_breakthrough_395 = {
+	bz_cancel_breakthrough_395 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 395 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 395 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 395 } }	
 	}
 	
-	bz_prepare_breakthrough_639 = {
+	bz_select_breakthrough_639 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 639 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 639 } }
 			639 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 639 } }	
 	}
-	BZ_cancel_breakthrough_639 = {
+	bz_cancel_breakthrough_639 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 639 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 639 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 639 } }	
 	}
 	
-	bz_prepare_breakthrough_152 = {
+	bz_select_breakthrough_152 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 152 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 152 } }
 			152 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 152 } }	
 	}
-	BZ_cancel_breakthrough_152 = {
+	bz_cancel_breakthrough_152 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 152 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 152 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 152 } }	
 	}
 	
 	# Krasnodar - Crimea
-	bz_prepare_breakthrough_414 = {
+	bz_select_breakthrough_414 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 414 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 414 } }
 			414 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 414 } }	
 	}
-	BZ_cancel_breakthrough_414 = {
+	bz_cancel_breakthrough_414 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 414 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 414 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 414 } }	
 	}
 	
 	# Crimea - Kherson
-	bz_prepare_breakthrough_706 = {
+	bz_select_breakthrough_706 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 706 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 706 } }
 			706 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 706 } }	
 	}
-	BZ_cancel_breakthrough_706 = {
+	bz_cancel_breakthrough_706 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 706 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 706 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 706 } }	
 	}
 
-	bz_prepare_breakthrough_705 = {
+	bz_select_breakthrough_705 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 705 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 705 } }
 			705 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 705 } }	
 	}
-	BZ_cancel_breakthrough_705 = {
+	bz_cancel_breakthrough_705 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 705 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 705 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 705 } }	
 	}
 
-	bz_prepare_breakthrough_704 = {
+	bz_select_breakthrough_704 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 704 } }
 		visible = { 
-			#has_country_flag = bz_prepare_breakthrough
+			has_country_flag = bz_is_selecting_breakthrough_states
 			NOT = { is_in_array = { bz_selected_states = 704 } }
 			704 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
 		}		
 		complete_effect = { add_to_array = { bz_selected_states = 704 } }	
 	}
-	BZ_cancel_breakthrough_704 = {
+	bz_cancel_breakthrough_704 = {
 		icon = generic_formable_nations
 		highlight_states = { highlight_state_targets = { state = 704 } }
 		visible = { 
-			# NOT = { has_country_flag = bz_prepare_breakthrough }
+			has_country_flag = bz_is_selecting_breakthrough_states
 			is_in_array = { bz_selected_states = 704 }
 		}		
 		complete_effect = { remove_from_array = { bz_selected_states = 704 } }	
