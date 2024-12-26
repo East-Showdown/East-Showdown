@@ -1,9 +1,17 @@
 # THIS scope is INITIATOR COUNTRY
 bz_initiate_breakthrough = {
 	log = "[GetDateText]: [Root.GetName]: bz_initiate_breakthrough"
+
+	# Запрещаем создавать погранзоны
+	set_global_flag = bz_disable_creation_flag
+
+	# Инициализируем глобальные константы
 	bz_init_constants = yes
+
+	# Пересчитываем количество активных провинций в погран зонах для каждых регионов
 	bz_recalculate_active_bz_provinces_count = yes
 
+	# Цикл по выбранным для прорыва погранзонам
 	for_each_scope_loop = {
 		array = bz_selected_states
 		bz_state_spawn_units = yes
@@ -46,8 +54,6 @@ bz_recalculate_active_bz_provinces_count = {
 			text = { 
 				set_variable = { global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count = 0 }
 
-				log = "test: [?THIS.GetID] [?pointer]"
-
 				for_each_scope_loop = { # BZ state
 					array = global.bz_manpower_pool_[REGION_INDEX]_bz_states
 
@@ -59,6 +65,10 @@ bz_recalculate_active_bz_provinces_count = {
 						}
 					}
 				}
+				
+				# Устанавливаем минимальное число пограничников, требуемое для данной погранзоны
+				set_variable = { global.bz_manpower_pool_[REGION_INDEX]_min_value = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
+				multiply_variable = { global.bz_manpower_pool_[REGION_INDEX]_min_value = global.bz_border_guards_manpower_per_division }
 			}
 			REGION_INDEX = "[?pointer]"
 		}
@@ -297,13 +307,45 @@ bz_create_border_guards_unit_in_province = {
 	}
 }
 
+
+bz_clamp_manpower = {
+	if = {
+		limit = { check_variable = { bz_manpower > 0 }}
+		clamp_variable = { var = bz_manpower max = manpower }
+	}
+	else_if = {
+		limit = { check_variable = { bz_manpower < 0 } }
+
+		meta_effect = {
+			text = {
+				set_temp_variable = { temp_used_manpower = bz_manpower_pool_[REGION_INDEX] }
+				multiply_temp_variable = { temp_used_manpower = -1 }
+				if = {
+					limit = { check_variable = { bz_manpower < temp_used_manpower } }
+					set_variable = { bz_manpower = temp_used_manpower }
+				}
+			}
+			REGION_INDEX = "[?selected_region]"
+		}
+	}
+}
+
 # Sets the manpower to specific region of REGIONS MAP
-BZ_confirm_manpower = {
+bz_confirm_manpower = {
+	bz_clamp_manpower = yes
+
+	
+	set_temp_variable = { temp_bz_manpower = bz_manpower }
+	multiply_temp_variable = { temp_bz_manpower = -1 }
+	add_manpower = temp_bz_manpower
+
+	add_to_variable = { BZ_region_manpower = bz_manpower }
+
 	meta_effect = {
-		text = { set_variable = { bz_manpower_pool_[REGION_INDEX] = BZ_manpower } }
+		text = { add_to_variable = { bz_manpower_pool_[REGION_INDEX] = bz_manpower } }
 		REGION_INDEX = "[?selected_region]"
 	}
-	set_variable = { BZ_manpower = 0 } 
+	set_variable = { bz_manpower = 0 } 
 }
 
 # THIS scope is Country
@@ -332,4 +374,52 @@ bz_update_new_manpower = {
 			}
 		}
 	}
+}
+
+#THIS scope is Country
+bz_recalculate_array_of_states_can_breakthrough = {
+	clear_array = bz_states_can_breakthrough
+	set_temp_variable = { initiator_country = THIS }
+
+	for_each_scope_loop = { # THIS scope is bz STATE
+		array = global.bz_states_ids
+		
+		if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
+			limit = { check_variable = { bz_owner = initiator_country } }
+
+			for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
+				array = bz_adjacent_states_ids
+				break = break_flag
+
+				if = { # Если владелец смежной области в войне с страной-инициатором
+					limit = { owner = { has_war_with = initiator_country } }
+
+					# Добавляем id стейта погранзоны в массив доступных прорывов в стране
+					add_to_array = { PREV.PREV.bz_states_can_breakthrough = THIS }
+					set_temp_variable = { break_flag = 1 }
+				}
+			}
+
+		} 
+		else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
+			limit = { 
+				NOT = { owner = { has_war_with = initiator_country } }
+				bz_owner = { has_war_with = initiator_country }
+			}
+
+			# Добавляем id стейта погранзоны в массив доступных прорывов в стране
+			add_to_array = { PREV.bz_states_can_breakthrough = THIS }
+		}
+	}
+}
+
+bz_tick_states_status = {
+	
+}
+
+# PREV scope is BZ state
+# THIS scope is TARGET COUNTRY
+bz_transfer_state_to = {
+	transfer_state_to = THIS
+	add_to_variable = { global.bz_transfered_states_count = 1 }
 }
