@@ -425,4 +425,5 @@ NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_COUNT_SNAP_LIMIT = 0.3		-- If 
 NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_DAILY_PRODUCTION_SNAP_LIMIT = 1.5	-- If the difference between current and estimated daily production is smaller then this value we will use the current value for calculations.
 NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_SUNK_MULTIPLIER_ALPHA = 0.5	-- How strong effect should have the daily sunk efficiency on the average (1.0 means it will use only the new number as average)
 NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_SUNK_MULTIPLIER_SNAP_LIMIT = 0.05 -- If the difference between current and estimated sunk efficiency convoy count is smaller then this value we will use the current value for calculations.
-NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS  = 30 -- The contracts will show sunk convoy message if there was sunk convoy in this amount of days
+NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show sunk convoy message if there was sunk convoy in this amount of days
+NDefines.NTechnology.MAX_SUBTECHS = 10
