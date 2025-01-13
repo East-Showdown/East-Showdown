@@ -315,7 +315,6 @@ bz_state_spawn_units = {
 	}
 }
 
-# PREV scope is BZ ONWER COUNTRY
 #THIS scope is BZ STATE
 bz_spawn_units_for_bz_state_owner = {
 	# Считаем, сколько менпавера может выделить на защиту прорываемой ПЗ её владелец
@@ -323,49 +322,52 @@ bz_spawn_units_for_bz_state_owner = {
 
 	log = "![?temp_bz_manpower_to_spawn]"
 	log = "region index [?THIS.bz_manpower_owner_pool_index]"
-	log = "THIS [?THIS]"
-	log = "bz_owner [?bz_owner.GetTag]"
+	log = "THIS [?THIS] [?THIS.GetId] [?THIS.GetTag]"
+	log = "owner [?owner.GetTag]"
 
 	log = " !! [?global.bz_manpower_pool_32_active_bz_provinces_count]"
 
 	meta_effect = {
 		text = {
-			multiply_temp_variable = { temp_bz_manpower_to_spawn = [BZ_OWNER_TAG].bz_manpower_pool_[REGION_INDEX] }
+			owner = { multiply_temp_variable = { temp_bz_manpower_to_spawn = bz_manpower_pool_[REGION_INDEX] } }
 			divide_temp_variable = { temp_bz_manpower_to_spawn = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
-
-			if = {
-				limit = { check_variable = { temp_bz_manpower_to_spawn = 0 } }
-				log = "is zero C"
-			}
 		}
 		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
-		BZ_OWNER_TAG = "[?bz_owner.GetTag]"
 	}
 	round_temp_variable = temp_bz_manpower_to_spawn
+	set_temp_variable = { temp_bz_manpower_to_spawn_start = temp_bz_manpower_to_spawn }
 
 	log = "!![?temp_bz_manpower_to_spawn]"
 
 	# Спавним юниты в ПЗ
-	set_temp_variable = { temp_owner = bz_owner }
-	set_temp_variable = { temp_unit_id = PREV.bz_next_unit_id }
+	set_temp_variable = { temp_owner = owner }
+	set_temp_variable = { temp_unit_id = 0 }
+	owner = { add_to_temp_variable = { temp_unit_id = bz_next_unit_id } }
 	while_loop_effect = {
 		limit = { check_variable = { temp_bz_manpower_to_spawn > global.bz_border_guards_manpower_per_division } }
 
 		bz_create_border_guards_unit_in_state = yes
 
 		# Регистрируем юнит в системе отслеживания времени существования пограничников
-		owner = {add_to_array = { bz_active_units_ids = temp_unit_id } }
+		owner = { add_to_array = { bz_active_units_ids = temp_unit_id } }
 		add_to_temp_variable = { temp_unit_id = 1 }
 
 		subtract_from_temp_variable = { temp_bz_manpower_to_spawn = global.bz_border_guards_manpower_per_division }
 	}
 
-	set_variable = { PREV.bz_next_unit_id = temp_unit_id }
+	owner = { set_variable = { bz_next_unit_id = temp_unit_id } }
+
+	log = " temp_bz_manpower_to_spawn_start = [?temp_bz_manpower_to_spawn_start]"
+	log = " temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"
 
 	# Вычитаем менпавер из пула
+	subtract_from_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_to_spawn_start }
+
+	log = " temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"
+
 	meta_effect = {
 		text = { 
-			set_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_bz_manpower_to_spawn }
+			owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_bz_manpower_to_spawn } }
 		}
 		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
 	}
@@ -497,13 +499,11 @@ bz_confirm_manpower = {
 bz_update_new_manpower = {
 	log = "[GetDateText]: [THIS.GetName]: bz_update_new_manpower"
 
-	log = " B1 bz_delta_manpower_pool_10 = [?bz_delta_manpower_pool_10]"
+	log = " B1 bz_delta_manpower_pool_32 = [?bz_delta_manpower_pool_32]"
 
 	for_loop_effect = {
 		end = global.selected_region_indexes_count
 		value = p
-
-		log = "  B2 p = [?p]"
 
 		if = {
 			limit = { 
