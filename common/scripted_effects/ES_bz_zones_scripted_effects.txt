@@ -126,28 +126,45 @@ bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
 
 		# Высчитываем, сколько другая сторона может использовать menpower для создания юнита
 		set_temp_variable = { temp_bz_manpower_to_spawn = 0 }
-		meta_effect = {
-			text = { 
-				owner = { add_to_temp_variable = { temp_bz_manpower_to_spawn = bz_manpower_pool_[REGION_INDEX] } }
-			}
-			REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
-		}
-		multiply_temp_variable = { temp_bz_manpower_to_spawn = PREV.provinces_count }	
-		meta_effect = {
-			text = { divide_temp_variable = { temp_bz_manpower_to_spawn = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count } }
-			REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
-		}
-		round_temp_variable = temp_bz_manpower_to_spawn
+		set_temp_variable = { temp_bz_manpower_sum_pool = 0 }
+		set_temp_variable = { temp_bz_manpower_owner_pool = 0 }
+		set_temp_variable = { temp_bz_manpower_other_pool = 0 }
 
+		meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
+			text = {
+				owner = {
+					add_to_temp_variable = { temp_bz_manpower_owner_pool = bz_manpower_pool_[OWNER_REGION_INDEX] }
+					add_to_temp_variable = { temp_bz_manpower_other_pool = bz_manpower_pool_[OTHER_REGION_INDEX] }
+				}
+
+				multiply_temp_variable = { temp_bz_manpower_owner_pool = PREV.provinces_count }					
+				multiply_temp_variable = { temp_bz_manpower_other_pool = PREV.provinces_count }	
+
+				divide_temp_variable = { temp_bz_manpower_owner_pool = global.bz_manpower_pool_[OWNER_REGION_INDEX]_active_bz_provinces_count }
+				divide_temp_variable = { temp_bz_manpower_other_pool = global.bz_manpower_pool_[OTHER_REGION_INDEX]_active_bz_provinces_count }
+			}
+
+			OWNER_REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
+			OTHER_REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
+		}
+
+		# Высчитываем итоговое количество manpower, которое будет использовано при прорыве погранзоны
+		add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_owner_pool }
+		add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_other_pool }
+		add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_sum_pool }
+
+		log = "     A5 temp_bz_manpower_owner_pool = [?temp_bz_manpower_owner_pool]"
+		log = "     A5 temp_bz_manpower_other_pool = [?temp_bz_manpower_other_pool]"
 		log = "     A5 temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"
 		
-		# Действия с областью, пренадлежащей противнику, при прорыве дружественной стране-инициатору погранзоны
+		# Подготавливаем данные для цикла по смежным с погранзоной провинциям в данном смежном стейте
 		set_temp_variable = { temp_start_index = PREV.bz_adjacent_states_provinces_start_indexes^temp_bz_adjacent_state_index }
 		set_temp_variable = { temp_end_index = PREV.bz_adjacent_states_provinces_end_indexes^temp_bz_adjacent_state_index }
+		set_temp_variable = { temp_province_index = temp_start_index }
+		set_temp_variable = { temp_provinces_indexes_count = temp_end_index }
+		subtract_from_temp_variable = { temp_provinces_indexes_count = temp_start_index }
 
 		log = "     A5 temp_start_index = [?temp_start_index]; temp_end_index = [?temp_end_index]"
-
-		set_temp_variable = { temp_province_index = temp_start_index }
 
 		# Установка параметров для создания юнита
 		set_temp_variable = { temp_delta_manpower = 0 }
@@ -195,20 +212,36 @@ bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
 				#Переходим к следующей провинции, где можно спавнить юниты
 				add_to_temp_variable = { temp_province_index = 1 }
 
-				if = {
+				if = { # Если прошли последнюю смежную провинцию в списке, возвращаемся к первой в списке
 					limit = { check_variable = { temp_province_index > temp_end_index }}
 					
 					log = "       A8 temp_province_index OVERFLOWED = [?temp_province_index]"
-					set_temp_variable = { temp_province_index = temp_start_index }
+					subtract_from_temp_variable = { temp_province_index = temp_provinces_indexes_count }
 				}					
 			}
+
+			# Высчитываем разделённый delta_manpower
+			set_temp_variable = { temp_delta_manpower_owner_pool = temp_delta_manpower }
+			set_temp_variable = { temp_delta_manpower_other_pool = temp_delta_manpower }
+			multiply_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_owner_pool }
+			multiply_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_other_pool }
+			divide_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_sum_pool }
+			divide_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_sum_pool }
+
+			log = "      A6 temp_delta_manpower_owner_pool = [?temp_delta_manpower_owner_pool]"
+			log = "      A6 temp_delta_manpower_other_pool = [?temp_delta_manpower_other_pool]"
 
 			# Обновляем менпавер, выделенный на защиту данного региона
 			meta_effect = {
 				text = { 
-					owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_delta_manpower } }
+					owner = { 
+						add_to_variable = { bz_delta_manpower_pool_[OWNER_REGION_INDEX] = temp_delta_manpower_owner_pool }
+						add_to_variable = { bz_delta_manpower_pool_[OTHER_REGION_INDEX] = temp_delta_manpower_other_pool }
+					}
 				}
-				REGION_INDEX = "[?bz_manpower_other_pool_index]"
+
+				OWNER_REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
+				OTHER_REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
 			}
 		}
 
@@ -467,8 +500,10 @@ bz_update_new_manpower = {
 	log = " B1 bz_delta_manpower_pool_10 = [?bz_delta_manpower_pool_10]"
 
 	for_loop_effect = {
-		end = selected_region_indexes_count
+		end = global.selected_region_indexes_count
 		value = p
+
+		log = "  B2 p = [?p]"
 
 		if = {
 			limit = { 
@@ -478,7 +513,7 @@ bz_update_new_manpower = {
 				}
 			}
 
-			log = "  B2 check passed; pointer = [?p]"
+			log = "   B3 check passed; pointer = [?p]"
 			meta_effect = {
 				text = { 
 					add_to_variable = { bz_manpower_pool_[REGION_INDEX] = bz_delta_manpower_pool_[REGION_INDEX] }
@@ -488,6 +523,9 @@ bz_update_new_manpower = {
 			}
 		}
 	}
+
+	# Обновляем значения в гуи регионов
+	map_update_region_manpower = yes 
 }
 
 #THIS scope is Country
