@@ -1,11 +1,11 @@
 bz_update_dynamic_modifiers = {
-	for_each_scope_loop = {
+	for_each_scope_loop = { # Цикл погранзонам THIS is BZ STATE scope
 		array = global.bz_states_ids
 
 		if = {
 			limit = { owner = { original_tag = RUS } } 
 
-			for_each_loop = {
+			for_each_loop = { # Навешиваем на стейт дебаффы всем врагам Russia
 				array = RUS.enemies
 				value = enemy
 				meta_effect = {
@@ -30,7 +30,7 @@ bz_update_tick = {
 		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag } }
 
 		for_each_scope_loop = { # Цикл по пограничным зонам
-			array = bz_states_ids
+			array = global.bz_states_ids
 
 			set_temp_variable = { bz_state = THIS }
 			
@@ -49,7 +49,19 @@ bz_update_tick = {
 # PREV scope is COUNTRY
 # THIS scope is BZ STATE
 bz_tick_disabled_creation_state = {
-	
+	if = {
+		limit = {
+			NOT = { has_dynamic_modifier = { modifier = bz_recent_breakthrough } }
+			meta_trigger = {
+				text = {
+					[BZ_ONWER_TAG] = { has_full_control_of_state = THIS }
+				}
+				BZ_ONWER_TAG = "[?bz_owner]"
+			}
+		}
+
+		clr_state_flag = bz_disable_creation_flag
+	}
 }
 
 # Эффект для обработки случая обычной погранзоны
@@ -62,8 +74,16 @@ bz_tick_enabled_creation_state = {
 		}
 
 		remove_dynamic_modifier = { modifier = bz_speed_debuff }
+
 		# Передаём погранзону её владельцу
-		transfer_state_to = RBZ
+		if = {
+			limit = { check_variable = { bz_owner = RUS } }
+			transfer_state_to = RBZ
+		}
+		else_if = {
+			limit = { check_variable = { bz_owner = BLR } }
+			transfer_state_to = BLR
+		}
 
 	}
 }

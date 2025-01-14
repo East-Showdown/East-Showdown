@@ -10,11 +10,11 @@ bz_initiate_breakthrough = {
 	# Пересчитываем количество активных провинций в погран зонах для каждых регионов
 	bz_recalculate_active_bz_provinces_count = yes
 
+	set_temp_variable = { temp_initiator_country = THIS }
+
 	# Цикл по выбранным для прорыва погранзонам
 	for_each_scope_loop = {
 		array = bz_selected_states
-
-		set_temp_variable = { temp_initiator_country = THIS }
 
 		if = { # Если прорываем чужую погранзону
 			limit = { NOT = { check_variable = { temp_initiator_country = bz_onwer } } }
@@ -231,6 +231,8 @@ bz_state_spawn_units = {
 	if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
 		limit = { check_variable = { bz_owner = temp_initiator_country } }
 
+		log = "A1"
+
 		# Спавним юниты для владельца погранзоны
 		bz_spawn_units_for_bz_state_owner = yes
 
@@ -252,6 +254,8 @@ bz_state_spawn_units = {
 			owner = { has_war_with = temp_initiator_country }
 			# bz_owner = { has_war_with = temp_initiator_country } # TODO : bz_onwer var cannot be used as a scope
 		}
+
+		log = "B1"
 
 		# Спавним юниты для владельца погранзоны
 		bz_spawn_units_for_bz_state_owner = yes
@@ -291,13 +295,17 @@ bz_spawn_units_for_bz_state_owner = {
 	round_temp_variable = temp_bz_manpower_to_spawn
 	set_temp_variable = { temp_bz_manpower_to_spawn_start = temp_bz_manpower_to_spawn }
 
+	log = "temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"
+
 	# Спавним юниты в ПЗ
 	set_temp_variable = { temp_owner = owner }
 	set_temp_variable = { temp_unit_id = 0 }
 	owner = { add_to_temp_variable = { temp_unit_id = bz_next_unit_id } }
+
 	while_loop_effect = {
 		limit = { check_variable = { temp_bz_manpower_to_spawn > global.bz_border_guards_manpower_per_division } }
 
+		log = "  B2"
 		bz_create_border_guards_unit_in_state = yes
 
 		# Регистрируем юнит в системе отслеживания времени существования пограничников
@@ -327,6 +335,10 @@ bz_spawn_units_for_bz_state_owner = {
 # 1. "temp_owner"
 # 2. "temp_unit_id"
 bz_create_border_guards_unit_in_state = {
+
+	log = "temp_owner.GetTag = [?temp_owner.GetTag]"
+	log = "temp_unit_id = [?temp_unit_id]"
+	
 	meta_effect = {
 		text = {
 			[OWNER] = { bz_ensure_border_guards_template = yes }
