@@ -16,4 +16,32 @@ on_actions = {
 			set_variable = { global.days_until_on_weekly_update = 7 }
 		}
 	}
+
+	# ROOT is attacker
+	# THIS is defender
+	on_war_relation_added = {
+		effect = {
+			ROOT = { 
+				if = {
+					limit = { NOT = { is_in_array = { active_wars_with_countries = THIS } } }
+					add_to_array = { active_wars_with_countries = THIS }
+				}
+			}
+			THIS = { 
+				if = {
+					limit = { NOT = { is_in_array = { active_wars_with_countries = ROOT } } }
+					add_to_array = { active_wars_with_countries = ROOT }
+				}
+			}
+		}
+	}
+
+	# ROOT is winner
+	# FROM is looser
+	on_peaceconference_ended = {
+		effect = {
+			ROOT = { remove_from_array = FROM }
+			FROM = { remove_from_array = ROOT }
+		}
+	}
 }

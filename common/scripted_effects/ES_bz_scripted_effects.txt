@@ -1,0 +1,69 @@
+bz_update_dynamic_modifiers = {
+	for_each_scope_loop = {
+		array = global.bz_states_ids
+
+		if = {
+			limit = { owner = { original_tag = RUS } } 
+
+			for_each_loop = {
+				array = RUS.enemies
+				value = enemy
+				meta_effect = {
+					text = {
+						add_dynamic_modifier = {
+							modifier = bz_speed_debuff
+							scope = [ENEMY_TAG]
+						}
+					}
+					ENEMY_TAG = "[?enemy.GetTag]"
+				}
+			}
+		}
+	}
+}
+
+
+# THIS scope is COUNTRY
+bz_update_tick = {
+	if = {
+		# Если разрешено создавать погранзоны
+		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag } }
+
+		for_each_scope_loop = { # Цикл по пограничным зонам
+			array = bz_states_ids
+
+			set_temp_variable = { bz_state = THIS }
+			
+			if = { # Если недавно погранзона была прорвана
+				limit = { has_state_flag = bz_disable_creation_flag }
+				bz_tick_disabled_creation_state = yes
+			}
+			else = {
+				bz_tick_enabled_creation_state = yes
+			}
+		}
+	}
+}
+
+# Эффект для обработки случая погранзоны, которая была прорвана врагом
+# PREV scope is COUNTRY
+# THIS scope is BZ STATE
+bz_tick_disabled_creation_state = {
+	
+}
+
+# Эффект для обработки случая обычной погранзоны
+# PREV scope is COUNTRY
+# THIS scope is BZ STATE
+bz_tick_enabled_creation_state = {
+	if = { # Если владелец погранзоны полностью не контролирует её
+		limit = { 
+			NOT = { PREV = { has_full_control_of_state = bz_state } }
+		}
+
+		remove_dynamic_modifier = { modifier = bz_speed_debuff }
+		# Передаём погранзону её владельцу
+		transfer_state_to = RBZ
+
+	}
+}

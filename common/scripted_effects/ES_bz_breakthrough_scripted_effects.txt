@@ -14,12 +14,17 @@ bz_initiate_breakthrough = {
 	for_each_scope_loop = {
 		array = bz_selected_states
 
-		# Отключаем проверка на создание погранзон в текущей погранзоне
-		set_state_flag = bz_disable_creation_flag
+		set_temp_variable = { temp_initiator_country = THIS }
 
-		add_dynamic_modifier = {
-			modifier = bz_recent_breakthrough
-			days = 14
+		if = { # Если прорываем чужую погранзону
+			limit = { NOT = { check_variable = { temp_initiator_country = bz_onwer } } }
+
+			# Отключаем проверка на создание погранзон в текущей погранзоне
+			set_state_flag = bz_disable_creation_flag
+			add_dynamic_modifier = {
+				modifier = bz_recent_breakthrough
+				days = 14
+			}
 		}
 
 		# Передаём БЗ зону её реальному владельцу (убираем непроходимость для врага)
@@ -222,7 +227,6 @@ bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
 # PREV scope is COUNTRY
 # THIS scope is BZ STATE
 bz_state_spawn_units = {
-	set_temp_variable = { temp_initiator_country = PREV }
 
 	if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
 		limit = { check_variable = { bz_owner = temp_initiator_country } }
@@ -493,15 +497,4 @@ bz_recalculate_array_of_states_can_breakthrough = {
 			add_to_array = { PREV.bz_states_can_breakthrough = THIS }
 		}
 	}
-}
-
-bz_tick_states_status = {
-	
-}
-
-# PREV scope is BZ state
-# THIS scope is TARGET COUNTRY
-bz_transfer_state_to = {
-	transfer_state_to = THIS
-	add_to_variable = { global.bz_transfered_states_count = 1 }
 }
