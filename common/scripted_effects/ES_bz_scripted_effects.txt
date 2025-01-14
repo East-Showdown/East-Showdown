@@ -35,7 +35,7 @@ bz_update_tick = {
 			set_temp_variable = { bz_state = THIS }
 			
 			if = { # Если недавно погранзона была прорвана
-				limit = { has_state_flag = bz_disable_creation_flag }
+				limit = { has_dynamic_modifier = bz_state_breakthrough }
 				bz_tick_disabled_creation_state = yes
 			}
 			else = {
@@ -54,13 +54,14 @@ bz_tick_disabled_creation_state = {
 			NOT = { has_dynamic_modifier = { modifier = bz_recent_breakthrough } }
 			meta_trigger = {
 				text = {
-					[BZ_ONWER_TAG] = { has_full_control_of_state = THIS }
+					[BZ_ONWER_TAG] = { has_full_control_of_state = [STATE_ID] }
 				}
-				BZ_ONWER_TAG = "[?bz_owner]"
+				BZ_ONWER_TAG = "[?bz_owner.GetTag]"
+				STATE_ID = "[?THIS.GetID]"
 			}
 		}
 
-		clr_state_flag = bz_disable_creation_flag
+		remove_dynamic_modifier = bz_state_breakthrough
 	}
 }
 
