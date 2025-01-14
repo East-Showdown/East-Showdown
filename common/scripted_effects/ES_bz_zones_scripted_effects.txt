@@ -535,9 +535,9 @@ bz_recalculate_array_of_states_can_breakthrough = {
 
 	for_each_scope_loop = { # THIS scope is bz STATE
 		array = global.bz_states_ids
-		
+
 		if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
-			limit = { check_variable = { bz_owner = initiator_country } }
+			limit = { owner = { original_tag = RUS } }
 
 			for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
 				array = bz_adjacent_states_ids
@@ -553,13 +553,12 @@ bz_recalculate_array_of_states_can_breakthrough = {
 			}
 
 		} 
-		else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
-			limit = { 
+		else_if = { 
+			limit = {
 				NOT = { owner = { has_war_with = initiator_country } }
-				bz_owner = { has_war_with = initiator_country } # TODO : bz_onwer var cannot be used as a scope
+				#PREV = { has_war_with = bz_owner }
 			}
 
-			# Добавляем id стейта погранзоны в массив доступных прорывов в стране
 			add_to_array = { PREV.bz_states_can_breakthrough = THIS }
 		}
 	}
