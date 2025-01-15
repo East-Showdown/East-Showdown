@@ -12,18 +12,40 @@ bz_initiate_breakthrough = {
 
 	set_temp_variable = { temp_initiator_country = THIS }
 
+	clear_array = global.bz_breakthrough_target_countries
+
+	set_variable = { global.bz_breakthrough_initiator_country = THIS }
+	set_variable = { global.bz_breakthrough_states_count = bz_selected_states^num }
+
 	# Цикл по выбранным для прорыва погранзонам
 	for_each_scope_loop = {
 		array = bz_selected_states
 
 		if = { # Если прорываем чужую погранзону
-			limit = { NOT = { check_variable = { temp_initiator_country = bz_onwer } } }
+			limit = { NOT = { check_variable = { temp_initiator_country = bz_owner } } }
 
 			# Отключаем проверка на создание погранзон в текущей погранзоне
-			set_state_flag = bz_disable_creation_flag
+			add_dynamic_modifier = {
+				modifier = bz_state_breakthrough
+			}
+			
 			add_dynamic_modifier = {
 				modifier = bz_recent_breakthrough
 				days = 14
+			}
+			
+			remove_from_array = { global.bz_breakthrough_target_countries = bz_owner }
+			add_to_array = { global.bz_breakthrough_target_countries = bz_owner }
+		}
+		else = {
+			for_each_scope_loop = {
+				array = bz_adjacent_states_ids
+
+				if = {
+					limit = { owner = { has_war_with = temp_initiator_country }}
+					remove_from_array = { global.bz_breakthrough_target_countries = owner }
+					add_to_array = { global.bz_breakthrough_target_countries = owner }
+				}
 			}
 		}
 
@@ -33,6 +55,9 @@ bz_initiate_breakthrough = {
 		# Спавним юниты для обработки прорыва данной погран зоны
 		bz_state_spawn_units = yes
 	}
+
+	# Общемировая новость о прорыве границы
+	news_event = { id = bz.1 days = 0 }
 
 	clear_array = bz_selected_states
 
@@ -255,7 +280,7 @@ bz_state_spawn_units = {
 	else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
 		limit = { 
 			owner = { has_war_with = temp_initiator_country }
-			# bz_owner = { has_war_with = temp_initiator_country } # TODO : bz_onwer var cannot be used as a scope
+			# bz_owner = { has_war_with = temp_initiator_country } # TODO : bz_owner var cannot be used as a scope
 		}
 
 		log = "B1"
