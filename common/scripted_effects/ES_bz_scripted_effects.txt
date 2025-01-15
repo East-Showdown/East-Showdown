@@ -22,9 +22,59 @@ bz_update_dynamic_modifiers = {
 	}
 }
 
+bz_remove_update_tick = {
+	if = {
+		# Если разрешено создавать погранзоны
+		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag } }
+
+		for_each_scope_loop = { # Цикл по пограничным зонам
+			array = global.bz_states_ids
+
+			if = {
+				limit = { owner = { has_country_flag = is_bz_country }}
+				bz_remove_if_needed = yes
+			}
+		}
+	}
+}
+
+# THIS scope is BZ STATE
+bz_remove_if_needed = {
+	set_temp_variable = { temp_different_control = 0 }
+	set_temp_variable = { temp_province_id = bz_second_adjacent_states_provinces_ids^0 }
+	set_temp_variable = { temp_province_controller = global.province_controllers^temp_province_id }
+	for_each_loop = {
+		array = bz_second_adjacent_states_provinces_ids
+		value = temp_province_id
+		break = temp_is_different_control
+
+		if = {
+			limit = { 
+				NOT = { check_variable = { temp_province_controller = global.province_controllers^temp_province_id } }
+			}
+			add_to_temp_variable = { temp_is_different_control = 1 }
+		}
+	}
+
+	if = { # Если все значащие провинции вокруг погранзоны контролируются одной страной
+		limit = { check_variable = { temp_is_different_control = 0 } }
+
+		if = { # И контроллер это не настоящий владелец погранзоны
+			limit = { NOT = { check_variable = { bz_owner = temp_province_controller }} }
+
+			# То делаем погранзону прорванной
+			add_dynamic_modifier = { modifier = bz_state_breakthrough }
+		}
+		meta_effect = {
+			text = { transfer_state_to = [COUNTRY_TAG] }
+			COUNTRY_TAG = "[?temp_province_controller.GetTag]"
+		}
+	}
+}
+
 
 # THIS scope is COUNTRY
-bz_update_tick = {
+bz_daily_update_tick = {
 	if = {
 		# Если разрешено создавать погранзоны
 		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag } }
@@ -35,7 +85,7 @@ bz_update_tick = {
 			set_temp_variable = { bz_state = THIS }
 			
 			if = { # Если недавно погранзона была прорвана
-				limit = { has_dynamic_modifier = bz_state_breakthrough }
+				limit = { has_dynamic_modifier = { modifier = bz_state_breakthrough } }
 				bz_tick_disabled_creation_state = yes
 			}
 			else = {
@@ -61,7 +111,7 @@ bz_tick_disabled_creation_state = {
 			}
 		}
 
-		remove_dynamic_modifier = bz_state_breakthrough
+		remove_dynamic_modifier = { modifier = bz_state_breakthrough }
 	}
 }
 
