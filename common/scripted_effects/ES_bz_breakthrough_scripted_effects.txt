@@ -54,6 +54,8 @@ bz_initiate_breakthrough = {
 
 		# Спавним юниты для обработки прорыва данной погран зоны
 		bz_state_spawn_units = yes
+
+		bz_apply_plan_efficiency_states_modifiers = yes
 	}
 
 	# Общемировая новость о прорыве границы
@@ -79,6 +81,285 @@ bz_init_state_manpower_pools = {
 	meta_effect = {
 		text = { add_to_array = { global.bz_manpower_pool_[REGION_INDEX]_bz_states = THIS } }
 		REGION_INDEX = "[?bz_manpower_other_pool_index]"
+	}
+}
+
+# THIS scope is BZ STATE
+# Requires temp_var "temp_initiator_country"
+bz_apply_plan_efficiency_states_modifiers = {
+	bz_apply_plan_efficiency_state_modifier = yes
+
+	for_each_scope_loop = {
+		array = bz_adjacent_states_ids
+
+		if = {
+			limit = { owner = { has_war_with = temp_initiator_country }}
+			bz_apply_plan_efficiency_state_modifier = yes
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_tick_breakthrough_planning_progress = {
+	set_temp_variable = { temp_initiator_country = THIS }
+	bz_deselect_unavailable_selected_states = yes
+	bz_calculate_breakthrough_main_enemy = yes
+	bz_calculate_breakthrough_uncover_chance = yes
+	bz_tick_breakthrough_uncover_chance = yes
+}
+
+bz_deselect_unavailable_selected_states = {
+	for_each_scope_loop = { # Цикл по выбранным областям
+		array = bz_selected_states
+
+		if = {
+			limit = { 
+				owner = { 
+					OR = { 
+						has_war_with = temp_initiator_country
+						meta_trigger = {
+							text = { original_tag = [INITIATOR_COUNTRY_TAG] }
+							INITIATOR_COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
+						}
+					 	
+					}
+				}
+			}
+
+			meta_effect = { 
+				text = { PREV = { add_to_array = { bz_selected_states_to_remove = [STATE_ID] } } }
+				STATE_ID = "[?THIS.GetID]"
+			}		
+			
+		}
+	}
+
+	for_each_loop = {
+		array = bz_selected_states_to_remove
+		value = state
+
+		remove_from_array = { bz_selected_states = state }
+	}
+
+	clear_array = bz_selected_states_to_remove
+}
+
+# THIS scope is COUNTRY
+bz_calculate_breakthrough_main_enemy = {	
+	clear_array = bz_enemies_tags
+	clear_array = bz_enemies_weights	
+
+	for_each_scope_loop = { # Цикл по выбранным областям
+		array = bz_selected_states
+
+		if = { # Если страна-инициатор прорывает свою погранзону
+			limit = { check_variable = { temp_initiator_country = bz_owner }}
+
+			for_each_scope_loop = {
+				array = bz_adjacent_states_ids
+
+				if = { # Проверяем, воюет ли владелец со страной-инициатором
+					limit = { owner = { has_war_with = temp_initiator_country } }
+
+					set_temp_variable = { temp_owner = owner }
+					set_temp_variable = { temp_break_flag = 0 }
+					for_loop_effect = {
+						end = PREV.bz_enemies_tags^num
+						value = pointer
+						break = temp_break_flag
+
+						if = {
+							limit = { check_variable = { temp_owner = PREV.bz_enemies_tags^pointer } }
+							add_to_temp_variable = { temp_break_flag = 1 }
+
+							add_to_variable = { PREV.bz_enemies_weights^pointer = 1 }
+						}
+					}
+
+					if = {
+						limit = { check_variable = { temp_break_flag = 0 } }
+						add_to_array = { PREV.bz_enemies_tags = temp_owner }
+						add_to_array = { PREV.bz_enemies_weights = 1 }
+					}
+				}
+			}
+		}
+		else = { # Если страна-инициатор прорывает чужую погранзону
+			set_temp_variable = { temp_break_flag = 0 }
+			for_loop_effect = { 
+				end = PREV.bz_enemies_tags^num
+				value = pointer
+				break = temp_break_flag
+
+				if = {
+					limit = { check_variable = { bz_owner = PREV.bz_enemies_tags^pointer } }
+					add_to_temp_variable = { temp_break_flag = 1 }
+					set_variable = { PREV.bz_enemies_weights^pointer = 1 }
+				}
+			}
+
+			if = {
+				limit = { check_variable = { temp_break_flag = 0 } }
+				add_to_array = { PREV.bz_enemies_tags = bz_owner }
+				add_to_array = { PREV.bz_enemies_weights = 1 }
+			}
+		}
+		
+	}
+
+	set_temp_variable = { pointer = 0 }
+	find_highest_in_array = {
+		array = bz_enemies_weights
+		index = pointer
+	}
+
+	set_variable = { bz_main_enemy = bz_enemies_tags^pointer }
+
+	clear_array = bz_enemies_tags
+	clear_array = bz_enemies_weights
+}
+
+# THIS scope is COUNTRY
+# Requires temp_var "bz_main_enemy"
+bz_calculate_breakthrough_uncover_chance = {
+
+	set_variable = { bz_breakthrough_uncover_chance_value_base = 0.3 }
+
+	set_variable = { bz_breakthrough_uncover_chance_value_by_selected_states_count = 0.05 }
+	multiply_variable = { bz_breakthrough_uncover_chance_value_by_selected_states_count = bz_selected_states^num }
+
+	set_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = 1 }
+
+	if = {
+		limit = { has_country_flag = bz_is_planning_breakthrough_fast }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = 0.2 }
+	}
+	else_if = {
+		limit = { has_country_flag = bz_is_planning_breakthrough_medium }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.2 }
+	}
+	else_if = {
+		limit = { has_country_flag = bz_is_planning_breakthrough_slow }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.5 }
+	}
+
+	set_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 1 }
+	meta_effect = { # Высчитываем влияние соотношения разведки с главным противником при прорыве
+		text = {
+			if = { # (0.55; 1]
+				limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.55 } }
+				
+				if = { # (0.75; 1]
+					limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.75 } }
+					if = { # (0.85; 1]
+						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.85 } }
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.8 }
+					}
+					else = { # (0.75; 0.85]
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.6 }
+					}
+				}
+				else = { # (0.55; 0.75]
+					if = { # (0.65; 0.75]
+						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.65 } }
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.4 }
+					}
+					else = { # (0.55; 0.65]
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.2 }
+					}
+				}
+			}
+			else_if = {
+				limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.45 } } 
+				if = { # [0; 0.25)
+					limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.25 } }
+					if = { # [0; 0.15)
+						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.15 } }
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.8 }
+					}
+					else = { # [0.15; 0.25)
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.6 }
+					}
+				}
+				else = { # [0.25; 0.45)
+					if = { # [0.25; 0.35)
+						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.35 } }
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.4 }
+					}
+					else = { # [0.35; 0.45)
+						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.2 }
+					}
+				}
+			}
+		}
+		COUNTRY_TAG = "[?bz_main_enemy.GetTag]"
+	}
+
+	# Не ошибка. Почему-то первый set_variable не работает
+	set_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_base }
+	set_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_base }
+	add_to_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_by_selected_states_count }
+
+	multiply_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_factor_by_plan_speed }
+	multiply_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_factor_army_intel }
+
+}
+
+bz_tick_breakthrough_uncover_chance = {
+	
+}
+
+# THIS scope is STATE
+bz_apply_plan_efficiency_state_modifier = {
+	if = {
+		limit = { 
+			check_variable = { bz_plan_breakthrough_uncovers > 2 }
+			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_big_failure } }
+		}
+		add_dynamic_modifier = {
+			modifier = bz_plan_breakthrough_big_failure
+			days = 25
+		}
+	}
+	else_if = {
+		limit = { 
+			check_variable = { bz_plan_breakthrough_uncovers > 0 }
+			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_small_failure } }
+		}
+		add_dynamic_modifier = {
+			modifier = bz_plan_breakthrough_small_failure
+			days = 15
+		}
+	}
+	else_if = {
+		limit = { 
+			has_country_flag = bz_is_planning_breakthrough_fast
+			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_fast_success } }
+		}
+		add_dynamic_modifier = {
+			modifier = bz_plan_breakthrough_fast_success
+			days = 15
+		}
+	}
+	else_if = {
+		limit = { 
+			has_country_flag = bz_is_planning_breakthrough_medium
+			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_medium_success } }
+		}
+		add_dynamic_modifier = {
+			modifier = bz_plan_breakthrough_medium_success
+			days = 25
+		}
+	}
+	else_if = {
+		limit = { 
+			has_country_flag = bz_is_planning_breakthrough_slow
+			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_slow_success } }
+		}
+		add_dynamic_modifier = {
+			modifier = bz_plan_breakthrough_slow_success
+			days = 35
+		}
 	}
 }
 
