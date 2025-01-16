@@ -30,14 +30,14 @@ bz_execute_breakthrough_uncover_event = {
 	if = { # Первое раскрытие плана
 		limit = { check_variable = { bz_plan_breakthrough_uncovers = 1 }}
 		meta_effect = {
-			text = { RUS = { country_event = bz.2 } }
+			text = { [ENEMY_TAG] = { country_event = bz.2 } }
 			ENEMY_TAG = "[?bz_main_enemy.GetTag]"
 		}
 	}
 	else_if = { # Второе раскрытие плана
 		limit = { check_variable = { bz_plan_breakthrough_uncovers = 2 }}
 		meta_effect = {
-			text = { RUS = { 
+			text = { [ENEMY_TAG] = { 
 				clear_array = bz_intel_enemy_breakthrough_states
 				set_temp_variable = { temp_pointer = 0 }
 				set_temp_variable_to_random = {
@@ -45,7 +45,6 @@ bz_execute_breakthrough_uncover_event = {
 					max = PREV.bz_selected_states^num
 				}
 				add_to_array = { bz_intel_enemy_breakthrough_states = PREV.bz_selected_states^temp_pointer }
-
 				country_event = bz.3 
 			} }
 			ENEMY_TAG = "[?bz_main_enemy.GetTag]"
@@ -54,16 +53,16 @@ bz_execute_breakthrough_uncover_event = {
 	else_if = { # Третье раскрытие плана
 		limit = { check_variable = { bz_plan_breakthrough_uncovers = 3 }}
 		meta_effect = {
-			text = { RUS = { 
+			text = { [ENEMY_TAG] = { 
 				clear_array = bz_intel_enemy_breakthrough_states
 				for_each_loop = {
 					array = PREV.bz_selected_states
 					value = state
 					add_to_array = { bz_intel_enemy_breakthrough_states = state }
 				}
-				set_variable = { bz_intel_enemy_breakthrough_days_left = global.num_days }
-				subtract_from_variable = { bz_intel_enemy_breakthrough_days_left = PREV.bz_plan_breakthrough_start }
-				subtract_from_variable = { bz_intel_enemy_breakthrough_days_left = bz_plan_breakthrough_duration }
+				set_variable = { bz_intel_enemy_breakthrough_days_left = bz_plan_breakthrough_duration }
+				subtract_from_variable = { bz_intel_enemy_breakthrough_days_left = global.num_days }
+				add_to_variable = { bz_intel_enemy_breakthrough_days_left = PREV.bz_plan_breakthrough_start }
 				country_event = bz.4 
 			} }
 			ENEMY_TAG = "[?bz_main_enemy.GetTag]"
