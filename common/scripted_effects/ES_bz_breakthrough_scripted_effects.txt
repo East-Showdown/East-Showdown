@@ -1,3 +1,76 @@
+bz_start_preparing_breakthrough = {
+	set_variable = { bz_plan_breakthrough_uncovers = 0 }
+	set_variable = { bz_plan_breakthrough_start = global.num_days }
+}
+
+bz_tick_breakthrough_uncover_chance = {
+	set_temp_variable = { temp_chance = 0 }
+	set_temp_variable_to_random = {
+		var = temp_chance
+		max = 0.7 # в неделе 7 дней
+	}
+
+	log = "temp_chance = [?temp_chance] < [?bz_breakthrough_uncover_chance]"
+
+	if = {
+		limit = { 
+			check_variable = { temp_chance < bz_breakthrough_uncover_chance } 
+			check_variable = { bz_plan_breakthrough_uncovers < 4 }
+		}
+
+		add_to_variable = { bz_plan_breakthrough_uncovers = 1 }
+
+		bz_execute_breakthrough_uncover_event = yes
+	}
+}
+
+bz_execute_breakthrough_uncover_event = {
+	log = "bz_main_enemy.GetTag = [?bz_main_enemy.GetTag]"
+
+	if = { # Первое раскрытие плана
+		limit = { check_variable = { bz_plan_breakthrough_uncovers = 1 }}
+		meta_effect = {
+			text = { RUS = { country_event = bz.2 } }
+			ENEMY_TAG = "[?bz_main_enemy.GetTag]"
+		}
+	}
+	else_if = { # Второе раскрытие плана
+		limit = { check_variable = { bz_plan_breakthrough_uncovers = 2 }}
+		meta_effect = {
+			text = { RUS = { 
+				clear_array = bz_intel_enemy_breakthrough_states
+				set_temp_variable = { temp_pointer = 0 }
+				set_temp_variable_to_random = {
+					var = temp_pointer
+					max = PREV.bz_selected_states^num
+				}
+				add_to_array = { bz_intel_enemy_breakthrough_states = PREV.bz_selected_states^temp_pointer }
+
+				country_event = bz.3 
+			} }
+			ENEMY_TAG = "[?bz_main_enemy.GetTag]"
+		}
+	}
+	else_if = { # Третье раскрытие плана
+		limit = { check_variable = { bz_plan_breakthrough_uncovers = 3 }}
+		meta_effect = {
+			text = { RUS = { 
+				clear_array = bz_intel_enemy_breakthrough_states
+				for_each_loop = {
+					array = PREV.bz_selected_states
+					value = state
+					add_to_array = { bz_intel_enemy_breakthrough_states = state }
+				}
+				set_variable = { bz_intel_enemy_breakthrough_days_left = global.num_days }
+				subtract_from_variable = { bz_intel_enemy_breakthrough_days_left = PREV.bz_plan_breakthrough_start }
+				subtract_from_variable = { bz_intel_enemy_breakthrough_days_left = bz_plan_breakthrough_duration }
+				country_event = bz.4 
+			} }
+			ENEMY_TAG = "[?bz_main_enemy.GetTag]"
+		}
+	}
+}
+
 # THIS scope is INITIATOR COUNTRY
 bz_initiate_breakthrough = {
 	log = "========================================================"
@@ -25,14 +98,8 @@ bz_initiate_breakthrough = {
 			limit = { NOT = { check_variable = { temp_initiator_country = bz_owner } } }
 
 			# Отключаем проверка на создание погранзон в текущей погранзоне
-			add_dynamic_modifier = {
-				modifier = bz_state_breakthrough
-			}
-			
-			add_dynamic_modifier = {
-				modifier = bz_recent_breakthrough
-				days = 14
-			}
+			add_dynamic_modifier = { modifier = bz_recent_breakthrough days = 14 }
+			add_dynamic_modifier = { modifier = bz_state_breakthrough }
 			
 			remove_from_array = { global.bz_breakthrough_target_countries = bz_owner }
 			add_to_array = { global.bz_breakthrough_target_countries = bz_owner }
@@ -105,7 +172,18 @@ bz_tick_breakthrough_planning_progress = {
 	bz_deselect_unavailable_selected_states = yes
 	bz_calculate_breakthrough_main_enemy = yes
 	bz_calculate_breakthrough_uncover_chance = yes
-	bz_tick_breakthrough_uncover_chance = yes
+
+	if = {
+		limit = { 
+			NOT = { check_variable = { bz_main_enemy = 0 } } 
+			OR = { 
+				has_country_flag = bz_is_planning_breakthrough_fast 
+				has_country_flag = bz_is_planning_breakthrough_medium
+				has_country_flag = bz_is_planning_breakthrough_slow 
+			}
+		}
+		bz_tick_breakthrough_uncover_chance = yes
+	}
 }
 
 bz_deselect_unavailable_selected_states = {
@@ -236,11 +314,11 @@ bz_calculate_breakthrough_uncover_chance = {
 	}
 	else_if = {
 		limit = { has_country_flag = bz_is_planning_breakthrough_medium }
-		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.2 }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.35 }
 	}
 	else_if = {
 		limit = { has_country_flag = bz_is_planning_breakthrough_slow }
-		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.5 }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.6 }
 	}
 
 	set_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 1 }
@@ -303,10 +381,6 @@ bz_calculate_breakthrough_uncover_chance = {
 	multiply_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_factor_by_plan_speed }
 	multiply_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_factor_army_intel }
 
-}
-
-bz_tick_breakthrough_uncover_chance = {
-	
 }
 
 # THIS scope is STATE
