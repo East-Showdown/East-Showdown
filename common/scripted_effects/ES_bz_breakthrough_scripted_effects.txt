@@ -3,19 +3,48 @@ bz_start_preparing_breakthrough = {
 	set_variable = { bz_plan_breakthrough_start = global.num_days }
 }
 
+bz_tick_ai_regions_manpower_pools = {
+	bz_recalculate_active_bz_provinces_count = yes
+
+	every_country = {
+		limit = { 
+			is_ai = yes
+			has_war = yes
+		}
+
+		bz_tick_ai_country_regions_mapnower_pools = yes
+	}
+}
+
+# THIS scope is COUNTRY
+bz_tick_ai_country_regions_mapnower_pools = {
+	for_loop_effect = { # Pools indexes
+		start = 0
+		end = global.selected_region_indexes_count
+		value = pointer
+
+		meta_effect = {
+			text = { 
+				set_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pool_[REGION_INDEX]_min_value }
+				multiply_temp_variable = { temp_bz_ai_manpower = 1.0 } # TODO implement checks for not used regions
+				set_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_ai_manpower }
+			}
+			REGION_INDEX = "[?pointer]"
+		}
+	}
+}
+
 bz_tick_breakthrough_uncover_chance = {
 	set_temp_variable = { temp_chance = 0 }
 	set_temp_variable_to_random = {
 		var = temp_chance
-		max = 0.7 # в неделе 7 дней
+		max = 7 # в неделе 7 дней
 	}
-
-	log = "temp_chance = [?temp_chance] < [?bz_breakthrough_uncover_chance]"
 
 	if = {
 		limit = { 
 			check_variable = { temp_chance < bz_breakthrough_uncover_chance } 
-			check_variable = { bz_plan_breakthrough_uncovers < 4 }
+			check_variable = { bz_plan_breakthrough_uncovers < 3 }
 		}
 
 		add_to_variable = { bz_plan_breakthrough_uncovers = 1 }
@@ -25,8 +54,6 @@ bz_tick_breakthrough_uncover_chance = {
 }
 
 bz_execute_breakthrough_uncover_event = {
-	log = "bz_main_enemy.GetTag = [?bz_main_enemy.GetTag]"
-
 	if = { # Первое раскрытие плана
 		limit = { check_variable = { bz_plan_breakthrough_uncovers = 1 }}
 		meta_effect = {
@@ -678,8 +705,6 @@ bz_spawn_units_for_bz_state_owner = {
 	round_temp_variable = temp_bz_manpower_to_spawn
 	set_temp_variable = { temp_bz_manpower_to_spawn_start = temp_bz_manpower_to_spawn }
 
-	log = "temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"
-
 	# Спавним юниты в ПЗ
 	set_temp_variable = { temp_owner = owner }
 	set_temp_variable = { temp_unit_id = 0 }
@@ -688,7 +713,6 @@ bz_spawn_units_for_bz_state_owner = {
 	while_loop_effect = {
 		limit = { check_variable = { temp_bz_manpower_to_spawn > global.bz_border_guards_manpower_per_division } }
 
-		log = "  B2"
 		bz_create_border_guards_unit_in_state = yes
 
 		# Регистрируем юнит в системе отслеживания времени существования пограничников
@@ -718,10 +742,6 @@ bz_spawn_units_for_bz_state_owner = {
 # 1. "temp_owner"
 # 2. "temp_unit_id"
 bz_create_border_guards_unit_in_state = {
-
-	log = "temp_owner.GetTag = [?temp_owner.GetTag]"
-	log = "temp_unit_id = [?temp_unit_id]"
-
 	meta_effect = {
 		text = {
 			[OWNER] = { bz_ensure_border_guards_template = yes }
