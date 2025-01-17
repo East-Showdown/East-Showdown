@@ -641,8 +641,6 @@ bz_state_spawn_units = {
 	if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
 		limit = { check_variable = { bz_owner = temp_initiator_country } }
 
-		log = "A1"
-
 		# Спавним юниты для владельца погранзоны
 		bz_spawn_units_for_bz_state_owner = yes
 
@@ -665,8 +663,6 @@ bz_state_spawn_units = {
 			# bz_owner = { has_war_with = temp_initiator_country } # TODO : bz_owner var cannot be used as a scope
 		}
 
-		log = "B1"
-
 		# Спавним юниты для владельца погранзоны
 		bz_spawn_units_for_bz_state_owner = yes
 
@@ -676,8 +672,6 @@ bz_state_spawn_units = {
 		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
 			array = bz_adjacent_states_ids
 			
-			log = "  A3 index [?temp_bz_adjacent_state_index]"
-			log = "  A3 this = [?THIS] [?THIS.GetID] [THIS.GetName]"
 			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
 			bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = yes
 
@@ -728,11 +722,111 @@ bz_spawn_units_for_bz_state_owner = {
 	subtract_from_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_to_spawn_start }
 
 	meta_effect = {
-		text = { 
-			owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_bz_manpower_to_spawn } }
-		}
+		text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_bz_manpower_to_spawn } } }
 		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
 	}
+}
+
+# THIS scope is COUNTRY
+bz_tick_active_breakthrough_units_removal = {
+	set_temp_variable = { temp_active_breakthrough_count = bz_breakthrough_ids_with_active_units^num }
+	if = {
+		limit = { check_variable = { temp_active_breakthrough_count > 0 } }
+
+		add_to_temp_variable = { temp_active_breakthrough_count = -1 }
+		for_loop_effect = {
+			start = temp_active_breakthrough_count
+			end = 0
+			add = -1
+			compare = greater_than_or_equals
+			value = pointer
+
+			set_temp_variable = { temp_breakthrough_id = bz_breakthrough_ids_with_active_units^pointer }
+			set_temp_variable = { temp_days_passed = global.num_days }
+			subtract_from_temp_variable = { temp_days_passed = bz_breakthrough_start_days^pointer }
+
+			if = {
+				limit = { check_variable = { temp_days_passed = 14 } }
+				country_event = bz.5
+			}
+			else_if = {
+				limit = { check_variable = { temp_days_passed = 21 } }	
+				set_temp_variable = { temp_fraction = 0.3 }	
+				bz_remove_fraction_of_board_guards = yes
+			}
+			else_if = {
+				limit = { check_variable = { temp_days_passed = 28 } }	
+				set_temp_variable = { temp_fraction = 0.5 }	
+				bz_remove_fraction_of_board_guards = yes			
+			}
+			else_if = {
+				limit = { check_variable = { temp_days_passed > 34 } }	
+				set_temp_variable = { temp_fraction = 1 }	
+				bz_remove_fraction_of_board_guards = yes
+				country_event = bz.6
+
+				remove_from_array = {
+					array = bz_breakthrough_ids_with_active_units
+					index = pointer
+				}
+				remove_from_array = {
+					array = bz_breakthrough_start_days
+					index = pointer
+				}
+
+				meta_effect = {
+					text = { clear_array = breakthrough_[BREAKTHROUGH_ID]_units_ids }
+					BREAKTHROUGH_ID = "[?temp_breakthrough_id]"
+				}
+			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+# input vars
+# 1. "temp_breakthough_id"
+# 2. "temp_fraction"
+bz_remove_fraction_of_board_guards = {
+	clamp_temp_variable = { var = temp_fraction min = 0 max = 1 }
+	
+	meta_effect = {
+		text = {
+			set_temp_variable = { temp_last_index = breakthrough_[BREAKTHROUGH_ID]_units_ids^num }
+			set_temp_variable = { temp_count_to_remove = temp_fraction }
+			multiply_temp_variable = { temp_count_to_remove = temp_last_index }
+			round_temp_variable = temp_count_to_remove
+
+			add_to_temp_variable = { temp_last_index = -1 }
+
+			while_loop_effect = {
+				limit = { check_variable = { temp_count_to_remove > 0 } }
+
+				set_temp_variable = { temp_unit_id = breakthrough_[BREAKTHROUGH_ID]_units_ids^temp_last_index }
+				bz_remove_unit = yes	
+				remove_from_array = { array = breakthrough_[BREAKTHROUGH_ID]_units_ids index = temp_last_index }
+				add_to_temp_variable = { temp_last_index = -1 }
+				add_to_temp_variable = { temp_count_to_remove = -1 }			
+			}
+		}
+
+		BREAKTHROUGH_ID = "[?temp_breakthrough_id]"
+	}
+}
+
+# THIS scope is COUNTRY
+bz_remove_unit = {
+	set_temp_variable = { temp_manpower_in_army = deployed_army_manpower_k }	
+
+	meta_effect = {
+		text = { delete_unit = { id = [UNIT_ID] disband = false } }
+		UNIT_ID = "[?temp_unit_id]"
+	}
+
+	subtract_from_temp_variable = { temp_manpower_in_army = deployed_army_manpower_k }
+	multiply_temp_variable = { temp_manpower_in_army = 1000 }
+
+	add_manpower = temp_manpower_in_army
 }
 
 # Create UNIT in specific STATE
@@ -761,6 +855,7 @@ bz_create_border_guards_unit_in_state = {
 				if = {
 					limit = { NOT = { is_in_array = { bz_breakthrough_ids_with_active_units = global.bz_breakthrough_id } } }
 					add_to_array = { bz_breakthrough_ids_with_active_units = global.bz_breakthrough_id }
+					add_to_array = { bz_breakthrough_start_days = global.num_days }
 				}
 			}
 		}
@@ -798,6 +893,7 @@ bz_create_border_guards_unit_in_province = {
 				if = {
 					limit = { NOT = { is_in_array = { bz_breakthrough_ids_with_active_units = global.bz_breakthrough_id } } }
 					add_to_array = { bz_breakthrough_ids_with_active_units = global.bz_breakthrough_id }
+					add_to_array = { bz_breakthrough_start_days = global.num_days }
 				}
 			}
 		}
