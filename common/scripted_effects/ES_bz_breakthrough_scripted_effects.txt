@@ -185,21 +185,6 @@ bz_init_state_manpower_pools = {
 	}
 }
 
-# THIS scope is BZ STATE
-# Requires temp_var "temp_initiator_country"
-bz_apply_plan_efficiency_states_modifiers = {
-	bz_apply_plan_efficiency_state_modifier = yes
-
-	for_each_scope_loop = {
-		array = bz_adjacent_states_ids
-
-		if = {
-			limit = { owner = { has_war_with = temp_initiator_country }}
-			bz_apply_plan_efficiency_state_modifier = yes
-		}
-	}
-}
-
 # THIS scope is COUNTRY
 bz_tick_breakthrough_planning_progress = {
 	set_temp_variable = { temp_initiator_country = THIS }
@@ -431,13 +416,41 @@ bz_calculate_breakthrough_uncover_chance = {
 
 }
 
+# THIS scope is BZ STATE
+# Requires temp_var "temp_initiator_country"
+bz_apply_plan_efficiency_states_modifiers = {
+	bz_apply_plan_efficiency_state_modifier = yes
+
+	for_each_scope_loop = {
+		array = bz_adjacent_states_ids
+
+		if = {
+			limit = { owner = { has_war_with = temp_initiator_country }}
+			bz_apply_plan_efficiency_state_modifier = yes
+		}
+	}
+}
+
 # THIS scope is STATE
+# Requires temp_var "temp_initiator_country"
 bz_apply_plan_efficiency_state_modifier = {
+	log = " bz_apply_plan_efficiency_state_modifier = [?THIS.GetID]"
+	UKR = {
+		log = "  bz_plan_breakthrough_uncovers = [?bz_plan_breakthrough_uncovers]"
+	}
+	log = "  temp_initiator_country = [?temp_initiator_country.GetTag]"
+	
+	#remove_dynamic_modifier = { modifier = bz_speed_debuff }
+
 	if = {
 		limit = { 
-			check_variable = { bz_plan_breakthrough_uncovers > 2 }
+			meta_trigger = {
+				text = { [COUNTRY_TAG] = { check_variable = { bz_plan_breakthrough_uncovers > 2 } } }
+				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
+			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_big_failure } }
 		}
+		log = "  A1"
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_big_failure
 			days = global.bz_plan_breakthrough_big_failure_dynamic_modifier_days
@@ -445,9 +458,13 @@ bz_apply_plan_efficiency_state_modifier = {
 	}
 	else_if = {
 		limit = { 
-			check_variable = { bz_plan_breakthrough_uncovers > 1 }
+			meta_trigger = {
+				text = { [COUNTRY_TAG] = { check_variable = { bz_plan_breakthrough_uncovers > 1 } } }
+				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
+			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_small_failure } }
 		}
+		log = "  A2"
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_small_failure
 			days = global.bz_plan_breakthrough_small_failure_dynamic_modifier_days
@@ -455,9 +472,18 @@ bz_apply_plan_efficiency_state_modifier = {
 	}
 	else_if = {
 		limit = { 
-			has_country_flag = bz_is_planning_breakthrough_short
+			meta_trigger = {
+				text = { [COUNTRY_TAG] = { 
+					AND = {
+						has_country_flag = bz_is_planning_breakthrough_short
+						check_variable = { bz_plan_breakthrough_uncovers < 2 }
+					}
+				}}
+				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
+			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_short_success } }
 		}
+		log = "  A3"
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_short_success
 			days = global.bz_plan_breakthrough_short_success_dynamic_modifier_days
@@ -465,9 +491,18 @@ bz_apply_plan_efficiency_state_modifier = {
 	}
 	else_if = {
 		limit = { 
-			has_country_flag = bz_is_planning_breakthrough_medium
+			meta_trigger = {
+				text = { [COUNTRY_TAG] = { 
+					AND = {
+						has_country_flag = bz_is_planning_breakthrough_medium
+						check_variable = { bz_plan_breakthrough_uncovers < 2 }
+					}
+				}}
+				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
+			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_medium_success } }
 		}
+		log = "  A4"
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_medium_success
 			days = global.bz_plan_breakthrough_medium_success_dynamic_modifier_days
@@ -475,9 +510,18 @@ bz_apply_plan_efficiency_state_modifier = {
 	}
 	else_if = {
 		limit = { 
-			has_country_flag = bz_is_planning_breakthrough_long
+			meta_trigger = {
+				text = { [COUNTRY_TAG] = { 
+					AND = {
+						has_country_flag = bz_is_planning_breakthrough_long
+						check_variable = { bz_plan_breakthrough_uncovers < 2 }
+					}
+				}}
+				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
+			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_long_success } }
 		}
+		log = "  A5 [?global.bz_plan_breakthrough_long_success_dynamic_modifier_days]"
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_long_success
 			days = global.bz_plan_breakthrough_long_success_dynamic_modifier_days
