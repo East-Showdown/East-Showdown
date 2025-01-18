@@ -26,7 +26,7 @@ bz_tick_ai_country_regions_mapnower_pools = {
 		meta_effect = {
 			text = { 
 				set_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pool_[REGION_INDEX]_min_value }
-				multiply_temp_variable = { temp_bz_ai_manpower = 1.0 } # TODO implement checks for not used regions
+				multiply_temp_variable = { temp_bz_ai_manpower = 2.0 } # TODO implement checks for not used regions
 				set_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_ai_manpower }
 			}
 			REGION_INDEX = "[?pointer]"
@@ -789,7 +789,10 @@ bz_remove_fraction_of_board_guards = {
 	clamp_temp_variable = { var = temp_fraction min = 0 max = 1 }
 	
 	if = { 
-		limit = { check_variable = { temp_fraction > 0 } } 
+		limit = { 
+			NOT = { is_ai = yes } # Удаление юнитов пограничников отключено для ИИ
+			check_variable = { temp_fraction > 0 }
+		} 
 
 		meta_effect = {
 			text = {
