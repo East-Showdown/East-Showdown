@@ -1,1063 +1,3 @@
-UKR_Lend_leas1_category = {
-	UKR_order_weapons_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_large_batch_of_small_arms
-		}
-		#  visible = {
-		#     UKR_can_sell_weapons_trigger = yes
-		# }
-		days_remove = 2
-		cost = 9
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_weapons_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_weapons_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = infantry_equipment_2
-				amount = 50000
-			}
-		}
-	}
-	UKR_order_ammo_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		days_remove = 30
-		cost = 9
-		fire_only_once = no
-		available = {
-			has_completed_focus = UKR_large_batch_of_small_arms
-			custom_trigger_tooltip = {
-				tooltip = UKR_nato_have_ammo
-				#Высчитываем, сколько место осталось у Украины на складах
-				set_temp_variable = {
-					ammo_needed = ammunition_free_space
-				}
-				#Ограничиваем максимумом в 200к
-				clamp_temp_variable = {
-					var = ammo_needed
-					min = 0
-					max = 200
-				}
-				NTO = {
-					check_variable = {
-						ammunition_variable > ammo_needed
-					}
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = UKR_nato_have_enough_ammo
-				NTO = {
-					check_variable = {
-						ammunition_variable > 200
-					}
-				}
-			}
-		}
-		#  visible = {
-		#     UKR_can_sell_weapons_trigger = yes
-		# }
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_ammo_in_Ukraine: remove_effect"
-			#Высчитываем, сколько место осталось у Украины на складах
-			set_temp_variable = {
-				ammo_needed = ammunition_free_space
-			}
-			#Ограничиваем максимумом в 200к
-			clamp_temp_variable = {
-				var = ammo_needed
-				min = 0
-				max = 200
-			}
-			#Передаём боеприпасы
-			add_to_variable = {
-				ammunition_variable = ammo_needed
-			}
-			NTO = {
-				subtract_from_variable = {
-					ammunition_variable = ammo_needed
-				}
-			}
-			custom_effect_tooltip = UKR_ammo_supply_from_nato_tt
-		}
-	}
-	UKR_order_tanks_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_more_tanks
-		}
-		#      visible = {
-		#          UKR_can_sell_weapons_trigger = yes
-		#      }
-		days_remove = 6
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_tanks_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_tanks_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = t72_chassis_0
-				variant_name = "Т-72A/Б"
-				amount = 500
-				producer = UKR
-			}
-		}
-	}
-	UKR_order_Mraps_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_more_MRAPS
-		}
-		#     visible = {
-		#         UKR_can_sell_weapons_trigger = yes
-		#     }
-		days_remove = 10
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Mraps_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Mraps_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "M1025 HMMWV"
-				amount = 5000
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_m777_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_m777
-		}
-		#       visible = {
-		#           UKR_can_sell_weapons_trigger = yes
-		#       }
-		days_remove = 15
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_m777_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_m777_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = artillery_equipment_3
-				amount = 200
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_IFV_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_more_IFV
-		}
-		#          visible = {
-		#              UKR_can_sell_weapons_trigger = yes
-		#          }
-		days_remove = 20
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_IFV_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_IFV_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = nto_bmp1_chassis
-				variant_name = "БМП-1 БМ"
-				amount = 200
-				producer = UKR
-			}
-			add_equipment_to_stockpile = {
-				type = nto_bmp1_chassis
-				variant_name = "БМП-1П"
-				amount = 80
-				producer = UKR
-			}
-		}
-	}
-	UKR_order_Patiot_IRIS_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = no
-		available = {
-			has_completed_focus = UKR_We_need_Patriot_and_Iris
-			or = {
-				controls_state = 149
-				controls_state = 256
-				controls_state = 108
-				controls_state = 94
-			}
-		}
-		#    visible = {
-		#         UKR_can_sell_weapons_trigger = yes
-		#     }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Patiot_IRIS_in_Ukraine: remove_effect"
-			country_event = ukr.44
-		}
-	}
-	UKR_order_Himars_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Urgent_need_for_Himars
-		}
-		#       visible = {
-		#            UKR_can_sell_weapons_trigger = yes
-		#       }
-		days_remove = 15
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Himars_in_Ukraine: complete_effect"
-			set_country_flag = UKR_himars_allowed
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Himars_in_Ukraine: remove_effect"
-			custom_effect_tooltip = UKR_order_Himars_in_Ukraine_tooltip
-		}
-	}
-	UKR_order_Paladin_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_M109_Paladin
-		}
-		#      visible = {
-		#          UKR_can_sell_weapons_trigger = yes
-		#      }
-		days_remove = 15
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Paladin_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Paladin_in_Ukraine: remove_effect"
-			custom_effect_tooltip = decision_negotowo_tooltip
-		}
-	}
-	UKR_order_support_equipment_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Receiving_a_large_batch_of_drones
-		}
-		#          visible = {
-		#               UKR_can_sell_weapons_trigger = yes
-		#          }
-		days_remove = 10
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_support_equipment_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_support_equipment_in_Ukraine: remove_effect"
-			NTO = {
-				send_equipment = {
-					type = support_equipment
-					amount = 20000
-					target = UKR
-				}
-			}
-		}
-	}
-	UKR_order_Brandleys_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = no
-		available = {
-			has_completed_focus = UKR_Getting_Brandleys
-		}
-		#        visible = {
-		#            UKR_can_sell_weapons_trigger = yes
-		#        }
-		days_remove = 60
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Brandleys_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Brandleys_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = nto_bmp3_chassis
-				variant_name = "M2A2"
-				amount = 100
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_Marder_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = no
-		available = {
-			has_completed_focus = UKR_Getting_Marder
-		}
-		#      visible = {
-		#          UKR_can_sell_weapons_trigger = yes
-		#      }
-		days_remove = 60
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Marder_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Marder_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = nto_bmp1_chassis
-				variant_name = "Marder 1A3"
-				amount = 150
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_Straikers_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = no
-		available = {
-			has_completed_focus = UKR_Request_Straikers
-		}
-		#           visible = {
-		#             UKR_can_sell_weapons_trigger = yes
-		#         }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Straikers_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Straikers_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = btr2_chassis
-				variant_name = "Boxer"
-				amount = 100
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_Leoprads_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_Leopards
-		}
-		#                                      visible = {
-		#                                          UKR_can_sell_weapons_trigger = yes
-		#                                     }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Leoprads_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Leoprads_in_Ukraine: remove_effect"
-			NTO = {
-				send_equipment = {
-					equipment = leopard2_chassis
-					amount = 350
-					target = UKR
-				}
-			}
-			custom_effect_tooltip = UKR_Leopards_tooltip_tt
-			hidden_effect = {
-				load_oob = UKR_LEO
-			}
-		}
-	}
-	#Челленджер
-	UKR_order_Challengers_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_Challengers
-		}
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Challengers_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Challengers_in_Ukraine: remove_effect"
-			NTO = {
-				send_equipment = {
-					equipment = challenger2_chassis
-					amount = 200
-					target = UKR
-				}
-			}
-			custom_effect_tooltip = UKR_Challanger_tooltip_tt
-			hidden_effect = {
-				load_oob = UKR_CHALLENGER
-			}
-		}
-	}
-	#Леклерк
-	UKR_order_Leclercs_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_Leclercs
-		}
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Leclercs_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Leclercs_in_Ukraine: remove_effect"
-			NTO = {
-				send_equipment = {
-					equipment = leclerc_chassis_0
-					amount = 350
-					target = UKR
-				}
-			}
-			custom_effect_tooltip = UKR_Leclercs_tooltip_tt
-			hidden_effect = {
-				load_oob = UKR_LECLERC
-			}
-		}
-	}
-	UKR_order_Abrams_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_Abrams
-			always = no
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 95
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Abrams_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 2
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_Abrams_in_Ukraine: remove_effect"
-			NTO = {
-				send_equipment = {
-					equipment = abrams_chassis_0
-					amount = 300
-					target = UKR
-				}
-			}
-			custom_effect_tooltip = UKR_Abrams_tooltip_tt
-			hidden_effect = {
-				load_oob = UKR_ABRAMS
-			}
-		}
-	}
-	UKR_order_mig29_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_migs29
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 20
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_mig29_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_mig29_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = UKR_fighter_equipment_mig29
-				amount = 30
-				producer = UKR
-			}
-		}
-	}
-	UKR_order_su25_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_su_25
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 20
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_su25_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_su25_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = UKR_cas_equipment_su25
-				amount = 30
-				producer = UKR
-			}
-		}
-	}
-	UKR_order_mi24_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_We_need_mi_24b
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 20
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_mi24_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_mi24_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = UKR_hel_strike_equipment_mi24
-				amount = 35
-				producer = UKR
-			}
-		}
-	}
-	UKR_order_f16_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_an_F-16
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_f16_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_f16_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = NTO_fighter_equipment_f16
-				amount = 60
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_ah64_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_an_AH-64_Apache
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_ah64_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_ah64_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = NTO_hel_strike_equipment_apache
-				amount = 40
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_eurofighters_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Request_Eurofighter_Typhoon
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_eurofighters_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_eurofighters_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = NTO_fighter_equipment_typhoon
-				amount = 60
-				producer = NTO
-			}
-		}
-	}
-	UKR_order_bayraktar_in_Ukraine = {
-		icon = GFX_lend_leas_NTO
-		fire_only_once = yes
-		available = {
-			has_completed_focus = UKR_Receiving_a_large_batch_of_drones
-		}
-		#           visible = {
-		#                UKR_can_sell_weapons_trigger = yes
-		#           }
-		days_remove = 90
-		cost = 10
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				has_equipment = {
-					infantry_equipment < 1
-				}
-				factor = 50
-			}
-			modifier = {
-				has_manpower < 10000
-				factor = 0				#need to up conscription laws
-			}
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_bayraktar_in_Ukraine: complete_effect"
-			UKR = {
-				add_offsite_building = {
-					type = industrial_complex
-					level = 1
-				}
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_order_bayraktar_in_Ukraine: remove_effect"
-			add_equipment_to_stockpile = {
-				type = NTO_uav_strike_bayraktar
-				amount = 35
-				producer = NTO
-			}
-		}
-	}
-}
 
 UKR_hold_cities_category = {
 	UKR_hold_kyiv = {
@@ -18733,17 +17673,17 @@ UKR_volunteers_decision_category = {
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_volunteer_movement_infantry_weapons"
 			add_equipment_to_stockpile = {  
-			    type = UKR_infantry_equipment_2
+			    type = infantry_ak74_equipment
 				amount = UKR_volunteer_movement_infantry_weapons_d_var
 				producer = UKR 
 			}
 			add_equipment_to_stockpile = {  
-			    type = ukr_infantry_anti_tank_equipment_0
+			    type = infantry_grenade_launcher_rk2stugna_equipment
 				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
 				producer = UKR 
 			}
 			add_equipment_to_stockpile = {  
-			    type = ukr_infantry_anti_air_equipment_0
+			    type = aa_9k38_igla_equipment
 				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
 				producer = UKR 
 			}
@@ -18774,17 +17714,17 @@ UKR_volunteers_decision_category = {
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_volunteer_movement_NTO_infantry_weapons"
 			add_equipment_to_stockpile = {  
-			    type = nto_infantry_equipment_3
+			    type = usa_infantry_m16_equipment
 				amount = UKR_volunteer_movement_NTO_infantry_weapons_d_var
 				producer = NTO 
 			}
 			add_equipment_to_stockpile = {  
-			    type = nto_infantry_anti_tank_equipment_2
+			    type = usa_fgm148_javelin_equipment
 				amount = UKR_volunteer_movement_NTO_infantry_weapons_1_d_var
 				producer = NTO 
 			}
 			add_equipment_to_stockpile = {  
-			    type = nto_infantry_anti_air_equipment_2
+			    type = usa_fim92_stinger_equipment
 				amount = UKR_volunteer_movement_NTO_infantry_weapons_1_d_var
 				producer = NTO 
 			}
@@ -18824,15 +17764,27 @@ UKR_volunteers_decision_category = {
 				producer = UKR 
 			}
 			add_equipment_to_stockpile = {  
-			    type = ARV_equipment_0
+			    type = arv_equipment_0
 				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
 				producer = UKR 
 			}
 			add_equipment_to_stockpile = {  
-			    type = AMV_equipment_0
+			    type = amv_equipment_0
 				amount = UKR_volunteer_movement_infantry_weapons_1_d_var
 				producer = UKR 
 			}
+			add_equipment_to_stockpile = {
+                type = communication_equipment
+                amount = 25
+                producer = UKR
+            }
+			add_equipment_to_stockpile = {
+				type = infantry_uniform_vsr84_butan
+				amount = 25
+				producer = UKR 
+			}
+
+
 			hidden_effect = {
 				activate_mission = UKR_volunteer_movement_support_weapons
 			}
@@ -18924,17 +17876,23 @@ UKR_volunteers_decision_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = imv_medium_1_equipment
+				variant_name = "Дозор-Б"
 				amount = UKR_volunteer_movement_motorization_d_var
 				producer = UKR
 			} 
 			add_equipment_to_stockpile = {
-				type = bronemashina3_chassis
-				variant_name = "\"Новатор\""
+				type = imv_medium_2_equipment
+				variant_name = "Новатор"
 				amount = UKR_volunteer_movement_NTO_motorization_d_var
 				producer = UKR
 			} 
+			add_equipment_to_stockpile = {
+				type = imv_civil_0_equipment
+				variant_name = "Toyota-пикап"
+				amount = 50
+				producer = UKR
+			}
 			hidden_effect = {
 				activate_mission = UKR_volunteer_movement_motorization
 			}
@@ -18966,14 +17924,14 @@ UKR_volunteers_decision_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "M1025 HMMWV"
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = UKR_volunteer_movement_NTO_motorization_d_var
 				producer = NTO
 			} 
 			add_equipment_to_stockpile = {
-				type = bronemashina2_chassis
-				variant_name = "M1145 HMMWV с CROWS"
+				type = imv_medium_1_equipment
+				variant_name = "Senator"
 				amount = UKR_volunteer_movement_NTO_drones_d_var
 				producer = NTO
 			}
@@ -19130,7 +18088,7 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = t64_chassis_0
+				type = tank_sov_t64_equipment
 				amount = 20
 				variant_name = "Т-64"
 			}
@@ -19156,7 +18114,7 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = t72_chassis_0
+				type = tank_sov_t72_equipment
 				amount = 15
 				variant_name = "Т-72"
 			}
@@ -19182,9 +18140,9 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = t80_chassis_0
+				type = tank_sov_t80_equipment
 				amount = 10
-				variant_name = "Т-80"
+				variant_name = "Т-80У"
 			}
 		}
 
@@ -19208,9 +18166,9 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = bmp1a_chassis
+				type = ifv_sov_bmp1_equipment
 				amount = 40
-				variant_name = "БПМ-1У"
+				variant_name = "БМП-1У"
 			}
 		}
 
@@ -19234,7 +18192,7 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = bmp2a_chassis
+				type = ifv_sov_bmp2_equipment
 				amount = 30
 				variant_name = "БМП-2Д"
 			}
@@ -19260,7 +18218,7 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = btr3_chassis
+				type = apc_ukr_btr3_equipment
 				amount = 50
 				variant_name = "БТР-3"
 			}
@@ -19286,9 +18244,9 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = btr4_chassis
+				type = apc_ukr_btr4_equipment
 				amount = 35
-				variant_name = "БТР-4 \"Буцефал\""
+				variant_name = "БТР-4 Буцефал"
 			}
 		}
 
@@ -19312,9 +18270,9 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = bronemashina3_chassis
+				type = imv_medium_2_equipment
 				amount = 80
-				variant_name = "\"Новатор\""
+				variant_name = "Новатор"
 			}
 		}
 
@@ -19338,9 +18296,9 @@ UKR_order_of_vehicles_category = {
 		}
 		remove_effect = {
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
+				type = imv_medium_1_equipment
 				amount = 150
-				variant_name = "\"Дозор-Б\""
+				variant_name = "Дозор-Б"
 			}
 		}
 
@@ -20141,7 +19099,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				add_stability = -0.015
 			}
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 650
 				producer = UKR
 			}
@@ -20151,8 +19109,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = infantry_uniform_vsr84_butan
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "Дозор-Б"
 				amount = 30
 				producer = UKR
 			}
@@ -20210,7 +19178,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Khamzat_Gelayev_Battalion: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20220,8 +19188,17 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = infantry_uniform_vsr84_butan
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
 				amount = 15
 				producer = UKR
 			}
@@ -20267,7 +19244,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_separate_special_purpose_battalion_of_Chechnya: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20277,8 +19254,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = infantry_uniform_vsr84_butan
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}
@@ -20324,7 +19311,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Imam_Shamil_Battalion: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20334,8 +19321,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = infantry_uniform_vsr84_butan
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}
@@ -20381,7 +19378,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Muslim_corps_Kavkaz: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20391,8 +19388,19 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = infantry_uniform_vsr84_butan
+				amount = 80
+				producer = UKR 
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 80
+				producer = UKR 
+			}
+
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}
@@ -20438,7 +19446,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Turan_Division: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20448,8 +19456,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}
@@ -20495,7 +19513,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Normandy_Brigade: remove_effect"
 		    army_experience = 10
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = NTO
 			}
@@ -20505,8 +19523,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 25
 				producer = NTO
 			} 
@@ -20559,7 +19587,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Task_Force_Baguette: remove_effect"
 		    army_experience = 10
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = NTO
 			}
@@ -20569,8 +19597,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 25
 				producer = NTO
 			} 
@@ -20623,7 +19661,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Canadian_Ukrainian_brigade: remove_effect"
 		    army_experience = 10
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = NTO
 			}
@@ -20633,8 +19671,20 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
+
 				amount = 25
 				producer = NTO
 			} 
@@ -20681,7 +19731,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Belarusian_regiment_Pogonya: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20691,8 +19741,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}
@@ -20738,7 +19798,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_regiment_Kastus_Kalinouski: remove_effect"
 		    army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -20748,8 +19808,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}
@@ -20796,12 +19866,12 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 		    add_war_support = 0.025
 		    army_experience = 15
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_2
+				type = usa_infantry_fn_scar_equipment
 				amount = 50
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 600
 				producer = NTO
 			}
@@ -20811,8 +19881,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 50
 				producer = NTO
 			} 
@@ -20895,12 +19975,12 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Mozart_Group: remove_effect"
 		    army_experience = 10
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_2
+				type = usa_infantry_fn_scar_equipment
 				amount = 20
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 500
 				producer = NTO
 			}
@@ -20910,8 +19990,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 30
 				producer = NTO
 			} 
@@ -20989,12 +20079,12 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Aegis_Defense_Services: remove_effect"
 		    army_experience = 10
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_2
+				type = usa_infantry_fn_scar_equipment
 				amount = 20
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 500
 				producer = NTO
 			}
@@ -21004,8 +20094,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 30
 				producer = NTO
 			} 
@@ -21087,12 +20187,12 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_forward_observations_group: remove_effect"
 		    army_experience = 10
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_2
+				type = usa_infantry_fn_scar_equipment
 				amount = 20
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 500
 				producer = NTO
 			}
@@ -21102,8 +20202,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 30
 				producer = NTO
 			} 
@@ -21192,7 +20302,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Baltic_Volunteer_Corps: remove_effect"
 			army_experience = 5
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = NTO
 			}
@@ -21202,8 +20312,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 30
 				producer = NTO
 			} 
@@ -21256,7 +20376,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Polish_Volunteer_Corps: remove_effect"
 			army_experience = 5
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = POL
 			}
@@ -21266,8 +20386,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = POL
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 30
 				producer = POL
 			} 
@@ -21320,7 +20450,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Scandinavian_Volunteer_Corps: remove_effect"
 			army_experience = 5
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = NTO
 			}
@@ -21330,8 +20460,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 15
 				producer = NTO
 			} 
@@ -21384,7 +20524,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_German_Volunteer_Corps: remove_effect"
 			army_experience = 5
 			add_equipment_to_stockpile = {
-				type = nto_infantry_equipment_1
+				type = usa_infantry_m4_equipment
 				amount = 450
 				producer = NTO
 			}
@@ -21394,8 +20534,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = NTO
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"M1025 HMMWV\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "HMMWV"
 				amount = 15
 				producer = NTO
 			} 
@@ -21448,7 +20598,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Belarusian_Volunteer_Corps: remove_effect"
 			army_experience = 5
 			add_equipment_to_stockpile = {
-				type = ukr_infantry_equipment_1
+				type = infantry_ak74_equipment
 				amount = 500
 				producer = UKR
 			}
@@ -21458,8 +20608,18 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 				producer = UKR
 			}
 			add_equipment_to_stockpile = {
-				type = bronemashina1_chassis
-				variant_name = "\"Дозор-Б\""
+				type = usa_ocp_equipment
+				amount = 200
+				producer = NTO 
+			}
+			add_equipment_to_stockpile = {
+				type = usa_pasgt_armor_equipment
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+                type = imv_medium_1_equipment
+                variant_name = "Дозор-Б"
 				amount = 15
 				producer = UKR
 			}

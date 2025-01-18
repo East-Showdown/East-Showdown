@@ -1,0 +1,1067 @@
+bz_breakthrough_category = {
+	bz_enable_creation = {
+		icon = GFX_bz_enable_creation
+		visible = { 
+			original_tag = RUS 
+			has_global_flag = RUS_ban_border_zones_flag
+		}
+		complete_effect = {
+			clr_global_flag = RUS_ban_border_zones_flag
+		}
+	}
+	bz_disable_creation = {
+		icon = GFX_bz_disable_creation
+		visible = { 
+			original_tag = RUS 
+			NOT = { has_global_flag = RUS_ban_border_zones_flag }
+		}
+		complete_effect = { set_global_flag = RUS_ban_border_zones_flag }
+	}
+
+	bz_start_planning_breakthrough_short = {
+		icon = GFX_bz_start_planning_breakthrough_short
+		available = { 
+			check_variable = { bz_selected_states^num > 0 }
+			check_variable = { bz_selected_states^num < 3 }
+		}
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }
+
+		complete_effect = { 
+			set_country_flag = bz_is_planning_breakthrough_short
+			clr_country_flag = bz_is_selecting_breakthrough_states
+			set_variable = { bz_plan_breakthrough_duration = 15 }
+			bz_start_preparing_breakthrough = yes
+		}	
+	}
+	bz_start_planning_breakthrough_medium = {
+		icon = GFX_bz_start_planning_breakthrough_medium
+		available = { 
+			check_variable = { bz_selected_states^num > 0 }
+			check_variable = { bz_selected_states^num < 6 }
+		}
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }
+
+		complete_effect = { 
+			set_country_flag = bz_is_planning_breakthrough_medium
+			clr_country_flag = bz_is_selecting_breakthrough_states
+			set_variable = { bz_plan_breakthrough_duration = 30 }
+			bz_start_preparing_breakthrough = yes
+		}	
+	}
+	bz_start_planning_breakthrough_long = {
+		icon = GFX_bz_start_planning_breakthrough_long
+		available = { 
+			check_variable = { bz_selected_states^num > 0 }
+			check_variable = { bz_selected_states^num < 9 }
+		}
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }
+
+		complete_effect = { 
+			set_country_flag = bz_is_planning_breakthrough_long
+			clr_country_flag = bz_is_selecting_breakthrough_states
+			set_variable = { bz_plan_breakthrough_duration = 50 }
+			bz_start_preparing_breakthrough = yes
+		}	
+	}
+
+    bz_start_selecting_breakthrough_states = {
+		icon = GFX_bz_start_selecting_breakthrough_states
+		visible = { 
+			NOT = { 
+				has_country_flag = bz_is_selecting_breakthrough_states 
+				has_country_flag = bz_is_planning_breakthrough_short
+				has_country_flag = bz_is_planning_breakthrough_medium
+				has_country_flag = bz_is_planning_breakthrough_long
+			}
+		}
+
+		available = {
+			OR = {
+				original_tag = RUS
+				AND = {
+					original_tag = UKR
+					custom_trigger_tooltip = {
+						tooltip = bz_breakthrough_unlocked_tt
+						OR = {
+							has_country_flag = UKR_bz_breakthrough_unlocked
+							is_debug = yes
+						}
+					}
+					
+				}
+			}
+		}
+
+		complete_effect = { 
+			set_country_flag = bz_is_selecting_breakthrough_states
+			bz_recalculate_array_of_states_can_breakthrough = yes
+		}	
+	}
+	bz_cancel_selecting_breakthrough_states = {
+		icon = GFX_bz_cancel_selecting_breakthrough_states
+		visible = { has_country_flag = bz_is_selecting_breakthrough_states }	
+
+		complete_effect = { 
+			clr_country_flag = bz_is_selecting_breakthrough_states
+			clr_country_flag = bz_is_planning_breakthrough_short
+			clr_country_flag = bz_is_planning_breakthrough_medium
+			clr_country_flag = bz_is_planning_breakthrough_long
+			clear_array = bz_selected_states
+		}	
+	}
+
+	bz_plan_breakthrough_short_mission = {
+		icon = GFX_bz_plan_breakthrough_short_mission
+		days_mission_timeout = 15
+		available = { always = no }
+		activation = { has_country_flag = bz_is_planning_breakthrough_short }
+		cancel_trigger = { NOT = { has_country_flag = bz_is_planning_breakthrough_short } }
+		
+		timeout_effect = { 
+			bz_initiate_breakthrough = yes 
+			clr_country_flag = bz_is_planning_breakthrough_short
+		}
+	}
+	bz_plan_breakthrough_medium_mission = {
+		icon = GFX_bz_plan_breakthrough_medium_mission
+		days_mission_timeout = 30
+		available = { always = no }
+		activation = { has_country_flag = bz_is_planning_breakthrough_medium }
+		cancel_trigger = { NOT = { has_country_flag = bz_is_planning_breakthrough_medium } }
+		
+		timeout_effect = { 
+			bz_initiate_breakthrough = yes
+			clr_country_flag = bz_is_planning_breakthrough_medium
+		}
+	}
+	bz_plan_breakthrough_long_mission = {
+		icon = GFX_bz_plan_breakthrough_long_mission
+		days_mission_timeout = 50
+		available = { always = no }
+		activation = { has_country_flag = bz_is_planning_breakthrough_long }
+		cancel_trigger = { NOT = { has_country_flag = bz_is_planning_breakthrough_long } }
+		
+		timeout_effect = { 
+			bz_initiate_breakthrough = yes
+			clr_country_flag = bz_is_planning_breakthrough_long
+		}
+	}
+
+	bz_cancel_planing_offensive = {
+		icon = GFX_bz_cancel_planing_offensive
+		visible = { 
+			OR = {
+				has_country_flag = bz_is_planning_breakthrough_short 
+				has_country_flag = bz_is_planning_breakthrough_medium
+				has_country_flag = bz_is_planning_breakthrough_long
+			}
+		}
+		
+		complete_effect = {
+			clr_country_flag = bz_is_planning_breakthrough_short 
+			clr_country_flag = bz_is_planning_breakthrough_medium
+			clr_country_flag = bz_is_planning_breakthrough_long
+			set_country_flag = bz_is_selecting_breakthrough_states
+		}	
+	}
+
+	#bz_test_units = {
+	#	icon = generic_formable_nations
+	#	visible = {}		
+	#	complete_effect = {
+	#		set_temp_variable = { temp_owner = RUS }
+	#		573 = {	bz_create_border_guards_unit_in_state = yes }
+	#	}			
+	#}
+
+	# Bryansk - Chernigov
+	bz_select_breakthrough_302 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 302 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 302 } }
+			302 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 302 } }	
+	}
+	bz_deselect_breakthrough_302 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 302 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 302 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 302 } }	
+	}
+
+	bz_select_breakthrough_634 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 634 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 634 } }
+			634 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 634 } }	
+	}
+	bz_deselect_breakthrough_634 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 634 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 634 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 634 } }	
+	}
+
+	bz_select_breakthrough_633 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 633 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 633 } }
+			633 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 633 } }	
+	}
+	bz_deselect_breakthrough_633 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 633 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 633 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 633 } }	
+	}
+
+	bz_select_breakthrough_632 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 632 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 632 } }
+			632 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 632 } }	
+	}
+	bz_deselect_breakthrough_632 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 632 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 632 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 632 } }	
+	}
+
+	# Bryansk - Sumy
+	bz_select_breakthrough_272 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 272 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 272 } }
+			272 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 272 } }	
+	}
+	bz_deselect_breakthrough_272 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 272 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 272 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 272 } }	
+	}
+
+	bz_select_breakthrough_631 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 631 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 631 } }
+			631 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 631 } }	
+	}
+	bz_deselect_breakthrough_631 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 631 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 631 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 631 } }	
+	}
+
+	bz_select_breakthrough_630 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 630 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 630 } }
+			630 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 630 } }	
+	}
+	bz_deselect_breakthrough_630 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 630 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 630 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 630 } }	
+	}
+	
+	# Kursk - Sumy
+	bz_select_breakthrough_306 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 306 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 306 } }
+			306 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 306 } }	
+	}
+	bz_deselect_breakthrough_306 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 306 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 306 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 306 } }	
+	}
+
+	bz_select_breakthrough_629 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 629 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 629 } }
+			629 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 629 } }	
+	}
+	bz_deselect_breakthrough_629 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 629 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 629 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 629 } }	
+	}
+
+	bz_select_breakthrough_377 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 377 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 377 } }
+			377 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 377 } }	
+	}
+	bz_deselect_breakthrough_377 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 377 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 377 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 377 } }	
+	}
+
+	bz_select_breakthrough_627 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 627 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 627 } }
+			627 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 627 } }	
+	}
+	bz_deselect_breakthrough_627 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 627 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 627 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 627 } }	
+	}
+
+	bz_select_breakthrough_626 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 626 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 626 } }
+			626 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 626 } }	
+	}
+	bz_deselect_breakthrough_626 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 626 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 626 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 626 } }	
+	}
+
+	bz_select_breakthrough_628 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 628 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 628 } }
+			628 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 628 } }	
+	}
+	bz_deselect_breakthrough_628 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 628 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 628 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 628 } }	
+	}
+
+	bz_select_breakthrough_625 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 625 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 625 } }
+			625 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 625 } }	
+	}
+	bz_deselect_breakthrough_625 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 625 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 625 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 625 } }	
+	}
+
+	# Belgorod - Sumy
+	bz_select_breakthrough_371 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 371 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 371 } }
+			371 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 371 } }	
+	}
+	bz_deselect_breakthrough_371 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 371 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 371 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 371 } }	
+	}
+
+	bz_select_breakthrough_624 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 624 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 624 } }
+			624 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 624 } }	
+	}
+	bz_deselect_breakthrough_624 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 624 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 624 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 624 } }	
+	}
+
+	bz_select_breakthrough_623 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 623 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 623 } }
+			623 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 623 } }	
+	}
+	bz_deselect_breakthrough_623 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 623 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 623 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 623 } }	
+	}
+
+	# Belgorod - Kharkov
+	bz_select_breakthrough_622 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 622 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 622 } }
+			622 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 622 } }	
+	}
+	bz_deselect_breakthrough_622 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 622 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 622 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 622 } }	
+	}
+
+	bz_select_breakthrough_617 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 617 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 617 } }
+			617 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 617 } }	
+	}
+	bz_deselect_breakthrough_617 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 617 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 617 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 617 } }	
+	}
+
+	bz_select_breakthrough_336 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 336 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 336 } }
+			336 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 336 } }	
+	}
+	bz_deselect_breakthrough_336 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 336 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 336 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 336 } }	
+	}
+
+	bz_select_breakthrough_120 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 120 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 120 } }
+			120 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 120 } }	
+	}
+	bz_deselect_breakthrough_120 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 120 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 120 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 120 } }	
+	}
+
+	bz_select_breakthrough_621 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 621 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 621 } }
+			621 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 621 } }	
+	}
+	bz_deselect_breakthrough_621 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 621 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 621 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 621 } }	
+	}
+
+	bz_select_breakthrough_620 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 620 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 620 } }
+			620 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 620 } }	
+	}
+	bz_deselect_breakthrough_620 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 620 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 620 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 620 } }	
+	}
+
+	bz_select_breakthrough_619 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 619 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 619 } }
+			619 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 619 } }	
+	}
+	bz_deselect_breakthrough_619 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 619 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 619 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 619 } }	
+	}
+
+	# Belgorod - Lugansk
+	bz_select_breakthrough_618 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 618 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 618 } }
+			618 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 618 } }	
+	}
+	bz_deselect_breakthrough_618 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 618 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 618 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 618 } }	
+	}
+
+	bz_select_breakthrough_122 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 122 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 122 } }
+			122 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 122 } }	
+	}
+	bz_deselect_breakthrough_122 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 122 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 122 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 122 } }	
+	}
+
+	bz_select_breakthrough_635 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 635 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 635 } }
+			635 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 635 } }	
+	}
+	bz_deselect_breakthrough_635 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 635 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 635 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 635 } }	
+	}
+
+	# Voronezh - Lugansk
+	bz_select_breakthrough_636 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 636 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 636 } }
+			636 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 636 } }	
+	}
+	bz_deselect_breakthrough_636 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 636 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 636 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 636 } }	
+	}
+
+	bz_select_breakthrough_117 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 117 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 117 } }
+			117 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 117 } }	
+	}
+	bz_deselect_breakthrough_117 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 117 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 117 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 117 } }	
+	}
+
+	# Rostov - Lugansk
+	bz_select_breakthrough_126 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 126 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 126 } }
+			126 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 126 } }	
+	}
+	bz_deselect_breakthrough_126 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 126 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 126 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 126 } }	
+	}
+	
+	bz_select_breakthrough_638 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 638 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 638 } }
+			638 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 638 } }	
+	}
+	bz_deselect_breakthrough_638 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 638 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 638 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 638 } }	
+	}
+	
+	bz_select_breakthrough_637 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 637 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 637 } }
+			637 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 637 } }	
+	}
+	bz_deselect_breakthrough_637 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 637 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 637 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 637 } }	
+	}
+	
+	bz_select_breakthrough_641 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 641 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 641 } }
+			641 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 641 } }	
+	}
+	bz_deselect_breakthrough_641 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 641 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 641 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 641 } }	
+	}
+	
+	bz_select_breakthrough_397 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 397 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 397 } }
+			397 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 397 } }	
+	}
+	bz_deselect_breakthrough_397 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 397 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 397 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 397 } }	
+	}
+	
+	bz_select_breakthrough_396 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 396 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 396 } }
+			396 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 396 } }	
+	}
+	bz_deselect_breakthrough_396 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 396 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 396 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 396 } }	
+	}
+	
+	bz_select_breakthrough_707 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 707 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 707 } }
+			707 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 707 } }	
+	}
+	bz_deselect_breakthrough_707 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 707 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 707 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 707 } }	
+	}
+	
+	# Rostov - Donetsk
+	bz_select_breakthrough_640 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 640 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 640 } }
+			640 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 640 } }	
+	}
+	bz_deselect_breakthrough_640 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 640 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 640 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 640 } }	
+	}
+	
+	bz_select_breakthrough_395 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 395 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 395 } }
+			395 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 395 } }	
+	}
+	bz_deselect_breakthrough_395 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 395 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 395 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 395 } }	
+	}
+	
+	bz_select_breakthrough_639 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 639 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 639 } }
+			639 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 639 } }	
+	}
+	bz_deselect_breakthrough_639 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 639 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 639 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 639 } }	
+	}
+	
+	bz_select_breakthrough_152 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 152 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 152 } }
+			152 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 152 } }	
+	}
+	bz_deselect_breakthrough_152 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 152 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 152 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 152 } }	
+	}
+	
+	# Krasnodar - Crimea
+	bz_select_breakthrough_414 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 414 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 414 } }
+			414 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 414 } }	
+	}
+	bz_deselect_breakthrough_414 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 414 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 414 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 414 } }	
+	}
+	
+	# Crimea - Kherson
+	bz_select_breakthrough_706 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 706 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 706 } }
+			706 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 706 } }	
+	}
+	bz_deselect_breakthrough_706 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 706 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 706 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 706 } }	
+	}
+
+	bz_select_breakthrough_705 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 705 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 705 } }
+			705 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 705 } }	
+	}
+	bz_deselect_breakthrough_705 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 705 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 705 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 705 } }	
+	}
+
+	bz_select_breakthrough_704 = {
+		icon = GFX_bz_select_breakthrough
+		highlight_states = { highlight_state_targets = { state = 704 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			NOT = { is_in_array = { bz_selected_states = 704 } }
+			704 = {	is_in_array = { PREV.bz_states_can_breakthrough = THIS } }
+		}		
+		complete_effect = { add_to_array = { bz_selected_states = 704 } }	
+	}
+	bz_deselect_breakthrough_704 = {
+		icon = GFX_bz_deselect_breakthrough
+		highlight_states = { highlight_state_targets = { state = 704 } }
+		visible = { 
+			has_country_flag = bz_is_selecting_breakthrough_states
+			is_in_array = { bz_selected_states = 704 }
+		}		
+		complete_effect = { remove_from_array = { bz_selected_states = 704 } }	
+	}
+}
