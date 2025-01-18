@@ -9,18 +9,27 @@ on_actions = {
 	
 	on_daily = {
 		effect = {
-			if = { # Просчёт возможности прорыва погранзон
-				limit = { has_country_flag = bz_is_selecting_breakthrough_states }
-
-				bz_recalculate_array_of_states_can_breakthrough = yes
-			}
-
 			if = {
-				limit = { has_war = yes }
-				bz_tick_breakthrough_planning_progress = yes
-			}
+				limit = {
+					has_game_rule = {
+						rule = ES_BZ_BREAKTHROUGH_STATUS
+						option = ES_BZ_BREAKTHROUGH_STATUS_ENABLED
+					}
+				}
+				
+				if = { # Просчёт возможности прорыва погранзон
+					limit = { has_country_flag = bz_is_selecting_breakthrough_states }
 
-			bz_tick_active_breakthrough_units_removal = yes
+					bz_recalculate_array_of_states_can_breakthrough = yes
+				}
+
+				if = {
+					limit = { has_war = yes }
+					bz_tick_breakthrough_planning_progress = yes
+				}
+
+				bz_tick_active_breakthrough_units_removal = yes
+			}
 		}
 	}
 
@@ -38,7 +47,15 @@ on_actions = {
 
 	on_weekly_BOR = {
 		effect = {
-			bz_tick_ai_regions_manpower_pools = yes
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = ES_BZ_BREAKTHROUGH_STATUS
+						option = ES_BZ_BREAKTHROUGH_STATUS_ENABLED
+					}
+				}
+				bz_tick_ai_regions_manpower_pools = yes
+			}
 		}
 	}
 }
