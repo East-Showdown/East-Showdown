@@ -38,7 +38,7 @@ bz_tick_breakthrough_uncover_chance = {
 	set_temp_variable = { temp_chance = 0 }
 	set_temp_variable_to_random = {
 		var = temp_chance
-		max = 7 # в неделе 7 дней
+		max = 0.1 # в неделе 7 дней
 	}
 
 	if = {
@@ -63,13 +63,17 @@ bz_execute_breakthrough_uncover_event = {
 	}
 	else_if = { # Второе раскрытие плана
 		limit = { check_variable = { bz_plan_breakthrough_uncovers = 2 }}
+		
 		meta_effect = {
 			text = { [ENEMY_TAG] = { 
 				clear_array = bz_intel_enemy_breakthrough_states
 				set_temp_variable = { temp_pointer = 0 }
-				set_temp_variable_to_random = {
+				set_temp_variable = { temp_max = PREV.bz_selected_states^num }
+				add_to_temp_variable = { temp_max = -1 }
+				set_temp_variable_to_random = { 
 					var = temp_pointer
-					max = PREV.bz_selected_states^num
+					max = temp_max
+					integer = yes
 				}
 				add_to_array = { bz_intel_enemy_breakthrough_states = PREV.bz_selected_states^temp_pointer }
 				country_event = bz.3 
@@ -87,7 +91,7 @@ bz_execute_breakthrough_uncover_event = {
 					value = state
 					add_to_array = { bz_intel_enemy_breakthrough_states = state }
 				}
-				set_variable = { bz_intel_enemy_breakthrough_days_left = bz_plan_breakthrough_duration }
+				set_variable = { bz_intel_enemy_breakthrough_days_left = PREV.bz_plan_breakthrough_duration }
 				subtract_from_variable = { bz_intel_enemy_breakthrough_days_left = global.num_days }
 				add_to_variable = { bz_intel_enemy_breakthrough_days_left = PREV.bz_plan_breakthrough_start }
 				country_event = bz.4 
@@ -742,18 +746,18 @@ bz_tick_active_breakthrough_units_removal = {
 			subtract_from_temp_variable = { temp_days_passed = bz_breakthrough_start_days^pointer }
 
 			if = {
-				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_first_phase_after_days_passed } }
+				limit = { check_variable = { temp_days_passed = global.bz_breakthrough_board_guards_remove_first_phase_after_days_passed } }
 				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_first_phase_fraction }	
 				bz_remove_fraction_of_board_guards = yes
 				country_event = bz.5
 			}
 			else_if = {
-				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_second_phase_after_days_passed } }	
+				limit = { check_variable = { temp_days_passed = global.bz_breakthrough_board_guards_remove_second_phase_after_days_passed } }	
 				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_second_phase_fraction }	
 				bz_remove_fraction_of_board_guards = yes
 			}
 			else_if = {
-				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_third_phase_after_days_passed } }	
+				limit = { check_variable = { temp_days_passed = global.bz_breakthrough_board_guards_remove_third_phase_after_days_passed } }	
 				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_third_phase_fraction }	
 				bz_remove_fraction_of_board_guards = yes			
 			}
