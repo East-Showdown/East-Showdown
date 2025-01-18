@@ -125,7 +125,10 @@ bz_initiate_breakthrough = {
 			limit = { NOT = { check_variable = { temp_initiator_country = bz_owner } } }
 
 			# Отключаем проверка на создание погранзон в текущей погранзоне
-			add_dynamic_modifier = { modifier = bz_recent_breakthrough days = 14 }
+			add_dynamic_modifier = { 
+				modifier = bz_recent_breakthrough 
+				days = global.bz_recent_breakthough_dynamic_modifier_days
+			}
 			add_dynamic_modifier = { modifier = bz_state_breakthrough }
 			
 			remove_from_array = { global.bz_breakthrough_target_countries = bz_owner }
@@ -328,24 +331,22 @@ bz_calculate_breakthrough_main_enemy = {
 # Requires temp_var "bz_main_enemy"
 bz_calculate_breakthrough_uncover_chance = {
 
-	set_variable = { bz_breakthrough_uncover_chance_value_base = 0.4 }
-
-	set_variable = { bz_breakthrough_uncover_chance_value_by_selected_states_count = 0.1 }
-	multiply_variable = { bz_breakthrough_uncover_chance_value_by_selected_states_count = bz_selected_states^num }
+	set_variable = { bz_breakthrough_uncover_chance_value_by_selected_states_count_result = global.bz_breakthrough_uncover_chance_value_by_selected_states_count }
+	multiply_variable = { bz_breakthrough_uncover_chance_value_by_selected_states_count_result = bz_selected_states^num }
 
 	set_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = 1 }
 
 	if = {
 		limit = { has_country_flag = bz_is_planning_breakthrough_short }
-		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = 0.3 }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_short }
 	}
 	else_if = {
 		limit = { has_country_flag = bz_is_planning_breakthrough_medium }
-		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.1 }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_medium }
 	}
 	else_if = {
 		limit = { has_country_flag = bz_is_planning_breakthrough_long }
-		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = -0.3 }
+		add_to_variable = { bz_breakthrough_uncover_chance_factor_by_plan_speed = global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_long }
 	}
 
 	set_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 1 }
@@ -358,19 +359,27 @@ bz_calculate_breakthrough_uncover_chance = {
 					limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.75 } }
 					if = { # (0.85; 1]
 						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.85 } }
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.8 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d85_1d00
+						}
 					}
 					else = { # (0.75; 0.85]
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.6 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d75_0d85
+						}
 					}
 				}
 				else = { # (0.55; 0.75]
 					if = { # (0.65; 0.75]
 						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel > 0.65 } }
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.4 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d65_0d75
+						}
 					}
 					else = { # (0.55; 0.65]
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = 0.2 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d55_0d65 
+						}
 					}
 				}
 			}
@@ -380,19 +389,27 @@ bz_calculate_breakthrough_uncover_chance = {
 					limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.25 } }
 					if = { # [0; 0.15)
 						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.15 } }
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.8 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d00_0d15
+						}
 					}
 					else = { # [0.15; 0.25)
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.6 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d15_0d25
+						}
 					}
 				}
 				else = { # [0.25; 0.45)
 					if = { # [0.25; 0.35)
 						limit = { compare_intel_with = { target = [COUNTRY_TAG] army_intel < 0.35 } }
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.4 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d25_0d35
+						}
 					}
 					else = { # [0.35; 0.45)
-						add_to_variable = { bz_breakthrough_uncover_chance_factor_army_intel = -0.2 }
+						add_to_variable = { 
+							bz_breakthrough_uncover_chance_factor_army_intel = global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d35_0d45
+						}
 					}
 				}
 			}
@@ -401,9 +418,9 @@ bz_calculate_breakthrough_uncover_chance = {
 	}
 
 	# Не ошибка. Почему-то первый set_variable не работает
-	set_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_base }
-	set_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_base }
-	add_to_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_by_selected_states_count }
+	set_variable = { bz_breakthrough_uncover_chance = global.bz_breakthrough_uncover_chance_value_base }
+	set_variable = { bz_breakthrough_uncover_chance = global.bz_breakthrough_uncover_chance_value_base }
+	add_to_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_value_by_selected_states_count_result }
 
 	multiply_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_factor_by_plan_speed }
 	multiply_variable = { bz_breakthrough_uncover_chance = bz_breakthrough_uncover_chance_factor_army_intel }
@@ -419,17 +436,17 @@ bz_apply_plan_efficiency_state_modifier = {
 		}
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_big_failure
-			days = 25
+			days = global.bz_plan_breakthrough_big_failure_dynamic_modifier_days
 		}
 	}
 	else_if = {
 		limit = { 
-			check_variable = { bz_plan_breakthrough_uncovers > 0 }
+			check_variable = { bz_plan_breakthrough_uncovers > 1 }
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_small_failure } }
 		}
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_small_failure
-			days = 15
+			days = global.bz_plan_breakthrough_small_failure_dynamic_modifier_days
 		}
 	}
 	else_if = {
@@ -439,7 +456,7 @@ bz_apply_plan_efficiency_state_modifier = {
 		}
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_short_success
-			days = 15
+			days = global.bz_plan_breakthrough_short_success_dynamic_modifier_days
 		}
 	}
 	else_if = {
@@ -449,7 +466,7 @@ bz_apply_plan_efficiency_state_modifier = {
 		}
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_medium_success
-			days = 25
+			days = global.bz_plan_breakthrough_medium_success_dynamic_modifier_days
 		}
 	}
 	else_if = {
@@ -459,7 +476,7 @@ bz_apply_plan_efficiency_state_modifier = {
 		}
 		add_dynamic_modifier = {
 			modifier = bz_plan_breakthrough_long_success
-			days = 35
+			days = global.bz_plan_breakthrough_long_success_dynamic_modifier_days
 		}
 	}
 }
@@ -492,27 +509,6 @@ bz_recalculate_active_bz_provinces_count = {
 				multiply_variable = { global.bz_manpower_pool_[REGION_INDEX]_min_value = global.bz_border_guards_manpower_per_division }
 			}
 			REGION_INDEX = "[?pointer]"
-		}
-	}
-}
-
-bz_init_constants = {
-	set_variable = { global.bz_border_guards_manpower_per_division = 300 }
-}
-
-# THIS scope is Country
-bz_ensure_border_guards_template = {
-	if = {
-		limit = { NOT = { has_template = "Border Guards" } }
-		division_template = {
-			name = "Border Guards"
-			is_locked = yes
-
-			regiments = { 
-				border_guard = { x = 0 y = 0 }
-				border_guard = { x = 0 y = 1 }
-				border_guard = { x = 0 y = 2 }
-			}
 		}
 	}
 }
@@ -746,22 +742,24 @@ bz_tick_active_breakthrough_units_removal = {
 			subtract_from_temp_variable = { temp_days_passed = bz_breakthrough_start_days^pointer }
 
 			if = {
-				limit = { check_variable = { temp_days_passed = 14 } }
+				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_first_phase_after_days_passed } }
+				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_first_phase_fraction }	
+				bz_remove_fraction_of_board_guards = yes
 				country_event = bz.5
 			}
 			else_if = {
-				limit = { check_variable = { temp_days_passed = 21 } }	
-				set_temp_variable = { temp_fraction = 0.3 }	
+				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_second_phase_after_days_passed } }	
+				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_second_phase_fraction }	
 				bz_remove_fraction_of_board_guards = yes
 			}
 			else_if = {
-				limit = { check_variable = { temp_days_passed = 28 } }	
-				set_temp_variable = { temp_fraction = 0.5 }	
+				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_third_phase_after_days_passed } }	
+				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_third_phase_fraction }	
 				bz_remove_fraction_of_board_guards = yes			
 			}
 			else_if = {
-				limit = { check_variable = { temp_days_passed > 34 } }	
-				set_temp_variable = { temp_fraction = 1 }	
+				limit = { check_variable = { temp_days_passed > global.bz_breakthrough_board_guards_remove_fourth_phase_after_days_passed } }	
+				set_temp_variable = { temp_fraction = global.bz_breakthrough_board_guards_remove_fourth_phase_fraction }	
 				bz_remove_fraction_of_board_guards = yes
 				country_event = bz.6
 
@@ -790,27 +788,31 @@ bz_tick_active_breakthrough_units_removal = {
 bz_remove_fraction_of_board_guards = {
 	clamp_temp_variable = { var = temp_fraction min = 0 max = 1 }
 	
-	meta_effect = {
-		text = {
-			set_temp_variable = { temp_last_index = breakthrough_[BREAKTHROUGH_ID]_units_ids^num }
-			set_temp_variable = { temp_count_to_remove = temp_fraction }
-			multiply_temp_variable = { temp_count_to_remove = temp_last_index }
-			round_temp_variable = temp_count_to_remove
+	if = { 
+		limit = { check_variable = { temp_fraction > 0 } } 
 
-			add_to_temp_variable = { temp_last_index = -1 }
+		meta_effect = {
+			text = {
+				set_temp_variable = { temp_last_index = breakthrough_[BREAKTHROUGH_ID]_units_ids^num }
+				set_temp_variable = { temp_count_to_remove = temp_fraction }
+				multiply_temp_variable = { temp_count_to_remove = temp_last_index }
+				round_temp_variable = temp_count_to_remove
 
-			while_loop_effect = {
-				limit = { check_variable = { temp_count_to_remove > 0 } }
-
-				set_temp_variable = { temp_unit_id = breakthrough_[BREAKTHROUGH_ID]_units_ids^temp_last_index }
-				bz_remove_unit = yes	
-				remove_from_array = { array = breakthrough_[BREAKTHROUGH_ID]_units_ids index = temp_last_index }
 				add_to_temp_variable = { temp_last_index = -1 }
-				add_to_temp_variable = { temp_count_to_remove = -1 }			
-			}
-		}
 
-		BREAKTHROUGH_ID = "[?temp_breakthrough_id]"
+				while_loop_effect = {
+					limit = { check_variable = { temp_count_to_remove > 0 } }
+
+					set_temp_variable = { temp_unit_id = breakthrough_[BREAKTHROUGH_ID]_units_ids^temp_last_index }
+					bz_remove_unit = yes	
+					remove_from_array = { array = breakthrough_[BREAKTHROUGH_ID]_units_ids index = temp_last_index }
+					add_to_temp_variable = { temp_last_index = -1 }
+					add_to_temp_variable = { temp_count_to_remove = -1 }			
+				}
+			}
+
+			BREAKTHROUGH_ID = "[?temp_breakthrough_id]"
+		}
 	}
 }
 
@@ -841,7 +843,7 @@ bz_create_border_guards_unit_in_state = {
 			[OWNER] = { bz_ensure_border_guards_template = yes }
 
 			create_unit = {
-				division = "name = \"Border Guards\" division_template = \"Border Guards\" start_experience_factor = 0.5"
+				division = "name = \"Border Guards\" division_template = \"Border Guards\" start_experience_factor = [START_EXPERIENCE_FACTOR]"
 				owner = [OWNER]
 				id = [UNIT_ID]
 				allow_spawning_on_enemy_provs = yes
@@ -862,6 +864,7 @@ bz_create_border_guards_unit_in_state = {
 		OWNER = "[?temp_owner.GetTag]"
 		UNIT_ID = "[?temp_unit_id]"
 		BREAKTHROUGH_ID = "[?global.bz_breakthrough_id]"
+		START_EXPERIENCE_FACTOR = "[?global.bz_board_guards_start_experience_factor]"
 	}
 }
 
@@ -878,7 +881,7 @@ bz_create_border_guards_unit_in_province = {
 			[OWNER] = { bz_ensure_border_guards_template = yes }
 			# Создаём юнит пограничников
 			create_unit = {
-				division = "name = \"Border Guards\" division_template = \"Border Guards\" start_experience_factor = 0.5"
+				division = "name = \"Border Guards\" division_template = \"Border Guards\" start_experience_factor = [START_EXPERIENCE_FACTOR]"
 				owner = [OWNER]
 				prioritize_location = [PROVINCE_ID]
 				id = [UNIT_ID]
@@ -901,6 +904,7 @@ bz_create_border_guards_unit_in_province = {
 		PROVINCE_ID = "[?temp_province_id]"
 		UNIT_ID = "[?temp_unit_id]"
 		BREAKTHROUGH_ID = "[?global.bz_breakthrough_id]"
+		START_EXPERIENCE_FACTOR = "[?global.bz_board_guards_start_experience_factor]"
 	}
 }
 

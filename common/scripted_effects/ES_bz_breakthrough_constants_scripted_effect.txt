@@ -1,0 +1,75 @@
+#################################################################################################################
+# Для изменения параметров системы прорыва в сабмоде, скопируйте этот файл полностью и измените нужные значения #
+#################################################################################################################
+
+bz_init_constants = {
+	# Количество менпавера в одном юните пограничников (шаблон снизу)
+	set_variable = { global.bz_border_guards_manpower_per_division = 300 }
+	# МИНИМАЛЬНОЕ кол-во дней, через которое погранзона будет создана вновь, если её ПОЛНОСТЬЮ захватит обратно её оригинальный хозяин
+	set_variable = { global.bz_recent_breakthough_dynamic_modifier_days = 14 }
+
+	# Длительность (дней) модификатора с дебафами на стейтах при полном раскрытии прорыва
+	set_variable = { global.bz_plan_breakthrough_big_failure_dynamic_modifier_days = 31 }
+	# Длительность (дней) модификатора с дебафами на стейтах при втором частичном раскрытии прорыва
+	set_variable = { global.bz_plan_breakthrough_big_failure_dynamic_modifier_days = 31 }
+
+	# Длительность (дней) модификатора с бафами на стейтах при успехе быстрого планирования
+	set_variable = { global.global.bz_plan_breakthrough_short_success_dynamic_modifier_days = 31 }
+	# Длительность (дней) модификатора с бафами на стейтах при успехе нормального планирования
+	set_variable = { global.global.bz_plan_breakthrough_medium_success_dynamic_modifier_days = 31 }
+	# Длительность (дней) модификатора с бафами на стейтах при успехе долгого планирования
+	set_variable = { global.global.bz_plan_breakthrough_long_success_dynamic_modifier_days = 31 }
+	
+	# Базовый шанс (0-1) раскрытия прорыва
+	set_variable = { global.bz_breakthrough_uncover_chance_value_base = 0.4 }
+	# Изменение шанса (0-1) раскрытия прорыва от каждого выбранного участка ПЗ
+	set_variable = { global.bz_breakthrough_uncover_chance_value_by_selected_states_count = 0.1 }
+	
+	# Изменение шанса (множитель) раскрытия прорыва от выбранного плана подготовки прорыва
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_short = 0.3 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_medium = -0.1 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_long = -0.3 }
+
+	# Изменение шанса (множитель) раскрытия прорыва от соотношения силы внедрения двух стран в армию другой стороны
+	# Постфикс переменной означает соотношение (-1; -1) внедрения в армию между (атакующей стороной / обороняющейся стороной)
+	# К примеру, 0d85_1d00 означает, что атакующая сторону имеет преимущество от 0.85 до 1
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d85_1d00 = 0.8 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d75_0d85 = 0.6 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d65_0d75 = 0.4 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d55_0d65 = 0.2 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d35_0d45 = -0.2 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d25_0d35 = -0.4 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d15_0d25 = -0.6 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d00_0d15 = -0.8 }
+
+	# Кол-во дней после начала прорыва, через которые срабатывают фазы выведения пограничных войск с фронта (их удаление)
+	set_variable = { global.bz_breakthrough_board_guards_remove_first_phase_after_days_passed = 13 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_second_phase_after_days_passed = 20 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_third_phase_after_days_passed = 27 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_fourth_phase_after_days_passed = 34 }
+	# Процентное количество пограничников (0-1), которое удаляется (от оставшихся на данный момент) на каждом этапе вывода с линии фронта
+	set_variable = { global.bz_breakthrough_board_guards_remove_first_phase_fraction = 0 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_second_phase_fraction = 0.3 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_third_phase_fraction = 0.5 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_fourth_phase_fraction = 1 } # ВСЕГДА должно быть 1, иначе у страны останутся неудаляемые юниты пограничников
+
+	# Опыт пограничников при их спавне при начале прорыва
+	set_variable = { global.bz_board_guards_start_experience_factor = 0.5 }
+}
+
+# THIS scope is Country
+bz_ensure_border_guards_template = {
+	if = {
+		limit = { NOT = { has_template = "Border Guards" } }
+		division_template = {
+			name = "Border Guards"
+			is_locked = yes
+
+			regiments = { 
+				border_guard = { x = 0 y = 0 }
+				border_guard = { x = 0 y = 1 }
+				border_guard = { x = 0 y = 2 }
+			}
+		}
+	}
+}
