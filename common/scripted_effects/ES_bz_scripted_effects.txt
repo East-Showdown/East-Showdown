@@ -81,7 +81,6 @@ bz_daily_update_tick = {
 			array = global.bz_states_ids
 
 			set_temp_variable = { bz_state = THIS }
-			
 			if = { # Если недавно погранзона была прорвана
 				limit = { has_dynamic_modifier = { modifier = bz_state_breakthrough } }
 				bz_tick_disabled_creation_state = yes
@@ -101,9 +100,7 @@ bz_tick_disabled_creation_state = {
 		limit = {
 			NOT = { has_dynamic_modifier = { modifier = bz_recent_breakthrough } }
 			meta_trigger = {
-				text = {
-					[BZ_OWNER_TAG] = { has_full_control_of_state = [STATE_ID] }
-				}
+				text = { [BZ_OWNER_TAG] = { has_full_control_of_state = [STATE_ID] } }
 				BZ_OWNER_TAG = "[?bz_owner.GetTag]"
 				STATE_ID = "[?THIS.GetID]"
 			}
@@ -118,14 +115,12 @@ bz_tick_disabled_creation_state = {
 # THIS scope is BZ STATE
 bz_tick_enabled_creation_state = {
 	if = { # Если владелец погранзоны полностью не контролирует её
-		limit = { 
-			NOT = { PREV = { has_full_control_of_state = bz_state } }
-		}
+		limit = { NOT = { PREV = { has_full_control_of_state = bz_state } } }
 
-		if = { # TODO проверить, почему весь эффект в целом срабатывает на зоны, где нет модификатора
-			limit = { has_dynamic_modifier = { modifier = bz_speed_debuff } }
+		#if = { # TODO проверить, почему не срабатывает на зоны, где нет модификатора
+			#limit = { has_dynamic_modifier = { modifier = bz_speed_debuff } }
 			remove_dynamic_modifier = { modifier = bz_speed_debuff }
-		}
+		#}
 
 		# Передаём погранзону её владельцу
 		if = {
