@@ -70,6 +70,8 @@ NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throu
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NMilitary.MIN_DIVISION_BRIGADE_HEIGHT = 4		-- Min height of regiments in division designer.
 NDefines.NMilitary.DIVISIONAL_COMMANDER_TRAIT_XP_REQUIREMENT = 600.0	--Get a trait if any valid options & xp gained >= this
+NDefines.NMilitary.MAX_DIVISION_SUPPORT_WIDTH = 2
+NDefines.NMilitary.MAX_DIVISION_SUPPORT_HEIGHT = 6
 NDefines.NMilitary.DIVISIONAL_COMMANDER_RANK_XP_THRESHOLD = { 		-- XP thresholds for divisional commander ranks. [TAG]_DIVISION_EXPERIENCE_TITLE_ARMY_EXPERIENCE_[array index]
 0,
 100.0,
@@ -425,4 +427,5 @@ NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_COUNT_SNAP_LIMIT = 0.3		-- If 
 NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_DAILY_PRODUCTION_SNAP_LIMIT = 1.5	-- If the difference between current and estimated daily production is smaller then this value we will use the current value for calculations.
 NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_SUNK_MULTIPLIER_ALPHA = 0.5	-- How strong effect should have the daily sunk efficiency on the average (1.0 means it will use only the new number as average)
 NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_SUNK_MULTIPLIER_SNAP_LIMIT = 0.05 -- If the difference between current and estimated sunk efficiency convoy count is smaller then this value we will use the current value for calculations.
-NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS  = 30 -- The contracts will show sunk convoy message if there was sunk convoy in this amount of days
+NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show sunk convoy message if there was sunk convoy in this amount of days
+NDefines.NTechnology.MAX_SUBTECHS = 10
