@@ -58,6 +58,9 @@ precalculate_energy_in_country = {
 
 	set_variable = { energy_consumption = 0 }
 	set_variable = { energy_generation = 0 }
+	
+	set_temp_variable = { energy_import = 0 }	
+	set_temp_variable = { energy_export = 0 }
 
 	set_variable = { energy_netto = 0 }
 	set_variable = { energy_connected_consumption = 0 }
@@ -326,6 +329,49 @@ calculate_energy_country_offsite_consumption = {
 	add_to_variable = { energy_consumption = energy_synthetic_refineries_consumption }
 }
 
+calculate_energy_country_import_export = {
+	if = { # Если в электросистеме недостаточно энергии
+		limit = { check_variable = { energy_netto < 0 } }
+
+		# Высчитываем максимальный множитель объёма импорта от потребления в стране
+		set_temp_variable = { temp_energy_import = energy_connected_consumption }
+		multiply_temp_variable = { temp_energy_import = global.energy_import_max_bound_by_consumption_factor }
+
+		# Ограничиваем слишком маленький импорт
+		clamp_temp_variable = {
+			var = temp_energy_import
+			min = global.energy_import_lower_soft_bound
+		}
+
+		# Высчитываем реальный дефицит энергии
+		set_temp_variable = { temp_energy_deficite = energy_netto }
+		multiply_temp_variable = { temp_energy_deficite = -1 }
+
+		# Ограничиваем импорт энергии её дефицитом в стране
+		clamp_temp_variable = {
+			var = temp_energy_import
+			min = 0
+			max = temp_energy_deficite
+		}
+
+		# Добавляем данные в итоговые счётчики
+		add_to_variable = { energy_netto = temp_energy_import }
+		set_variable = { energy_import = temp_energy_import }
+	}
+	else_if = { # Если в электросистеме достаточно энергии
+		limit = { check_variable = { energy_netto > 0 } }
+
+		# Высчитываем максимальный множитель объёма экспорта от потребления в стране
+		set_temp_variable = { temp_energy_export = energy_netto }
+		multiply_temp_variable = { temp_energy_export = global.energy_export_by_netto_factor }
+
+		# Добавляем данные в итоговые счётчики
+		subtract_from_variable = { energy_netto = temp_energy_export }
+		set_variable = { energy_export = temp_energy_export }
+	}
+	
+}
+
 # PREV is a country scope
 # THIS is state scope
 calculate_energy_in_state = {
@@ -442,6 +488,7 @@ postcalculate_energy_in_country = {
 	calculate_energy_country_offsite_generation = yes
 	calculate_energy_country_consumption = yes
 	calculate_energy_country_offsite_consumption = yes
+	calculate_energy_country_import_export = yes
 
 	# Высчитываем фактор обеспечения электричеством
 	set_variable = { energy_netto_factor = energy_connected_consumption }
