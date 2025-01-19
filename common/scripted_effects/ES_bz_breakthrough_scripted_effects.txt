@@ -574,7 +574,7 @@ bz_state_spawn_units = {
 			array = bz_adjacent_states_ids
 
 			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
-			bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = yes
+			bz_spawn_units_for_owner_adjacent_state = yes
 
 			# Переходим к следующему смежному стейту
 			add_to_temp_variable = { temp_bz_adjacent_state_index = 1 }
@@ -597,7 +597,7 @@ bz_state_spawn_units = {
 			array = bz_adjacent_states_ids
 			
 			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
-			bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = yes
+			bz_spawn_units_for_not_owner_adjacent_state = yes
 
 			# Переходим к следующему смежному стейту
 			add_to_temp_variable = { temp_bz_adjacent_state_index = 1 }
@@ -609,42 +609,31 @@ bz_state_spawn_units = {
 }
 
 
+
 # PREV scope is BZ STATE
 # THIS scope is BZ ADJACENT STATE
 #
 # THIS scope must contain temp var "temp_other_country"
-bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
+bz_spawn_units_for_not_owner_adjacent_state = {
 	if = { # Если владелец смежной области в войне с страной-инициатором
 		limit = { owner = { has_war_with = temp_other_country } }
 
 		# Высчитываем, сколько другая сторона может использовать menpower для создания юнита
 		set_temp_variable = { temp_bz_manpower_to_spawn = 0 }
-		set_temp_variable = { temp_bz_manpower_sum_pool = 0 }
-		set_temp_variable = { temp_bz_manpower_owner_pool = 0 }
-		set_temp_variable = { temp_bz_manpower_other_pool = 0 }
+		set_temp_variable = { temp_bz_manpower_pool = 0 }
 
 		meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
 			text = {
-				owner = {
-					add_to_temp_variable = { temp_bz_manpower_owner_pool = bz_manpower_pool_[OWNER_REGION_INDEX] }
-					add_to_temp_variable = { temp_bz_manpower_other_pool = bz_manpower_pool_[OTHER_REGION_INDEX] }
-				}
-
-				multiply_temp_variable = { temp_bz_manpower_owner_pool = PREV.provinces_count }					
-				multiply_temp_variable = { temp_bz_manpower_other_pool = PREV.provinces_count }	
-
-				divide_temp_variable = { temp_bz_manpower_owner_pool = global.bz_manpower_pool_[OWNER_REGION_INDEX]_active_bz_provinces_count }
-				divide_temp_variable = { temp_bz_manpower_other_pool = global.bz_manpower_pool_[OTHER_REGION_INDEX]_active_bz_provinces_count }
+				owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }				
+				multiply_temp_variable = { temp_bz_manpower_pool = PREV.provinces_count }	
+				divide_temp_variable = { temp_bz_manpower_pool = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
 			}
 
-			OWNER_REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
-			OTHER_REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
+			REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
 		}
 
 		# Высчитываем итоговое количество manpower, которое будет использовано при прорыве погранзоны
-		add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_owner_pool }
-		add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_other_pool }
-		add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_sum_pool }
+		add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_pool }
 		
 		# Подготавливаем данные для цикла по смежным с погранзоной провинциям в данном смежном стейте
 		set_temp_variable = { temp_start_index = PREV.bz_adjacent_states_provinces_start_indexes^temp_bz_adjacent_state_index }
@@ -693,28 +682,99 @@ bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
 				}					
 			}
 
-			# Высчитываем разделённый delta_manpower
-			set_temp_variable = { temp_delta_manpower_owner_pool = temp_delta_manpower }
-			set_temp_variable = { temp_delta_manpower_other_pool = temp_delta_manpower }
-			divide_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_sum_pool }
-			divide_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_sum_pool }
-			multiply_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_owner_pool }
-			multiply_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_other_pool }
-
-			round_temp_variable = temp_delta_manpower_owner_pool
-			round_temp_variable = temp_delta_manpower_other_pool
+			round_temp_variable = temp_delta_manpower
 
 			# Обновляем менпавер, выделенный на защиту данного региона
 			meta_effect = {
-				text = { 
-					owner = { 
-						add_to_variable = { bz_delta_manpower_pool_[OWNER_REGION_INDEX] = temp_delta_manpower_owner_pool }
-						add_to_variable = { bz_delta_manpower_pool_[OTHER_REGION_INDEX] = temp_delta_manpower_other_pool }
-					}
-				}
+				text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_delta_manpower } } }
+				REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
+			}
+		}
 
-				OWNER_REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
-				OTHER_REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
+		# Обновляем следующий не занятый id для юнита пограничников
+		owner = { set_variable = { bz_next_unit_id = temp_unit_id } }
+	}
+}
+
+
+# PREV scope is BZ STATE
+# THIS scope is BZ ADJACENT STATE
+#
+# THIS scope must contain temp var "temp_other_country"
+bz_spawn_units_for_owner_adjacent_state = {
+	if = { # Если владелец смежной области в войне с страной-инициатором
+		limit = { owner = { has_war_with = temp_other_country } }
+
+		# Высчитываем, сколько другая сторона может использовать menpower для создания юнита
+		set_temp_variable = { temp_bz_manpower_to_spawn = 0 }
+		set_temp_variable = { temp_bz_manpower_pool = 0 }
+
+		meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
+			text = {
+				owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }				
+				multiply_temp_variable = { temp_bz_manpower_pool = PREV.provinces_count }	
+				divide_temp_variable = { temp_bz_manpower_pool = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
+			}
+
+			REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
+		}
+
+		# Высчитываем итоговое количество manpower, которое будет использовано при прорыве погранзоны
+		add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_pool }
+		
+		# Подготавливаем данные для цикла по смежным с погранзоной провинциям в данном смежном стейте
+		set_temp_variable = { temp_start_index = PREV.bz_adjacent_states_provinces_start_indexes^temp_bz_adjacent_state_index }
+		set_temp_variable = { temp_end_index = PREV.bz_adjacent_states_provinces_end_indexes^temp_bz_adjacent_state_index }
+		set_temp_variable = { temp_province_index = temp_start_index }
+		set_temp_variable = { temp_provinces_indexes_count = temp_end_index }
+		subtract_from_temp_variable = { temp_provinces_indexes_count = temp_start_index }
+
+		# Установка параметров для создания юнита
+		set_temp_variable = { temp_delta_manpower = 0 }
+		set_temp_variable = { temp_owner = owner }
+
+		# Получаем следующий не занятый id для юнита пограничников
+		# (Используется для последующего удаления конкретных юнитов)
+		set_temp_variable = { temp_unit_id = 0 }
+		owner = { add_to_temp_variable = { temp_unit_id = bz_next_unit_id } }
+
+		if = { # Защита от дурака (смежных областей с 0 провинциями)
+			limit = { NOT = { check_variable = { temp_start_index = temp_end_index }}}
+
+			while_loop_effect = {
+				limit = { check_variable = { temp_bz_manpower_to_spawn > global.bz_border_guards_manpower_per_division } }
+				
+				# Получаем id провинции для спавна юнита
+				set_temp_variable = { temp_province_id = PREV.bz_adjacent_states_provinces_ids^temp_province_index }
+
+				# Спавним юнит в провинции
+				bz_create_border_guards_unit_in_province = yes
+
+				# Регистрируем юнит в системе отслеживания времени существования пограничников
+				owner = { add_to_array = { bz_active_units_ids = temp_unit_id } }
+				add_to_temp_variable = { temp_unit_id = 1 }
+
+				# Обновляем менпавер, доступный для защиты данного участка границы
+				subtract_from_temp_variable = { temp_bz_manpower_to_spawn = global.bz_border_guards_manpower_per_division }
+
+				subtract_from_temp_variable = { temp_delta_manpower = global.bz_border_guards_manpower_per_division }
+
+				#Переходим к следующей провинции, где можно спавнить юниты
+				add_to_temp_variable = { temp_province_index = 1 }
+
+				if = { # Если прошли последнюю смежную провинцию в списке, возвращаемся к первой в списке
+					limit = { check_variable = { temp_province_index = temp_end_index }}
+					
+					subtract_from_temp_variable = { temp_province_index = temp_provinces_indexes_count }
+				}					
+			}
+
+			round_temp_variable = temp_delta_manpower
+
+			# Обновляем менпавер, выделенный на защиту данного региона
+			meta_effect = {
+				text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_delta_manpower } } }
+				REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
 			}
 		}
 
@@ -728,40 +788,25 @@ bz_spawn_units_for_bz_state_owner = {
 	# Считаем, сколько менпавера может выделить на защиту прорываемой ПЗ её владелец
 	# Высчитываем, сколько другая сторона может использовать menpower для создания юнита
 	set_temp_variable = { temp_bz_manpower_to_spawn = 0 }
-	set_temp_variable = { temp_bz_manpower_sum_pool = 0 }
-	set_temp_variable = { temp_bz_manpower_owner_pool = 0 }
-	set_temp_variable = { temp_bz_manpower_other_pool = 0 }
+	set_temp_variable = { temp_bz_manpower_pool = 0 }
 
 	meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
 		text = {
-			owner = {
-				add_to_temp_variable = { temp_bz_manpower_owner_pool = bz_manpower_pool_[OWNER_REGION_INDEX] }
-				add_to_temp_variable = { temp_bz_manpower_other_pool = bz_manpower_pool_[OTHER_REGION_INDEX] }
-			}
-
-			multiply_temp_variable = { temp_bz_manpower_owner_pool = THIS.provinces_count }					
-			multiply_temp_variable = { temp_bz_manpower_other_pool = THIS.provinces_count }	
-
-			divide_temp_variable = { temp_bz_manpower_owner_pool = global.bz_manpower_pool_[OWNER_REGION_INDEX]_active_bz_provinces_count }
-			divide_temp_variable = { temp_bz_manpower_other_pool = global.bz_manpower_pool_[OTHER_REGION_INDEX]_active_bz_provinces_count }
+			owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }
+			multiply_temp_variable = { temp_bz_manpower_pool = THIS.provinces_count }	
+			divide_temp_variable = { temp_bz_manpower_pool = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
 		}
 
-		OWNER_REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
-		OTHER_REGION_INDEX = "[?THIS.bz_manpower_other_pool_index]"
+		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
 	}
 	
 	# Высчитываем итоговое количество manpower, которое будет использовано при прорыве погранзоны
-	add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_owner_pool }
-	add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_other_pool }
-	add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_sum_pool }
+	add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_pool }
 
 	# Спавним юниты в ПЗ
 	set_temp_variable = { temp_owner = owner }
 	set_temp_variable = { temp_unit_id = 0 }
 	owner = { add_to_temp_variable = { temp_unit_id = bz_next_unit_id } }
-
-	log = " BZ STATE [?THIS.GetID]"
-	log = "    temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"
 
 	while_loop_effect = {
 		limit = { check_variable = { temp_bz_manpower_to_spawn > global.bz_border_guards_manpower_per_division } }
@@ -778,39 +823,14 @@ bz_spawn_units_for_bz_state_owner = {
 	}
 
 	owner = { set_variable = { bz_next_unit_id = temp_unit_id } }
-
 	
-	log = "    temp_bz_manpower_to_spawn = [?temp_bz_manpower_to_spawn]"	
-	log = "    temp_delta_manpower = [?temp_delta_manpower]"
-	log = "    temp_bz_manpower_owner_pool = [?temp_bz_manpower_owner_pool]"
-	log = "    temp_bz_manpower_other_pool = [?temp_bz_manpower_other_pool]"
-	log = "    temp_bz_manpower_sum_pool = [?temp_bz_manpower_sum_pool]"
-
 	# Высчитываем разделённый delta_manpower
-	set_temp_variable = { temp_delta_manpower_owner_pool = temp_delta_manpower }
-	set_temp_variable = { temp_delta_manpower_other_pool = temp_delta_manpower }
-	divide_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_sum_pool }
-	divide_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_sum_pool }
-	multiply_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_owner_pool }
-	multiply_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_other_pool }
-
-	round_temp_variable = temp_delta_manpower_owner_pool
-	round_temp_variable = temp_delta_manpower_other_pool
-
-	log = "    temp_delta_manpower_owner_pool = [?temp_delta_manpower_owner_pool]"
-	log = "    temp_delta_manpower_other_pool = [?temp_delta_manpower_other_pool]"
+	round_temp_variable = temp_delta_manpower
 
 	# Обновляем менпавер, выделенный на защиту данного региона
 	meta_effect = {
-		text = { 
-			owner = { 
-				add_to_variable = { bz_delta_manpower_pool_[OWNER_REGION_INDEX] = temp_delta_manpower_owner_pool }
-				add_to_variable = { bz_delta_manpower_pool_[OTHER_REGION_INDEX] = temp_delta_manpower_other_pool }
-			}
-		}
-
-		OWNER_REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
-		OTHER_REGION_INDEX = "[?THIS.bz_manpower_other_pool_index]"
+		text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_delta_manpower } } }
+		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
 	}
 }
 
