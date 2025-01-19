@@ -7,27 +7,126 @@ bz_tick_ai_regions_manpower_pools = {
 	bz_recalculate_active_bz_provinces_count = yes
 
 	every_country = {
-		limit = { 
-			is_ai = yes
-			has_war = yes
+		limit = { has_war = yes }
+
+		if = {
+			limit = { is_ai = yes }
+			bz_tick_ai_country_regions_manpower_pools = yes
+		}
+		else_if = {
+			limit = { NOT = { has_country_flag = bz_active_manpower_ai_disable } }
+			bz_tick_player_country_regions_manpower_pools = yes
 		}
 
-		bz_tick_ai_country_regions_mapnower_pools = yes
+		if = {
+			limit = { has_country_flag = SMO_STAFF_WINDOW_OPEN }
+			map_update_region_manpower = yes
+		}
+
+		if = {
+			limit = { NOT = { is_ai = yes }}
+			bz_calculate_sum_active_manpower = yes
+		}
 	}
 }
 
 # THIS scope is COUNTRY
-bz_tick_ai_country_regions_mapnower_pools = {
+bz_tick_ai_country_regions_manpower_pools = {
 	for_loop_effect = { # Pools indexes
 		start = 0
 		end = global.selected_region_indexes_count
 		value = pointer
 
 		meta_effect = {
+			text = { set_variable = { bz_manpower_pool_[REGION_INDEX] = 0 } }
+			REGION_INDEX = "[?pointer]"
+		}
+	}
+	
+	for_each_loop = {
+		array = bz_manpower_owner_pool_indexes
+		value = pointer
+
+		meta_effect = {
 			text = { 
 				set_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pool_[REGION_INDEX]_min_value }
-				multiply_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pools_ai_manpower_factor } # TODO implement checks for not used regions
+				multiply_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pools_ai_manpower_factor }
 				set_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_ai_manpower }
+			}
+			REGION_INDEX = "[?pointer]"
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_tick_player_country_regions_manpower_pools = {
+	for_loop_effect = { # Pools indexes
+		start = 0
+		end = global.selected_region_indexes_count
+		value = pointer
+
+		if = { # Если это неправильный регион
+			limit = { NOT = { is_in_array = {
+				array = bz_manpower_owner_pool_indexes
+				value = pointer
+			}}}
+
+			meta_effect = {
+				text = { 
+					# То возвращаем менпавер из региона в пулл страны
+					set_variable = { temp_delta_manpower = bz_manpower_pool_[REGION_INDEX] }
+					add_manpower = temp_delta_manpower
+					set_variable = { bz_manpower_pool_[REGION_INDEX] = 0 } 
+				}
+				REGION_INDEX = "[?pointer]"
+			}
+		}
+	}
+	
+	for_each_loop = {
+		array = bz_manpower_owner_pool_indexes
+		value = pointer
+
+		meta_effect = {
+			text = { 
+				# Получаем кол-во менпавера в регионе
+				set_temp_variable = { temp_bz_current_manpower = bz_manpower_pool_[REGION_INDEX] }
+
+				# Вычисляем рекомендуемое требование
+				set_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pool_[REGION_INDEX]_min_value }
+				multiply_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pools_ai_manpower_factor }
+
+				# Получаем изменение менпавера в регионе
+				set_temp_variable = { temp_bz_delta_manpower = temp_bz_ai_manpower }
+				subtract_from_temp_variable = { temp_bz_delta_manpower = temp_bz_current_manpower }
+
+				if = { # Если менпавер забирается из региона в пулл менпавера страны
+					limit = { check_variable = { temp_bz_delta_manpower < 0 }}
+
+					# Уменьшаем менпавер в регионе на нужное число
+					add_to_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_delta_manpower }
+
+					# Возвращаем менпавер в пулл менпавера
+					multiply_temp_variable = { temp_bz_delta_manpower = -1 }
+					add_manpower = temp_bz_delta_manpower
+				}
+				else = { # Иначе менпавер выдаётся в регион из пулла менпавера страны
+					# Органичиваем число менпавера, чтобы не создавать его из воздуха
+					multiply_temp_variable = { temp_bz_delta_manpower = 0.001}
+					clamp_temp_variable = {
+						var = temp_bz_delta_manpower
+						min = 0
+						max = manpower_k
+					}
+
+					# Добавляем менпавер в регион
+					multiply_temp_variable = { temp_bz_delta_manpower = 1000 }
+					add_to_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_delta_manpower }
+
+					# Забираем менпавер и пулла страны
+					multiply_temp_variable = { temp_bz_delta_manpower = -1 }
+					add_manpower = temp_bz_delta_manpower
+				}				
 			}
 			REGION_INDEX = "[?pointer]"
 		}
@@ -464,15 +563,11 @@ bz_apply_plan_efficiency_state_modifier = {
 			days = global.bz_plan_breakthrough_small_failure_dynamic_modifier_days
 		}
 	}
-	else_if = {
+
+	if = {
 		limit = { 
 			meta_trigger = {
-				text = { [COUNTRY_TAG] = { 
-					AND = {
-						has_country_flag = bz_is_planning_breakthrough_short
-						check_variable = { bz_plan_breakthrough_uncovers < 2 }
-					}
-				}}
+				text = { [COUNTRY_TAG] = { has_country_flag = bz_is_planning_breakthrough_short }}
 				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
 			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_short_success } }
@@ -486,12 +581,7 @@ bz_apply_plan_efficiency_state_modifier = {
 	else_if = {
 		limit = { 
 			meta_trigger = {
-				text = { [COUNTRY_TAG] = { 
-					AND = {
-						has_country_flag = bz_is_planning_breakthrough_medium
-						check_variable = { bz_plan_breakthrough_uncovers < 2 }
-					}
-				}}
+				text = { [COUNTRY_TAG] = { has_country_flag = bz_is_planning_breakthrough_medium } }
 				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
 			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_medium_success } }
@@ -505,12 +595,7 @@ bz_apply_plan_efficiency_state_modifier = {
 	else_if = {
 		limit = { 
 			meta_trigger = {
-				text = { [COUNTRY_TAG] = { 
-					AND = {
-						has_country_flag = bz_is_planning_breakthrough_long
-						check_variable = { bz_plan_breakthrough_uncovers < 2 }
-					}
-				}}
+				text = { [COUNTRY_TAG] = { has_country_flag = bz_is_planning_breakthrough_long }}
 				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
 			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_long_success } }
@@ -944,39 +1029,41 @@ bz_create_border_guards_unit_in_province = {
 bz_create_ai_additional_units = {
 	bz_calculate_states_for_ai_additional_units = yes
 
-		log = "====================================="
-
 	every_country = {
 		limit = { has_war = yes is_ai = yes}
-
-		log = " COUNTRY [?THIS.GetTag]"
-
 		bz_spawn_ai_additional_units = yes
+	}
+}
+
+bz_calculate_sum_active_manpower = {
+	set_variable = { bz_sum_active_manpower = 0 }
+	for_loop_effect = { # Pools indexes
+		start = 0
+		end = global.selected_region_indexes_count
+		value = pointer
+
+		meta_effect = {
+			text = { add_to_variable = { bz_sum_active_manpower = bz_manpower_pool_[REGION_INDEX] } }
+			REGION_INDEX = "[?pointer]"
+		}
 	}
 }
 
 # THIS scope is initiator COUNTRY
 # Must contain temp_var "temp_initiator_country
 bz_calculate_states_for_ai_additional_units = {
-	log = "  bz_calculate_states_for_ai_additional_units [?THIS.GetTag]"
-	log = "  temp_initiator_country = [?temp_initiator_country.GetTag]"
 	for_each_scope_loop = {
 		array = bz_selected_states
 		set_temp_variable = { temp_state = THIS }
-
-		log = "    temp_state [?temp_state.GetID]"
 
 		for_each_scope_loop = {
 			array = bz_adjacent_states_ids
 
 			set_temp_variable = { temp_adjacent_state = THIS }
 
-			log = "      temp_adjacent_state [?temp_adjacent_state.GetID]"
-
 			if = {
 				limit = { check_variable = { temp_initiator_country = owner } }
 
-				log = "        BRANCH A"
 				owner = {
 					if = {
 						limit = { NOT = { is_in_array = {
@@ -984,7 +1071,6 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_adjacent_state
 						} } }
 
-						log = "          A1"
 						add_to_array = { bz_ai_states_for_attacker_units = temp_adjacent_state }
 					}
 
@@ -994,7 +1080,6 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_state
 						} } }
 
-						log = "          A2"
 						add_to_array = { bz_ai_breakthrough_states = temp_state }
 					}
 				}
@@ -1002,7 +1087,6 @@ bz_calculate_states_for_ai_additional_units = {
 			else_if = {
 				limit = { owner = { has_war_with = temp_initiator_country } }
 
-				log = "        BRANCH B"
 				owner = {
 					if = {
 						limit = { NOT = { is_in_array = {
@@ -1010,7 +1094,6 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_adjacent_state
 						} } }
 
-						log = "          B1"
 						add_to_array = { bz_ai_states_for_defender_units = temp_adjacent_state }
 					}
 
@@ -1020,7 +1103,6 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_state
 						} } }
 
-						log = "          B2"
 						add_to_array = { bz_ai_breakthrough_states = temp_state }
 					}
 				}
@@ -1034,9 +1116,6 @@ bz_calculate_states_for_ai_additional_units = {
 bz_spawn_ai_additional_units = {
 	set_temp_variable = { temp_attacker_states_count = bz_ai_states_for_attacker_units^num }
 	set_temp_variable = { temp_defender_states_count = bz_ai_states_for_defender_units^num }
-
-	log = "  temp_attacker_states_count = [?temp_attacker_states_count]"
-	log = "  temp_defender_states_count = [?temp_defender_states_count]"
 
 	if = {
 		limit = { check_variable = { temp_attacker_states_count > 0 } }
@@ -1056,14 +1135,10 @@ bz_spawn_ai_additional_units = {
 
 # THIS scope is AI COUNTRY at war
 bz_spawn_ai_additional_units_for_attacker = {
-	log = "    AAAAAAAAAA bz_spawn_ai_additional_units_for_attacker"
 	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_attack_min_count_per_selected_state }
 	multiply_temp_variable = { temp_min_units_count = bz_ai_breakthrough_states^num }
 	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_attack_max_count_per_selected_state }
 	multiply_temp_variable = { temp_max_units_count = bz_ai_breakthrough_states^num }
-
-	log = "      temp_min_units_count = [?temp_min_units_count]"
-	log = "      temp_max_units_count = [?temp_max_units_count]"
 
 
 	for_loop_effect = {
@@ -1071,20 +1146,13 @@ bz_spawn_ai_additional_units_for_attacker = {
 		compare = less_than_or_equals
 		end = temp_max_units_count
 
-		value = temp_index
-		log = "        temp_index = [?temp_index]"
-		log = "        bz_ai_states_for_attacker_units^num = [?bz_ai_states_for_attacker_units^num]"
-
 		set_temp_variable_to_random = {
 			var = temp_pointer
 			max = bz_ai_states_for_attacker_units^num
 			integer = yes
 		}
-		log = "        temp_pointer = [?temp_pointer]"
 
 		set_temp_variable = { temp_state = bz_ai_states_for_attacker_units^temp_pointer }
-
-		log = "        temp_state = [?temp_state.GetID] [THIS.GetTag]"
 
 		meta_effect = {
 			text = {
@@ -1141,14 +1209,10 @@ bz_spawn_ai_additional_units_for_attacker = {
 
 # THIS scope is AI COUNTRY at war
 bz_spawn_ai_additional_units_for_defender = {
-	log = "    BBBBBBBBBB bz_spawn_ai_additional_units_for_defender"
 	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_defence_min_count_per_selected_state }
 	multiply_temp_variable = { temp_min_units_count = bz_ai_breakthrough_states^num }
 	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_defence_max_count_per_selected_state }
 	multiply_temp_variable = { temp_max_units_count = bz_ai_breakthrough_states^num }
-
-	log = "      temp_min_units_count = [?temp_min_units_count]"
-	log = "      temp_max_units_count = [?temp_max_units_count]"
 
 
 	for_loop_effect = {
@@ -1156,20 +1220,13 @@ bz_spawn_ai_additional_units_for_defender = {
 		compare = less_than_or_equals
 		end = temp_max_units_count
 
-		value = temp_index
-		log = "        temp_index = [?temp_index]"
-		log = "        bz_ai_states_for_attacker_units^num = [?bz_ai_states_for_defender_units^num]"
-
 		set_temp_variable_to_random = {
 			var = temp_pointer
 			max = bz_ai_states_for_defender_units^num
 			integer = yes
 		}
-		log = "        temp_pointer = [?temp_pointer]"
 
 		set_temp_variable = { temp_state = bz_ai_states_for_defender_units^temp_pointer }
-
-		log = "        temp_state = [?temp_state.GetID] [THIS.GetTag]"
 
 		meta_effect = {
 			text = {

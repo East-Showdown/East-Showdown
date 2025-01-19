@@ -32,7 +32,7 @@ init_selected_regions_indexes = {
 	set_variable = { global.selected_region_poltavskaya_oblast_index = 27 }
 	set_variable = { global.selected_region_kirovogradskaya_oblast_index = 28 }
 	set_variable = { global.selected_region_dniepropetrovskaya_oblast_index = 29 }
-
+	
 	# Russia
 	set_variable = { global.selected_region_kaliningradskaya_oblast_index = 30 }		
 	set_variable = { global.selected_region_smolenskaya_oblast_index = 31 }	
@@ -43,6 +43,7 @@ init_selected_regions_indexes = {
 	set_variable = { global.selected_region_rostovskaya_oblast_index = 36 }
 	set_variable = { global.selected_region_krasnodarskaya_oblast_index = 37 }
 	set_variable = { global.selected_region_crimea_index = 38 }
+
 
 	# Lithuania
 	set_variable = { global.selected_region_lithuania_index = 39 }
@@ -58,6 +59,36 @@ init_selected_regions_indexes = {
 
 	# Info
 	set_variable = { global.selected_region_indexes_count = 45 }
+
+	BLR = {
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_gomelskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_brestskaya_oblast_index }
+	}
+
+	UKR = {
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_volynskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_rovnenskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_zhitomirskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_kievskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_chernigovskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_sumskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_kharkovskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_luganskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_donetskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_khersonskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_crimea_index }
+	}
+	
+	RUS = {
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_kaliningradskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_bryanskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_kurskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_belgorodskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_voronezhskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_rostovskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_krasnodarskaya_oblast_index }
+		add_to_array = { bz_manpower_owner_pool_indexes = global.selected_region_crimea_index }
+	}
 }
 
 map_update_region_manpower = {
@@ -66,9 +97,19 @@ map_update_region_manpower = {
 	meta_effect = {
 		text = { 
 			set_variable = { bz_region_manpower = bz_manpower_pool_[REGION_INDEX] } 
-			set_variable = { bz_region_manpower_recommended = global.bz_manpower_pool_[REGION_INDEX]_min_value }
-			multiply_variable = { bz_region_manpower_recommended = 1.5 }
-			round_variable = bz_region_manpower_recommended
+
+			if = { 
+				limit = { is_in_array = { 
+					array = bz_manpower_owner_pool_indexes
+					value = selected_region
+				}}
+				set_variable = { bz_region_manpower_recommended = global.bz_manpower_pool_[REGION_INDEX]_min_value }
+				multiply_variable = { bz_region_manpower_recommended = 1.5 }
+				round_variable = bz_region_manpower_recommended
+			}
+			else = {
+				set_variable = { bz_region_manpower_recommended = 0 }
+			}
 		}
 		REGION_INDEX = "[?selected_region]"
 	}
