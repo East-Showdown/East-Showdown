@@ -7,27 +7,126 @@ bz_tick_ai_regions_manpower_pools = {
 	bz_recalculate_active_bz_provinces_count = yes
 
 	every_country = {
-		limit = { 
-			is_ai = yes
-			has_war = yes
+		limit = { has_war = yes }
+
+		if = {
+			limit = { is_ai = yes }
+			bz_tick_ai_country_regions_manpower_pools = yes
+		}
+		else_if = {
+			limit = { NOT = { has_country_flag = bz_active_manpower_ai_disable } }
+			bz_tick_player_country_regions_manpower_pools = yes
 		}
 
-		bz_tick_ai_country_regions_mapnower_pools = yes
+		if = {
+			limit = { has_country_flag = SMO_STAFF_WINDOW_OPEN }
+			map_update_region_manpower = yes
+		}
+
+		if = {
+			limit = { NOT = { is_ai = yes }}
+			bz_calculate_sum_active_manpower = yes
+		}
 	}
 }
 
 # THIS scope is COUNTRY
-bz_tick_ai_country_regions_mapnower_pools = {
+bz_tick_ai_country_regions_manpower_pools = {
 	for_loop_effect = { # Pools indexes
 		start = 0
 		end = global.selected_region_indexes_count
 		value = pointer
 
 		meta_effect = {
+			text = { set_variable = { bz_manpower_pool_[REGION_INDEX] = 0 } }
+			REGION_INDEX = "[?pointer]"
+		}
+	}
+	
+	for_each_loop = {
+		array = bz_manpower_owner_pool_indexes
+		value = pointer
+
+		meta_effect = {
 			text = { 
 				set_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pool_[REGION_INDEX]_min_value }
-				multiply_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pools_ai_manpower_factor } # TODO implement checks for not used regions
+				multiply_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pools_ai_manpower_factor }
 				set_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_ai_manpower }
+			}
+			REGION_INDEX = "[?pointer]"
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_tick_player_country_regions_manpower_pools = {
+	for_loop_effect = { # Pools indexes
+		start = 0
+		end = global.selected_region_indexes_count
+		value = pointer
+
+		if = { # Если это неправильный регион
+			limit = { NOT = { is_in_array = {
+				array = bz_manpower_owner_pool_indexes
+				value = pointer
+			}}}
+
+			meta_effect = {
+				text = { 
+					# То возвращаем менпавер из региона в пулл страны
+					set_variable = { temp_delta_manpower = bz_manpower_pool_[REGION_INDEX] }
+					add_manpower = temp_delta_manpower
+					set_variable = { bz_manpower_pool_[REGION_INDEX] = 0 } 
+				}
+				REGION_INDEX = "[?pointer]"
+			}
+		}
+	}
+	
+	for_each_loop = {
+		array = bz_manpower_owner_pool_indexes
+		value = pointer
+
+		meta_effect = {
+			text = { 
+				# Получаем кол-во менпавера в регионе
+				set_temp_variable = { temp_bz_current_manpower = bz_manpower_pool_[REGION_INDEX] }
+
+				# Вычисляем рекомендуемое требование
+				set_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pool_[REGION_INDEX]_min_value }
+				multiply_temp_variable = { temp_bz_ai_manpower = global.bz_manpower_pools_ai_manpower_factor }
+
+				# Получаем изменение менпавера в регионе
+				set_temp_variable = { temp_bz_delta_manpower = temp_bz_ai_manpower }
+				subtract_from_temp_variable = { temp_bz_delta_manpower = temp_bz_current_manpower }
+
+				if = { # Если менпавер забирается из региона в пулл менпавера страны
+					limit = { check_variable = { temp_bz_delta_manpower < 0 }}
+
+					# Уменьшаем менпавер в регионе на нужное число
+					add_to_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_delta_manpower }
+
+					# Возвращаем менпавер в пулл менпавера
+					multiply_temp_variable = { temp_bz_delta_manpower = -1 }
+					add_manpower = temp_bz_delta_manpower
+				}
+				else = { # Иначе менпавер выдаётся в регион из пулла менпавера страны
+					# Органичиваем число менпавера, чтобы не создавать его из воздуха
+					multiply_temp_variable = { temp_bz_delta_manpower = 0.001}
+					clamp_temp_variable = {
+						var = temp_bz_delta_manpower
+						min = 0
+						max = manpower_k
+					}
+
+					# Добавляем менпавер в регион
+					multiply_temp_variable = { temp_bz_delta_manpower = 1000 }
+					add_to_variable = { bz_manpower_pool_[REGION_INDEX] = temp_bz_delta_manpower }
+
+					# Забираем менпавер и пулла страны
+					multiply_temp_variable = { temp_bz_delta_manpower = -1 }
+					add_manpower = temp_bz_delta_manpower
+				}				
 			}
 			REGION_INDEX = "[?pointer]"
 		}
@@ -161,6 +260,8 @@ bz_initiate_breakthrough = {
 
 	# Общемировая новость о прорыве границы
 	news_event = { id = bz.1 days = 0 }
+
+	bz_create_ai_additional_units = yes
 
 	clear_array = bz_selected_states
 
@@ -462,15 +563,11 @@ bz_apply_plan_efficiency_state_modifier = {
 			days = global.bz_plan_breakthrough_small_failure_dynamic_modifier_days
 		}
 	}
-	else_if = {
+
+	if = {
 		limit = { 
 			meta_trigger = {
-				text = { [COUNTRY_TAG] = { 
-					AND = {
-						has_country_flag = bz_is_planning_breakthrough_short
-						check_variable = { bz_plan_breakthrough_uncovers < 2 }
-					}
-				}}
+				text = { [COUNTRY_TAG] = { has_country_flag = bz_is_planning_breakthrough_short }}
 				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
 			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_short_success } }
@@ -484,12 +581,7 @@ bz_apply_plan_efficiency_state_modifier = {
 	else_if = {
 		limit = { 
 			meta_trigger = {
-				text = { [COUNTRY_TAG] = { 
-					AND = {
-						has_country_flag = bz_is_planning_breakthrough_medium
-						check_variable = { bz_plan_breakthrough_uncovers < 2 }
-					}
-				}}
+				text = { [COUNTRY_TAG] = { has_country_flag = bz_is_planning_breakthrough_medium } }
 				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
 			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_medium_success } }
@@ -503,12 +595,7 @@ bz_apply_plan_efficiency_state_modifier = {
 	else_if = {
 		limit = { 
 			meta_trigger = {
-				text = { [COUNTRY_TAG] = { 
-					AND = {
-						has_country_flag = bz_is_planning_breakthrough_long
-						check_variable = { bz_plan_breakthrough_uncovers < 2 }
-					}
-				}}
+				text = { [COUNTRY_TAG] = { has_country_flag = bz_is_planning_breakthrough_long }}
 				COUNTRY_TAG = "[?temp_initiator_country.GetTag]"
 			}
 			NOT = { has_dynamic_modifier = { modifier = bz_plan_breakthrough_long_success } }
@@ -554,42 +641,87 @@ bz_recalculate_active_bz_provinces_count = {
 }
 
 
+# Spawn units in specific target BZ state
+#
+# PREV scope is COUNTRY
+# THIS scope is BZ STATE
+bz_state_spawn_units = {
+
+	if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
+		limit = { check_variable = { bz_owner = temp_initiator_country } }
+
+		# Спавним юниты для владельца погранзоны
+		bz_spawn_units_for_bz_state_owner = yes
+
+		set_temp_variable = { temp_other_country = temp_initiator_country }
+		set_temp_variable = { temp_bz_adjacent_state_index = 0 }
+		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
+			array = bz_adjacent_states_ids
+
+			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
+			bz_spawn_units_for_not_owner_adjacent_state = yes
+
+			# Переходим к следующему смежному стейту
+			add_to_temp_variable = { temp_bz_adjacent_state_index = 1 }
+		}
+
+	} 
+	else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
+		limit = { 
+			owner = { has_war_with = temp_initiator_country }
+			# bz_owner = { has_war_with = temp_initiator_country } # TODO : bz_owner var cannot be used as a scope
+		}
+
+		# Спавним юниты для владельца погранзоны
+		bz_spawn_units_for_bz_state_owner = yes
+
+		set_temp_variable = { temp_other_country = owner }
+		set_temp_variable = { temp_bz_adjacent_state_index = 0 }
+
+		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
+			array = bz_adjacent_states_ids
+			
+			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
+			bz_spawn_units_for_not_owner_adjacent_state = yes
+
+			# Переходим к следующему смежному стейту
+			add_to_temp_variable = { temp_bz_adjacent_state_index = 1 }
+		}
+	}
+	else = {
+		log = " Unknown branch"
+	}
+}
+
+
+
 # PREV scope is BZ STATE
 # THIS scope is BZ ADJACENT STATE
 #
 # THIS scope must contain temp var "temp_other_country"
-bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
+# THIS scope must contain temp var "temp_bz_adjacent_state_index"
+bz_spawn_units_for_not_owner_adjacent_state = {
 	if = { # Если владелец смежной области в войне с страной-инициатором
 		limit = { owner = { has_war_with = temp_other_country } }
 
 		# Высчитываем, сколько другая сторона может использовать menpower для создания юнита
 		set_temp_variable = { temp_bz_manpower_to_spawn = 0 }
-		set_temp_variable = { temp_bz_manpower_sum_pool = 0 }
-		set_temp_variable = { temp_bz_manpower_owner_pool = 0 }
-		set_temp_variable = { temp_bz_manpower_other_pool = 0 }
+		set_temp_variable = { temp_bz_manpower_pool = 0 }
 
 		meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
 			text = {
-				owner = {
-					add_to_temp_variable = { temp_bz_manpower_owner_pool = bz_manpower_pool_[OWNER_REGION_INDEX] }
-					add_to_temp_variable = { temp_bz_manpower_other_pool = bz_manpower_pool_[OTHER_REGION_INDEX] }
-				}
-
-				multiply_temp_variable = { temp_bz_manpower_owner_pool = PREV.provinces_count }					
-				multiply_temp_variable = { temp_bz_manpower_other_pool = PREV.provinces_count }	
-
-				divide_temp_variable = { temp_bz_manpower_owner_pool = global.bz_manpower_pool_[OWNER_REGION_INDEX]_active_bz_provinces_count }
-				divide_temp_variable = { temp_bz_manpower_other_pool = global.bz_manpower_pool_[OTHER_REGION_INDEX]_active_bz_provinces_count }
+				owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }	
+				set_temp_variable = { temp_provinces_count = PREV.bz_adjacent_states_provinces_end_indexes^temp_bz_adjacent_state_index }
+				subtract_from_temp_variable = { temp_provinces_count = PREV.bz_adjacent_states_provinces_start_indexes^temp_bz_adjacent_state_index }		
+				multiply_temp_variable = { temp_bz_manpower_pool = temp_provinces_count }	
+				divide_temp_variable = { temp_bz_manpower_pool = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
 			}
 
-			OWNER_REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
-			OTHER_REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
+			REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
 		}
 
 		# Высчитываем итоговое количество manpower, которое будет использовано при прорыве погранзоны
-		add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_owner_pool }
-		add_to_temp_variable = { temp_bz_manpower_sum_pool = temp_bz_manpower_other_pool }
-		add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_sum_pool }
+		add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_pool }
 		
 		# Подготавливаем данные для цикла по смежным с погранзоной провинциям в данном смежном стейте
 		set_temp_variable = { temp_start_index = PREV.bz_adjacent_states_provinces_start_indexes^temp_bz_adjacent_state_index }
@@ -638,28 +770,12 @@ bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
 				}					
 			}
 
-			# Высчитываем разделённый delta_manpower
-			set_temp_variable = { temp_delta_manpower_owner_pool = temp_delta_manpower }
-			set_temp_variable = { temp_delta_manpower_other_pool = temp_delta_manpower }
-			multiply_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_owner_pool }
-			multiply_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_other_pool }
-			divide_temp_variable = { temp_delta_manpower_owner_pool = temp_bz_manpower_sum_pool }
-			divide_temp_variable = { temp_delta_manpower_other_pool = temp_bz_manpower_sum_pool }
-
-			round_temp_variable = temp_delta_manpower_owner_pool
-			round_temp_variable = temp_delta_manpower_other_pool
+			round_temp_variable = temp_delta_manpower
 
 			# Обновляем менпавер, выделенный на защиту данного региона
 			meta_effect = {
-				text = { 
-					owner = { 
-						add_to_variable = { bz_delta_manpower_pool_[OWNER_REGION_INDEX] = temp_delta_manpower_owner_pool }
-						add_to_variable = { bz_delta_manpower_pool_[OTHER_REGION_INDEX] = temp_delta_manpower_other_pool }
-					}
-				}
-
-				OWNER_REGION_INDEX = "[?PREV.bz_manpower_owner_pool_index]"
-				OTHER_REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
+				text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_delta_manpower } } }
+				REGION_INDEX = "[?PREV.bz_manpower_other_pool_index]"
 			}
 		}
 
@@ -668,74 +784,28 @@ bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = {
 	}
 }
 
-# Spawn units in specific target BZ state
-#
-# PREV scope is COUNTRY
-# THIS scope is BZ STATE
-bz_state_spawn_units = {
-
-	if = { # Если владельцем прорываемой ПЗ является ТЕКУЩАЯ страна 
-		limit = { check_variable = { bz_owner = temp_initiator_country } }
-
-		# Спавним юниты для владельца погранзоны
-		bz_spawn_units_for_bz_state_owner = yes
-
-		set_temp_variable = { temp_other_country = temp_initiator_country }
-		set_temp_variable = { temp_bz_adjacent_state_index = 0 }
-		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
-			array = bz_adjacent_states_ids
-
-			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
-			bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = yes
-
-			# Переходим к следующему смежному стейту
-			add_to_temp_variable = { temp_bz_adjacent_state_index = 1 }
-		}
-
-	} 
-	else_if = { # Иначе если владельцем погранзоны является ДРУГАЯ страна, с которой не идёт война
-		limit = { 
-			owner = { has_war_with = temp_initiator_country }
-			# bz_owner = { has_war_with = temp_initiator_country } # TODO : bz_owner var cannot be used as a scope
-		}
-
-		# Спавним юниты для владельца погранзоны
-		bz_spawn_units_for_bz_state_owner = yes
-
-		set_temp_variable = { temp_other_country = owner }
-		set_temp_variable = { temp_bz_adjacent_state_index = 0 }
-
-		for_each_scope_loop = { # THIS scope is bz ADJACENT STATE
-			array = bz_adjacent_states_ids
-			
-			# Спавним юниты для защищающейся страны в провинциях области, смежной с погранзоной
-			bz_spawn_units_in_state_if_its_owner_at_war_with_other_country = yes
-
-			# Переходим к следующему смежному стейту
-			add_to_temp_variable = { temp_bz_adjacent_state_index = 1 }
-		}
-	}
-	else = {
-		log = " Unknown branch"
-	}
-}
-
 #THIS scope is BZ STATE
 bz_spawn_units_for_bz_state_owner = {
 	# Считаем, сколько менпавера может выделить на защиту прорываемой ПЗ её владелец
-	set_temp_variable = { temp_bz_manpower_to_spawn = THIS.provinces_count }
+	# Высчитываем, сколько другая сторона может использовать menpower для создания юнита
+	set_temp_variable = { temp_bz_manpower_to_spawn = 0 }
+	set_temp_variable = { temp_bz_manpower_pool = 0 }
 
-	meta_effect = {
+	meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
 		text = {
-			owner = { multiply_temp_variable = { temp_bz_manpower_to_spawn = bz_manpower_pool_[REGION_INDEX] } }
-			divide_temp_variable = { temp_bz_manpower_to_spawn = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
+			owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }
+			multiply_temp_variable = { temp_bz_manpower_pool = THIS.provinces_count }	
+			divide_temp_variable = { temp_bz_manpower_pool = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
 		}
+
 		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
 	}
-	round_temp_variable = temp_bz_manpower_to_spawn
-	set_temp_variable = { temp_bz_manpower_to_spawn_start = temp_bz_manpower_to_spawn }
+	
+	# Высчитываем итоговое количество manpower, которое будет использовано при прорыве погранзоны
+	add_to_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_pool }
 
 	# Спавним юниты в ПЗ
+	set_temp_variable = { temp_delta_manpower = 0 }
 	set_temp_variable = { temp_owner = owner }
 	set_temp_variable = { temp_unit_id = 0 }
 	owner = { add_to_temp_variable = { temp_unit_id = bz_next_unit_id } }
@@ -749,16 +819,19 @@ bz_spawn_units_for_bz_state_owner = {
 		owner = { add_to_array = { bz_active_units_ids = temp_unit_id } }
 		add_to_temp_variable = { temp_unit_id = 1 }
 
+		# Обновляем менпавер, доступный для защиты данного участка границы
 		subtract_from_temp_variable = { temp_bz_manpower_to_spawn = global.bz_border_guards_manpower_per_division }
+		subtract_from_temp_variable = { temp_delta_manpower = global.bz_border_guards_manpower_per_division }
 	}
 
 	owner = { set_variable = { bz_next_unit_id = temp_unit_id } }
+	
+	# Высчитываем разделённый delta_manpower
+	round_temp_variable = temp_delta_manpower
 
-	# Вычитаем менпавер из пула
-	subtract_from_temp_variable = { temp_bz_manpower_to_spawn = temp_bz_manpower_to_spawn_start }
-
+	# Обновляем менпавер, выделенный на защиту данного региона
 	meta_effect = {
-		text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_bz_manpower_to_spawn } } }
+		text = { owner = { add_to_variable = { bz_delta_manpower_pool_[REGION_INDEX] = temp_delta_manpower } } }
 		REGION_INDEX = "[?THIS.bz_manpower_owner_pool_index]"
 	}
 }
@@ -951,6 +1024,263 @@ bz_create_border_guards_unit_in_province = {
 	}
 }
 
+# THIS scope is initiator COUNTRY
+# Must contain temp_var "temp_initiator_country"
+bz_create_ai_additional_units = {
+	bz_calculate_states_for_ai_additional_units = yes
+
+	every_country = {
+		limit = { has_war = yes is_ai = yes}
+		bz_spawn_ai_additional_units = yes
+	}
+}
+
+bz_calculate_sum_active_manpower = {
+	set_variable = { bz_sum_active_manpower = 0 }
+	for_loop_effect = { # Pools indexes
+		start = 0
+		end = global.selected_region_indexes_count
+		value = pointer
+
+		meta_effect = {
+			text = { add_to_variable = { bz_sum_active_manpower = bz_manpower_pool_[REGION_INDEX] } }
+			REGION_INDEX = "[?pointer]"
+		}
+	}
+}
+
+# THIS scope is initiator COUNTRY
+# Must contain temp_var "temp_initiator_country
+bz_calculate_states_for_ai_additional_units = {
+	for_each_scope_loop = {
+		array = bz_selected_states
+		set_temp_variable = { temp_state = THIS }
+
+		for_each_scope_loop = {
+			array = bz_adjacent_states_ids
+
+			set_temp_variable = { temp_adjacent_state = THIS }
+
+			if = {
+				limit = { check_variable = { temp_initiator_country = owner } }
+
+				owner = {
+					if = {
+						limit = { NOT = { is_in_array = {
+							array = bz_ai_states_for_attacker_units
+							value = temp_adjacent_state
+						} } }
+
+						add_to_array = { bz_ai_states_for_attacker_units = temp_adjacent_state }
+					}
+
+					if = {
+						limit = { NOT = { is_in_array = {
+							array = bz_ai_breakthrough_states
+							value = temp_state
+						} } }
+
+						add_to_array = { bz_ai_breakthrough_states = temp_state }
+					}
+				}
+			}
+			else_if = {
+				limit = { owner = { has_war_with = temp_initiator_country } }
+
+				owner = {
+					if = {
+						limit = { NOT = { is_in_array = {
+							array = bz_ai_states_for_defender_units
+							value = temp_adjacent_state
+						} } }
+
+						add_to_array = { bz_ai_states_for_defender_units = temp_adjacent_state }
+					}
+
+					if = {
+						limit = { NOT = { is_in_array = {
+							array = bz_ai_breakthrough_states
+							value = temp_state
+						} } }
+
+						add_to_array = { bz_ai_breakthrough_states = temp_state }
+					}
+				}
+			}
+		}
+	}
+}
+
+# THIS scope is AI COUNTRY at war
+
+bz_spawn_ai_additional_units = {
+	set_temp_variable = { temp_attacker_states_count = bz_ai_states_for_attacker_units^num }
+	set_temp_variable = { temp_defender_states_count = bz_ai_states_for_defender_units^num }
+
+	if = {
+		limit = { check_variable = { temp_attacker_states_count > 0 } }
+		bz_spawn_ai_additional_units_for_attacker = yes
+	}
+	
+	if = {
+		limit = { check_variable = { temp_defender_states_count > 0 } }
+		bz_spawn_ai_additional_units_for_defender = yes
+	}
+
+	clear_array = bz_ai_states_for_attacker_units
+	clear_array = bz_ai_states_for_defender_units
+	clear_array = bz_ai_breakthrough_states
+}
+
+
+# THIS scope is AI COUNTRY at war
+bz_spawn_ai_additional_units_for_attacker = {
+	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_attack_min_count_per_selected_state }
+	multiply_temp_variable = { temp_min_units_count = bz_ai_breakthrough_states^num }
+	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_attack_max_count_per_selected_state }
+	multiply_temp_variable = { temp_max_units_count = bz_ai_breakthrough_states^num }
+
+
+	for_loop_effect = {
+		start = temp_min_units_count
+		compare = less_than_or_equals
+		end = temp_max_units_count
+
+		set_temp_variable_to_random = {
+			var = temp_pointer
+			max = bz_ai_states_for_attacker_units^num
+			integer = yes
+		}
+
+		set_temp_variable = { temp_state = bz_ai_states_for_attacker_units^temp_pointer }
+
+		meta_effect = {
+			text = {
+				random_list = {
+					[INFANTRY_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_ensure_infantry_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Pechotniy batalion\" division_template = \"Pechotniy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						} }
+					}
+					[ARTILLERY_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Artileriysky batalion\" division_template = \"Artileriysky batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+					[MECHANIZED_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_ensure_mechanized_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Motostrelkoviy batalion\" division_template = \"Motostrelkoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+					[TANK_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Tankoviy batalion\" division_template = \"Tankoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+				}
+			}
+
+			STATE_ID = "[?temp_state.GetID]"
+			STATE_OWNER = "[?THIS.GetTag]"
+
+			INFANTRY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_attack_infantry_template_weight]"
+			ARTILLERY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_attack_artillery_template_weight]"
+			MECHANIZED_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_attack_mechanized_template_weight]"
+			TANK_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_attack_tank_template_weight]"
+			
+			START_MANPOWER_FACTOR = "[?global.bz_ai_additional_units_attack_start_manpower_factor]"
+			START_EXPERIENCE_FACTOR = "[?global.bz_ai_additional_units_attack_start_experience_factor]"
+			START_EQUIPMENT_FACTOR = "[?global.bz_ai_additional_units_attack_start_equipment_factor]"
+		}
+	}
+}
+
+# THIS scope is AI COUNTRY at war
+bz_spawn_ai_additional_units_for_defender = {
+	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_defence_min_count_per_selected_state }
+	multiply_temp_variable = { temp_min_units_count = bz_ai_breakthrough_states^num }
+	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_defence_max_count_per_selected_state }
+	multiply_temp_variable = { temp_max_units_count = bz_ai_breakthrough_states^num }
+
+
+	for_loop_effect = {
+		start = temp_min_units_count
+		compare = less_than_or_equals
+		end = temp_max_units_count
+
+		set_temp_variable_to_random = {
+			var = temp_pointer
+			max = bz_ai_states_for_defender_units^num
+			integer = yes
+		}
+
+		set_temp_variable = { temp_state = bz_ai_states_for_defender_units^temp_pointer }
+
+		meta_effect = {
+			text = {
+				random_list = {
+					[INFANTRY_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_ensure_infantry_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Pechotniy batalion\" division_template = \"Pechotniy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+					[ARTILLERY_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Artileriysky batalion\" division_template = \"Artileriysky batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+					[MECHANIZED_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_ensure_mechanized_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Motostrelkoviy batalion\" division_template = \"Motostrelkoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+					[TANK_TEMPLATE_WEIGHT] = {
+						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
+						[STATE_ID] = { create_unit = {
+							division = "name = \"BZ Tankoviy batalion\" division_template = \"Tankoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
+							owner = [STATE_OWNER]
+							allow_spawning_on_enemy_provs = yes
+						}}
+					}
+				}
+			}
+
+			STATE_ID = "[?temp_state.GetID]"
+			STATE_OWNER = "[?THIS.GetTag]"
+
+			INFANTRY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_infantry_template_weight]"
+			ARTILLERY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_artillery_template_weight]"
+			MECHANIZED_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_mechanized_template_weight]"
+			TANK_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_tank_template_weight]"
+			
+			START_MANPOWER_FACTOR = "[?global.bz_ai_additional_units_defence_start_manpower_factor]"
+			START_EXPERIENCE_FACTOR = "[?global.bz_ai_additional_units_defence_start_experience_factor]"
+			START_EQUIPMENT_FACTOR = "[?global.bz_ai_additional_units_defence_start_equipment_factor]"
+		}
+	}
+}
+
 
 bz_clamp_manpower = {
 	if = {
@@ -1016,7 +1346,6 @@ bz_update_new_manpower = {
 			}
 		}
 	}
-
 	# Обновляем значения в гуи регионов
 	map_update_region_manpower = yes 
 }
