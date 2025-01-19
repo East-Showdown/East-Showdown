@@ -944,8 +944,13 @@ bz_create_border_guards_unit_in_province = {
 bz_create_ai_additional_units = {
 	bz_calculate_states_for_ai_additional_units = yes
 
+		log = "====================================="
+
 	every_country = {
 		limit = { has_war = yes is_ai = yes}
+
+		log = " COUNTRY [?THIS.GetTag]"
+
 		bz_spawn_ai_additional_units = yes
 	}
 }
@@ -953,17 +958,25 @@ bz_create_ai_additional_units = {
 # THIS scope is initiator COUNTRY
 # Must contain temp_var "temp_initiator_country
 bz_calculate_states_for_ai_additional_units = {
+	log = "  bz_calculate_states_for_ai_additional_units [?THIS.GetTag]"
+	log = "  temp_initiator_country = [?temp_initiator_country.GetTag]"
 	for_each_scope_loop = {
 		array = bz_selected_states
 		set_temp_variable = { temp_state = THIS }
+
+		log = "    temp_state [?temp_state.GetID]"
 
 		for_each_scope_loop = {
 			array = bz_adjacent_states_ids
 
 			set_temp_variable = { temp_adjacent_state = THIS }
 
+			log = "      temp_adjacent_state [?temp_adjacent_state.GetID]"
+
 			if = {
 				limit = { check_variable = { temp_initiator_country = owner } }
+
+				log = "        BRANCH A"
 				owner = {
 					if = {
 						limit = { NOT = { is_in_array = {
@@ -971,6 +984,7 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_adjacent_state
 						} } }
 
+						log = "          A1"
 						add_to_array = { bz_ai_states_for_attacker_units = temp_adjacent_state }
 					}
 
@@ -980,12 +994,15 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_state
 						} } }
 
+						log = "          A2"
 						add_to_array = { bz_ai_breakthrough_states = temp_state }
 					}
 				}
 			}
 			else_if = {
-				limit = { owner = { has_war_with = initiator_country } }
+				limit = { owner = { has_war_with = temp_initiator_country } }
+
+				log = "        BRANCH B"
 				owner = {
 					if = {
 						limit = { NOT = { is_in_array = {
@@ -993,6 +1010,7 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_adjacent_state
 						} } }
 
+						log = "          B1"
 						add_to_array = { bz_ai_states_for_defender_units = temp_adjacent_state }
 					}
 
@@ -1002,6 +1020,7 @@ bz_calculate_states_for_ai_additional_units = {
 							value = temp_state
 						} } }
 
+						log = "          B2"
 						add_to_array = { bz_ai_breakthrough_states = temp_state }
 					}
 				}
@@ -1015,6 +1034,10 @@ bz_calculate_states_for_ai_additional_units = {
 bz_spawn_ai_additional_units = {
 	set_temp_variable = { temp_attacker_states_count = bz_ai_states_for_attacker_units^num }
 	set_temp_variable = { temp_defender_states_count = bz_ai_states_for_defender_units^num }
+
+	log = "  temp_attacker_states_count = [?temp_attacker_states_count]"
+	log = "  temp_defender_states_count = [?temp_defender_states_count]"
+
 	if = {
 		limit = { check_variable = { temp_attacker_states_count > 0 } }
 		bz_spawn_ai_additional_units_for_attacker = yes
@@ -1033,10 +1056,14 @@ bz_spawn_ai_additional_units = {
 
 # THIS scope is AI COUNTRY at war
 bz_spawn_ai_additional_units_for_attacker = {
+	log = "    AAAAAAAAAA bz_spawn_ai_additional_units_for_attacker"
 	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_attack_min_count_per_selected_state }
 	multiply_temp_variable = { temp_min_units_count = bz_ai_breakthrough_states^num }
 	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_attack_max_count_per_selected_state }
 	multiply_temp_variable = { temp_max_units_count = bz_ai_breakthrough_states^num }
+
+	log = "      temp_min_units_count = [?temp_min_units_count]"
+	log = "      temp_max_units_count = [?temp_max_units_count]"
 
 
 	for_loop_effect = {
@@ -1044,52 +1071,55 @@ bz_spawn_ai_additional_units_for_attacker = {
 		compare = less_than_or_equals
 		end = temp_max_units_count
 
+		value = temp_index
+		log = "        temp_index = [?temp_index]"
+		log = "        bz_ai_states_for_attacker_units^num = [?bz_ai_states_for_attacker_units^num]"
+
 		set_temp_variable_to_random = {
 			var = temp_pointer
 			max = bz_ai_states_for_attacker_units^num
+			integer = yes
 		}
+		log = "        temp_pointer = [?temp_pointer]"
 
 		set_temp_variable = { temp_state = bz_ai_states_for_attacker_units^temp_pointer }
-		set_temp_variable = { temp_state_owner = 0 }
+
+		log = "        temp_state = [?temp_state.GetID] [THIS.GetTag]"
 
 		meta_effect = {
 			text = {
 				random_list = {
 					[INFANTRY_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_ensure_infantry_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Pechotniy batalion\" division_template = \"Pechotniy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						} }
 					}
 					[ARTILLERY_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Artileriysky batalion\" division_template = \"Artileriysky batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 					[MECHANIZED_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_ensure_mechanized_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Motostrelkoviy batalion\" division_template = \"Motostrelkoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 					[TANK_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Tankoviy batalion\" division_template = \"Tankoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 				}
 			}
@@ -1111,10 +1141,14 @@ bz_spawn_ai_additional_units_for_attacker = {
 
 # THIS scope is AI COUNTRY at war
 bz_spawn_ai_additional_units_for_defender = {
-	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_defend_min_count_per_selected_state }
+	log = "    BBBBBBBBBB bz_spawn_ai_additional_units_for_defender"
+	set_temp_variable = { temp_min_units_count = global.bz_ai_additional_units_defence_min_count_per_selected_state }
 	multiply_temp_variable = { temp_min_units_count = bz_ai_breakthrough_states^num }
-	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_defend_max_count_per_selected_state }
+	set_temp_variable = { temp_max_units_count = global.bz_ai_additional_units_defence_max_count_per_selected_state }
 	multiply_temp_variable = { temp_max_units_count = bz_ai_breakthrough_states^num }
+
+	log = "      temp_min_units_count = [?temp_min_units_count]"
+	log = "      temp_max_units_count = [?temp_max_units_count]"
 
 
 	for_loop_effect = {
@@ -1122,52 +1156,55 @@ bz_spawn_ai_additional_units_for_defender = {
 		compare = less_than_or_equals
 		end = temp_max_units_count
 
+		value = temp_index
+		log = "        temp_index = [?temp_index]"
+		log = "        bz_ai_states_for_attacker_units^num = [?bz_ai_states_for_defender_units^num]"
+
 		set_temp_variable_to_random = {
 			var = temp_pointer
 			max = bz_ai_states_for_defender_units^num
+			integer = yes
 		}
+		log = "        temp_pointer = [?temp_pointer]"
 
 		set_temp_variable = { temp_state = bz_ai_states_for_defender_units^temp_pointer }
-		set_temp_variable = { temp_state_owner = 0 }
+
+		log = "        temp_state = [?temp_state.GetID] [THIS.GetTag]"
 
 		meta_effect = {
 			text = {
 				random_list = {
 					[INFANTRY_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_ensure_infantry_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Pechotniy batalion\" division_template = \"Pechotniy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 					[ARTILLERY_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Artileriysky batalion\" division_template = \"Artileriysky batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 					[MECHANIZED_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_ensure_mechanized_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Motostrelkoviy batalion\" division_template = \"Motostrelkoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 					[TANK_TEMPLATE_WEIGHT] = {
 						[STATE_OWNER] = { bz_enruse_artillery_template = yes }
-						# Создаём юнит пограничников
-						create_unit = {
+						[STATE_ID] = { create_unit = {
 							division = "name = \"BZ Tankoviy batalion\" division_template = \"Tankoviy batalion\" start_manpower_factor = [START_MANPOWER_FACTOR] start_experience_factor = [START_EXPERIENCE_FACTOR] start_equipment_factor = [START_EQUIPMENT_FACTOR]"
 							owner = [STATE_OWNER]
 							allow_spawning_on_enemy_provs = yes
-						}
+						}}
 					}
 				}
 			}
@@ -1175,14 +1212,14 @@ bz_spawn_ai_additional_units_for_defender = {
 			STATE_ID = "[?temp_state.GetID]"
 			STATE_OWNER = "[?THIS.GetTag]"
 
-			INFANTRY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defend_infantry_template_weight]"
-			ARTILLERY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defend_artillery_template_weight]"
-			MECHANIZED_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defend_mechanized_template_weight]"
-			TANK_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defend_tank_template_weight]"
+			INFANTRY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_infantry_template_weight]"
+			ARTILLERY_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_artillery_template_weight]"
+			MECHANIZED_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_mechanized_template_weight]"
+			TANK_TEMPLATE_WEIGHT = "[?global.bz_ai_additional_units_defence_tank_template_weight]"
 			
-			START_MANPOWER_FACTOR = "[?global.bz_ai_additional_units_defend_start_manpower_factor]"
-			START_EXPERIENCE_FACTOR = "[?global.bz_ai_additional_units_defend_start_experience_factor]"
-			START_EQUIPMENT_FACTOR = "[?global.bz_ai_additional_units_defend_start_equipment_factor]"
+			START_MANPOWER_FACTOR = "[?global.bz_ai_additional_units_defence_start_manpower_factor]"
+			START_EXPERIENCE_FACTOR = "[?global.bz_ai_additional_units_defence_start_experience_factor]"
+			START_EQUIPMENT_FACTOR = "[?global.bz_ai_additional_units_defence_start_equipment_factor]"
 		}
 	}
 }
@@ -1231,16 +1268,6 @@ bz_confirm_manpower = {
 # THIS scope is Country
 # Updates manpower in bz_manpower_pools after units creation
 bz_update_new_manpower = {
-	log = "BEFORE TAG = [?THIS.GetTag]"
-	log = "  bz_delta_manpower_pool_10 (Chernigov) = [?bz_delta_manpower_pool_10]"
-	log = "  bz_manpower_pool_10 (Chernigov) = [?bz_manpower_pool_10]"
-	log = "  bz_delta_manpower_pool_11 (Sumi) = [?bz_delta_manpower_pool_11]"
-	log = "  bz_manpower_pool_11 (Sumi) = [?bz_manpower_pool_11]"
-	log = "  bz_delta_manpower_pool_32 (Bryansk) = [?bz_delta_manpower_pool_32]"
-	log = "  bz_manpower_pool_32 (Bryansk) = [?bz_manpower_pool_32]"
-	log = "  bz_delta_manpower_pool_33 (Kursk) = [?bz_delta_manpower_pool_33]"
-	log = "  bz_manpower_pool_33 (Kursk) = [?bz_manpower_pool_33]"
-
 	for_loop_effect = {
 		end = global.selected_region_indexes_count
 		value = p
@@ -1262,17 +1289,6 @@ bz_update_new_manpower = {
 			}
 		}
 	}
-	
-	log = "AFTER TAG = [?THIS.GetTag]"
-	log = "  bz_delta_manpower_pool_10 (Chernigov) = [?bz_delta_manpower_pool_10]"
-	log = "  bz_manpower_pool_10 (Chernigov) = [?bz_manpower_pool_10]"
-	log = "  bz_delta_manpower_pool_11 (Sumi) = [?bz_delta_manpower_pool_11]"
-	log = "  bz_manpower_pool_11 (Sumi) = [?bz_manpower_pool_11]"
-	log = "  bz_delta_manpower_pool_32 (Bryansk) = [?bz_delta_manpower_pool_32]"
-	log = "  bz_manpower_pool_32 (Bryansk) = [?bz_manpower_pool_32]"
-	log = "  bz_delta_manpower_pool_33 (Kursk) = [?bz_delta_manpower_pool_33]"
-	log = "  bz_manpower_pool_33 (Kursk) = [?bz_manpower_pool_33]"
-
 	# Обновляем значения в гуи регионов
 	map_update_region_manpower = yes 
 }
