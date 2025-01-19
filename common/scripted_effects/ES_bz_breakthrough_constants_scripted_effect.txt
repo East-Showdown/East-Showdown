@@ -68,7 +68,33 @@ bz_init_constants = {
 
 	# Множитель людских ресурсов, выделяемых ИИ на защиту границы
 	# Берётся из воздуха. Для вычисления используется min_value для данного региона
-	set_variable = { global.bz_manpower_pools_ai_manpower_factor = 2.0 }
+	set_variable = { global.bz_manpower_pools_ai_manpower_factor = 1.5 }
+
+	# Настройки дополнительных юнитов для ИИ, появляющихся при защите им прорываемой ПЗ
+	set_variable = { global.bz_ai_additional_units_defence_min_count_per_selected_state = 3 }
+	set_variable = { global.bz_ai_additional_units_defence_max_count_per_selected_state = 6 }
+
+	set_variable = { global.bz_ai_additional_units_defence_start_manpower_factor = 0.01 }
+	set_variable = { global.bz_ai_additional_units_defence_start_experience_factor = 0.5 }
+	set_variable = { global.bz_ai_additional_units_defence_start_equipment_factor = 0.01 }
+
+	set_variable = { global.bz_ai_additional_units_defence_infantry_template_weight = 50 }
+	set_variable = { global.bz_ai_additional_units_defence_artillery_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_defence_mechanized_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_defence_tank_template_weight = 10 }
+	
+	# Настройки дополнительных юнитов для ИИ, появляющихся при атаке им прорываемой ПЗ
+	set_variable = { global.bz_ai_additional_units_attack_min_count_per_selected_state = 3 }
+	set_variable = { global.bz_ai_additional_units_attack_max_count_per_selected_state = 6 }
+
+	set_variable = { global.bz_ai_additional_units_attack_start_manpower_factor = 0.01 }
+	set_variable = { global.bz_ai_additional_units_attack_start_experience_factor = 0.5 }
+	set_variable = { global.bz_ai_additional_units_attack_start_equipment_factor = 0.01 }
+
+	set_variable = { global.bz_ai_additional_units_attack_infantry_template_weight = 50 }
+	set_variable = { global.bz_ai_additional_units_attack_artillery_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_attack_mechanized_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_attack_tank_template_weight = 10 }
 }
 
 # THIS scope is Country
@@ -84,6 +110,138 @@ bz_ensure_border_guards_template = {
 				border_guard = { x = 0 y = 1 }
 				border_guard = { x = 0 y = 2 }
 			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_ensure_infantry_template = {
+	if = {
+		limit = { NOT = { has_template = "Pechotniy batalion" } }
+		division_template = {
+			name = "Pechotniy batalion"	
+			force_allow_recruiting = yes
+			division_names_group = RUS_INF_01
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+				apc = { x = 1 y = 0 }
+				apc = { x = 1 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				artillery = { x = 0 y = 5 }
+				maintenance_company = { x = 1 y = 0 }
+				sniper = { x = 1 y = 1 }
+				atgm = { x = 1 y = 2 }	
+				mortar = { x = 1 y = 3 }
+			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_enruse_artillery_template = {
+	if = {
+		limit = { NOT = { has_template = "Artileriysky batalion" } }
+		division_template = {
+			name = "Artileriysky batalion"	
+			force_allow_recruiting = yes
+			division_names_group = RUS_ART_01
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				towed_art = { x = 0 y = 0 }
+				towed_art = { x = 0 y = 1 }
+				towed_art = { x = 0 y = 2 }
+				MRLS = { x = 0 y = 3 }
+				infantry = { x = 1 y = 0 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				artillery = { x = 0 y = 5 }
+				maintenance_company = { x = 1 y = 0 }
+				sniper = { x = 1 y = 1 }
+				atgm = { x = 1 y = 2 }	
+				mortar = { x = 1 y = 3 }
+			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_ensure_mechanized_template = {
+	if = {
+		limit = { NOT = { has_template = "Motostrelkoviy batalion" } }
+		division_template = {
+			name = "Motostrelkoviy batalion"	# car drivers
+			force_allow_recruiting = yes
+			division_names_group = RUS_MOT_01
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				apc = { x = 0 y = 0 }
+				apc = { x = 0 y = 1 }
+				apc = { x = 0 y = 2 }
+				ifv_sov = { x = 1 y = 0 }
+				ifv_sov = { x = 1 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				sp_aa = { x = 0 y = 5 }
+				artillery = { x = 1 y = 0 }
+				maintenance_company = { x = 1 y = 1 }
+				sniper = { x = 1 y = 2 }
+				atgm = { x = 1 y = 3 }	
+				mortar = { x = 1 y = 4 }
+			}
+			priority = 2
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_ensure_tank_template = {
+	if = {
+		limit = { NOT = { has_template = "Tankoviy batalion" } }
+		division_template = {
+			name = "Tankoviy batalion"	
+			force_allow_recruiting = yes
+			division_names_group = RUS_ARM_03
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				tank_sov = { x = 0 y = 0 }
+				tank_sov = { x = 0 y = 1 }
+				tank_sov = { x = 0 y = 2 }
+				ifv_sov = { x = 1 y = 0 }
+				ifv_sov = { x = 1 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				sp_aa = { x = 0 y = 5 }
+				artillery = { x = 1 y = 0 }		#не баг
+				maintenance_company = { x = 1 y = 1 }		#не баг
+				sniper = { x = 1 y = 2 }		#не баг
+				atgm = { x = 1 y = 3 }	
+				mortar = { x = 1 y = 4 }
+			}
+			priority = 2
 		}
 	}
 }
