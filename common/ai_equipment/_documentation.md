@@ -1,4 +1,4 @@
-AI Equipment Designs
+# AI Equipment Designs
 
 These scripts are used to direct AI to create equipment variants and upgrade
 existing equipment in order to satisfy specific role needs.  Equipment type and
@@ -6,9 +6,9 @@ equipment module specifications determine what is necessary and desirable for
 filling particular roles, and priority triggers provide additional hooks to
 encourage the AI in different directions.
 
-Syntax:
-----------------
 
+## Syntax
+```
 <AI design group name> = {
 	# naval category is supported from version 1.6.0, and land category from version 1.11.0
 	category = <equipment category>
@@ -131,3 +131,4 @@ Syntax:
 		}
 	}
 }
+```
