@@ -1,4 +1,11 @@
 # Подготовка к войне
+
+#front_unit_request Использует искусственный интеллект для переброски большего количества юнитов на заданную линию фронта.	Одновременно можно использовать более одного типа целей, 
+#и в этом случае необходимо соответствовать каждому из них.
+
+#тип приказа = <фронт|вторжение> #order type = <front|invasion>
+#Если этот параметр установлен, стратегия ИИ будет применяться только при сухопутных или морских вторжениях соответственно
+
 RUS_wait_war_with_ukr = {
 	allowed = {
 		original_tag = RUS
@@ -36,15 +43,15 @@ RUS_more_army_on_front = {
 	# Красноперекопск
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
-		value = 5
-		id = 280
+		value = 15
+		id = 704
 	}
 
 	# Джанкой
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
-		value = 5
-		id = 290
+		value = 15
+		id = 705
 	}
 
 	# Керчь
@@ -57,21 +64,21 @@ RUS_more_army_on_front = {
 	# Каховский район
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
-		value = 5
+		value = 10
 		id = 302
 	}
 
 	# Скадовск
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
-		value = 5
+		value = 10
 		id = 264
 	}
 
 	# Херсон
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
-		value = 5
+		value = 10
 		id = 253
 	}
 
@@ -113,8 +120,8 @@ RUS_front_control_1 = {
 
 	ai_strategy = {
 		type = front_control
-		area = left_kiev
-		priority = 1000
+		area = right_kyiv
+		priority = 50
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -127,6 +134,15 @@ RUS_front_control_1 = {
 		area = left_kherson
 		area = left_zaporozie
 		priority = 100
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+	}
+
+	ai_strategy = {
+		type = front_control
+		area = left_kherson
+		priority = 20
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -142,43 +158,12 @@ RUS_front_control_1 = {
 	}
 }
 
-# Контроль фронта (После 20 марта 2022 года)
-RUS_front_control_2 = { 
-	allowed = {
-		original_tag = RUS
-	}
 
-	enable = {
-		date > 2022.3.20
-	}
-	
-	abort = {
-		always = no
-	}
 
-	ai_strategy = {
-		type = front_control
-		area = donbass
-		area = crimea
-		area = left_kherson
-		area = left_zaporozie
-		ratio = 1
-		priority = 100
-		ordertype = front
-		execution_type = balanced
-		manual_attack = no
-	}
 
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ratio = 1
-		priority = 10
-		ordertype = front
-		execution_type = balanced
-		manual_attack = no
-	}
-}
+
+
+
 
 # РФ принудительно покидает Киев
 RUS_leave_kiev = {
@@ -211,7 +196,176 @@ RUS_leave_kiev = {
 	}
 }
 
-# ИИ не подводит дивизии к границе мира, пограничникам и пытается забыть про гарнизон
+# после 28.03 дать приоритет войск за защиту херсонской области , особенно восточной части
+#дать приоритет на наступление на Харьков и Сумы
+#set_country_flag = RUS_retreated_from_Kyiv  
+
+
+
+
+
+RUS_atack_kheson_oblst = {
+	allowed = {
+		original_tag = RUS
+	}
+
+	enable = {
+		OR = {
+			has_country_flag = RUS_start_SMO
+		    is_historical_focus_on = yes
+			has_war_with = UKR
+		}		
+	}
+
+	abort = {
+		OR = {
+			date  > 2022.12.1
+			NOT = {
+				has_war_with = UKR
+			}
+		}
+	}
+
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		priority = 2000
+		ordertype = front  #front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+	 	area = left_kherson 
+		area = left_zaporozie
+		area = right_kherson
+	}
+
+
+
+
+####26 marta 26.03 блицкриг все
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 27 #херсон
+		value = 1000
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 24 #николаевская
+		value = -1000
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 60 #кировоградская
+		value = -1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 57 #левый берег запородье
+		value = 900
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 58 #правый берег запородье
+		value = 800
+	}
+
+}
+
+
+
+
+
+#оброна хер сона 2 этап + крім
+
+
+
+
+
+
+
+
+#атака луганс донетск
+RUS_atack_donetsk_oblst = {
+	allowed = {
+		original_tag = RUS
+	}
+
+	enable = {
+		OR = {
+			has_country_flag = RUS_start_SMO
+		    is_historical_focus_on = yes
+			has_war_with = UKR
+		}		
+	}
+
+	abort_when_not_enabled = yes
+
+
+
+
+	ai_strategy = {
+		type = front_control
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		area = donbass
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 31   #donetsk #lugansk
+		value = 500
+	}
+
+
+}
+
+RUS_what_is_the_next_step_of_the_operation = {
+	allowed = {
+		original_tag = RUS
+	}
+
+	enable = {
+		has_country_flag = RUS_retreated_from_Kyiv
+		is_historical_focus_on = yes
+		has_war_with = UKR	
+	}
+
+	abort_when_not_enabled = yes
+
+
+
+
+	ai_strategy = {
+		type = front_control
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = yes
+		area = donbass
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 31   #donetsk #lugansk
+		value = 600
+	}
+
+
+}
+
+
+
+
+
+
+
+# ИИ не подводит дивизии к границе мира, пограничникам и пытается забыть про гарнизон #
 RUS_border_and_rbz = {
 	allowed = {
 		original_tag = RUS

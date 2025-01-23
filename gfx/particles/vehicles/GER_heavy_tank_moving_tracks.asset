@@ -1,0 +1,221 @@
+particle = {
+	name = "GER_heavy_tank_moving_tracks_file"
+	
+
+
+	
+# Smoke front
+	subsystem = {
+
+		# values that can be curves or values, with or without variation
+		# always local time
+		
+		# fixed values, cannot be curves, cannot add variation
+		max_amount = 10000
+		
+		sort = "depth" 
+		#invert = yes
+		texture = {
+			shader = "ParticleAlphaBlend"   #ParticleAdditive   #ParticleAlphaBlend 
+			file = "gfx/particles/gradient_circle2.dds"   
+			#x = 2	
+			#y = 2		
+		}
+		
+		position = { 	x = 0	y = 0	z = -3.5 }
+		emitter_yaw = { 180 0 }  
+		emitter_pitch = { 0 0 }
+		
+		start = 0				
+		duration = -1
+		emission = { 650 }
+		
+		
+		velocity = { 5 0 }
+		velocity_pitch = { 0 0 }
+		velocity_yaw =  { 0 0 }
+		
+		rotation = { 0 180 } 
+	
+
+
+		
+
+		life = { 0.6 0.3 }
+		size = { 2,increase_size 1 }
+	
+		# values that can be curves or values, with or without variation
+		# 'spawn'/'system'/'particle' time is valid
+
+		color = { 
+			r = { 220 }
+			g = { 220 }
+			b = { 220 }
+			alpha = { 50,fade_alpha }
+		}
+
+
+
+
+		# Forces
+		#force = chaos,point
+	}
+	
+# Smoke back
+	subsystem = {
+
+		# values that can be curves or values, with or without variation
+		# always local time
+		
+		# fixed values, cannot be curves, cannot add variation
+		max_amount = 10000
+		
+		sort = "depth" 
+		#invert = yes
+		texture = {
+			shader = "ParticleAlphaBlend"   #ParticleAdditive   #ParticleAlphaBlend 
+			file = "gfx/particles/gradient_circle2.dds"   
+			#x = 2	
+			#y = 2		
+		}
+		
+		position = { 	x = 0	y = 0	z = 0	}
+		emitter_yaw = { 180 0 }  
+		emitter_pitch = { 0 0 }
+		
+		start = 0				
+		duration = -1
+		emission = { 200 }
+		
+		
+		velocity = { 5 0 }
+		velocity_pitch = { 0 0 }
+		velocity_yaw =  { 0 0 }
+		
+		rotation = { 0 180 } 
+	
+
+
+		
+
+		life = { 0.6 0.3 }
+		size = { 2,increase_size 1 }
+	
+		# values that can be curves or values, with or without variation
+		# 'spawn'/'system'/'particle' time is valid
+
+		color = { 
+			r = { 220 }
+			g = { 220 }
+			b = { 220 }
+			alpha = { 50,fade_alpha }
+		}
+
+
+
+
+		# Forces
+		#force = chaos,upforce
+	}
+#ANIMATIONS
+	
+	# spawn - sets value of particle when they spawn, does not change afterwards. 
+	# system - affects all particles based on system time. regardless of when they are born they are all the same. 
+	# life - duration scales over particle lifttime. So if its 1 its correct. If its 0.5 then it happens twice as fast.  , constrains animation within particle lifetime. 
+	# life_abs - controlls particle during lifetime, uses duration. 
+
+	animation = {
+		time = "life"
+		name = "fade_alpha"
+		start = 0
+		duration = 1
+		repeat = no
+		op = "MUL" # "MUL"/"ADD"/"ABS"
+		minValue = 0
+		maxValue = 1
+		curve = { 
+			0 	0.1
+			0.2	1
+			0.8	1
+			1 	0 
+		}
+	}
+	
+	animation = {
+		time = "life"
+		name = "increase_size"
+		start = 0
+		duration = 1
+		repeat = no
+		op = "MUL" # "MUL"/"ADD"/"ABS"
+		minValue = 0
+		maxValue = 1
+		curve = { 
+			0 	0.1
+			0.5	0.3
+			1 	1
+		}
+	}
+	
+#FORCES
+	
+	force = {
+		type = "friction"
+		name = "drag"
+		amount = 5.0
+		
+	}
+	
+	force = {
+		type = "friction"
+		name = "drag_side"
+		amount = 7.0
+		
+	}
+	
+	force = {
+		type = "friction"
+		name = "drag_ground"
+		amount = 6.0
+		
+	}
+	
+	force = {
+		type = "planar"
+		name = "upforce"
+		direction = { 0 1 0 }
+		amount = { 5.5 }
+	}	
+
+	force = {
+		type = "planar"
+		name = "upforce_ground"
+		direction = { 0 1 0 }
+		amount = { 1.5 }
+	}		
+	
+	
+	force = {
+		type = "turbulence"
+		name = "chaos"
+		amount = 10.0
+	}
+	
+	force = {
+		type = "turbulence"
+		name = "chaos_ground"
+		amount = 5.0
+	}
+	
+	force = {
+		type = "point"
+		name = "point"
+		position = { 0 0 5 }
+		amount = -10
+	}
+
+
+
+}
+
+
