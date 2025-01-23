@@ -1,0 +1,247 @@
+#################################################################################################################
+# Для изменения параметров системы прорыва в сабмоде, скопируйте этот файл полностью и измените нужные значения #
+#################################################################################################################
+
+bz_init_constants = {
+	# Количество менпавера в одном юните пограничников (шаблон снизу)
+	set_variable = { global.bz_border_guards_manpower_per_division = 300 }
+	# МИНИМАЛЬНОЕ кол-во дней, через которое погранзона будет создана вновь, если её ПОЛНОСТЬЮ захватит обратно её оригинальный хозяин
+	set_variable = { global.bz_recent_breakthough_dynamic_modifier_days = 14 }
+
+	# Разрешённые диапазоны количества выбранных для прорыва пограничных зон для активации быстрого планирования
+	set_variable = { global.bz_start_planning_breakthrough_short_min_selected_states = 1 }
+	set_variable = { global.bz_start_planning_breakthrough_short_max_selected_states = 2 }
+	# Разрешённые диапазоны количества выбранных для прорыва пограничных зон для активации обычного планирования
+	set_variable = { global.bz_start_planning_breakthrough_medium_min_selected_states = 1 }
+	set_variable = { global.bz_start_planning_breakthrough_medium_max_selected_states = 5 }
+	# Разрешённые диапазоны количества выбранных для прорыва пограничных зон для активации долгого планирования
+	set_variable = { global.bz_start_planning_breakthrough_long_min_selected_states = 1 }
+	set_variable = { global.bz_start_planning_breakthrough_long_max_selected_states = 8 }
+
+	# Длительность (дней) модификатора с дебафами на стейтах при полном раскрытии прорыва
+	set_variable = { global.bz_plan_breakthrough_big_failure_dynamic_modifier_days = 31 }
+	# Длительность (дней) модификатора с дебафами на стейтах при втором частичном раскрытии прорыва
+	set_variable = { global.bz_plan_breakthrough_small_failure_dynamic_modifier_days = 31 }
+
+	# Длительность (дней) модификатора с бафами на стейтах при успехе быстрого планирования
+	set_variable = { global.bz_plan_breakthrough_short_success_dynamic_modifier_days = 31 }
+	# Длительность (дней) модификатора с бафами на стейтах при успехе нормального планирования
+	set_variable = { global.bz_plan_breakthrough_medium_success_dynamic_modifier_days = 31 }
+	# Длительность (дней) модификатора с бафами на стейтах при успехе долгого планирования
+	set_variable = { global.bz_plan_breakthrough_long_success_dynamic_modifier_days = 31 }
+	
+	# Базовый шанс (0-1) раскрытия прорыва
+	set_variable = { global.bz_breakthrough_uncover_chance_value_base = 0.4 }
+	# Изменение шанса (0-1) раскрытия прорыва от каждого выбранного участка ПЗ
+	set_variable = { global.bz_breakthrough_uncover_chance_value_by_selected_states_count = 0.1 }
+	
+	# Изменение шанса (множитель) раскрытия прорыва от выбранного плана подготовки прорыва
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_short = 0.3 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_medium = -0.1 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_by_plan_speed_long = -0.3 }
+
+	# Изменение шанса (множитель) раскрытия прорыва от соотношения силы внедрения двух стран в армию другой стороны
+	# Постфикс переменной означает соотношение (-1; -1) внедрения в армию между (атакующей стороной / обороняющейся стороной)
+	# К примеру, 0d85_1d00 означает, что атакующая сторону имеет преимущество от 0.85 до 1
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d85_1d00 = 0.8 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d75_0d85 = 0.6 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d65_0d75 = 0.4 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d55_0d65 = 0.2 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d35_0d45 = -0.2 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d25_0d35 = -0.4 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d15_0d25 = -0.6 }
+	set_variable = { global.bz_breakthrough_uncover_delta_chance_factor_army_intel_0d00_0d15 = -0.8 }
+
+	# Кол-во дней после начала прорыва, через которые срабатывают фазы выведения пограничных войск с фронта (их удаление)
+	set_variable = { global.bz_breakthrough_board_guards_remove_first_phase_after_days_passed = 14 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_second_phase_after_days_passed = 21 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_third_phase_after_days_passed = 28 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_fourth_phase_after_days_passed = 34 }
+	# Процентное количество пограничников (0-1), которое удаляется (от оставшихся на данный момент) на каждом этапе вывода с линии фронта
+	set_variable = { global.bz_breakthrough_board_guards_remove_first_phase_fraction = 0 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_second_phase_fraction = 0.3 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_third_phase_fraction = 0.5 }
+	set_variable = { global.bz_breakthrough_board_guards_remove_fourth_phase_fraction = 1 } # ВСЕГДА должно быть 1, иначе у страны останутся неудаляемые юниты пограничников
+
+	# Опыт пограничников при их спавне при начале прорыва
+	set_variable = { global.bz_board_guards_start_experience_factor = 0.5 }
+
+	# Множитель людских ресурсов, выделяемых ИИ на защиту границы
+	# Берётся из воздуха. Для вычисления используется min_value для данного региона
+	set_variable = { global.bz_manpower_pools_ai_manpower_factor = 1.5 }
+
+	# Настройки дополнительных юнитов для ИИ, появляющихся при защите им прорываемой ПЗ
+	set_variable = { global.bz_ai_additional_units_defence_min_count_per_selected_state = 3 }
+	set_variable = { global.bz_ai_additional_units_defence_max_count_per_selected_state = 6 }
+
+	set_variable = { global.bz_ai_additional_units_defence_start_manpower_factor = 0.01 }
+	set_variable = { global.bz_ai_additional_units_defence_start_experience_factor = 0.5 }
+	set_variable = { global.bz_ai_additional_units_defence_start_equipment_factor = 0.01 }
+
+	set_variable = { global.bz_ai_additional_units_defence_infantry_template_weight = 50 }
+	set_variable = { global.bz_ai_additional_units_defence_artillery_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_defence_mechanized_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_defence_tank_template_weight = 10 }
+	
+	# Настройки дополнительных юнитов для ИИ, появляющихся при атаке им прорываемой ПЗ
+	set_variable = { global.bz_ai_additional_units_attack_min_count_per_selected_state = 3 }
+	set_variable = { global.bz_ai_additional_units_attack_max_count_per_selected_state = 6 }
+
+	set_variable = { global.bz_ai_additional_units_attack_start_manpower_factor = 0.001 }
+	set_variable = { global.bz_ai_additional_units_attack_start_experience_factor = 0.75 }
+	set_variable = { global.bz_ai_additional_units_attack_start_equipment_factor = 0.001 }
+
+	set_variable = { global.bz_ai_additional_units_attack_infantry_template_weight = 50 }
+	set_variable = { global.bz_ai_additional_units_attack_artillery_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_attack_mechanized_template_weight = 25 }
+	set_variable = { global.bz_ai_additional_units_attack_tank_template_weight = 10 }
+}
+
+# THIS scope is Country
+bz_ensure_border_guards_template = {
+	if = {
+		limit = { NOT = { has_template = "Border Guards" } }
+		division_template = {
+			name = "Border Guards"
+			is_locked = yes
+
+			regiments = { 
+				border_guard = { x = 0 y = 0 }
+				border_guard = { x = 0 y = 1 }
+				border_guard = { x = 0 y = 2 }
+			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_ensure_infantry_template = {
+	if = {
+		limit = { NOT = { has_template = "Pechotniy batalion" } }
+		division_template = {
+			name = "Pechotniy batalion"	
+			force_allow_recruiting = yes
+			division_names_group = RUS_INF_01
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+				apc = { x = 1 y = 0 }
+				apc = { x = 1 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				artillery = { x = 0 y = 5 }
+				maintenance_company = { x = 1 y = 0 }
+				sniper = { x = 1 y = 1 }
+				atgm = { x = 1 y = 2 }	
+				mortar = { x = 1 y = 3 }
+			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_enruse_artillery_template = {
+	if = {
+		limit = { NOT = { has_template = "Artileriysky batalion" } }
+		division_template = {
+			name = "Artileriysky batalion"	
+			force_allow_recruiting = yes
+			division_names_group = RUS_ART_01
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				towed_art = { x = 0 y = 0 }
+				towed_art = { x = 0 y = 1 }
+				towed_art = { x = 0 y = 2 }
+				MRLS = { x = 0 y = 3 }
+				infantry = { x = 1 y = 0 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				artillery = { x = 0 y = 5 }
+				maintenance_company = { x = 1 y = 0 }
+				sniper = { x = 1 y = 1 }
+				atgm = { x = 1 y = 2 }	
+				mortar = { x = 1 y = 3 }
+			}
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_ensure_mechanized_template = {
+	if = {
+		limit = { NOT = { has_template = "Motostrelkoviy batalion" } }
+		division_template = {
+			name = "Motostrelkoviy batalion"	# car drivers
+			force_allow_recruiting = yes
+			division_names_group = RUS_MOT_01
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				apc = { x = 0 y = 0 }
+				apc = { x = 0 y = 1 }
+				apc = { x = 0 y = 2 }
+				ifv_sov = { x = 1 y = 0 }
+				ifv_sov = { x = 1 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				sp_aa = { x = 0 y = 5 }
+				artillery = { x = 1 y = 0 }
+				maintenance_company = { x = 1 y = 1 }
+				sniper = { x = 1 y = 2 }
+				atgm = { x = 1 y = 3 }	
+				mortar = { x = 1 y = 4 }
+			}
+			priority = 2
+		}
+	}
+}
+
+# THIS scope is COUNTRY
+bz_ensure_tank_template = {
+	if = {
+		limit = { NOT = { has_template = "Tankoviy batalion" } }
+		division_template = {
+			name = "Tankoviy batalion"	
+			force_allow_recruiting = yes
+			division_names_group = RUS_ARM_03
+			#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
+			regiments = {
+				tank_sov = { x = 0 y = 0 }
+				tank_sov = { x = 0 y = 1 }
+				tank_sov = { x = 0 y = 2 }
+				ifv_sov = { x = 1 y = 0 }
+				ifv_sov = { x = 1 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 0 }
+				field_hospital = { x = 0 y = 1 }
+				signal_company = { x = 0 y = 2 }
+				recon = { x = 0 y = 3 }
+				logistics_company = { x = 0 y = 4 }
+				sp_aa = { x = 0 y = 5 }
+				artillery = { x = 1 y = 0 }		#не баг
+				maintenance_company = { x = 1 y = 1 }		#не баг
+				sniper = { x = 1 y = 2 }		#не баг
+				atgm = { x = 1 y = 3 }	
+				mortar = { x = 1 y = 4 }
+			}
+			priority = 2
+		}
+	}
+}
