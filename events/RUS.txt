@@ -1,177 +1,6 @@
 add_namespace = rus
 add_namespace = rus_hidden
 add_namespace = moa
-add_namespace = putin_mission
-#Генерал обвиняется в коррупции
-unit_leader_event = {
-    id = putin_mission.1
-    title = putin_mission.1.t
-    desc = putin_mission.1.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-
-    option = {
-        name = putin_mission.1.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.1.a executed"
-		custom_effect_tooltip = RUS_dismissal_of_the_general_cet
-		army_experience = -20
-		add_command_power = -30
-		hidden_effect = {
-			retire_character = yes
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-	option = {
-        name = putin_mission.1.b
-		log = "[GetDateText]: [This.GetName]: putin_mission.1.b executed"
-		add_political_power = 20
-		add_trait = {
-			trait = leader_corrupt_trait
-		}
-		hidden_effect = {
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-}
-#Генерал обвиняется в служебной некомпетентности
-unit_leader_event = {
-    id = putin_mission.2
-    title = putin_mission.2.t
-    desc = putin_mission.2.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-
-    option = {
-        name = putin_mission.2.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.2.a executed"
-		custom_effect_tooltip = RUS_dismissal_of_the_general_cet
-		army_experience = -20
-		add_command_power = -30
-		hidden_effect = {
-			retire_character = yes
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-	option = {
-        name = putin_mission.2.b
-		log = "[GetDateText]: [This.GetName]: putin_mission.2.b executed"
-		add_political_power = 20
-		add_trait = {
-			trait = leader_incompetent_trait
-		}
-		hidden_effect = {
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-}
-#Генерал обвиняется в разглашении военной тайны
-unit_leader_event = {
-    id = putin_mission.3
-    title = putin_mission.3.t
-    desc = putin_mission.3.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-
-    option = {
-        name = putin_mission.3.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.3.a executed"
-		custom_effect_tooltip = RUS_dismissal_of_the_general_cet
-		army_experience = -20
-		add_command_power = -30
-		hidden_effect = {
-			retire_character = yes
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-	option = {
-        name = putin_mission.3.b
-		log = "[GetDateText]: [This.GetName]: putin_mission.3.b executed"
-		add_political_power = 20
-		add_trait = {
-			trait = leader_unreliable_trait
-		}
-		hidden_effect = {
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-}
-#Отстранение Киселя
-unit_leader_event = {
-    id = putin_mission.4
-    title = putin_mission.4.t
-    desc = putin_mission.4.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-
-    option = {
-        name = putin_mission.4.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.4.a executed"
-		custom_effect_tooltip = RUS_Kisel_fire_cet
-		hidden_effect = {
-			retire_character = yes
-		}
-    }
-}
-#Отстранение Киселя
-unit_leader_event = {
-    id = putin_mission.5
-    title = putin_mission.5.t
-    desc = putin_mission.5.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-	immediate = {
-		ROOT = { 
-		    set_variable = {
-				RUS_general_name_for_loc = PREV 
-			} 
-		} 
-	}
-
-    option = {
-        name = putin_mission.5.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.5.a executed"
-		custom_effect_tooltip = RUS_dismissal_of_the_general_cet
-		army_experience = -10
-		add_command_power = -15
-		hidden_effect = {
-			retire_character = yes
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-}
-unit_leader_event = {
-    id = putin_mission.7
-    title = putin_mission.7.t
-    desc = putin_mission.7.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-
-    option = {
-        name = putin_mission.7.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.7.a executed"
-		add_political_power = 50
-		add_stability = 0.015
-    }
-}
-unit_leader_event = {
-    id = putin_mission.8
-    title = putin_mission.8.t
-    desc = putin_mission.8.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-
-    option = {
-        name = putin_mission.8.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.8.a executed"
-    }
-}
 
 country_event = {
 	id = rus.1
@@ -4626,8 +4455,14 @@ country_event = {
 			set_country_flag = RUS_failure_of_SMO
 			mark_focus_tree_layout_dirty = yes
 			complete_national_focus = RUS_Blitzkrieg_has_stalled
-			sergey_kisel = {
-			   	unit_leader_event = { id = putin_mission.4 days = 60 }
+			random_army_leader = { 
+			    limit = { 
+				    is_field_marshal = no
+					NOT = { 
+						is_character = michael_teplinsky
+						is_character = oleg_salyukov
+					}
+				}
 			}
 			random_army_leader = { 
 			    limit = { 
@@ -4636,24 +4471,7 @@ country_event = {
 						is_character = michael_teplinsky
 						is_character = oleg_salyukov
 					}
-				} 
-			    unit_leader_event = { 
-				    id = putin_mission.5
-					days = 15
-				} 
-			}
-			random_army_leader = { 
-			    limit = { 
-				    is_field_marshal = no
-					NOT = { 
-						is_character = michael_teplinsky
-						is_character = oleg_salyukov
-					}
-				} 
-			    unit_leader_event = { 
-				    id = putin_mission.5
-					days = 25
-				} 
+				}
 			}
         }
     }
@@ -6144,9 +5962,6 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = rus.187.a
-		sergei_syrovikin = {
-			unit_leader_event = { id = putin_mission.9 days = 7 }
-        }
     }
 }
 
@@ -6454,34 +6269,4 @@ country_event = {
 		name = rus.195.a
 		add_political_power = 25
     }
-}
-
-unit_leader_event = {
-    id = putin_mission.9
-    title = putin_mission.9.t
-    desc = putin_mission.9.desc
-
-    is_triggered_only = yes
-    fire_only_once = no
-	
-    option = {
-        name = putin_mission.9.a
-		log = "[GetDateText]: [This.GetName]: putin_mission.9.a executed"
-		custom_effect_tooltip = RUS_Surovikin_a
-		army_experience = -10
-		add_command_power = -15
-		hidden_effect = {
-			retire_character = yes
-			clear_variable = RUS_general_name_for_loc
-		}
-    }
-	option = {
-		log = "[GetDateText]: [This.GetName]: putin_mission.9.b executed"
-		name = putin_mission.9.b
-		custom_effect_tooltip = RUS_Surovikin_b
-		hidden_effect = {
-			add_trait = { trait = disgruntled }
-			demote_leader = yes
-		}
-	}
 }
