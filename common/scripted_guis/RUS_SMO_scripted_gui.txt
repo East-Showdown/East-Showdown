@@ -10,6 +10,7 @@ scripted_gui = {
 				if = {
 					limit = { NOT = { has_country_flag = SMO_STAFF_WINDOW_OPEN } }
 					set_country_flag = SMO_STAFF_WINDOW_OPEN
+					map_update_regions_status = yes
 				}
 				else_if = {
 					limit = { has_country_flag = SMO_STAFF_WINDOW_OPEN }
@@ -71,6 +72,7 @@ scripted_gui = {
 				if = {
 					limit = { NOT = { has_country_flag = SMO_STAFF_WINDOW_OPEN } }
 					set_country_flag = SMO_STAFF_WINDOW_OPEN
+					map_update_regions_status = yes
 				}
 				else_if = {
 					limit = { has_country_flag = SMO_STAFF_WINDOW_OPEN }
@@ -207,13 +209,12 @@ scripted_gui = {
 			RUS_SMO_state_zhitomir_emblem_button_click = { map_regions_init_zhitomirskaya_oblast = yes }
 			RUS_SMO_state_rovno_emblem_button_click = { map_regions_init_rovnenskaya_oblast = yes }
 
+			RUS_priority_direction_click = { map_plan_priority_direction_set = yes }
+			RUS_plan_attack_click = { map_plan_attack_prepare = yes }
+			RUS_plan_defense_click = { map_plan_defence_prepare = yes }
+
 			close_button_click = { clr_country_flag = SMO_STAFF_WINDOW_OPEN }
 
-			RUS_missile_attacks_click = {
-			    if = { limit = { RUS_missile_attacks_script_trigger = yes }
-					RUS_missile_attacks_script_effect = yes
-				}
-			}
 			bz_manpower_button_click = { 
 				add_to_variable = { bz_manpower = 1 }
 				bz_clamp_manpower = yes
@@ -250,141 +251,16 @@ scripted_gui = {
 			bz_confirm_manpower_button_click = { bz_confirm_manpower = yes }
 		}
 		triggers = {
-			BZ_resources_visible = {
-				OR = {
-					check_variable = { selected_region = global.selected_region_bryanskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_kurskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_belgorodskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_voronezhskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_rostovskaya_oblast_index }	
-					check_variable = { selected_region = global.selected_region_chernigovskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_sumskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_kharkovskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_luganskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_donetskaya_oblast_index }
-					check_variable = { selected_region = global.selected_region_khersonskaya_oblast_index }
-					AND = {
-						RBZ = {
-							controls_state = 414
-						}
-						OR = {
-							check_variable = {selected_region = global.selected_region_krasnodarskaya_oblast_index}
-							check_variable = {selected_region = global.selected_region_crimea_index}
-						}
-					}
-				}
-			}
 			bz_manpower_button_visible = {
-				OR = {
-					AND = {
-						original_tag = RUS
-						OR = {
-							check_variable = { selected_region = global.selected_region_bryanskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_kurskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_belgorodskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_voronezhskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_rostovskaya_oblast_index }
-						}	
-					}
-					AND = {
-						original_tag = UKR
-						OR = {
-							check_variable = { selected_region = global.selected_region_chernigovskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_sumskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_kharkovskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_luganskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_donetskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_khersonskaya_oblast_index }
-						}
-					}
-					AND = {
-						RBZ = {
-							controls_state = 414
-						}
-						OR = {
-							AND = {
-								original_tag = RUS
-								check_variable = {selected_region = global.selected_region_krasnodarskaya_oblast_index}
-							}
-							AND = {
-								original_tag = UKR
-								check_variable = {selected_region = global.selected_region_crimea_index}
-							}
-						}
-					}
+				is_in_array = { 
+					array = bz_manpower_owner_pool_indexes
+					value = selected_region
 				}
 			}
 			bz_confirm_manpower_button_visible = {
-				OR = {
-					AND = {
-						original_tag = RUS
-						OR = {
-							check_variable = { selected_region = global.selected_region_bryanskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_kurskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_belgorodskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_voronezhskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_rostovskaya_oblast_index }
-						}	
-					}
-					AND = {
-						original_tag = UKR
-						OR = {
-							check_variable = { selected_region = global.selected_region_chernigovskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_sumskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_kharkovskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_luganskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_donetskaya_oblast_index }
-							check_variable = { selected_region = global.selected_region_khersonskaya_oblast_index }
-						}
-					}
-					AND = {
-						RBZ = {
-							controls_state = 414
-						}
-						OR = {
-							AND = {
-								original_tag = RUS
-								check_variable = {selected_region = global.selected_region_krasnodarskaya_oblast_index}
-							}
-							AND = {
-								original_tag = UKR
-								check_variable = {selected_region = global.selected_region_crimea_index}
-							}
-						}
-					}
-				}
-			}
-			bz_prepare_breakthrough_button_visible = {
-				OR = {
-					AND = {
-						original_tag = UKR
-						check_variable = {selected_region = global.selected_region_bryanskaya_oblast_index}
-						check_variable = {selected_region = global.selected_region_kurskaya_oblast_index}
-						check_variable = {selected_region = global.selected_region_belgorodskaya_oblast_index}
-						check_variable = {selected_region = global.selected_region_voronezhskaya_oblast_index}
-						check_variable = {selected_region = global.selected_region_rostovskaya_oblast_index}	
-					}
-					AND = {
-						original_tag = RUS
-						check_variable = {selected_region = global.selected_region_chernigovskaya_oblast_index}
-						check_variable = {selected_region = global.selected_region_sumskaya_oblast_index}
-						check_variable = {selected_region = global.selected_region_kharkovskaya_oblast_index}
-					}
-					AND = {
-						RBZ = {
-							controls_state = 414
-						}
-						OR = {
-							AND = {
-								original_tag = UKR
-								check_variable = {selected_region = global.selected_region_krasnodarskaya_oblast_index}
-							}
-							AND = {
-								original_tag = RUS
-								check_variable = {selected_region = global.selected_region_crimea_index}
-							}
-						}
-					}
+				is_in_array = { 
+					array = bz_manpower_owner_pool_indexes
+					value = selected_region
 				}
 			}
 		}
