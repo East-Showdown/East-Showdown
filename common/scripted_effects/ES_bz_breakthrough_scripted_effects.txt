@@ -30,7 +30,7 @@ bz_tick_ai_regions_manpower_pools = {
 	}
 }
 
-# THIS scope is COUNTRY
+# THIS scope is AI COUNTRY
 bz_tick_ai_country_regions_manpower_pools = {
 	for_loop_effect = { # Pools indexes
 		start = 0
@@ -58,7 +58,7 @@ bz_tick_ai_country_regions_manpower_pools = {
 	}
 }
 
-# THIS scope is COUNTRY
+# THIS scope is PLAYER COUNTRY
 bz_tick_player_country_regions_manpower_pools = {
 	for_loop_effect = { # Pools indexes
 		start = 0
@@ -634,6 +634,9 @@ bz_recalculate_active_bz_provinces_count = {
 				# Устанавливаем минимальное число пограничников, требуемое для данной погранзоны
 				set_variable = { global.bz_manpower_pool_[REGION_INDEX]_min_value = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
 				multiply_variable = { global.bz_manpower_pool_[REGION_INDEX]_min_value = global.bz_border_guards_manpower_per_division }
+
+				set_variable = { global.bz_manpower_pool_[REGION_INDEX]_max_value = global.bz_manpower_pool_[REGION_INDEX]_min_value }
+				multiply_variable = { global.bz_manpower_pool_[REGION_INDEX]_max_value = global.bz_region_manpower_max_value_factor }
 			}
 			REGION_INDEX = "[?pointer]"
 		}
@@ -710,7 +713,11 @@ bz_spawn_units_for_not_owner_adjacent_state = {
 
 		meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
 			text = {
-				owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }	
+				owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }
+				clamp_temp_variable = { 
+					var = temp_bz_manpower_pool
+					max = global.bz_manpower_pool_[REGION_INDEX]_max_value
+				}
 				set_temp_variable = { temp_provinces_count = PREV.bz_adjacent_states_provinces_end_indexes^temp_bz_adjacent_state_index }
 				subtract_from_temp_variable = { temp_provinces_count = PREV.bz_adjacent_states_provinces_start_indexes^temp_bz_adjacent_state_index }		
 				multiply_temp_variable = { temp_bz_manpower_pool = temp_provinces_count }	
@@ -794,6 +801,10 @@ bz_spawn_units_for_bz_state_owner = {
 	meta_effect = { # Высчитываем, какая часть manpower из региональных manpower_pool будет использована при прорыве погранзоны
 		text = {
 			owner = { add_to_temp_variable = { temp_bz_manpower_pool = bz_manpower_pool_[REGION_INDEX] } }
+			clamp_temp_variable = { 
+				var = temp_bz_manpower_pool
+				max = global.bz_manpower_pool_[REGION_INDEX]_max_value
+			}
 			multiply_temp_variable = { temp_bz_manpower_pool = THIS.provinces_count }	
 			divide_temp_variable = { temp_bz_manpower_pool = global.bz_manpower_pool_[REGION_INDEX]_active_bz_provinces_count }
 		}
