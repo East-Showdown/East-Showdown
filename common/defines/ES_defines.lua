@@ -186,9 +186,9 @@ NDefines.NAir.NAVAL_RECON_DETECTION_BALANCE_FACTOR = 0.7			-- Value used to scal
 NDefines.NAir.AIR_MORE_GROUND_CREWS_COST = 5.0					-- CP cost to maintain more ground crews
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain when running training exercise mission
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
-0.0, -- AIR_SUPERIORITY
-0.0, -- CAS
-0.0, -- INTERCEPTION
+2.0, -- AIR_SUPERIORITY
+1.0, -- CAS
+1.5, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
@@ -436,7 +436,6 @@ NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show s
 NDefines.NTechnology.MAX_SUBTECHS = 10
 
 -- MPR
-NDefines.NAir.MISSION_COMMAND_POWER_COSTS = { 2.0, 1.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0 }
 NDefines.NMilitary.REINFORCE_CHANCE = 0.10 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
 NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.009 --0.0015
@@ -460,3 +459,4 @@ NDefines.NMilitary.EXPERIENCE_COMBAT_FACTOR = 0.15 -- 0.25
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_GROUP_COST = 2 -- 5	
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_CHANGE_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_SUPPORT_SLOT_COST = 1 -- 10
+NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.005 -- 0.060
