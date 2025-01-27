@@ -1,1532 +1,862 @@
 types = {
-################################################################
+    # energy_sector_missile_strike = {
+    #     category = on_energy_infrastructure_strikes
+    #     command_power = 1
+    #     arrow = { type = air }
+    #     unit_model = { type = equipment }
 
-###  ##   ##  ### #   ### ### #   #      ## ### ###  ### # # ###
-#   #  # #  #  #  #    #   #   # #      #    #  #  #  #  # # #
-##  #### #     #  #    #   #    #        #   #  ###   #  ##  ##
-#   #  # #  #  #  #    #   #    #         #  #  #  #  #  # # #
-#   #  #  ##  ### ### ###  #    #       ##   #  #  # ### # # ###
+    #     # AI блок
+    #     ai_will_do = {
+    #         # Логика AI может быть добавлена здесь
+    #     }
 
-################################################################
+    #     # Время подготовки и повторного использования
+    #     days_to_prepare = 1
+    #     days_re_enable = 1
 
-	facility_strike = {
-		days_to_prepare = 90
+    #     # Видимость
+    #     visible = {
+    #         # Условия видимости могут быть добавлены здесь
+    #     }
 
-		ai_will_do = {
-			base = 2
-			modifier = {
-				factor = 0
-				is_major = no
-			}
-			modifier = {
-				factor = 0
-				date < 1939.5.1 # No one probably does anything interesting before this anyway :)
-			}
-			modifier = {
-				# Don't target anyone who is not a potential enemy
-				factor = 0
-				NOT = {
-					is_in_array = {
-						array = potential_and_current_enemies
-						value = FROM  # Target country
-					}
-				}
-			}
+    #     # Условия отображения цели
+    #     show_target = {
+    #         NOT = { is_in_faction_with = FROM }
+    #         has_war = yes
+    #     }
+
+    #     # Условия доступности
+    #     available = {
+    #         has_war_with = FROM
+    #     }
+
+    #     # Условия запуска
+    #     launchable = {
+    #         has_war_with = FROM
+    #     }
+
+    #     # Звук запуска
+    #     launch_sound = raid_launch_marine
+
+    #     # Иконка цели
+    #     target_icon = GFX_other_target_icon
+
+    #     # Тип цели
+    #     target_type = {
+    #         state = {
+    #             OR = {
+    #                 wind_power_plant > 0
+    #                 solar_power_plant > 0
+    #                 thermal_power_plant > 0
+    #                 electrical_substation_big > 0
+    #                 electrical_substation > 0
+    #             }
+    #         }
+    #     }
+
+    #     # Точка запуска
+    #     starting_point = { types = {air_base} }
+
+    #     # Требования к юнитам
+    #     unit_requirements = {
+	# 		equipment = {
+	# 			type = { strategic_bomber }
+	# 			amount = {
+	# 				min = 1
+	# 				max = 24
+	# 			}
+	# 		}
+    #     }
+
+    #     # Уровни успеха
+    #     success_levels = {
+    #         failure = {
+    #             actor_effects = {
+    #                 var:actor_country = {
+    #                     air_experience = -10
+    #                 }
+    #             }
+    #             victim_effects = {
+    #                 var:victim_country = {
+    #                     air_experience = 10
+    #                 }
+    #             }
+    #         }
+    #         limited_success = {
+    #             actor_effects = {
+    #                 var:actor_country = {
+    #                     air_experience = 5
+    #                 }
+    #             }
+    #             victim_effects = {
+    #                 var:victim_country = {
+    #                     air_experience = 10
+    #                 }
+	# 				# target_effects = {
+	# 				# electrical_substation_big = 0.25
+	# 				# electrical_substation = 0.25
+	# 				# thermal_power_plant = 0.25
+	# 				# solar_power_plant = 0.25
+	# 				# wind_power_plant = 0.25
+	# 				# }
+    #             }
+    #         }
+    #         success = {
+    #             actor_effects = {
+    #                 var:actor_country = {
+    #                     air_experience = 10
+    #                 }
+    #             }
+    #             victim_effects = {
+    #                 var:victim_country = {
+    #                     air_experience = 10
+    #                 }
+    #             }
+    #             # target_effects = {
+    #             #     electrical_substation_big = 0.50
+    #             #     electrical_substation = 0.50
+    #             #     thermal_power_plant = 0.50
+    #             #     solar_power_plant = 0.50
+    #             #     wind_power_plant = 0.50
+    #             # }
+    #         }
+    #         critical_success = {
+    #             actor_effects = {
+    #                 var:actor_country = {
+    #                     air_experience = 15
+    #                 }
+    #             }
+    #             victim_effects = {
+    #                 var:victim_country = {
+    #                     air_experience = 10
+    #                 }
+    #             }
+    #             # target_effects = {
+    #             #     electrical_substation_big = 1.0
+    #             #     electrical_substation = 1.0
+    #             #     thermal_power_plant = 1.0
+    #             #     solar_power_plant = 1.0
+    #             #     wind_power_plant = 1.0
+    #             # }
+    #         }
+    #     }
+
+    #     # Факторы успеха
+    #     success_factors = {
+    #         success = { base = 0.5 }
+    #         critical = { base = 0.25 }
+    #         disaster = { base = 0.25 }
+    #     }
+    # }
+
+	arms_industry_strike = {
+		days_to_prepare = 1
+		days_re_enable = 1
+		category = critical_military_infrastructure_strikes
+		command_power = 20
+		# ai_will_do = {
+
+		# }
+		arrow = {
+			type = air
 		}
-
-		category = air_raids
-
-		command_power = 25
-
-		allowed = {
-			has_dlc = "Gotterdammerung"
+		unit_model = {
+			type = equipment
 		}
-
-		# Raid Type is visible
-		visible = {
-
-		}
-		# Specific Target is visible
 		show_target = {
-			NOT = { is_in_faction_with = FROM }
+			has_war_with = FROM
 		}
-
-		# Can prepare
 		available = {
-
+			has_war_with = FROM
 		}
 		launchable = {
 			has_war_with = FROM
 		}
-
-		target_type = {
-			building = {
-				tags = facility
-			}
-		}
-		target_icon = GFX_facility_icon
-		launch_sound = raid_launch_air
-		custom_map_icon = GFX_raid_type_icon_facility_raid
-
-		arrow = {
-		    type = air
-		}
-        unit_model = {
-            type = equipment
-        }
-
 		unit_requirements = {
 			equipment = {
-				type = { missile }
-				amount = { min = 70 }
+				type = { cas }
+				amount = {min = 2}
 			}
 		}
 		unit_requirements = {
 			equipment = {
-				type = { missile }
-				amount = { min = 70 }
+				type = { rus_ballistic_missile_equipment }
+				amount = { min = 1 }
 			}
 		}
-
-		starting_point = {
-		    types = { air_base }
-		}
-
-		success_factors = {
-			success = {
-				base = 0.65
-
-				# Raiding unit modifiers
-				experience = {
-					weight = 0.2
-					start_weight = -0.2
-					reference = 1.0
-				}
-				air_agility = {
-					reference = 100.0 # As air unit agility approaches 100 (as defined by the value above), increase chance by this value
-					weight = 0.1 # At 0 agility, the modifier will have negative effect.
-					start_weight = -0.1 # The modifier will scale linearly, meaning at 50 agility, the modifier will be 0.
-				}
-				reliability = {
-					reference = 1
-					weight = 0.05
-					start_weight = -0.1
-				}
-				air_defence = {
-					reference = 100
-					weight = 0.05
-					start_weight = -0.05
-				}
-				air_superiority = {
-					reference = 1
-					weight = 0.1
-					start_weight = -0.1
-				}
-
-				### Target Modifiers
-				anti_air = {
-					reference = 5
-					weight = -0.25
-				}
-				interception = {
-					reference = 500 # More than 500 fighters won't really make any difference
-					weight = -0.2
-				}
-				intel = {
-					weight = 0.3
-					#start_reference = 50
-					reference = 100
-				}
-			}
-
-			critical = {
-				base = 0.15
-			}
-		}
-
-		success_levels = {
-			failure = {
-				victim_effects = {
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_facility_damage_tt
-							DAMAGE = 5
-						}
-						hidden_effect = {
-							damage_building = {
-								tags = facility
-								damage = 0.05 # levels of damage
-								province = var:ROOT.target_province
-							}
-						}
-					}
-				}
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 70
-						ratio = no
-					}
-					raid_add_unit_experience = 0.05
-				}
-				visual_effect = {
-					entity = "raid_failed_entity"
-					animation = "attack"
-					}
-			}
-			limited_success = {
-			    victim_effects = {
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_facility_damage_tt
-							DAMAGE = 15
-						}
-						hidden_effect = {
-							damage_building = {
-								tags = facility
-								damage = 0.15 # levels of damage
-								province = var:ROOT.target_province
-								repair_speed_modifier = -0.05
-							}
-						}
-						raid_reduce_project_progress_ratio = 0.05
-					}
-
-			    }
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 40
-						ratio = no
-					}
-					raid_add_unit_experience = 0.1
-				}
-				visual_effect = {
-					entity = "air_raids_1_limited_success_entity"
-					animation = "attack"
-				}
-			}
-			success = {
-				victim_effects = {
-
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_facility_damage_tt
-							DAMAGE = 55
-						}
-						hidden_effect = {
-							damage_building = {
-								tags = facility
-								damage = 0.55 # levels of damage
-								province = var:ROOT.target_province
-								repair_speed_modifier = -0.25
-							}
-						}
-						raid_reduce_project_progress_ratio = 0.15
-					}
-				}
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 30
-						ratio = no
-					}
-					raid_add_unit_experience = 0.2
-				}
-				visual_effect = {
-					entity = "air_raids_1_success_entity"
-					animation = "attack"
-				}
-			}
-			critical_success = {
-			    victim_effects = {
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_facility_damage_tt
-							DAMAGE = 85
-						}
-						hidden_effect = {
-							damage_building = {
-								tags = facility
-								damage = 0.85 # levels of damage
-								province = var:ROOT.target_province
-								repair_speed_modifier = -0.50
-							}
-						}
-						raid_reduce_project_progress_ratio = 0.25
-					}
-			    }
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 10
-						ratio = no
-					}
-					raid_add_unit_experience = 0.35
-				}
-				visual_effect = {
-					entity = "air_raids_1_critical_success_entity"
-					animation = "attack"
-				}
-			}
-		}
-	}
-
-###############################################################################
-
-#    ##   ##  # #     ###   ##  #   # ###  ### #  #  ##      ###   ##  ### ###
-#   #  # #  # # #     #  # #  # ## ## #  #  #  ## # #        #  # #  #  #  #  #
-#   #  # #    ##      ###  #  # # # # ###   #  # ## # ##     ###  ####  #  #  #
-#   #  # #  # # #     #  # #  # #   # #  #  #  #  # #  #     #  # #  #  #  #  #
-###  ##   ##  # #     ###   ##  #   # ###  ### #  #  ##      #  # #  # ### ###
-
-###############################################################################
-
-
-	lock_bombing_raid = {
-		days_to_prepare = 90
-
-		category = air_raids
-
-		command_power = 20 # command power allocation cost
-
-		ai_will_do = {
-			base = 1
-		}
-
-		allowed = {
-			has_dlc = "Gotterdammerung"
-		}
-		# Raid Type is visible
-		visible = {
-
-		}
-
-		# Specific Target is visible
-		show_target = {
-			NOT = { is_in_faction_with = FROM }
-		}
-
-		# Can prepare
-		available = {
-			has_war_with = FROM
-		}
-
-		target_type = {
-			building = {
-				type = air_base
-			}
-		}
-		target_icon = GFX_canal_icon
-		launch_sound = raid_launch_air
-
-		arrow = {
-		    type = air
-		}
-        unit_model = {
-            type = equipment
-        }
-
-		unit_requirements = {
-			equipment = {
-				type = { missile }
-				amount = { min = 70  }
-			}
-		}
-
-		starting_point = {
-		    types = { air_base }
-		}
-
-		success_factors = {
-			success = {
-				base = 0.65
-
-				# Raiding unit modifiers
-				experience = {
-					weight = 0.1
-					start_weight = -0.1
-					reference = 1.0
-				}
-				air_agility = {
-					reference = 100.0 # As air unit agility approaches 100 (as defined by the value above), increase chance by this value
-					weight = 0.1 # At 0 agility, the modifier will have negative effect.
-					start_weight = -0.1 # The modifier will scale linearly, meaning at 50 agility, the modifier will be 0.
-				}
-				reliability = {
-					reference = 1
-					weight = 0.05
-					start_weight = -0.1
-				}
-				air_defence = {
-					reference = 100
-					weight = 0.05
-					start_weight = -0.05
-				}
-				air_superiority = {
-					reference = 1
-					weight = 0.2
-					start_weight = -0.2
-				}
-
-				### Target Modifiers
-				anti_air = {
-					reference = 5
-					weight = -0.25
-				}
-				interception = {
-					reference = 500 # More than 500 fighters won't really make any difference
-					weight = -0.2
-				}
-				intel = {
-					weight = 0.3
-					#start_reference = 50
-					reference = 100
-				}
-			}
-
-			critical = {
-				base = 0.15
-			}
-		}
-		success_levels = {
-			failure = {
-				victim_effects = {
-					var:target_state = {
-						damage_building = {
-							tags = air_base
-							damage = 0.1 # levels of damage
-							province = var:ROOT.target_province
-						}
-					}
-				}
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.85
-						ratio = yes
-					}
-					raid_add_unit_experience = 0.05
-				}
-				visual_effect = {
-					entity = "raid_failed_entity"
-					animation = "attack"
-					}
-			}
-			limited_success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						damage_building = {
-							tags = locks_building
-							damage = 0.2 # levels of damage
-							province = var:ROOT.target_province
-						}
-					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.45
-						ratio = yes
-					}
-
-					# XP etc
-					raid_add_unit_experience = 0.1
-				}
-				visual_effect = {
-					entity = "air_raids_2_limited_success_entity"
-					animation = "attack"
-				}
-			}
-			success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						damage_building = {
-							tags = locks_building
-							damage = 0.8 # levels of damage
-							province = var:ROOT.target_province
-							repair_speed_modifier = -0.35
-						}
-					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.15
-						ratio = yes
-					}
-
-					# XP etc
-					raid_add_unit_experience = 0.2
-
-					var:actor_country = {
-						air_experience = 10
-					}
-				}
-				visual_effect = {
-					entity = "air_raids_2_success_entity"
-					animation = "attack"
-				}
-			}
-			critical_success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						damage_building = {
-							tags = locks_building
-							damage = 1 # levels of damage
-							province = var:ROOT.target_province
-							repair_speed_modifier = -0.55
-						}
-					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.05
-						ratio = yes
-					}
-
-					# XP etc
-					raid_add_unit_experience = 0.35
-
-					var:actor_country = {
-						air_experience = 20
-					}
-				}
-				visual_effect = {
-					entity = "air_raids_2_critical_success_entity"
-					animation = "attack"
-				}
-			}
-		}
-
-	}
-
-	
-
-###################################################
-
-###   ##  #   #     ###  #  #  ## ### ### #  #  ##
-#  # #  # ## ##     #  # #  # #    #   #  ## # #
-#  # #### # # #     ###  #  #  #   #   #  # ## # ##
-#  # #  # #   #     #  # #  #   #  #   #  #  # #  #
-###  #  # #   #     ###   ##  ##   #  ### #  #  ##
-
-###################################################
-
-	dam_bombing_raid = {
-		days_to_prepare = 45
-
-		category = air_raids
-
-		command_power = 20 # command power allocation cost
-
-		ai_will_do = {
-			base = 1
-			modifier = {
-				factor = 3
-				original_tag = ENG # Just for historical reasons
-			}
-		}
-
-		allowed = {
-			has_dlc = "Gotterdammerung"
-		}
-		# Raid Type is visible
-		visible = {
-
-		}
-		# Specific Target is visible
-		show_target = {
-			NOT = {
-				is_in_faction_with = FROM
-			}
-		}
-
-		# Can prepare
-		available = {
-			is_special_project_completed = sp:sp_air_bouncing_bomb
-
-		}
-
-		launchable = {
-			has_war_with = FROM
-		}
-
-		target_type = {
-			building = {
-				tags = dam_building
-			}
-		}
-		target_icon = GFX_dam_icon
-		launch_sound = raid_launch_air
-
-		arrow = {
-		    type = air
-		}
-        unit_model = {
-            type = equipment
-        }
-
-		unit_requirements = {
-			equipment = {
-				type = { missile }
-				amount = { min = 70 }
-			}
-		}
-
-		starting_point = {
-		    types = { air_base }
-		}
-
-		success_factors = {
-			success = {
-				base = 0.65
-
-				# Raiding unit modifiers
-				experience = {
-					weight = 0.1
-					start_weight = -0.1
-					reference = 1.0
-				}
-				air_agility = {
-					reference = 100.0 # As air unit agility approaches 100 (as defined by the value above), increase chance by this value
-					weight = 0.1 # At 0 agility, the modifier will have negative effect.
-					start_weight = -0.1 # The modifier will scale linearly, meaning at 50 agility, the modifier will be 0.
-				}
-				reliability = {
-					reference = 1
-					weight = 0.05
-					start_weight = -0.1
-				}
-				air_defence = {
-					reference = 100
-					weight = 0.05
-					start_weight = -0.05
-				}
-				air_superiority = {
-					reference = 1
-					weight = 0.2
-					start_weight = -0.2
-				}
-
-				### Target Modifiers
-				anti_air = {
-					reference = 5
-					weight = -0.25
-				}
-				interception = {
-					reference = 500 # More than 500 fighters won't really make any difference
-					weight = -0.2
-				}
-				intel = {
-					weight = 0.3
-					#start_reference = 50
-					reference = 100
-				}
-			}
-
-			critical = {
-				base = 0.15
-
-			}
-		}
-
-
-
-		success_levels = {
-			failure = {
-				victim_effects = {
-					var:target_state = {
-						damage_building = {
-							tags = dam_building
-							damage = 0.1 # levels of damage
-							province = var:ROOT.target_province
-						}
-					}
-				}
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.65
-						ratio = yes
-					}
-					raid_add_unit_experience = 0.05
-				}
-				visual_effect = {
-					entity = "raid_failed_entity"
-					animation = "attack"
-					}
-			}
-			limited_success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						damage_building = {
-							tags = dam_building
-							damage = 0.25 # levels of damage
-							province = var:ROOT.target_province
-						}
-						add_dynamic_modifier = {
-							modifier = dam_blown_modifier
-							days = 60
-						}
-					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.45
-						ratio = yes
-					}
-
-					# XP etc
-					raid_add_unit_experience = 0.1
-
-					var:actor_country = {
-						hidden_effect = {
-							IF = {
-								limit = {
-									NOT = {
-										has_country_flag = successful_dam_busting_raid_flag
-									}
-								}
-								set_country_flag = successful_dam_busting_raid_flag
-							}
-						}
-					}
-				}
-				visual_effect = {
-					entity = "air_raids_1_limited_success_entity"
-					animation = "attack"
-				}
-			}
-			success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						damage_building = {
-							tags = dam_building
-							damage = 1 # levels of damage
-							province = var:ROOT.target_province
-							repair_speed_modifier = -0.7
-						}
-						add_dynamic_modifier = {
-							modifier = dam_blown_modifier
-							days = 180
-						}
-					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.15
-						ratio = yes
-					}
-
-					# XP etc
-					raid_add_unit_experience = 0.2
-
-					var:actor_country = {
-						air_experience = 10
-						hidden_effect = {
-							IF = {
-								limit = {
-									NOT = {
-										has_country_flag = successful_dam_busting_raid_flag
-									}
-								}
-								set_country_flag = successful_dam_busting_raid_flag
-							}
-						}
-					}
-				}
-				visual_effect = {
-					entity = "air_raids_1_success_entity"
-					animation = "attack"
-				}
-			}
-			critical_success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						damage_building = {
-							tags = dam_building
-							damage = 1 # levels of damage
-							province = var:ROOT.target_province
-							repair_speed_modifier = -0.8
-						}
-						add_dynamic_modifier = {
-							modifier = dam_blown_modifier
-							days = 360
-						}
-					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.05
-						ratio = yes
-					}
-
-					# XP etc
-					raid_add_unit_experience = 0.35
-
-					var:actor_country = {
-						air_experience = 20
-						hidden_effect = {
-							IF = {
-								limit = {
-									NOT = {
-										has_country_flag = successful_dam_busting_raid_flag
-									}
-								}
-								set_country_flag = successful_dam_busting_raid_flag
-							}
-						}
-					}
-				}
-				visual_effect = {
-					entity = "air_raids_1_critical_success_entity"
-					animation = "attack"
-				}
-			}
-		}
-	}
-
-	
-	
-
-########################################################
-
- ##  ### #   ### ### ### #   ###      ###   ##  ### ###
-#  #  #  #   #    #  #   #   #  #     #  # #  #  #  #  #
-#  #  #  #   ##   #  ##  #   #  #     ###  ####  #  #  #
-#  #  #  #   #    #  #   #   #  #     #  # #  #  #  #  #
- ##  ### ### #   ### ### ### ###      #  # #  # ### ###
-
-########################################################
-
-
-	oilfield_raid = {
-		days_to_prepare = 90
-
-		ai_will_do = {
-			base = 1
-			modifier = {
-				# Don't target anyone who is not a potential enemy
-				factor = 0
-				NOT = {
-					is_in_array = {
-						array = potential_and_current_enemies
-						value = FROM  # Target country
-					}
-				}
-			}
-			modifier = {
-				# Don't target anyone who is not a potential enemy
-				factor = 0.25
-				NOT = {
-					has_war_with = FROM
-				}
-			}
-			modifier = {
-				factor = 3 # Historical
-				original_tag = ENG
-				has_war_with = GER
-				FROM = {
-					original_tag = ROM
-					is_in_faction_with = GER
-				}
-			}
-		}
-
-		category = air_raids
-
-		command_power = 20 # command power allocation cost
-
-		allowed = {
-			has_dlc = "Gotterdammerung"
-		}
-		# Raid Type is visible
-		visible = {
-
-		}
-		# Specific Target is visible
-		show_target = {
-			NOT = {
-				is_in_faction_with = FROM
-			}
-		}
-
-		# Can prepare
-		available = {
-
-		}
-
-
-		# Can launch a raid
-		launchable = {
-			has_war_with = FROM
-		}
-
+		launch_sound = raid_launch_marine
+		target_icon = GFX_other_target_icon
 		target_type = {
 			state = {
-				# Resouce amount needed to be eligible as raid target
-				oil > 24
-				# If the site has been hit recently you can't target it again
-				NOT = {
-					OR = {
-						has_dynamic_modifier = {
-							modifier = refinery_damaged_modifier
-						}
-						has_dynamic_modifier = {
-							modifier = refinery_critically_damaged_modifier
-						}
-						has_dynamic_modifier = {
-							modifier = refinery_lightly_damaged_modifier
-						}
-					}
+				OR = {
+					arms_factory > 0
+					ammunition_plant > 0
+					ammunition_silo > 0
 				}
 			}
 		}
-		target_icon = GFX_oilfield_target_icon
-		target_loc_key = raid_target_name_oil_field
-		arrow = {
-		    type = air
-		}
-        unit_model = {
-            type = equipment
-        }
-		launch_sound = raid_launch_air
-
-		unit_requirements = {
-			equipment = {
-				type = { missile }
-				amount = { min = 40 }
-			}
-		}
-
 		starting_point = {
-		    types = { air_base }
+			types = {air_base rocket_site}
 		}
-
 		success_factors = {
-			success = {
-				base = 0.65
-
-				# Raiding unit modifiers
-				experience = {
-					weight = 0.1
-					start_weight = -0.1
-					reference = 1.0
-				}
-				air_agility = {
-					reference = 100.0 # As air unit agility approaches 100 (as defined by the value above), increase chance by this value
-					weight = 0.1 # At 0 agility, the modifier will have negative effect.
-					start_weight = -0.1 # The modifier will scale linearly, meaning at 50 agility, the modifier will be 0.
-				}
-				reliability = {
-					reference = 1
-					weight = 0.1
-					start_weight = -0.1
-				}
-				air_defence = {
-					reference = 100
-					weight = 0.05
-					start_weight = -0.05
-				}
-				air_superiority = {
-					reference = 1
-					weight = 0.2
-					start_weight = -0.2
-				}
-
-				### Target Modifiers
-				anti_air = {
-					reference = 5
-					weight = -0.25
-				}
-				interception = {
-					reference = 500 # More than 500 fighters won't really make any difference
-					weight = -0.2
-				}
-				intel = {
-					weight = 0.3
-					reference = 100
-				}
-			}
-
-			critical = {
-				base = 0.15
-			}
-		}
-
+            success = { base = 0.5 }
+            critical = { base = 0.25 }
+            disaster = { base = 0.25 }
+        }
 		success_levels = {
-			failure = {
-			    victim_effects = {
+            failure = {
+                actor_effects = {
+					#Random plane loss starting value. The max value will vary based on the success level
+					set_temp_variable = { raid_planes_lost = 0 }
 
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.95
-						ratio = yes
+					set_temp_variable_to_random = {
+						var = raid_planes_lost
+						max = 2
 					}
-					raid_add_unit_experience = 0.05
-				}
-				visual_effect = {
-					entity = "nuke_entity"
-					animation = "attack"
-				}
-				visual_effect = {
-					entity = "raid_failed_entity"
-					animation = "attack"
-					}
-			}
-			limited_success = {
-			    victim_effects = {
-					# Damage to Target
+
 					var:target_state = {
-						add_dynamic_modifier = {
-							modifier = refinery_lightly_damaged_modifier
-							days = 90
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
 						}
 					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.65
-						ratio = yes
+
+					if = { limit = { check_variable = { aa_defense = 0 } } add_to_temp_variable = { aa_defense = 1 } }
+
+					multiply_temp_variable = { raid_planes_lost = aa_defense }
+
+					#if at war, increase the losses, varying based on raid success
+					if = {
+						limit = {
+							var:actor_country = { has_war_with = var:ROOT.victim_country }
+						}
+						multiply_temp_variable = { raid_planes_lost = 1.5 }
+					} else = {
+						#66% chance on dead planes here, since raid was a failure
+						set_temp_variable_to_random = {
+							var = random_chance_on_dead_planes
+							max = 1
+							integer = yes
+						}
+						if = { limit = { check_variable = { random_chance_on_dead_planes = 1 } } subtract_from_temp_variable = { random_chance_on_dead_planes = 1 } }
+						multiply_temp_variable = { raid_planes_lost = random_chance_on_dead_planes }
 					}
 
-					# XP etc
-					raid_add_unit_experience = 0.1
-				}
-				visual_effect = {
-					entity = "air_raids_2_limited_success_entity"
-					animation = "attack"
-				}
-			}
-			success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						add_dynamic_modifier = {
-							modifier = refinery_damaged_modifier
-							days = 180
+					#clamp after round, just in case some black magic made this negative
+					clamp_temp_variable = {
+						var = raid_planes_lost
+						min = 0
+					}
+
+					round_temp_variable = raid_planes_lost
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
 						}
 					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.25
-						ratio = yes
-					}
 
-					# XP etc
-					raid_add_unit_experience = 0.2
-
+					# custom_effect_tooltip = {
+					# 	localization_key = plane_raid_losses_tt
+					# 	LOSSES = [?raid_planes_lost]
+					# }
+					#remove political power if the nation is not a war with the target
 					var:actor_country = {
-						air_experience = 10
-					}
-				}
-				visual_effect = {
-					entity = "air_raids_2_success_entity"
-					animation = "attack"
-				}
-			}
-			critical_success = {
-			    victim_effects = {
-					# Damage to Target
-					var:target_state = {
-						add_dynamic_modifier = {
-							modifier = refinery_critically_damaged_modifier
-							days = 360
+						if = {
+							limit = {
+								NOT = { has_war_with = var:ROOT.victim_country }
+							}
+							add_political_power = -100
 						}
 					}
-			    }
-				actor_effects = {
-					# Damage to raiding units
-					raid_damage_units = {
-						plane_loss = 0.1
-						ratio = yes
+                }
+                victim_effects = {
+					if = {
+						limit = {
+							NOT = { var:actor_country = { has_war_with = var:ROOT.victim_country } }
+						}
+						hidden_effect = {
+							var:actor_country = {
+								set_variable = { THIS.target_country = var:ROOT.victim_country }
+								set_variable = { THIS.actor_country = var:ROOT.hostile_country }
+							}
+						}
+					}
+                }
+            }
+            limited_success = {
+                actor_effects = {
+					#Random plane loss starting value. The max value will vary based on the success level
+					set_temp_variable = { raid_planes_lost = 0 }
+
+					set_temp_variable_to_random = {
+						var = raid_planes_lost
+						max = 5
 					}
 
-					# XP etc
-					raid_add_unit_experience = 0.35
+					var:target_state = {
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
 
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+
+					multiply_temp_variable = { raid_planes_lost = aa_defense }
+
+					#if at war, increase the losses, varying based on raid success
+					if = {
+						limit = {
+							var:actor_country = { has_war_with = var:ROOT.victim_country }
+						}
+						multiply_temp_variable = { raid_planes_lost = 1.25 }
+					} else = {
+						#50% chance on dead planes here, since raid was a limited success
+						set_temp_variable_to_random = {
+							var = random_chance_on_dead_planes
+							max = 1
+							integer = yes
+						}
+						multiply_temp_variable = { raid_planes_lost = random_chance_on_dead_planes }
+					}
+
+					#clamp after round, just in case some black magic made this negative
+					clamp_temp_variable = {
+						var = raid_planes_lost
+						min = 0
+					}
+
+					round_temp_variable = raid_planes_lost
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					#remove political power if the nation is not a war with the target
 					var:actor_country = {
-						air_experience = 20
+						if = {
+							limit = {
+								NOT = { has_war_with = var:ROOT.victim_country }
+							}
+							add_political_power = -100
+						}
 					}
-				}
-				visual_effect = {
-					entity = "air_raids_2_critical_success_entity"
-					animation = "attack"
-				}
-			}
-		}
-
-	}
-
-###################################################################################################
-
- ##  #  # #  #     ### #   # ###  #    ##   ##  ### #   # ### #  # ###      ## ### ###  ### # # ###
-#    #  # ## #     #   ## ## #  # #   #  # #  # #   ## ## #   ## #  #      #    #  #  #  #  # # #
-# ## #  # # ##     ##  # # # ###  #   #### #    ##  # # # ##  # ##  #       #   #  ###   #  ##  ##
-#  # #  # #  #     #   #   # #    #   #  # #  # #   #   # #   #  #  #        #  #  #  #  #  # # #
- ##   ##  #  #     ### #   # #    ### #  #  ##  ### #   # ### #  #  #      ##   #  #  # ### # # ###
-
-###################################################################################################
-
-	mega_gun_emplacement_strike = {
-		days_to_prepare = 90
-
-		ai_will_do = {
-		    base = 1
-		    modifier = {
-				# Don't target anyone who is not a potential enemy
-				factor = 0
-				NOT = {
-					is_in_array = {
-						array = potential_and_current_enemies
-						value = FROM  # Target country
+                }
+                victim_effects = {
+					if = {
+						limit = {
+							NOT = { var:actor_country = { has_war_with = var:ROOT.victim_country } }
+						}
+						hidden_effect = {
+							var:actor_country = {
+								set_variable = { THIS.target_country = var:ROOT.victim_country }
+								set_variable = { THIS.actor_country = var:ROOT.hostile_country }
+								country_event = {
+									id = MD_raid.8
+								}
+							}
+						}
 					}
-				}
-			}
-		}
 
-		category = air_raids
+					var:target_state = {
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+						set_temp_variable = { ROOT.num_fuel_silos = THIS.building_level@fuel_silo }
+					}
 
-		command_power = 20
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
 
-		allowed = {
-			has_dlc = "Gotterdammerung"
-			has_dlc = "By Blood Alone"
-		}
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
 
-		# Raid Type is visible
-		visible = {
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					#scale this based on success level
+					set_temp_variable = { building_damage_by_missile = 1.25 }
 
-		}
-		# Specific Target is visible
-		show_target = {
-			NOT = { is_in_faction_with = FROM }
-		}
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
 
-		# Can prepare
-		launchable = {
-			has_war_with = FROM
-		}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
 
-		target_type = {
-			building = {
-				type = ammunition_plant
-			}
-		}
-		target_icon = GFX_other_target_icon
-		launch_sound = raid_launch_air
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
 
-		arrow = {
-		    type = air
-		}
-        unit_model = {
-            type = equipment
+					multiply_temp_variable = { building_damage_by_missile = 10 }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = num_fuel_silos
+					}
+
+					#if the state has oil wells to target as well, reduce the number of missiles going after buildings
+					#Otherwise, the missiles will just bum rush the storage and kill that instead
+					var:target_state = {
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { arms_factory = THIS.buildings@arms_factory }
+							multiply_temp_variable = { arms_factory = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = arms_factory }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { ammunition_plant = THIS.buildings@ammunition_plant }
+							multiply_temp_variable = { ammunition_plant = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = ammunition_plant }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { ammunition_silo = THIS.buildings@ammunition_silo }
+							multiply_temp_variable = { ammunition_silo = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = ammunition_silo }
+						}
+					}
+
+					#ensure any raid does a minium of 1 damage
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1.25 } }
+
+					#apply the damage to the proper building
+					var:target_state = {
+						if = { limit = { fuel_silo > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = fuel_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+                }
+            }
+            success = {
+                actor_effects = {
+					#Random plane loss starting value. The max value will vary based on the success level
+					set_temp_variable = { raid_planes_lost = 0 }
+
+					set_temp_variable_to_random = {
+						var = raid_planes_lost
+						max = 3
+					}
+
+					var:target_state = {
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+
+					multiply_temp_variable = { raid_planes_lost = aa_defense }
+
+					#if at war, increase the losses, varying based on raid success
+					if = {
+						limit = {
+							var:actor_country = { has_war_with = var:ROOT.victim_country }
+						}
+						multiply_temp_variable = { raid_planes_lost = 1.15 }
+					} else = {
+						#33% chance on dead planes here
+						set_temp_variable_to_random = {
+							var = random_chance_on_dead_planes
+							max = 1
+							integer = yes
+						}
+						if = { limit = { NOT = { check_variable = { random_chance_on_dead_planes = 1 } } } set_temp_variable = { random_chance_on_dead_planes = 0 } }
+						multiply_temp_variable = { raid_planes_lost = random_chance_on_dead_planes }
+					}
+
+					#clamp after round, just in case some black magic made this negative
+					clamp_temp_variable = {
+						var = raid_planes_lost
+						min = 0
+					}
+
+					round_temp_variable = raid_planes_lost
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					#remove political power if the nation is not a war with the target
+					var:actor_country = {
+						if = {
+							limit = {
+								NOT = { has_war_with = var:ROOT.victim_country }
+							}
+							add_political_power = -100
+						}
+					}
+                }
+                victim_effects = {
+					if = {
+						limit = {
+							NOT = { var:actor_country = { has_war_with = var:ROOT.victim_country } }
+						}
+						hidden_effect = {
+							var:actor_country = {
+								set_variable = { THIS.target_country = var:ROOT.victim_country }
+								set_variable = { THIS.actor_country = var:ROOT.hostile_country }
+								country_event = {
+									id = MD_raid.8
+								}
+							}
+						}
+					}
+
+					var:target_state = {
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+						set_temp_variable = { ROOT.num_fuel_silos = THIS.building_level@fuel_silo }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					#scale this based on success level
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 10 }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = num_fuel_silos
+					}
+
+					#if the state has oil wells to target as well, reduce the number of missiles going after buildings
+					#Otherwise, the missiles will just bum rush the storage and kill that instead
+					var:target_state = {
+						if = { limit = { arms_factory > 0 }
+						set_temp_variable = { arms_factory = THIS.buildings@arms_factory }
+						multiply_temp_variable = { arms_factory = 0.75 }
+						divide_temp_variable = { ROOT.building_damage_by_missile = arms_factory }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { ammunition_plant = THIS.buildings@ammunition_plant }
+							multiply_temp_variable = { ammunition_plant = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = ammunition_plant }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { ammunition_silo = THIS.buildings@ammunition_silo }
+							multiply_temp_variable = { ammunition_silo = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = ammunition_silo }
+						}
+					}
+
+					#ensure any raid does a minium of 1 damage
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1.25 } }
+
+					#apply the damage to the proper building
+					var:target_state = {
+						if = { limit = { fuel_silo > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = fuel_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+                }
+            }
+            critical_success = {
+                actor_effects = {
+					#Random plane loss starting value. The max value will vary based on the success level
+					set_temp_variable = { raid_planes_lost = 0 }
+
+					set_temp_variable_to_random = {
+						var = raid_planes_lost
+						max = 2
+					}
+
+					var:target_state = {
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+
+					multiply_temp_variable = { raid_planes_lost = aa_defense }
+
+					#if at war, reduce the losses cause critical success rewards you
+					if = {
+						limit = {
+							var:actor_country = { has_war_with = var:ROOT.victim_country }
+						}
+						multiply_temp_variable = { raid_planes_lost = 0.95 }
+					} else = {
+						#randomize how many fewer planes lost due to critical success
+						set_temp_variable_to_random = {
+							var = random_chance_on_dead_planes
+							max = 1
+						}
+						multiply_temp_variable = { raid_planes_lost = random_chance_on_dead_planes }
+					}
+
+					#clamp after round, just in case some black magic made this negative
+					clamp_temp_variable = {
+						var = raid_planes_lost
+						min = 0
+					}
+
+					round_temp_variable = raid_planes_lost
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					#remove political power if the nation is not a war with the target
+					var:actor_country = {
+						if = {
+							limit = {
+								NOT = { has_war_with = var:ROOT.victim_country }
+							}
+							add_political_power = -100
+						}
+					}
+                }
+                victim_effects = {
+					if = {
+						limit = {
+							NOT = { var:actor_country = { has_war_with = var:ROOT.victim_country } }
+						}
+						hidden_effect = {
+							var:actor_country = {
+								set_variable = { THIS.target_country = var:ROOT.victim_country }
+								set_variable = { THIS.actor_country = var:ROOT.hostile_country }
+								country_event = {
+									id = MD_raid.8
+								}
+							}
+						}
+					}
+
+					var:target_state = {
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+						set_temp_variable = { ROOT.num_fuel_silos = THIS.building_level@fuel_silo }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					#scale this based on success level
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 10 }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = num_fuel_silos
+					}
+
+					#if the state has oil wells to target as well, reduce the number of missiles going after buildings
+					#Otherwise, the missiles will just bum rush the storage and kill that instead
+					var:target_state = {
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { arms_factory = THIS.buildings@arms_factory }
+							multiply_temp_variable = { arms_factory = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = arms_factory }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { ammunition_plant = THIS.buildings@ammunition_plant }
+							multiply_temp_variable = { ammunition_plant = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = ammunition_plant }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { ammunition_silo = THIS.buildings@ammunition_silo }
+							multiply_temp_variable = { ammunition_silo = 0.75 }
+							divide_temp_variable = { ROOT.building_damage_by_missile = ammunition_silo }
+						}
+					}
+
+					#ensure any raid does a minium of 1 damage
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1.25 } }
+
+					#apply the damage to the proper building
+					var:target_state = {
+						if = { limit = { fuel_silo > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = fuel_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+                }
+            }
         }
-
-		unit_requirements = {
-			equipment = {
-				type = { missile }
-				amount = { min = 70 }
-			}
-		}
-
-
-		starting_point = {
-		    types = { air_base }
-		}
-
-		success_factors = {
-			success = {
-				base = 0.65
-
-				# Raiding unit modifiers
-				experience = {
-					weight = 0.2
-					start_weight = -0.2
-					reference = 1.0
-				}
-				air_agility = {
-					reference = 100.0 # As air unit agility approaches 100 (as defined by the value above), increase chance by this value
-					weight = 0.1 # At 0 agility, the modifier will have negative effect.
-					start_weight = -0.1 # The modifier will scale linearly, meaning at 50 agility, the modifier will be 0.
-				}
-				reliability = {
-					reference = 1
-					weight = 0.05
-					start_weight = -0.1
-				}
-				air_defence = {
-					reference = 100
-					weight = 0.05
-					start_weight = -0.05
-				}
-				air_superiority = {
-					reference = 1
-					weight = 0.1
-					start_weight = -0.1
-				}
-
-				### Target Modifiers
-				anti_air = {
-					reference = 5
-					weight = -0.25
-				}
-				interception = {
-					reference = 500 # More than 500 fighters won't really make any difference
-					weight = -0.2
-				}
-				intel = {
-					weight = 0.3
-					#start_reference = 50
-					reference = 100
-				}
-			}
-
-			critical = {
-				base = 0.15
-			}
-		}
-
-		success_levels = {
-			failure = {
-				victim_effects = {
-					var:target_state = {
-						damage_building = {
-							type = ammunition_plant
-							damage = 0.10 # levels of damage
-						}
-					}
-				}
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 70
-						ratio = no
-					}
-					raid_add_unit_experience = 0.05
-				}
-				visual_effect = {
-					entity = "raid_failed_entity"
-					animation = "attack"
-					}
-			}
-			limited_success = {
-			    victim_effects = {
-					var:target_state = {
-						damage_building = {
-							type = mega_gun_emplacement
-							damage = 0.15 # levels of damage
-							repair_speed_modifier = -0.20
-						}
-					}
-
-			    }
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 40
-						ratio = no
-					}
-					raid_add_unit_experience = 0.1
-				}
-				visual_effect = {
-					entity = "air_raids_2_limited_success_entity"
-					animation = "attack"
-				}
-			}
-			success = {
-				victim_effects = {
-
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_building_destroyed_tt
-							BUILDING = mega_gun_emplacement
-						}
-						hidden_effect = {
-							remove_building = {
-								type = mega_gun_emplacement
-								level = 1
-							}
-						}
-					}
-				}
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 30
-						ratio = no
-					}
-					raid_add_unit_experience = 0.2
-				}
-				visual_effect = {
-					entity = "air_raids_2_success_entity"
-					animation = "attack"
-				}
-			}
-			critical_success = {
-			    victim_effects = {
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_building_destroyed_tt
-							BUILDING = mega_gun_emplacement
-						}
-						hidden_effect = {
-							remove_building = {
-								type = mega_gun_emplacement
-								level = 1
-							}
-						}
-					}
-			    }
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 10
-						ratio = no
-					}
-					raid_add_unit_experience = 0.35
-				}
-				visual_effect = {
-					entity = "air_raids_2_critical_success_entity"
-					animation = "attack"
-				}
-			}
-		}
 	}
-
-	mega_gun_emplacement_strike_no_bba = {
-		days_to_prepare = 90
-
-		ai_will_do = {
-			base = 1
-			modifier = {
-				# Don't target anyone who is not a potential enemy
-				factor = 0
-				NOT = {
-					is_in_array = {
-						array = potential_and_current_enemies
-						value = FROM  # Target country
-					}
-				}
-			}
-		}
-
-		category = air_raids
-
-		command_power = 20
-
-		allowed = {
-			has_dlc = "Gotterdammerung"
-			NOT = { has_dlc = "By Blood Alone" }
-		}
-
-		# Raid Type is visible
-		visible = {
-			is_special_project_completed = sp:sp_air_earthshaker_bomb
-		}
-		# Specific Target is visible
-		show_target = {
-			NOT = { is_in_faction_with = FROM }
-		}
-
-		# Can prepare
-		available = {
-
-		}
-		launchable = {
-			has_war_with = FROM
-		}
-
-		target_type = {
-			building = {
-				type = mega_gun_emplacement
-			}
-		}
-		target_icon = GFX_other_target_icon
-		launch_sound = raid_launch_air
-
-		arrow = {
-		    type = air
-		}
-        unit_model = {
-            type = equipment
-        }
-
-		unit_requirements = {
-			equipment = {
-				type = { missile }
-				amount = { min = 70 }
-			}
-		}
-
-
-		starting_point = {
-		    types = { air_base }
-		}
-
-		success_factors = {
-			success = {
-				base = 0.65
-
-				# Raiding unit modifiers
-				experience = {
-					weight = 0.2
-					start_weight = -0.2
-					reference = 1.0
-				}
-				air_agility = {
-					reference = 100.0 # As air unit agility approaches 100 (as defined by the value above), increase chance by this value
-					weight = 0.1 # At 0 agility, the modifier will have negative effect.
-					start_weight = -0.1 # The modifier will scale linearly, meaning at 50 agility, the modifier will be 0.
-				}
-				reliability = {
-					reference = 1
-					weight = 0.05
-					start_weight = -0.1
-				}
-				air_defence = {
-					reference = 100
-					weight = 0.05
-					start_weight = -0.05
-				}
-				air_superiority = {
-					reference = 1
-					weight = 0.1
-					start_weight = -0.1
-				}
-
-				### Target Modifiers
-				anti_air = {
-					reference = 5
-					weight = -0.25
-				}
-				interception = {
-					reference = 500 # More than 500 fighters won't really make any difference
-					weight = -0.2
-				}
-				intel = {
-					weight = 0.3
-					#start_reference = 50
-					reference = 100
-				}
-			}
-
-			critical = {
-				base = 0.15
-			}
-		}
-
-		success_levels = {
-			failure = {
-				victim_effects = {
-					var:target_state = {
-						damage_building = {
-							type = mega_gun_emplacement
-							damage = 0.10 # levels of damage
-						}
-					}
-				}
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 70
-						ratio = no
-					}
-					raid_add_unit_experience = 0.05
-				}
-				visual_effect = {
-					entity = "raid_failed_entity"
-					animation = "attack"
-					}
-			}
-			limited_success = {
-			    victim_effects = {
-					var:target_state = {
-						damage_building = {
-							type = mega_gun_emplacement
-							damage = 0.15 # levels of damage
-							repair_speed_modifier = -0.20
-						}
-					}
-			    }
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 40
-						ratio = no
-					}
-					raid_add_unit_experience = 0.1
-				}
-				visual_effect = {
-					entity = "air_raids_2_limited_success_entity"
-					animation = "attack"
-					}
-			}
-			success = {
-				victim_effects = {
-
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_building_destroyed_tt
-							BUILDING = mega_gun_emplacement
-						}
-						hidden_effect = {
-							remove_building = {
-								type = mega_gun_emplacement
-								level = 1
-							}
-						}
-					}
-				}
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 30
-						ratio = no
-					}
-					raid_add_unit_experience = 0.2
-				}
-				visual_effect = {
-					entity = "air_raids_2_success_entity"
-					animation = "attack"
-					}
-			}
-			critical_success = {
-			    victim_effects = {
-					var:target_state = {
-						custom_effect_tooltip = {
-							localization_key = raid_building_destroyed_tt
-							BUILDING = mega_gun_emplacement
-						}
-						hidden_effect = {
-							remove_building = {
-								type = mega_gun_emplacement
-								level = 1
-							}
-						}
-					}
-			    }
-				actor_effects = {
-					raid_damage_units = {
-						plane_loss = 10
-						ratio = no
-					}
-					raid_add_unit_experience = 0.35
-				}
-			visual_effect = {
-				entity = "air_raids_2_critical_success_entity"
-				animation = "attack"
-				}
-			}
-		}
-	}
-
-
-
-# END OF TYPES
 }
