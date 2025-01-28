@@ -408,13 +408,14 @@ RUS_next_cities_advance = {
 # - Держать небольшой резерв по всей границе (tag = RBZ ? погран.служба?)
 #   Предположим, theatre_distribution_demand_increase = 5, front_unit_request = 300
 
+
 RUS_border_breach_reaction = {
 	allowed = {
 		original_tag = RUS
 	}
 	enable = {
 		AND = {
-			has_country_flag = russian_border_is_no_longer_safe,
+			has_country_flag = russian_border_is_no_longer_safe
 			has_war_with = UKR
 		}
 	}
@@ -431,29 +432,31 @@ RUS_border_breach_reaction = {
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 77  # Брянск
-		value = 1000
+		value = 400
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 76  # Курск
-		value = 1000
+		value = 400
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 37  # Белгород
-		value = 1000
+		value = 400
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 78  # Воронеж
-		value = 1000
+		value = 400
 	}
 
 	# 7.2) Создаём фронт-контроль (rush), чтобы выбить врага
+	#    Оставляем приоритет чуть ниже (например, 800), чтобы не перебивало
+	#    всё остальное, но всё равно высоко.
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		priority = 9999
+		priority = 1000
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -462,6 +465,7 @@ RUS_border_breach_reaction = {
 		strategic_region = 77
 		strategic_region = 76
 		strategic_region = 37
+		strategic_region = 78
 	}
 
 	# 7.3) Держим небольшой резерв на границе с погранслужбой (RBZ?)
@@ -469,9 +473,32 @@ RUS_border_breach_reaction = {
 	#     с небольшим value (300), + garrison если надо.
 
 	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 77  # Брянск
+		value = 2
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 76  # Курск
+		value = 2
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 37  # Белгород
+		value = 2
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 78  # Воронеж
+		value = 2
+	}
+
+	# 7.4) Держим небольшой фронт на погранслужбе (RBZ) (например +100),
+	#    чтобы не было 0 дивизий. ИИ будет стараться держать там 1-2 дивизии.
+	ai_strategy = {
 		type = front_unit_request
 		tag = RBZ   # погран.служба?
-		value = 300 # небольшая "просилка" войск
+		value = 50
 	}
 
 }
@@ -488,14 +515,35 @@ RUS_less_aggressive_if_low_manpower = {
 		AND = {
 			has_war_with = UKR
 			has_manpower < 5000
+			has_equipment = { ifv_sov_chassis < -3000 }
+			has_equipment = { apc_chassis < -3000 }
+			has_equipment = { tank_sov_chassis < -1000 }
+			has_equipment = { infantry_equipment < -1 }
+			has_equipment = { anti_air_equipment < -1 }
+			has_equipment = { atgm_equipment < -1 }
+			has_equipment = { uniform_equipment  < -1 }
+			has_equipment = { body_armor_equipment  < -1 }
+			has_equipment = { grenade_launcher_equipment < -1 }
 		}
 	}
 	abort = {
 		OR = {
 			NOT = { has_war_with = UKR }
 			has_manpower > 8000
+			has_equipment = { ifv_sov_chassis > -1000 }
+			has_equipment = { apc_chassis > -1000  }
+			has_equipment = { tank_sov_chassis > 100 }
+			has_equipment = { infantry_equipment > 3000 }
+			has_equipment = { anti_air_equipment > 1000 }
+			has_equipment = { atgm_equipment > 800 }
+			has_equipment = { uniform_equipment  > 3000 }
+			has_equipment = { body_armor_equipment > 1000 }
+			has_equipment = { grenade_launcher_equipment > 1000 }
 		}
 	}
+
+
+	
 	ai_strategy = {
 		type = front_control
 		tag = UKR
