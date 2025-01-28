@@ -118,7 +118,203 @@ RUS_more_army_gomel_kyiv = {
 }
 
 ##############################
-# 3. СМЕНА АГРЕССИВНОСТИ
+# РЕОРГАНИЗАЦИЯ ПОСЛЕ ПРОВАЛА СВО
+##############################
+
+#######################################################
+# A. ОТКАЗ ОТ СЕВЕРНЫХ РЕГИОНОВ УКРАИНЫ ПРИ ПРОВАЛЕ СВО
+#######################################################
+RUS_leave_north_after_failure = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		AND = {
+			has_war_with = UKR
+			has_country_flag = RUS_failure_of_SMO  # <-- флаг о провале СВО
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			NOT = { has_country_flag = RUS_failure_of_SMO }
+		}
+	}
+
+	# 1) Отключаем (в минус) фронты в северных регионах.
+	# Киев (правый 23, левый 68), Чернигов (26), Сумская область (65).
+	# Можно добавить Гомель(6), если надо.
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 23   # Правый Киев
+		value = -1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 68   # Левый Киев
+		value = -1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 26   # Чернигов
+		value = -1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 65   # Сумы
+		value = -1000
+	}
+
+	# 2) Снижаем приоритет фронт-контроля (вдруг где-то остался).
+	#    Можно либо полностью отключить execute_order, либо
+	#    задать "priority = -9999".
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 23
+		execute_order = no
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 68
+		execute_order = no
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 26
+		execute_order = no
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 65
+		execute_order = no
+	}
+}
+
+#######################################################
+# B. ФОКУС НА ДОНБАСС, ЗАПОРОЖЬЕ, ХЕРСОН ПОСЛЕ ПРОВАЛА
+#######################################################
+RUS_focus_donbass_south_after_failure = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		AND = {
+			has_war_with = UKR
+			has_country_flag = RUS_failure_of_SMO
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			NOT = { has_country_flag = RUS_failure_of_SMO }
+		}
+	}
+
+	# 1) Увеличиваем приоритет фронта в Донбассе:
+	# Допустим у тебя donetsk = 31, lygansk = 63
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 31   # Донецк
+		value = 2000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 63   # Луганск
+		value = 2000
+	}
+
+	# 2) Запорожье (57,58) и Херсон (27,56) — ещё выше
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 27
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 56
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 57
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 58
+		value = 1500
+	}
+
+	# 3) front_control с rush на Донбасс + юг
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 31
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 63
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 27
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 56
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 57
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 58
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+}
+
+
+##############################
+# ПРИНЦИП СМЕНЫ АГРЕССИВНОСТИ
 ##############################
 
 # Менее агрессивно при дефиците ресурса (манпавера)
@@ -172,10 +368,10 @@ RUS_back_to_aggressive = {
 	}
 }
 
+##############################
+# ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
+##############################
 
-
-
-# ИИ не подводит дивизии к границе мира, пограничникам и пытается забыть про гарнизон #
 RUS_border_and_rbz = {
 	allowed = {
 		original_tag = RUS
