@@ -1,24 +1,16 @@
-# Подготовка к войне
-
-#front_unit_request Использует искусственный интеллект для переброски большего количества юнитов на заданную линию фронта.	Одновременно можно использовать более одного типа целей, 
-#и в этом случае необходимо соответствовать каждому из них.
-
-#тип приказа = <фронт|вторжение> #order type = <front|invasion>
-#Если этот параметр установлен, стратегия ИИ будет применяться только при сухопутных или морских вторжениях соответственно
-
-RUS_wait_war_with_ukr = {
+#######################################################
+# 0. ПОДГОТОВКА К ВОЙНЕ С УКРАИНОЙ
+#######################################################
+RUS_prepare_war_UKR = {
 	allowed = {
 		original_tag = RUS
 	}
-
 	enable = {
 		always = yes
 	}
-
 	abort = {
 		always = no
 	}
-
 	ai_strategy = {
 		type = prepare_for_war
 		id = UKR
@@ -26,341 +18,159 @@ RUS_wait_war_with_ukr = {
 	}
 }
 
-# Начиняем фронт войсками
-RUS_more_army_on_front = { 
+
+
+
+##############################
+# 1. КРЫМ–ХЕРСОН
+##############################
+RUS_more_army_crimea_kherson = {
 	allowed = {
 		original_tag = RUS
 	}
-
-	enable = {
-		always = yes
-	}
-	
-	abort = {
-		always = no
-	}
-
-	# Красноперекопск
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 15
-		id = 704
-	}
-
-	# Джанкой
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 15
-		id = 705
-	}
-
-	# Керчь
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 5
-		id = 314
-	}
-
-	# Каховский район
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 10
-		id = 302
-	}
-
-	# Скадовск
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 10
-		id = 264
-	}
-
-	# Херсон
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 10
-		id = 253
-	}
-
-	# Мелитополь
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 5
-		id = 246
-	}
-
-	# Берислав
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 5
-		id = 231
-	}
-
-	# Алёшки
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		value = 5
-		id = 262
-	}
-}
-
-# Контроль фронта (До 20 марта 2022 года)
-RUS_front_control_1 = { 
-	allowed = {
-		original_tag = RUS
-	}
-
-	enable = {
-		date < 2022.03.20
-	}
-	
-	abort = {
-		date > 2022.03.20
-	}
-
-	ai_strategy = {
-		type = front_control
-		area = right_kyiv
-		priority = 50
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-	}
-	
-	ai_strategy = {
-		type = front_control
-		area = donbass
-		area = crimea
-		area = left_kherson
-		area = left_zaporozie
-		priority = 100
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-	}
-
-	ai_strategy = {
-		type = front_control
-		area = left_kherson
-		priority = 20
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-	}
-
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ratio = 1
-		priority = 10
-		ordertype = front
-		execution_type = careful
-	}
-}
-
-
-
-
-
-
-
-
-# РФ принудительно покидает Киев
-RUS_leave_kiev = {
-	allowed = {
-		original_tag = RUS
-	}
-
 	enable = {
 		AND = {
-			is_historical_focus_on = yes
 			has_war_with = UKR
-			date > 2022.3.20
-		}
-	}
-
-	abort = {
-		OR = {
-			date > 2022.4.1
-			NOT = {
-				has_war_with = UKR
-			}
-		}
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 23
-		strategic_region = 45
-		value = -10000
-	}
-}
-
-# после 28.03 дать приоритет войск за защиту херсонской области , особенно восточной части
-#дать приоритет на наступление на Харьков и Сумы
-#set_country_flag = RUS_retreated_from_Kyiv  
-
-
-
-
-
-RUS_atack_kheson_oblst = {
-	allowed = {
-		original_tag = RUS
-	}
-
-	enable = {
-		OR = {
 			has_country_flag = RUS_start_SMO
-		    is_historical_focus_on = yes
-			has_war_with = UKR
-		}		
-	}
-
-	abort = {
-		OR = {
-			date  > 2022.12.1
-			NOT = {
-				has_war_with = UKR
-			}
 		}
 	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			date > 2023.12.31
+		}
+	}
+	# theatre_distribution_demand_increase по Крыму и Херсону
+	ai_strategy = { type = theatre_distribution_demand_increase value = 15  id = 28 }  # Крым
+	ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 27 }  # Левый Херсон
+	ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 56 }  # Правый Херсон
+	ai_strategy = { type = theatre_distribution_demand_increase value = 10  id = 57 }  # Левое Запорожье
+	ai_strategy = { type = theatre_distribution_demand_increase value = 10  id = 58 }  # Правое Запорожье
 
+	# front_control (rush)
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		priority = 2000
-		ordertype = front  #front
+		ordertype = front
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-	 	area = left_kherson 
-		area = left_zaporozie
-		area = right_kherson
+		priority = 150
+		strategic_region = 28  # Крым
+		strategic_region = 27  # Левый Херсон
+		strategic_region = 56  # Правый Херсон
+		strategic_region = 57  # Левое Запорожье
+		strategic_region = 58  # Правое Запорожье
+	}
+}
+
+##############################
+# 2. ГОМЕЛЬ–КИЕВ
+##############################
+RUS_more_army_gomel_kyiv = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		AND = {
+			has_war_with = UKR
+			has_country_flag = RUS_start_SMO
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			date > 2024.06.30
+		}
 	}
 
-
-
-
-####26 marta 26.03 блицкриг все
-
+	# Доп запрос войск
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 27 #херсон
-		value = 1000
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 24 #николаевская
-		value = -1000
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 60 #кировоградская
-		value = -1000
+		strategic_region = 6   # Гомель
+		value = 800
 	}
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 57 #левый берег запородье
-		value = 900
+		strategic_region = 23  # Правый Киев
+		value = 800
 	}
-
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 58 #правый берег запородье
+		strategic_region = 68  # Левый Киев
 		value = 800
 	}
 
-}
-
-
-
-
-
-#оброна хер сона 2 этап + крім
-
-
-
-
-
-
-
-
-#атака луганс донетск
-RUS_atack_donetsk_oblst = {
-	allowed = {
-		original_tag = RUS
-	}
-
-	enable = {
-		OR = {
-			has_country_flag = RUS_start_SMO
-		    is_historical_focus_on = yes
-			has_war_with = UKR
-		}		
-	}
-
-	abort_when_not_enabled = yes
-
-
-
-
+	# Стратегия нападения
 	ai_strategy = {
 		type = front_control
+		tag = UKR
+		priority = 200
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-		area = donbass
+		strategic_region = 23  # Правый Киев
+		strategic_region = 68  # Левый Киев
+		strategic_region = 26  # Чернигов (опционально)
+		strategic_region = 65  # Сумская обл (опционально)
 	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 31   #donetsk #lugansk
-		value = 500
-	}
-
-
 }
 
-RUS_what_is_the_next_step_of_the_operation = {
-	allowed = {
-		original_tag = RUS
-	}
+##############################
+# 3. СМЕНА АГРЕССИВНОСТИ
+##############################
 
+# Менее агрессивно при дефиците ресурса (манпавера)
+RUS_less_aggressive_if_low_manpower = {
+	allowed = { original_tag = RUS }
 	enable = {
-		has_country_flag = RUS_retreated_from_Kyiv
-		is_historical_focus_on = yes
-		has_war_with = UKR	
+		AND = {
+			has_war_with = UKR
+			has_manpower < 5000
+		}
 	}
-
-	abort_when_not_enabled = yes
-
-
-
-
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			has_manpower > 8000
+		}
+	}
 	ai_strategy = {
 		type = front_control
+		tag = UKR
 		ordertype = front
-		execution_type = balanced
+		execution_type = careful
 		execute_order = yes
-		manual_attack = yes
-		area = donbass
+		manual_attack = no
+		priority = 9999
 	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 31   #donetsk #lugansk
-		value = 600
-	}
-
-
 }
 
-
-
+# Возвращаемся к rush, когда манпавера снова достаточно
+RUS_back_to_aggressive = {
+	allowed = { original_tag = RUS }
+	enable = {
+		AND = {
+			has_war_with = UKR
+			has_manpower > 8000
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			has_manpower < 5000
+		}
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+	}
+}
 
 
 
