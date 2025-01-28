@@ -98,18 +98,18 @@ NDefines.NMilitary.DIVISION_SIZE_FOR_XP = 8                   -- how many battal
 NDefines.NMilitary.CORPS_COMMANDER_ARMIES_CAP = -1			-- how many armies a corps commander is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 100			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 10				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.033    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
-NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.033    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
-NDefines.NMilitary.AIR_SUPPORT_BASE = 0.08-- 0.25 vanilla
+NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.036    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
+NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.036    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
+NDefines.NMilitary.AIR_SUPPORT_BASE = 0.10-- 0.25 vanilla
 NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_AGILITY = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_SPEED = 3000 -- 800
 NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 1000 -- 100
 NDefines.NAir.DETECT_CHANCE_FROM_AIRCRAFTS_EFFECTIVE_COUNT = 500 -- 3000
-NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.3 -- 1 vanilla Higher value = more shot down planes
+NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.25 -- 1 vanilla Higher value = more shot down planes
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
-NDefines.NAir.DISRUPTION_FACTOR = 1.25 -- 4.0
+NDefines.NAir.DISRUPTION_FACTOR = 1.3 -- 4.0
 NDefines.NMilitary.LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 1 -- vanial 3 how many CAS/TAC can enter a combat depending on enemy width there
 NDefines.NMilitary.ATTRITION_DAMAGE_ORG = 0.08					   -- vanila 0.08 ущерб от истощения Организации
 NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.025		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
@@ -142,8 +142,8 @@ NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE = 0.20	       -- more AA attack
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112 -- how quickly defense approaches the max impact diminishing returns curve
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.3     -- vanila 0.3 effect on speed due to enemy air superiority
 NDefines.NMilitary.ANTI_AIR_TARGETTING_TO_CHANCE = 0.02			-- Balancing value to determine the chance of ground AA hitting an attacking airplane affecting both the effective average damage done by AA to airplanes and the reduction of damage done by airplanes due to AA support
-NDefines.NMilitary.ANTI_AIR_ATTACK_TO_AMOUNT = 0.0015				-- Balancing value to convert equipment stat anti_air_attack to the random % value of airplanes being hit.
-NDefines.NMilitary.ENCIRCLED_PENALTY = -0.75                      	-- #was -0.3 penalty when completely encircled когда окружили
+NDefines.NMilitary.ANTI_AIR_ATTACK_TO_AMOUNT = 0.001				-- Balancing value to convert equipment stat anti_air_attack to the random % value of airplanes being hit.
+NDefines.NMilitary.ENCIRCLED_PENALTY = -0.30                      	-- #was -0.3 penalty when completely encircled когда окружили
 NDefines.NMilitary.UNIT_EXP_LEVELS = { 0.1, 0.3, 0.6, 0.8 }		-- Experience needed to progress to the next level
 NDefines.NMilitary.EQUIPMENT_COMBAT_LOSS_FACTOR = 0.70	 	   -- % was 0.70 (lancaster)of equipment lost to strength ratio in combat so some % is returned if below 1
 NDefines.NMilitary.ORG_LOSS_FACTOR_ON_CONQUER = 0.1              -- percentage of (max) org loss on takign enemy province
@@ -186,8 +186,8 @@ NDefines.NAir.NAVAL_RECON_DETECTION_BALANCE_FACTOR = 0.7			-- Value used to scal
 NDefines.NAir.AIR_MORE_GROUND_CREWS_COST = 5.0					-- CP cost to maintain more ground crews
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain when running training exercise mission
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
-2.0, -- AIR_SUPERIORITY
-1.0, -- CAS
+2.5, -- AIR_SUPERIORITY
+2.0, -- CAS
 1.5, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
@@ -459,4 +459,4 @@ NDefines.NMilitary.EXPERIENCE_COMBAT_FACTOR = 0.15 -- 0.25
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_GROUP_COST = 2 -- 5	
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_CHANGE_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_SUPPORT_SLOT_COST = 1 -- 10
-NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.010 -- 0.060
+NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.015 -- 0.060
