@@ -1,5 +1,5 @@
 #######################################################
-# 0. ПОДГОТОВКА К ВОЙНЕ С УКРАИНОЙ
+# 1. ПОДГОТОВКА К ВОЙНЕ С УКРАИНОЙ
 #######################################################
 RUS_prepare_war_UKR = {
 	allowed = {
@@ -22,7 +22,7 @@ RUS_prepare_war_UKR = {
 
 
 ##############################
-# 1. КРЫМ–ХЕРСОН
+# 2. КРЫМ–ХЕРСОН
 ##############################
 RUS_more_army_crimea_kherson = {
 	allowed = {
@@ -65,7 +65,7 @@ RUS_more_army_crimea_kherson = {
 }
 
 ##############################
-# 2. ГОМЕЛЬ–КИЕВ
+# 3. ГОМЕЛЬ–КИЕВ
 ##############################
 RUS_more_army_gomel_kyiv = {
 	allowed = {
@@ -122,7 +122,7 @@ RUS_more_army_gomel_kyiv = {
 ##############################
 
 #######################################################
-# A. ОТКАЗ ОТ СЕВЕРНЫХ РЕГИОНОВ УКРАИНЫ ПРИ ПРОВАЛЕ СВО
+# 4. ОТКАЗ ОТ СЕВЕРНЫХ РЕГИОНОВ УКРАИНЫ ПРИ ПРОВАЛЕ СВО
 #######################################################
 RUS_leave_north_after_failure = {
 	allowed = {
@@ -195,7 +195,7 @@ RUS_leave_north_after_failure = {
 }
 
 #######################################################
-# B. ФОКУС НА ДОНБАСС, ЗАПОРОЖЬЕ, ХЕРСОН ПОСЛЕ ПРОВАЛА
+# 5. ФОКУС НА ДОНБАСС, ЗАПОРОЖЬЕ, ХЕРСОН ПОСЛЕ ПРОВАЛА
 #######################################################
 RUS_focus_donbass_south_after_failure = {
 	allowed = {
@@ -314,7 +314,171 @@ RUS_focus_donbass_south_after_failure = {
 
 
 ##############################
-# ПРИНЦИП СМЕНЫ АГРЕССИВНОСТИ
+# 6. НАСТУПЛЕНИЕ НА КРИВОЙ РОГ, ДНЕПР, ХАРЬКОВ (ПОСЛЕ ЗАНЯТИЯ ЮГА/ДОНБАССА)
+##############################
+# Предполагаем, что как только вышли на админ. границы Донецка, Луганска, Херсона, Запорожья,
+# ИИ хочет пойти на Кривой Рог (?), Днепр (?), Харьков (?).
+# Тут пример: city_krivoyrog=100, city_dnepr=101, city_kharkov=44 (или 65, проверь).
+# Активируем при тех же условиях, что и "focus_donbass_south_after_failure",
+
+RUS_next_cities_advance = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		AND = {
+			has_war_with = UKR
+			# ЗАМЕНИТЬ НА ФЛАГ, КОТОРЫЙ ВЫДАЁТСЯ ПО ИВЕНТУ КОГДА ДОНБАСС ПОЛНОСТЬЮ ВЗЯТ
+			has_full_control_of_state = 237 
+			has_full_control_of_state = 213
+			has_full_control_of_state = 182
+			has_full_control_of_state = 149
+			has_full_control_of_state = 165
+			has_full_control_of_state = 145
+			has_full_control_of_state = 116
+			has_full_control_of_state = 125
+			has_full_control_of_state = 154
+			# has_country_flag = RUS_captured_donbass
+			has_country_flag = RUS_failure_of_SMO
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			NOT = { has_country_flag = RUS_failure_of_SMO }
+		}
+	}
+
+	# city_krivoyrog = 61 , city_dnepr = 62, kharkov = 44
+	# Можно через "front_unit_request"
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 61  # Кривой Рог (ID страт-рега)
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 62  # Днепр
+		value = 2000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 44   # Харьков
+		value = 2000
+	}
+
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 100
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 101
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 44
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+		priority = 9999
+	}
+}
+
+#############################################
+# 7. ПОВЕДЕНИЕ ПРИ ПРОРЫВЕ ГРАНИЦЫ (russian_border_is_no_longer_safe)
+#############################################
+
+# При этом флаге, РФ должна:
+# - Подтянуть войска в места на территории РФ, где есть войска Украины, чтобы их выбить
+# - Держать небольшой резерв по всей границе (tag = RBZ ? погран.служба?)
+#   Предположим, theatre_distribution_demand_increase = 5, front_unit_request = 300
+
+RUS_border_breach_reaction = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		AND = {
+			has_country_flag = russian_border_is_no_longer_safe,
+			has_war_with = UKR
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			NOT = { has_country_flag = russian_border_is_no_longer_safe }
+		}
+	}
+
+	# 7.1) Подтягиваем войска в регионы РФ, куда зашла Украина
+	#     Здесь нужно знать ID state/region РФ, куда украинцы могут прорваться.
+	#     Допустим, Брянск(77), Курск(76), Белгород(37), Воронеж(78).
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 77  # Брянск
+		value = 1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 76  # Курск
+		value = 1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 37  # Белгород
+		value = 1000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 78  # Воронеж
+		value = 1000
+	}
+
+	# 7.2) Создаём фронт-контроль (rush), чтобы выбить врага
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		priority = 9999
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+
+		strategic_region = 77
+		strategic_region = 76
+		strategic_region = 37
+	}
+
+	# 7.3) Держим небольшой резерв на границе с погранслужбой (RBZ?)
+	#     Можно сделать theatre_distribution_demand_increase или front_unit_request
+	#     с небольшим value (300), + garrison если надо.
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = RBZ   # погран.служба?
+		value = 300 # небольшая "просилка" войск
+	}
+
+}
+
+
+##############################
+# 8. ПРИНЦИП СМЕНЫ АГРЕССИВНОСТИ
 ##############################
 
 # Менее агрессивно при дефиците ресурса (манпавера)
@@ -369,7 +533,7 @@ RUS_back_to_aggressive = {
 }
 
 ##############################
-# ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
+# 9. ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
 ##############################
 
 RUS_border_and_rbz = {
