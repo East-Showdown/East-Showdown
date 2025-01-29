@@ -22,6 +22,32 @@
 #	}
 #}
 
+bz_on_SMO_start = {
+	for_each_scope_loop = { # Цикл погранзонам THIS is BZ STATE scope
+		array = global.bz_states_ids
+
+		if = {
+			limit = { owner = { original_tag = RUS } } 
+
+
+			for_each_loop = { # Навешиваем на стейт дебаффы всем врагам Russia
+				array = RUS.enemies
+				value = enemy
+				meta_effect = {
+					text = {
+						add_dynamic_modifier = {
+							modifier = bz_attack_debuff
+							scope = [ENEMY_TAG]
+							days = 30
+						}
+					}
+					ENEMY_TAG = "[?enemy.GetTag]"
+				}
+			}
+		}
+	}
+}
+
 bz_remove_update_tick = {
 	if = {
 		# Если разрешено создавать погранзоны
@@ -142,25 +168,51 @@ bz_tick_enabled_creation_state = {
 
 				set_temp_variable = { temp_bz_adjacent_state = THIS }
 
-				owner = {
-					for_each_scope_loop = { # Цикл по всем врагам России
-						array = enemies
-
-						meta_effect = {
-							text = {
-								[TEMP_STATE_ID] = {
-									teleport_armies = {
-										limit = { original_tag = [ENEMY_TAG] }
-
-										to_state = [TO_STATE_ID]
-									}	
-								}							
+				if = { # Телепорт в столицу
+					limit = { PREV = { has_state_flag = bz_state_teleport_to_capital } }
+					owner = {
+						for_each_scope_loop = { # Цикл по всем врагам России
+							array = enemies
+	
+							meta_effect = {
+								text = {
+									[TEMP_STATE_ID] = {
+										teleport_armies = {
+											limit = { original_tag = [ENEMY_TAG] }
+	
+											to_state = [TO_STATE_ID]
+										}	
+									}							
+								}
+								TO_STATE_ID = "[?THIS.capital.GetID]"
+								ENEMY_TAG = "[?THIS.GetTag]"
+								TEMP_STATE_ID = "[?temp_bz_adjacent_state.GetID]"
 							}
-							TO_STATE_ID = "[?temp_bz_state.GetID]"
-							ENEMY_TAG = "[?THIS.GetTag]"
-							TEMP_STATE_ID = "[?temp_bz_adjacent_state.GetID]"
+	
 						}
-
+					}
+				}
+				else = { # Телепорт в БЗ стейт
+					owner = {
+						for_each_scope_loop = { # Цикл по всем врагам России
+							array = enemies
+	
+							meta_effect = {
+								text = {
+									[TEMP_STATE_ID] = {
+										teleport_armies = {
+											limit = { original_tag = [ENEMY_TAG] }
+	
+											to_state = [TO_STATE_ID]
+										}	
+									}							
+								}
+								TO_STATE_ID = "[?temp_bz_state.GetID]"
+								ENEMY_TAG = "[?THIS.GetTag]"
+								TEMP_STATE_ID = "[?temp_bz_adjacent_state.GetID]"
+							}
+	
+						}
 					}
 				}
 
@@ -176,6 +228,34 @@ bz_tick_enabled_creation_state = {
 		# Передаём погранзону её владельцу
 		if = {
 			limit = { check_variable = { bz_owner = RUS } }
+
+			
+			if = { # Телепорт в столицу
+				limit = { has_state_flag = bz_state_teleport_to_capital }
+
+				set_temp_variable = { temp_bz_state = THIS }
+				owner = {
+					for_each_scope_loop = { # Цикл по всем врагам России
+						array = enemies
+
+						meta_effect = {
+							text = {
+								[TEMP_STATE_ID] = {
+									teleport_armies = {
+										limit = { original_tag = [ENEMY_TAG] }
+
+										to_state = [TO_STATE_ID]
+									}	
+								}							
+							}
+							TO_STATE_ID = "[?THIS.capital.GetID]"
+							ENEMY_TAG = "[?THIS.GetTag]"
+							TEMP_STATE_ID = "[?temp_bz_state.GetID]"
+						}
+
+					}
+				}
+			}
 			transfer_state_to = RBZ
 		}
 		else_if = {
