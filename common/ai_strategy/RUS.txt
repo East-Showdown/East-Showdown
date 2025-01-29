@@ -1,3 +1,17 @@
+#EAST SHOWDOWN 0.5.1.0 | AI 2.0
+
+#######################################################
+# КОНСТАНТЫ
+#######################################################
+
+@RUS_EQUIP_TIER_S = 40000 # [inf_equip, uniform_equip, body_armor_equip]
+@RUS_EQUIP_TIER_A = 4000 # [atgm_equip, mortar_equip , artillery_equip , grenade_launcher_equip , aa_equip , support_equip , motorized_equip ]
+@RUS_EQUIP_TIER_B = 1000 # [engi_equip, amv_equip , arv_equip ]
+@RUS_EQUIP_TIER_C = 150 # [avf_chassis, apc_chassis, imv_chassis, ifv_chassis,  sp_art_chassis, tank_chassis, sp_mlrs_chassis]
+@RUS_EQUIP_TIER_D = 20  # [sp_aa_chassis, sp_atgm_chassis, sp_heavy_art_chassis, sp_tos_chassis, arv_chassis]
+
+
+
 #######################################################
 # 1. ПОДГОТОВКА К ВОЙНЕ С УКРАИНОЙ
 #######################################################
@@ -63,6 +77,60 @@ RUS_more_army_crimea_kherson = {
 		strategic_region = 58  # Правое Запорожье
 	}
 }
+
+# 2.1 ХЕРСОН-ЛЕЙТ ГЕЙМ
+
+RUS_late_herson_careful = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		AND = {
+			has_war_with = UKR
+
+			# Условное начало лейта
+			date > 2022.11.11
+
+			# И РФ не контролирует правый берег (state=?? ).
+			NOT = {
+				OR = { 
+				RUS = { controls_state = 231 }
+				RUS = { controls_state = 651 }
+				RUS = { controls_state = 253 }
+				RUS = { controls_state = 233 }
+
+
+				}
+			}
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			# Если вдруг РФ заняла правый берег
+			RUS = { controls_state = 231 }
+			RUS = { controls_state = 651 }
+			RUS = { controls_state = 253 }
+			RUS = { controls_state = 233 }
+			# Или прошла ещё более поздняя дата//наступило событие, set_country_flag ...
+		}
+	}
+
+	# Здесь мы "перебиваем" front_control на region=56,
+	# ставим execution_type=balanced, manual_attack=no
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 56
+		ordertype = front
+		execution_type = balanced   # или careful
+		execute_order = yes
+		manual_attack = no
+		priority = 9999  # высоко, чтобы переопределить "rush" из старого блока
+	}
+}
+
+
 
 ##############################
 # 3. ГОМЕЛЬ–КИЕВ
@@ -417,6 +485,7 @@ RUS_border_breach_reaction = {
 		AND = {
 			has_country_flag = russian_border_is_no_longer_safe
 			has_war_with = UKR
+
 		}
 	}
 	abort = {
@@ -432,22 +501,22 @@ RUS_border_breach_reaction = {
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 77  # Брянск
-		value = 400
+		value = 600
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 76  # Курск
-		value = 400
+		value = 600
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 37  # Белгород
-		value = 400
+		value = 600
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 78  # Воронеж
-		value = 400
+		value = 600
 	}
 
 	# 7.2) Создаём фронт-контроль (rush), чтобы выбить врага
@@ -456,7 +525,7 @@ RUS_border_breach_reaction = {
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		priority = 1000
+		priority = 1200	
 		ordertype = front
 		execution_type = rush
 		execute_order = yes
@@ -475,22 +544,22 @@ RUS_border_breach_reaction = {
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
 		id = 77  # Брянск
-		value = 2
+		value = 10
 	}
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
 		id = 76  # Курск
-		value = 2
+		value = 10
 	}
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
 		id = 37  # Белгород
-		value = 2
+		value = 10
 	}
 	ai_strategy = {
 		type = theatre_distribution_demand_increase
 		id = 78  # Воронеж
-		value = 2
+		value = 10
 	}
 
 	# 7.4) Держим небольшой фронт на погранслужбе (RBZ) (например +100),
@@ -498,7 +567,7 @@ RUS_border_breach_reaction = {
 	ai_strategy = {
 		type = front_unit_request
 		tag = RBZ   # погран.служба?
-		value = 50
+		value = 100
 	}
 
 }
@@ -515,31 +584,64 @@ RUS_less_aggressive_if_low_manpower = {
 		AND = {
 			has_war_with = UKR
 			has_manpower < 5000
-			has_equipment = { ifv_sov_chassis < -3000 }
-			has_equipment = { apc_chassis < -3000 }
-			has_equipment = { tank_sov_chassis < -1000 }
-			has_equipment = { infantry_equipment < -1 }
-			has_equipment = { anti_air_equipment < -1 }
-			has_equipment = { atgm_equipment < -1 }
-			has_equipment = { uniform_equipment  < -1 }
-			has_equipment = { body_armor_equipment  < -1 }
-			has_equipment = { grenade_launcher_equipment < -1 }
+			OR = { 
+			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
+			}
+			check_variable = { ammunition_variable < 500 }
 		}
 	}
 	abort = {
-		OR = {
+
 			NOT = { has_war_with = UKR }
 			has_manpower > 8000
-			has_equipment = { ifv_sov_chassis > -1000 }
-			has_equipment = { apc_chassis > -1000  }
-			has_equipment = { tank_sov_chassis > 100 }
-			has_equipment = { infantry_equipment > 3000 }
-			has_equipment = { anti_air_equipment > 1000 }
-			has_equipment = { atgm_equipment > 800 }
-			has_equipment = { uniform_equipment  > 3000 }
-			has_equipment = { body_armor_equipment > 1000 }
-			has_equipment = { grenade_launcher_equipment > 1000 }
-		}
+			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
+			check_variable = { ammunition_variable > 700 }	
 	}
 
 
@@ -584,56 +686,137 @@ RUS_back_to_aggressive = {
 # 9. ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
 ##############################
 
-RUS_border_and_rbz = {
+RUS_border_and_rbz_no_garrisons = {
 	allowed = {
 		original_tag = RUS
 	}
-
-    enable = {
-	    always = yes
+	enable = {
+		always = yes
+	}
+	abort = {
+		always = no
 	}
 
-    abort = {
-        always = no
-    }
-
-	ai_strategy = {
-		type = front_unit_request
-		tag = BOR
-		value = -10000
-	}
-
-	ai_strategy = {
-		type = front_unit_request  
-		tag = RBZ
-		value = -10000
-	}
-
+	# Сильно режем гарнизоны
 	ai_strategy = {
 		type = garrison
 		value = -10000
 	}
-
 	ai_strategy = {
 		type = garrison_reinforcement_priority
 		value = -10000
 	}
 
+	# Не защищаем границу с Беларусью
 	ai_strategy = {
 		type = dont_defend_ally_borders
 		id = BLR
 		value = 10000
 	}
 
+	# front_armor_score для Украины
 	ai_strategy = {
 		type = front_armor_score
 		id = UKR
 		value = 10000
 	}
+}
 
+
+RUS_ignore_RBZ_border = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		always = yes
+	}
+	# Если хотим, можем сделать так, что при первом прорыве
+	# эта стратегия прерывается (abort), чтобы больше не игнорировать RBZ
+	abort = {
+		OR = {
+			has_country_flag = russian_border_is_no_longer_safe
+		}
+	}
+
+	# Игнорируем погранзону RBZ
+	ai_strategy = {
+		type = front_unit_request
+		tag = RBZ
+		value = -10000
+	}
+
+	# Так же можно добавить:
 	ai_strategy = {
 		type = dont_defend_ally_borders
 		id = RBZ
 		value = 10000
 	}
+}
+
+
+##############################
+# 10. ПРИНЦИП ПРОИЗВОДСТВА
+##############################
+
+########################################################
+#  RUS_base_production
+#  Задаёт некий базовый расклад по производству, активный почти всегда
+########################################################
+
+RUS_base_production = {
+	allowed = {
+		original_tag = RUS
+	}
+	enable = {
+		always = yes
+	}
+	abort = {
+		always = no
+	}
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = infantry
+		value = 20
+	}
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = armor
+		value = 40
+	}
+	
+	ai_strategy = {
+		type = equipment_production_factor
+		id = motorized
+		value = 10
+	}
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = artillery
+		value = 8
+	}
+
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = cas
+		value = 5
+	}
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = fighter
+		value = 5
+	}
+
+	ai_strategy = {
+		type = equipment_production_factor
+		id = strategic_bomber
+		value = 2
+	}
+
+
+
 }
