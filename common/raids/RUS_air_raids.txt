@@ -2270,8 +2270,8 @@ types = {
 
 
 
-	#удары по складам
-	rus_arms_industry_strike_rc = {
+	#удары по производству снарядов
+	rus_ammunition_plant_strike_rc = {
 		days_to_prepare = 1 #2
 		days_re_enable = 90
 		category = critical_military_infrastructure_strikes
@@ -2288,7 +2288,7 @@ types = {
 		show_target = {
 			NOT = { is_in_faction_with = FROM }
 			var:target_state = {
-				OR = { ammunition_plant > 0 }
+				ammunition_plant > 0
 			}
 		}
 	
@@ -2518,7 +2518,7 @@ types = {
 		}
 	}
 
-	rus_arms_industry_strike_bl = {
+	rus_ammunition_plant_strike_bl = {
 		days_to_prepare = 1 #2
 		days_re_enable = 90
 		category = critical_military_infrastructure_strikes
@@ -2535,7 +2535,7 @@ types = {
 		show_target = {
 			NOT = { is_in_faction_with = FROM }
 			var:target_state = {
-				OR = { arms_factory > 0 }
+				OR = { ammunition_plant > 0 }
 			}
 		}
 
@@ -2545,7 +2545,7 @@ types = {
 
 		target_type = {
 			building = {
-				type = arms_factory
+				type = ammunition_plant
 			}
 		}
 		#target_icon = GFX_canal_icon
@@ -2571,7 +2571,7 @@ types = {
 		}
 
 		starting_point = {
-			types = { air_base }
+			types = { rocket_site }
 		}
 
 		success_factors = {
@@ -2590,7 +2590,7 @@ types = {
 			failure = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
 					}
 				}
 				visual_effect = {
@@ -2602,11 +2602,11 @@ types = {
 			limited_success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
-						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }						
 					}
 
-					add_to_temp_variable = { armsFactory = 0.5 }
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
 
 					set_temp_variable = { building_damage_by_missile = 0.25 }
 					set_temp_variable_to_random = {
@@ -2617,13 +2617,13 @@ types = {
 					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
 
 					if = {
-						limit = { check_variable = { armsFactory > 0 } }
-						divide_temp_variable = { building_damage_by_missile = armsFactory }
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
 					}
 
 					multiply_temp_variable = { building_damage_by_missile = 5 }
 
-					set_temp_variable = { max_clamp = armsFactory_tgt }
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
 					if = {
 						limit = { check_variable = { max_clamp = 0 } }
 						add_to_temp_variable = { max_clamp = 0.1 }
@@ -2636,11 +2636,11 @@ types = {
 					}
 
 					var:target_state = {
-						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
 							meta_effect = {
 								text = {
 									damage_building = {
-										type = arms_factory
+										type = ammunition_plant
 										damage = [DAM] # levels of damage
 									}
 								}
@@ -2658,11 +2658,11 @@ types = {
 			success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
-						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }						
 					}
 
-					add_to_temp_variable = { armsFactory = 0.5 }
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
 					set_temp_variable = { building_damage_by_missile = 0.25 }
 
 					set_temp_variable_to_random = {
@@ -2673,13 +2673,13 @@ types = {
 					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
 
 					if = {
-						limit = { check_variable = { armsFactory > 0 } }
-						divide_temp_variable = { building_damage_by_missile = armsFactory }
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
 					}
 
 					multiply_temp_variable = { building_damage_by_missile = 5 }
 
-					set_temp_variable = { max_clamp = armsFactory_tgt }
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
 					if = {
 						limit = { check_variable = { max_clamp = 0 } }
 						add_to_temp_variable = { max_clamp = 0.1 }
@@ -2692,11 +2692,11 @@ types = {
 					}
 
 					var:target_state = {
-						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
 							meta_effect = {
 								text = {
 									damage_building = {
-										type = arms_factory
+										type = ammunition_plant
 										damage = [DAM] # levels of damage
 									}
 								}
@@ -2714,11 +2714,11 @@ types = {
 			critical_success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
-						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }						
 					}
 
-					add_to_temp_variable = { armsFactory = 0.5 }
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
 					set_temp_variable = { building_damage_by_missile = 0.25 }
 
 					set_temp_variable_to_random = {
@@ -2729,13 +2729,13 @@ types = {
 					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
 
 					if = {
-						limit = { check_variable = { airBase > 0 } }
-						divide_temp_variable = { building_damage_by_missile = armsFactory }
+						limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
 					}
 
 					multiply_temp_variable = { building_damage_by_missile = 5 }
 
-					set_temp_variable = { max_clamp = armsFactory_tgt }
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
 					if = {
 						limit = { check_variable = { max_clamp = 0 } }
 						add_to_temp_variable = { max_clamp = 0.1 }
@@ -2748,7 +2748,7 @@ types = {
 					}
 
 					var:target_state = {
-						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2764,4 +2764,9 @@ types = {
 			}
 		}
 	}
+
+
+	
+	#удары по складам потом тэс та и все вроде пока что и вьебывать по пво и радарам
+	
 }
