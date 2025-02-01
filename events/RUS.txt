@@ -6281,20 +6281,19 @@ country_event = {
 	desc = rus.196.desc
 	picture = GFX_country_event_196
 
-	fire_only_once = yes
-
 	trigger = {
 		NOT = {
 			has_global_flag = start_rosconservation
+			has_country_flag = ishak
 		}
 		original_tag = RUS
-		RUS = {
-			check_variable = { ammunition_variable < 5400 }
-		}
+		RUS = { check_variable = { ammunition_variable < 5400 } }
 	}
 
 	immediate = {
 		set_global_flag = start_rosconservation
+		set_variable = { RUS_ammunition_warehouse_count_restore = 0 }
+		set_variable = { RUS_ammunition_big_warehouse_count_restore = 0 }
 	}
 
 	option = {
@@ -6302,5 +6301,127 @@ country_event = {
 		hidden_effect = {
 			add_dynamic_modifier = { modifier = RUS_rosconservation_modifer }
 		}
+	}
+}
+
+country_event = {
+	id = rus.197
+	title = rus.197.t
+	desc = rus.197.desc
+	picture = GFX_country_event_197
+
+	trigger = {
+		has_global_flag = start_rosconservation
+		original_tag = RUS
+		RUS = { check_variable = { ammunition_variable > 8400 } }
+	}
+
+	immediate = {
+		set_global_flag = close_rosconservation
+		clr_global_flag = start_rosconservation
+	}
+
+	option = {
+		name = rus.197.a
+		hidden_effect = {
+			set_variable = { RUS_rosconservation_modifer_army_attack_factor = 0 }
+			remove_dynamic_modifier = { modifier = RUS_rosconservation_modifer }
+			set_variable = { RUS_ammunition_warehouse_count = 0 }
+			set_variable = { RUS_ammunition_big_warehouse_count = 0 }
+		}
+	}
+}
+
+country_event = {
+	id = rus.198
+	title = rus.198.t
+	desc = rus.198.desc
+	picture = GFX_country_event_198
+
+	trigger = {
+		has_global_flag = close_rosconservation
+		original_tag = RUS
+		check_variable = { ammunition_variable > 12000 }
+		NOT = {
+			check_variable = { RUS_ammunition_warehouse_count_restore = 0 } 
+			check_variable = { RUS_ammunition_big_warehouse_count_restore = 0 }
+		}
+	}
+
+	immediate = {
+		clr_global_flag = close_rosconservation
+	}
+
+	option = {
+		name = rus.198.a
+		custom_effect_tooltip = return_ammunition_tt
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 1 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 0 }
+			}
+			add_to_variable = { ammunition_variable = -500 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 2 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 0 }
+			}
+			add_to_variable = { ammunition_variable = -1000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 0 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 1 }
+			}
+			add_to_variable = { ammunition_variable = -1000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 0 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 2 }
+			}
+			add_to_variable = { ammunition_variable = -2000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 1 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 1 }
+			}
+			add_to_variable = { ammunition_variable = -1500 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 2 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 1 }
+			}
+			add_to_variable = { ammunition_variable = -2000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 1 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 2 }
+			}
+			add_to_variable = { ammunition_variable = -2500 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 2 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 2 }
+			}
+			add_to_variable = { ammunition_variable = -3000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 3 } 
+				check_variable = { RUS_ammunition_big_warehouse_count_restore = 2 }
+			}
+			add_to_variable = { ammunition_variable = -3500 }
+		}
+	}
+
+	option = {
+		name = rus.198.b
+		set_country_flag = ishak
 	}
 }
