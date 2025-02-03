@@ -6274,3 +6274,132 @@ country_event = {
 		add_political_power = 25
     }
 }
+
+country_event = {
+	id = rus.196
+	title = rus.196.t
+	desc = rus.196.desc
+	picture = GFX_country_event_196
+
+	trigger = {
+		NOT = {
+			has_global_flag = start_rosconservation
+			check_variable = { RUS_rosconservation_zapas < 1500 }
+		}
+		original_tag = RUS
+		RUS = { check_variable = { ammunition_variable < 6000 } }
+	}
+
+	immediate = {
+		set_global_flag = start_rosconservation
+		set_variable = { RUS_ammunition_warehouse_count_restore = 0 }
+	}
+
+	option = {
+		name = rus.196.a
+		hidden_effect = {
+			add_dynamic_modifier = { modifier = RUS_rosconservation_modifer }
+		}
+	}
+}
+
+country_event = {
+	id = rus.197
+	title = rus.197.t
+	desc = rus.197.desc
+	picture = GFX_country_event_197
+
+	trigger = {
+		has_global_flag = start_rosconservation
+		original_tag = RUS
+		RUS = { check_variable = { ammunition_variable > 9000 } }
+	}
+
+	immediate = {
+		set_global_flag = close_rosconservation
+		clr_global_flag = start_rosconservation
+	}
+
+	option = {
+		name = rus.197.a
+		hidden_effect = {
+			set_variable = { RUS_rosconservation_modifer_army_attack_factor = 0 }
+			remove_dynamic_modifier = { modifier = RUS_rosconservation_modifer }
+			set_global_flag = again_restore_warehouse
+		}
+	}
+}
+
+country_event = {
+	id = rus.198
+	title = rus.198.t
+	desc = rus.198.desc
+	picture = GFX_country_event_198
+
+	trigger = {
+		has_global_flag = close_rosconservation
+		has_global_flag = again_restore_warehouse
+		original_tag = RUS
+		check_variable = { ammunition_variable > 14000 }
+		NOT = {
+			check_variable = { RUS_ammunition_warehouse_count_restore = 0 }
+			has_global_flag = restore_warehouse_refusal
+		}
+	}
+
+	immediate = {
+		clr_global_flag = close_rosconservation
+		clr_global_flag = again_restore_warehouse
+	}
+
+	option = {
+		name = rus.198.a
+		custom_effect_tooltip = return_ammunition_tt
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 1500 } 
+			}
+			add_to_variable = { RUS_rosconservation_zapas = 1500 }
+			add_to_variable = { ammunition_variable = -1500 }
+			add_to_variable = { RUS_ammunition_warehouse_count_restore = -1500 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 3000 } 
+			}
+			add_to_variable = { RUS_rosconservation_zapas = 3000 }
+			add_to_variable = { ammunition_variable = -3000 }
+			add_to_variable = { RUS_ammunition_warehouse_count_restore = -3000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 4500 } 
+			}
+			add_to_variable = { RUS_rosconservation_zapas = 4500 }
+			add_to_variable = { ammunition_variable = -4500 }
+			add_to_variable = { RUS_ammunition_warehouse_count_restore = -4500 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore = 6000 } 
+			}
+			add_to_variable = { RUS_rosconservation_zapas = 6000 }
+			add_to_variable = { ammunition_variable = -6000 }
+			add_to_variable = { RUS_ammunition_warehouse_count_restore = -6000 }
+		}
+		if = {
+			limit = { 
+				check_variable = { RUS_ammunition_warehouse_count_restore > 6000 } 
+			}
+			add_to_variable = { RUS_rosconservation_zapas = 6000 }
+			add_to_variable = { ammunition_variable = -6000 }
+			add_to_variable = { RUS_ammunition_warehouse_count_restore = -6000 }
+			set_global_flag = again_restore_warehouse
+		}
+	}
+
+	option = {
+		name = rus.198.b
+		set_global_flag = restore_warehouse_refusal
+	}
+}
