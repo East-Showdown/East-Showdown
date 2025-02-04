@@ -21,7 +21,7 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = WGN_buyweapons
+		id = WGN_buyweaponsafrica
 		icon = GFX_goal_unknown
 		cost = 1
 		prerequisite = {
@@ -80,7 +80,7 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 1
 		prerequisite = {
-			focus = WGN_buyweapons
+			focus = WGN_buyweaponsafrica
 		}
 		x = 44
 		y = 2
@@ -210,17 +210,43 @@ focus_tree = {
 		}	
 	}
 	focus = {
-		id = WGN_buyweaponsafrica
+		id = WGN_buyweapons
 		icon = GFX_goal_unknown
 		cost = 2
 		prerequisite = {
-			focus = WGN_africanoperations
+			focus = WGN_materialsupport
 		}
-		x = 42
-		y = 5
+		x = 34
+		y = 8
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_buyweaponsafrica"
-			custom_effect_tooltip = WGN_buyweaponsafrica_tooltip
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buyweapons"
+			custom_effect_tooltip = WGN_buyweapons_tooltip
+		}	
+	}
+	focus = {
+		id = WGN_buysattelites
+		icon = GFX_goal_unknown
+		cost = 2
+		prerequisite = {
+			focus = WGN_materialsupport
+		}
+		x = 32
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buysattelites"
+		}	
+	}
+	focus = {
+		id = WGN_buydrones
+		icon = GFX_goal_unknown
+		cost = 2
+		prerequisite = {
+			focus = WGN_materialsupport
+		}
+		x = 30
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buydrones"
 		}	
 	}
 	focus = {
@@ -231,6 +257,9 @@ focus_tree = {
 		y = 3
 		available = {
 			always = no
+		}
+		mutually_exclusive = {
+			focus = WGN_modrfcooperation
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_offerassistancetorussia"
@@ -257,12 +286,13 @@ focus_tree = {
 		id = WGN_convenecouncil
 		icon = GFX_goal_unknown
 		cost = 0.5
-		prerequisite = {
-			focus = WGN_modrfcooperation
-			focus = WGN_offerassistancetorussia
+		x = 30
+		y = 3
+		available = {
+			RUS = {
+				has_war_with = UKR
+			}
 		}
-		x = 34
-		y = 4
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_convenecouncil"
 			add_command_power = 15
@@ -272,10 +302,9 @@ focus_tree = {
 		id = WGN_setprecisegoals
 		icon = GFX_goal_unknown
 		cost = 0.5
-		prerequisite = {
-			focus = WGN_convenecouncil
-		}
-		x = 34
+		prerequisite = { focus = WGN_convenecouncil }
+		prerequisite = { focus = WGN_contractwithmotherland }
+		x = 30
 		y = 5
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_setprecisegoals"
@@ -287,9 +316,7 @@ focus_tree = {
 		id = WGN_redeployment
 		icon = GFX_goal_unknown
 		cost = 0.5
-		prerequisite = {
-			focus = WGN_convenecouncil
-		}
+		prerequisite = { focus = WGN_contractwithmotherland }
 		x = 32
 		y = 5
 		completion_reward = {
@@ -316,9 +343,9 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.5
 		prerequisite = {
-			focus = WGN_convenecouncil
+			focus = WGN_contractwithmotherland
 		}
-		x = 36
+		x = 34
 		y = 5
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_shapinglogistics"
@@ -330,19 +357,40 @@ focus_tree = {
 		id = WGN_contractwithmotherland
 		icon = GFX_goal_unknown
 		cost = 0.5
-		prerequisite = {
-			focus = WGN_setprecisegoals
-		}
-		prerequisite = {
-			focus = WGN_shapinglogistics
-		}
-		prerequisite = {
-			focus = WGN_redeployment
-		}
-		x = 34
-		y = 6
+		prerequisite = {	focus = WGN_offerassistancetorussia focus = WGN_modrfcooperation }
+		x = 33
+		y = 4
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_contractwithmotherland"
+			add_command_power = 50
+		}
+	}
+	focus = {
+		id = WGN_suppliesfrommdrf
+		icon = GFX_goal_unknown
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_contractwithmotherland
+		}
+		x = 36
+		y = 5
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_suppliesfrommdrf"
+			custom_effect_tooltip = WGN_suppliesfrommdrf_tooltip
+		}
+	}
+	focus = {
+		id = WGN_calltowar
+		icon = GFX_goal_unknown
+		cost = 0.8
+		prerequisite = { focus = WGN_setprecisegoals }
+		prerequisite = { focus = WGN_redeployment }
+		prerequisite = { focus = WGN_shapinglogistics }
+		prerequisite = { focus = WGN_suppliesfrommdrf }
+		x = 33
+		y = 6
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_calltowar"
 			hidden_effect = {
 				remove_ideas = does_not_participate_in_smo_in_ukraine
 			}
@@ -354,17 +402,14 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = WGN_suppliesfrommdrf
+		id = WGN_materialsupport
 		icon = GFX_goal_unknown
 		cost = 0.8
-		prerequisite = {
-			focus = WGN_contractwithmotherland
-		}
-		x = 34
+		prerequisite = { focus = WGN_calltowar }
+		x = 32
 		y = 7
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: WGN_suppliesfrommdrf"
-			custom_effect_tooltip = WGN_suppliesfrommdrf_tooltip
+			log = "[GetDateText]: [Root.GetName]: WGN_materialsupport"
 		}
 	}
 	focus = {
@@ -372,9 +417,9 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_contractwithmotherland
+			focus = WGN_calltowar
 		}
-		x = 37
+		x = 38
 		y = 7
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_internalaffairs"
@@ -382,50 +427,18 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = WGN_recruitmentcentres
-		icon = GFX_goal_unknown
-		cost = 0.8
-		prerequisite = {
-			focus = WGN_contractwithmotherland
-		}
-		x = 48
-		y = 7
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: WGN_recruitmentcentres"
-			add_to_variable = { var = WGN_weekly_manpower value = 250 }
-			custom_effect_tooltip = WGN_recruitmentcentres_tooltip
-		}
-	}
-	focus = {
 		id = WGN_agreementwiththegovernmentvolunteerrecruitment
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_recruitmentcentres
+			focus = WGN_expansionofthecontingent
 		}
-		x = 46
-		y = 8
+		x = 52
+		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_agreementwiththegovernmentvolunteerrecruitment"
 			add_to_variable = { var = WGN_weekly_manpower value = 250 }
 			custom_effect_tooltip = WGN_recruitmentcentres_tooltip
-		}
-	}
-	focus = {
-		id = WGN_prisonerrecruitment
-		icon = GFX_goal_unknown
-		cost = 0.8
-		prerequisite = {
-			focus = WGN_agreementwiththegovernmentvolunteerrecruitment
-		}
-		available = {
-			has_completed_focus = WGN_kproject
-		}
-		x = 45
-		y = 9
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: WGN_prisonerrecruitment"
-			add_political_power = 50
 		}
 	}
 	focus = {
@@ -435,8 +448,8 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_agreementwiththegovernmentvolunteerrecruitment
 		}
-		x = 47
-		y = 9
+		x = 51
+		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_recruitmentcentresinrussia"
 			add_to_variable = { var = WGN_weekly_manpower value = 500 }
@@ -450,11 +463,8 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_recruitmentcentresinrussia
 		}
-		prerequisite = {
-			focus = WGN_recruitmentofforeignvolunteers
-		}
-		x = 50
-		y = 10
+		x = 51
+		y = 11
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_thebestchoice"
 			add_political_power = 50
@@ -465,10 +475,10 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_recruitmentcentres
+			focus = WGN_expansionofthecontingent
 		}
 		x = 50
-		y = 8
+		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_recruitmentofforeignvolunteers"
 			custom_effect_tooltip = WGN_recruitmentofforeignvolunteers_tooltip
@@ -479,9 +489,9 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_contractwithmotherland
+			focus = WGN_calltowar
 		}
-		x = 42
+		x = 47
 		y = 7
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_newbattlefieldenvironment"
@@ -495,7 +505,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_newbattlefieldenvironment
 		}
-		x = 42
+		x = 45
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_optimalwarfightingstrategy"
@@ -513,7 +523,7 @@ focus_tree = {
 			focus = WGN_optimalwarfightingstrategy
 		}
 		mutually_exclusive = { focus = WGN_tacticsofthefiringshaft }
-		x = 41
+		x = 44
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_encirclementattacktactics"
@@ -529,7 +539,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_encirclementattacktactics
 		}
-		x = 41
+		x = 44
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_lightningfastcaptureoftheflanks"
@@ -546,7 +556,7 @@ focus_tree = {
 			focus = WGN_optimalwarfightingstrategy
 		}
 		mutually_exclusive = { focus = WGN_encirclementattacktactics }
-		x = 43
+		x = 46
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_tacticsofthefiringshaft"
@@ -562,7 +572,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_tacticsofthefiringshaft
 		}
-		x = 43
+		x = 46
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_сontinuousstorming"
@@ -578,7 +588,7 @@ focus_tree = {
 			focus = WGN_continuousstorming
 			focus = WGN_lightningfastcaptureoftheflanks
 		}
-		x = 42
+		x = 45
 		y = 11
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_approvalofoptimaltacticsforwar"
@@ -590,10 +600,10 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_approvalofoptimaltacticsforwar
+			focus = WGN_newbattlefieldenvironment
 		}
-		x = 42
-		y = 12
+		x = 50
+		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_expansionofthecontingent"
 			add_political_power = 50
@@ -602,12 +612,12 @@ focus_tree = {
 	focus = {
 		id = WGN_expandthestormingcorps
 		icon = GFX_goal_unknown
-		cost = 0.8
 		prerequisite = {
 			focus = WGN_expansionofthecontingent
 		}
-		x = 42
-		y = 13
+		cost = 0.8
+		x = 48
+		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_expandthestormingcorps"
 			add_political_power = 50
@@ -617,11 +627,11 @@ focus_tree = {
 		id = WGN_formationoftankbrigades
 		icon = GFX_goal_unknown
 		cost = 0.8
+		x = 48
+		y = 10
 		prerequisite = {
-			focus = WGN_expansionofthecontingent
+			focus = WGN_expandthestormingcorps
 		}
-		x = 44
-		y = 13
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_formationoftankbrigades"
 			add_political_power = 50
@@ -632,10 +642,10 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_expansionofthecontingent
+			focus = WGN_agreementwiththegovernmentvolunteerrecruitment
 		}
-		x = 46
-		y = 13
+		x = 54
+		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_extrememeasures"
 			add_political_power = 50
@@ -648,8 +658,8 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_extrememeasures
 		}
-		x = 45
-		y = 14
+		x = 53
+		y = 11
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_umbrellaproject"
 			add_political_power = 50
@@ -662,8 +672,8 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_extrememeasures
 		}
-		x = 47
-		y = 14
+		x = 55
+		y = 11
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_kproject"
 			add_political_power = 50
@@ -676,7 +686,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_internalaffairs
 		}
-		x = 35
+		x = 36
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_ownmedals"
@@ -690,7 +700,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_internalaffairs
 		}
-		x = 37
+		x = 38
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_privatecemeteries"
@@ -704,7 +714,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_privatecemeteries
 		}
-		x = 37
+		x = 38
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_memorialcomplexes"
@@ -716,10 +726,10 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_contractwithmotherland
+			focus = WGN_newbattlefieldenvironment
 		}
-		x = 32
-		y = 7
+		x = 41
+		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_planningofmilitaryoperations"
 			add_command_power = 25
@@ -735,8 +745,8 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_planningofmilitaryoperations
 		}
-		x = 31
-		y = 8
+		x = 40
+		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_expandairforcecooperation"
 			add_to_variable = { var = WGN_air_mission_xp_gain_factor value = 0.1 }
@@ -751,8 +761,8 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_planningofmilitaryoperations
 		}
-		x = 33
-		y = 8
+		x = 42
+		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_expandarmycooperation"
 			add_to_variable = { var = WGN_max_planning value = 0.1 }
@@ -765,9 +775,9 @@ focus_tree = {
 		icon = GFX_goal_unknown
 		cost = 0.8
 		prerequisite = {
-			focus = WGN_contractwithmotherland
+			focus = WGN_calltowar
 		}
-		x = 28
+		x = 27
 		y = 7
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_informationwar"
@@ -784,7 +794,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_informationwar
 		}
-		x = 29
+		x = 28
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_bestpmc"
@@ -798,7 +808,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_informationwar
 		}
-		x = 27
+		x = 26
 		y = 8
 		available = {
 			custom_trigger_tooltip = {
@@ -820,7 +830,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_adcompany
 		}
-		x = 27
+		x = 26
 		y = 9
 		available = {
 			custom_trigger_tooltip = {
@@ -872,7 +882,7 @@ focus_tree = {
 				}
 			}
 		}
-		x = 24
+		x = 23
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_socialmediaadcompany"
@@ -887,7 +897,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_expandpatriotmediaholding
 		}
-		x = 22
+		x = 21
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_wagnercentreexpansion"
@@ -904,7 +914,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_symbolicadcompany
 		}
-		x = 23
+		x = 22
 		y = 10
 		available = {
 			custom_trigger_tooltip = {
@@ -940,7 +950,7 @@ focus_tree = {
 				}
 			}
 		}
-		x = 27
+		x = 26
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_greatorchestra"
@@ -966,7 +976,7 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_symbolicadcompany
 		}
-		x = 25
+		x = 24
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_interactionwithbloggers"
