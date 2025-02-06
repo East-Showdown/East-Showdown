@@ -294,39 +294,90 @@ RUS_leave_north_after_failure = {
 }
 
 #######################################################
-# 5. ФОКУС НА ДОНБАСС, ЗАПОРОЖЬЕ, ХЕРСОН ПОСЛЕ ПРОВАЛА
+# 5) ФОКУС НА ДОНБАСС, ЗАПОР, ХЕРСОН ПОСЛЕ ПРОВАЛА (AGGRESSIVE)
 #######################################################
-RUS_focus_donbass_south_after_failure = {
-	allowed = {
-		original_tag = RUS
-	}
+RUS_focus_donbass_south_after_failure_rush = {
+	allowed = { original_tag = RUS }
 	enable = {
 		AND = {
 			has_war_with = UKR
 			has_country_flag = RUS_failure_of_SMO
+			# Хватает манпауэра (e.g. >8000)
+			has_manpower > 12000
+			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
+			check_variable = { ammunition_variable > 700 }	
 		}
 	}
 	abort = {
 		OR = {
 			NOT = { has_war_with = UKR }
 			NOT = { has_country_flag = RUS_failure_of_SMO }
+			has_manpower < 2000
+			OR = { 
+			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
+			}
+			check_variable = { ammunition_variable < 500 }
+
 		}
 	}
 
-	# 1) Увеличиваем приоритет фронта в Донбассе:
-	# Допустим у тебя donetsk = 31, lygansk = 63
+	# 1) Увеличиваем приоритет фронта
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 31   # Донецк
+		strategic_region = 31
 		value = 2000
 	}
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 63   # Луганск
+		strategic_region = 63
 		value = 2000
 	}
-
-	# 2) Запорожье (57,58) и Херсон (27,56) — ещё выше
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 27
@@ -348,7 +399,7 @@ RUS_focus_donbass_south_after_failure = {
 		value = 1500
 	}
 
-	# 3) front_control с rush на Донбасс + юг
+	# 2) front_control (rush)
 	ai_strategy = {
 		type = front_control
 		tag = UKR
@@ -411,24 +462,184 @@ RUS_focus_donbass_south_after_failure = {
 	}
 }
 
-
-##############################
-# 6. НАСТУПЛЕНИЕ НА КРИВОЙ РОГ, ДНЕПР, ХАРЬКОВ (ПОСЛЕ ЗАНЯТИЯ ЮГА/ДОНБАССА)
-##############################
-# Предполагаем, что как только вышли на админ. границы Донецка, Луганска, Херсона, Запорожья,
-# ИИ хочет пойти на Кривой Рог (?), Днепр (?), Харьков (?).
-# Тут пример: city_krivoyrog=100, city_dnepr=101, city_kharkov=44 (или 65, проверь).
-# Активируем при тех же условиях, что и "focus_donbass_south_after_failure",
-
-RUS_next_cities_advance = {
-	allowed = {
-		original_tag = RUS
-	}
+#######################################################
+# 5.1) ФОКУС НА ДОНБАСС, ЗАПОР, ХЕРСОН (BALANCED)
+#######################################################
+RUS_focus_donbass_south_after_failure_balanced = {
+	allowed = { original_tag = RUS }
 	enable = {
 		AND = {
 			has_war_with = UKR
-			# ЗАМЕНИТЬ НА ФЛАГ, КОТОРЫЙ ВЫДАЁТСЯ ПО ИВЕНТУ КОГДА ДОНБАСС ПОЛНОСТЬЮ ВЗЯТ
-			has_full_control_of_state = 237 
+			has_country_flag = RUS_failure_of_SMO
+			# Манпауэр < 5000 => переходим в balanced
+			OR = { 
+			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
+			has_manpower < 2000
+			check_variable = { ammunition_variable < 500 }
+			}
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			NOT = { has_country_flag = RUS_failure_of_SMO }
+			has_manpower > 12000
+			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
+			check_variable = { ammunition_variable > 700 }	
+			
+		}
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 31
+		value = 2000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 63
+		value = 2000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 27
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 56
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 57
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 58
+		value = 1500
+	}
+
+	# front_control (balanced)
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 31
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999  # перебивает rush, если мы в low manpower
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 63
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 27
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 56
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 57
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 58
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+}
+
+
+#######################################################
+# 6) НАСТУПЛЕНИЕ НА КРИВОЙ РОГ, ДНЕПР, ХАРЬКОВ (AGGRESSIVE)
+#######################################################
+RUS_next_cities_advance_rush = {
+	allowed = { original_tag = RUS }
+	enable = {
+		AND = {
+			has_war_with = UKR
+			has_full_control_of_state = 237
 			has_full_control_of_state = 213
 			has_full_control_of_state = 182
 			has_full_control_of_state = 149
@@ -437,32 +648,85 @@ RUS_next_cities_advance = {
 			has_full_control_of_state = 116
 			has_full_control_of_state = 125
 			has_full_control_of_state = 154
-			# has_country_flag = RUS_captured_donbass
 			has_country_flag = RUS_failure_of_SMO
+
+			# манпауэр > 8000
+			has_manpower > 12000
+			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
+			check_variable = { ammunition_variable > 700 }	
 		}
 	}
 	abort = {
 		OR = {
 			NOT = { has_war_with = UKR }
 			NOT = { has_country_flag = RUS_failure_of_SMO }
+			has_manpower < 2000
+			OR = { 
+			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
+			}
+			check_variable = { ammunition_variable < 500 }
 		}
 	}
 
-	# city_krivoyrog = 61 , city_dnepr = 62, kharkov = 44
-	# Можно через "front_unit_request"
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 61  # Кривой Рог (ID страт-рега)
+		strategic_region = 61
 		value = 1500
 	}
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 62  # Днепр
+		strategic_region = 62
 		value = 2000
 	}
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 44   # Харьков
+		strategic_region = 44
 		value = 2000
 	}
 
@@ -494,6 +758,140 @@ RUS_next_cities_advance = {
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
+		priority = 9999
+	}
+}
+
+
+#######################################################
+# 6.1) НАСТУПЛЕНИЕ НА КР, ДНЕПР, ХАРЬКОВ (BALANCED)
+#######################################################
+RUS_next_cities_advance_balanced = {
+	allowed = { original_tag = RUS }
+	enable = {
+		AND = {
+			has_war_with = UKR
+			has_full_control_of_state = 237
+			has_full_control_of_state = 213
+			has_full_control_of_state = 182
+			has_full_control_of_state = 149
+			has_full_control_of_state = 165
+			has_full_control_of_state = 145
+			has_full_control_of_state = 116
+			has_full_control_of_state = 125
+			has_full_control_of_state = 154
+			has_country_flag = RUS_failure_of_SMO
+
+			# манпауэр < 5000 => уходим в balanced
+			OR = { 
+			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
+			has_manpower < 2000
+			check_variable = { ammunition_variable < 500 }
+
+			}
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = UKR }
+			NOT = { has_country_flag = RUS_failure_of_SMO }
+			has_manpower > 12000
+			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
+			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
+			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
+			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
+			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
+			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_mlrs_chassis > @RUS_EQUIP_TIER_D }
+			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
+			check_variable = { ammunition_variable > 700 }	
+		}
+	}
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 61
+		value = 1500
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 62
+		value = 2000
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 44
+		value = 2000
+	}
+
+	# Теперь execution_type = balanced, manual_attack = no
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 100
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 101
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 9999
+	}
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		strategic_region = 44
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
 		priority = 9999
 	}
 }
@@ -604,117 +1002,9 @@ RUS_border_breach_reaction = {
 }
 
 
-##############################
-# 8. ПРИНЦИП СМЕНЫ АГРЕССИВНОСТИ
-##############################
-
-# Менее агрессивно при дефиците ресурса (манпавера)
-RUS_less_aggressive_if_low_manpower = {
-	allowed = { original_tag = RUS }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower < 5000
-			OR = { 
-			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
-			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
-			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
-			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
-			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
-			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
-			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
-			}
-			check_variable = { ammunition_variable < 500 }
-		}
-	}
-	abort = {
-
-			NOT = { has_war_with = UKR }
-			has_manpower > 8000
-			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
-			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
-			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
-			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
-			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
-			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
-			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
-			check_variable = { ammunition_variable > 700 }	
-	}
-
-
-	
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = balanced
-		execute_order = yes
-		manual_attack = no
-		priority = 9999
-	}
-}
-
-# Возвращаемся к rush, когда манпавера снова достаточно
-RUS_back_to_aggressive = {
-	allowed = { original_tag = RUS }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower > 8000
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			has_manpower < 5000
-		}
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-	}
-}
 
 ##############################
-# 9. ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
+# 8. ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
 ##############################
 
 RUS_border_and_rbz_no_garrisons = {
@@ -786,7 +1076,7 @@ RUS_ignore_RBZ_border = {
 
 
 ##############################
-# 10. ПРИНЦИП ПРОИЗВОДСТВА
+# 9. ПРИНЦИП ПРОИЗВОДСТВА
 ##############################
 
 ########################################################
