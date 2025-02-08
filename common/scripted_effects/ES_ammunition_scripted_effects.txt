@@ -1,0 +1,224 @@
+
+
+ammunition_on_daily = {
+    ammunition_tick_country = yes
+	ammunition_tick_units_leader = yes
+
+	ammunition_calculate_generation = yes
+	ammunition_calculate_consumption = yes
+	ammunition_calculate_storage_capacity = yes
+	ammunition_calculate_tick_result_value = yes
+}
+
+ammunition_calculate_tick_result_value = {	
+	set_variable = { ammunition_delta_value_k = ammunition_generation_k }
+	subtract_from_variable = { ammunition_delta_value_k = ammunition_consumption_k }
+
+	add_to_variable = { ammunition_value_k = ammunition_delta_value_k }
+    clamp_variable = { var = ammunition_value_k min = 0 max = ammunition_max_storage_capacity_k }
+}
+
+ammunition_calculate_generation = {	
+	set_variable = { ammunition_plants_efficiency_factor_var = 1 }
+	add_to_variable = { ammunition_plants_efficiency_factor_var = modifier@ammunition_plants_efficiency_factor }
+	clamp_variable = { var = ammunition_plants_efficiency_factor_var min = 0 }
+}
+
+ammunition_calculate_consumption = {	
+	set_variable = { ammunition_consumption_factor_var = 1 }
+	add_to_variable = { ammunition_consumption_factor_var = modifier@ammunition_consumption_factor }
+	clamp_variable = { var = ammunition_consumption_factor_var min = 0 }
+	
+	set_variable = { ammunition_consumption_k = 0 }
+
+	if = {
+		limit = { check_variable = { commanded_divisions > 0 } }
+
+		set_variable = { ammunition_consumption_offensive_k = divisions_in_offensive_combat }
+		divide_variable = { ammunition_consumption_offensive_k = commanded_divisions }
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_default_max_consumption_k }
+		multiply_variable = { ammunition_consumption_offensive_k = global.ammunition_consumption_offensive_factor_var }  
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_factor_var }  
+
+		add_to_variable = { ammunition_consumption_k = ammunition_consumption_offensive_k }
+		
+		set_variable = { ammunition_consumption_defensive_k = num_units_defensive_combats }
+		divide_variable = { ammunition_consumption_defensive_k = commanded_divisions }
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_default_max_consumption_k }
+		multiply_variable = { ammunition_consumption_defensive_k = global.ammunition_consumption_defensive_factor_var }  
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_factor_var }  
+
+		add_to_variable = { ammunition_consumption_k = ammunition_consumption_defensive_k }
+	}
+}
+
+ammunition_calculate_storage_capacity = {
+	set_variable = { ammunition_field_storage_capacity_k = ammunition_default_max_consumption_k }
+	multiply_variable = { ammunition_field_storage_capacity_k = global.ammunition_field_storage_for_consumption_days }
+
+	set_variable = { ammunition_max_storage_capacity_k = modifier@ammunition_capacity_k }
+	add_to_variable = { ammunition_max_storage_capacity_k = ammunition_field_storage_capacity_k }
+}
+
+ammunition_tick_country = {
+	if = {
+        limit = { 
+            OR = {
+                NOT = { check_variable = { num_battalions_prev = num_battalions } } 
+                check_variable = { ammunition_next_update_num_days < global.num_days }
+            }
+        }
+
+        ammunition_update_max_usage = yes
+    }
+}
+
+ammunition_tick_units_leader = {
+	set_variable = { commanded_divisions = 0 }
+	set_variable = { divisions_in_offensive_combat = 0 }
+	set_variable = { divisions_in_defensive_combat = 0 }
+
+	every_army_leader = {
+		limit = { is_leading_army_group = no }
+
+		add_to_variable = { ROOT.commanded_divisions = num_units }
+		add_to_variable = { ROOT.divisions_in_offensive_combat = num_units_offensive_combats }
+		add_to_variable = { ROOT.divisions_in_defensive_combat = num_units_defensive_combats }
+	}
+}
+
+ammunition_update_max_usage = {    
+    set_variable = { num_battalions_prev = num_battalions }
+    set_variable = { ammunition_next_update_num_days = global.num_days }
+    add_to_variable = { ammunition_next_update_num_days = 7 }
+
+    set_variable = { ammunition_default_max_consumption_k = 0 }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@infantry }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_infantry }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@marine }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_marine }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@mountaineers }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_mountaineers }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@paratrooper_heli }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_paratrooper_heli }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@paratrooper }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_paratrooper }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@opolchenie }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_opolchenie }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@prisoners }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_prisoners }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@PMC_wagner }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_PMC_wagner }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@spetsnaz }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_spetsnaz }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@border_guard }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_border_guard }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@artillery }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_artillery }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@sp_art }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_sp_art }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@sp_heavy_art }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_sp_heavy_art }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@towed_art }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_towed_art }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@TOS }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_TOS }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@MRLS }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_MRLS }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@apc }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_apc }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_sov }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_sov }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_usa }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_usa }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_ger }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_ger }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_eng }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_eng }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_fra }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_fra }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_ita }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_ita }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_swe }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_ifv_swe }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@afv_sov }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_afv_sov }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@bmpt }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_bmpt }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_sov }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_tank_sov }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_usa }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_tank_usa }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_ger }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_tank_ger }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_eng }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_tank_eng }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_fra }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_tank_fra }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_ita }
+    multiply_temp_variable = { temp_ammunition_consumption_k = global.battalion_ammunition_consumption_k_tank_ita }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+}
