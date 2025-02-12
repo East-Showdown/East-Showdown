@@ -20,10 +20,12 @@ RUS_prepare_war_UKR = {
 		original_tag = RUS
 	}
 	enable = {
-		always = yes
+		NOT = { 
+			has_war_with = UKR
+		}
 	}
 	abort = {
-		always = no
+		has_war_with = UKR
 	}
 	ai_strategy = {
 		type = prepare_for_war
@@ -38,74 +40,114 @@ RUS_prepare_war_UKR = {
 ##############################
 # 2. КРЫМ–ХЕРСОН
 ##############################
-RUS_reinforcing_crimea_before_SMO = {
+#RUS_reinforcing_crimea_before_SMO = {
+#	allowed = {
+#		original_tag = RUS
+#	}
+#	enable = {
+#		always = yes
+#	}
+#	abort = {
+#		has_country_flag = RUS_failure_of_SMO
+#	}
+#
+#
+#	#ai_strategy = {
+#	#	type = front_unit_request
+#	#	strategic_region = 28  # Крым
+#	#	value = 250
+#	#}
+#	ai_strategy = {
+#		type = front_unit_request
+#		strategic_region = 27  # Левый Херсон
+#		value = 250
+#	}
+#	ai_strategy = {
+#		type = front_unit_request
+#		strategic_region = 56  # Правый Херсон
+#		value = 100
+#	}
+#
+#	ai_strategy = {
+#		type = front_unit_request
+#		strategic_region = 57  # Запорожье
+#		value = 150
+#	}
+#
+#}
+
+
+RUS_SMO_FRONT_CONTROL = {
 	allowed = {
 		original_tag = RUS
 	}
 	enable = {
-		always = yes
-	}
-	abort = {
+		has_war_with = UKR
 		has_country_flag = RUS_failure_of_SMO
 	}
-
-
 	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 28  # Крым
-		value = 250
+		type = front_control
+		tag = UKR
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = yes
+		priority = 140
 	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 27  # Левый Херсон
-		value = 250
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 56  # Правый Херсон
-		value = 150
-	}
-
 }
-
 
 RUS_more_army_crimea_kherson = {
 	allowed = {
 		original_tag = RUS
 	}
 	enable = {
-		AND = {
-			has_war_with = UKR
-			has_country_flag = RUS_start_SMO
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			date > 2023.12.31
-		}
+		#AND = {
+		#	has_war_with = UKR
+		#	has_country_flag = RUS_start_SMO
+		#}
+		always = yes
 	}
 	# theatre_distribution_demand_increase по Крыму и Херсону
-	ai_strategy = { type = theatre_distribution_demand_increase value = 15  id = 28 }  # Крым
-	ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 27 }  # Левый Херсон
-	ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 56 }  # Правый Херсон
-	ai_strategy = { type = theatre_distribution_demand_increase value = 10  id = 57 }  # Левое Запорожье
-	ai_strategy = { type = theatre_distribution_demand_increase value = 10  id = 58 }  # Правое Запорожье
+	ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 28 }  # Крым
+	#ai_strategy = { type = theatre_distribution_demand_increase value = 25  id = 27 }  # Левый Херсон
+	#ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 56 }  # Правый Херсон
+	#ai_strategy = { type = theatre_distribution_demand_increase value = 20  id = 57 }  # Левое Запорожье
+	#ai_strategy = { type = theatre_distribution_demand_increase value = 5  id = 58 }  # Правое Запорожье
+
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 27  # Левый Херсон
+		strategic_region = 56  # Правый Херсон
+		strategic_region = 57  # Запорожье
+		value = 400
+	}
+
 
 	# front_control (rush)
 	ai_strategy = {
 		type = front_control
 		tag = UKR
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
 		priority = 140
-		strategic_region = 28  # Крым
+		#strategic_region = 28  # Крым
 		strategic_region = 27  # Левый Херсон
 		strategic_region = 56  # Правый Херсон
-		strategic_region = 57  # Левое Запорожье
 		strategic_region = 58  # Правое Запорожье
+	}
+
+	ai_strategy = {
+		type = front_control
+		tag = UKR
+		ordertype = front
+		execution_type = rush_weak
+		execute_order = yes
+		manual_attack = yes
+		priority = 150
+		strategic_region = 27  # Левый Херсон
+		strategic_region = 57  # Левое Запорожье
 	}
 }
 
@@ -120,7 +162,7 @@ RUS_late_herson_careful = {
 			has_war_with = UKR
 
 			# Условное начало лейта
-			date > 2022.11.11
+			date > 2022.7.11
 
 			# И РФ не контролирует правый берег (state=?? ).
 			NOT = {
@@ -156,7 +198,7 @@ RUS_late_herson_careful = {
 		ordertype = front
 		execution_type = balanced   # или careful
 		execute_order = yes
-		manual_attack = no
+		manual_attack = yes
 		priority = 9999  # высоко, чтобы переопределить "rush" из старого блока
 	}
 }
@@ -172,32 +214,26 @@ RUS_more_army_gomel_kyiv = {
 	}
 	enable = {
 		AND = {
-			has_war_with = UKR
-			has_country_flag = RUS_start_SMO
+			#has_war_with = UKR
+			#has_country_flag = RUS_start_SMO
+			#NOT = { has_country_flag = RUS_failure_of_SMO }
+			always = yes
 		}
 	}
 	abort = {
 		OR = {
 			NOT = { has_war_with = UKR }
-			date > 2024.06.30
+			has_country_flag = RUS_failure_of_SMO
 		}
 	}
 
-	# Доп запрос войск
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 6   # Гомель
-		value = 800
-	}
+
+
+
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 23  # Правый Киев
-		value = 800
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 68  # Левый Киев
-		value = 800
+		value = 500
 	}
 
 	# Стратегия нападения
@@ -326,11 +362,10 @@ RUS_focus_donbass_south_after_failure = {
 		value = 2000
 	}
 
-	# 2) Запорожье (57,58) и Херсон (27,56) — ещё выше
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 27
-		value = 1500
+		value = 1000
 	}
 	ai_strategy = {
 		type = front_unit_request
@@ -340,12 +375,12 @@ RUS_focus_donbass_south_after_failure = {
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 57
-		value = 1500
+		value = 2000
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 58
-		value = 1500
+		value = 250
 	}
 
 	# 3) front_control с rush на Донбасс + юг
@@ -354,60 +389,60 @@ RUS_focus_donbass_south_after_failure = {
 		tag = UKR
 		strategic_region = 31
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 800
 	}
 	ai_strategy = {
 		type = front_control
 		tag = UKR
 		strategic_region = 63
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 800
 	}
 	ai_strategy = {
 		type = front_control
 		tag = UKR
 		strategic_region = 27
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 800
 	}
 	ai_strategy = {
 		type = front_control
 		tag = UKR
 		strategic_region = 56
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 800
 	}
 	ai_strategy = {
 		type = front_control
 		tag = UKR
 		strategic_region = 57
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 800
 	}
 	ai_strategy = {
 		type = front_control
 		tag = UKR
 		strategic_region = 58
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 900
 	}
 }
 
@@ -453,17 +488,13 @@ RUS_next_cities_advance = {
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 61  # Кривой Рог (ID страт-рега)
-		value = 1500
+		value = 700
 	}
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 62  # Днепр
-		value = 2000
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 44   # Харьков
-		value = 2000
+		strategic_region = 44 
+		value = 800
 	}
 
 	ai_strategy = {
@@ -474,7 +505,7 @@ RUS_next_cities_advance = {
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 1000
 	}
 	ai_strategy = {
 		type = front_control
@@ -484,7 +515,7 @@ RUS_next_cities_advance = {
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 1000
 	}
 	ai_strategy = {
 		type = front_control
@@ -494,7 +525,7 @@ RUS_next_cities_advance = {
 		execution_type = rush
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 1000
 	}
 }
 
@@ -508,210 +539,150 @@ RUS_next_cities_advance = {
 #   Предположим, theatre_distribution_demand_increase = 5, front_unit_request = 300
 
 
-RUS_border_breach_reaction = {
-	allowed = {
-		original_tag = RUS
-	}
-	enable = {
-		AND = {
-			has_country_flag = russian_border_is_no_longer_safe
-			has_war_with = UKR
+RUS_border_defense_and_expel_UKR = {
+    allowed = {
+        original_tag = RUS
+    }
+    enable = {
+        AND = {
+            has_war_with = UKR
+			OR = {
+				RUS = {
+					NOT = { has_full_control_of_state = 39 }
+					NOT = { has_full_control_of_state = 612 }
+					NOT = { has_full_control_of_state = 606 }
+					NOT = { has_full_control_of_state = 590 }
+					NOT = { has_full_control_of_state = 597 }
+					NOT = { has_full_control_of_state = 609 }
+					NOT = { has_full_control_of_state = 588 }
+					NOT = { has_full_control_of_state = 566 }
+					NOT = { has_full_control_of_state = 560 }
+					NOT = { has_full_control_of_state = 556 }
+					NOT = { has_full_control_of_state = 555 }
+					NOT = { has_full_control_of_state = 573 }
+					NOT = { has_full_control_of_state = 559 }
+					NOT = { has_full_control_of_state = 557 }
+					NOT = { has_full_control_of_state = 558 }
+					NOT = { has_full_control_of_state = 570 }
+					NOT = { has_full_control_of_state = 302 }
+					NOT = { has_full_control_of_state = 634 }
+					NOT = { has_full_control_of_state = 633 }
+					NOT = { has_full_control_of_state = 632 }
+					NOT = { has_full_control_of_state = 272 }
+					NOT = { has_full_control_of_state = 631 }
+					NOT = { has_full_control_of_state = 630 }
+					NOT = { has_full_control_of_state = 306 }
+					NOT = { has_full_control_of_state = 629 }
+					NOT = { has_full_control_of_state = 377 }
+					NOT = { has_full_control_of_state = 627 }
+					NOT = { has_full_control_of_state = 626 }
+					NOT = { has_full_control_of_state = 628 }
+					NOT = { has_full_control_of_state = 625 }
+					NOT = { has_full_control_of_state = 371 }
+					NOT = { has_full_control_of_state = 624 }
+					NOT = { has_full_control_of_state = 623 }
+					NOT = { has_full_control_of_state = 622 }
+					NOT = { has_full_control_of_state = 617 }
+					NOT = { has_full_control_of_state = 336 }
+					NOT = { has_full_control_of_state = 120 }
+					NOT = { has_full_control_of_state = 621 }
+					NOT = { has_full_control_of_state = 620 }
+					NOT = { has_full_control_of_state = 619 }
+					NOT = { has_full_control_of_state = 618 }
+					NOT = { has_full_control_of_state = 122 }
+					NOT = { has_full_control_of_state = 635 }
 
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			NOT = { has_country_flag = russian_border_is_no_longer_safe }
-		}
-	}
-
-	# 7.1) Подтягиваем войска в регионы РФ, куда зашла Украина
-	#     Здесь нужно знать ID state/region РФ, куда украинцы могут прорваться.
-	#     Допустим, Брянск(77), Курск(76), Белгород(37), Воронеж(78).
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 77  # Брянск
-		value = 600
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 76  # Курск
-		value = 600
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 37  # Белгород
-		value = 600
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 78  # Воронеж
-		value = 600
-	}
-
-	# 7.2) Создаём фронт-контроль (rush), чтобы выбить врага
-	#    Оставляем приоритет чуть ниже (например, 800), чтобы не перебивало
-	#    всё остальное, но всё равно высоко.
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		priority = 1200	
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-
-		strategic_region = 77
-		strategic_region = 76
-		strategic_region = 37
-		strategic_region = 78
-	}
-
-	# 7.3) Держим небольшой резерв на границе с погранслужбой (RBZ?)
-	#     Можно сделать theatre_distribution_demand_increase или front_unit_request
-	#     с небольшим value (300), + garrison если надо.
-
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		id = 77  # Брянск
-		value = 10
-	}
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		id = 76  # Курск
-		value = 10
-	}
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		id = 37  # Белгород
-		value = 10
-	}
-	ai_strategy = {
-		type = theatre_distribution_demand_increase
-		id = 78  # Воронеж
-		value = 10
-	}
-
-	# 7.4) Держим небольшой фронт на погранслужбе (RBZ) (например +100),
-	#    чтобы не было 0 дивизий. ИИ будет стараться держать там 1-2 дивизии.
-	ai_strategy = {
-		type = front_unit_request
-		tag = RBZ   # погран.служба?
-		value = 100
-	}
-
-}
-
-
-##############################
-# 8. ПРИНЦИП СМЕНЫ АГРЕССИВНОСТИ
-##############################
-
-# Менее агрессивно при дефиците ресурса (манпавера)
-RUS_less_aggressive_if_low_manpower = {
-	allowed = { original_tag = RUS }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower < 5000
-			OR = { 
-			has_equipment = { infantry_equipment < @RUS_EQUIP_TIER_S }
-			has_equipment = { uniform_equipment  < @RUS_EQUIP_TIER_S }
-			has_equipment = { body_armor_equipment  < @RUS_EQUIP_TIER_S }
-			has_equipment = { grenade_launcher_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { atgm_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { aa_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { mortar_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { motorized_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { artillery_equipment < @RUS_EQUIP_TIER_A }
-			has_equipment = { arv_equipment < @RUS_EQUIP_TIER_B }
-			has_equipment = { engineering_equipment < @RUS_EQUIP_TIER_B }
-			has_equipment = { amv_equipment < @RUS_EQUIP_TIER_B }
-			has_equipment = { arv_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { apc_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { afv_sov_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { ifv_sov_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { tank_sov_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { imv_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_artillery_chassis < @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_aa_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_atgm_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_heavy_artillery_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_tos_chassis  < @RUS_EQUIP_TIER_D }
+				}
 			}
-			check_variable = { ammunition_variable < 500 }
-		}
-	}
-	abort = {
+        }
+    }
+    abort = {
+        OR = {
+            NOT = { has_war_with = UKR }
+			RUS = {
+				has_full_control_of_state = 39 
+				has_full_control_of_state = 612 
+				has_full_control_of_state = 606 
+				has_full_control_of_state = 590 
+				has_full_control_of_state = 597 
+				has_full_control_of_state = 609 
+				has_full_control_of_state = 588 
+				has_full_control_of_state = 566 
+				has_full_control_of_state = 560 
+				has_full_control_of_state = 556 
+				has_full_control_of_state = 555 
+				has_full_control_of_state = 573 
+				has_full_control_of_state = 559 
+				has_full_control_of_state = 557 
+				has_full_control_of_state = 558 
+				has_full_control_of_state = 570 
+			}
+			RBZ = { 
+				has_full_control_of_state = 302 
+				has_full_control_of_state = 634 
+				has_full_control_of_state = 633 
+				has_full_control_of_state = 632 
+				has_full_control_of_state = 272 
+				has_full_control_of_state = 631 
+				has_full_control_of_state = 630 
+				has_full_control_of_state = 306 
+				has_full_control_of_state = 629 
+				has_full_control_of_state = 377 
+				has_full_control_of_state = 627 
+				has_full_control_of_state = 626 
+				has_full_control_of_state = 628 
+				has_full_control_of_state = 625 
+				has_full_control_of_state = 371 
+				has_full_control_of_state = 624 
+				has_full_control_of_state = 623 
+				has_full_control_of_state = 622 
+				has_full_control_of_state = 617 
+				has_full_control_of_state = 336 
+				has_full_control_of_state = 120 
+				has_full_control_of_state = 621 
+				has_full_control_of_state = 620 
+				has_full_control_of_state = 619 
+				has_full_control_of_state = 618 
+				has_full_control_of_state = 122 
+				has_full_control_of_state = 635 
+			}
+        }
+    }
+    
+    ai_strategy = {
+        type = front_unit_request
+        strategic_region = 37    
+        strategic_region = 76      
+		strategic_region = 77    
+        value = 1500
+    }
 
-			NOT = { has_war_with = UKR }
-			has_manpower > 8000
-			has_equipment = { infantry_equipment > @RUS_EQUIP_TIER_S }
-			has_equipment = { uniform_equipment  > @RUS_EQUIP_TIER_S }
-			has_equipment = { body_armor_equipment  > @RUS_EQUIP_TIER_S }
-			has_equipment = { grenade_launcher_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { atgm_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { aa_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { mortar_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { motorized_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { artillery_equipment > @RUS_EQUIP_TIER_A }
-			has_equipment = { arv_equipment > @RUS_EQUIP_TIER_B }
-			has_equipment = { engineering_equipment > @RUS_EQUIP_TIER_B }
-			has_equipment = { amv_equipment > @RUS_EQUIP_TIER_B }
-			has_equipment = { arv_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { apc_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { afv_sov_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { ifv_sov_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { tank_sov_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { imv_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_artillery_chassis > @RUS_EQUIP_TIER_C }
-			has_equipment = { sp_aa_chassis > @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_atgm_chassis > @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_heavy_artillery_chassis > @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_mlrs_chassis < @RUS_EQUIP_TIER_D }
-			has_equipment = { sp_tos_chassis  > @RUS_EQUIP_TIER_D }	
-			check_variable = { ammunition_variable > 700 }	
-	}
+    ai_strategy = {
+        type = put_unit_buffers
+        ratio = 0.3
+        order_id = 3
+        states = { 37 76 77 }
+        subtract_invasions_from_need = yes
+        subtract_fronts_from_need = yes
+    }
+    
+    ai_strategy = {
+        type = front_control
+        tag = UKR
+        strategic_region = 37
+		strategic_region = 76
+        strategic_region = 77
+        ordertype = front
+        execution_type = rush_weak
+        execute_order = yes
+        manual_attack = yes
+        priority = 1100
+    }
 
-
-	
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = balanced
-		execute_order = yes
-		manual_attack = no
-		priority = 9999
-	}
 }
 
-# Возвращаемся к rush, когда манпавера снова достаточно
-RUS_back_to_aggressive = {
-	allowed = { original_tag = RUS }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower > 8000
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			has_manpower < 5000
-		}
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-	}
-}
+
+
 
 ##############################
 # 9. ПРИНЦИП ИСПОЛЬЗОВАНИЯ ПОДРАЗДЕЛЕНИЙ
@@ -764,9 +735,7 @@ RUS_ignore_RBZ_border = {
 	# Если хотим, можем сделать так, что при первом прорыве
 	# эта стратегия прерывается (abort), чтобы больше не игнорировать RBZ
 	abort = {
-		OR = {
-			has_country_flag = russian_border_is_no_longer_safe
-		}
+		has_country_flag = russian_border_is_no_longer_safe
 	}
 
 	# Игнорируем погранзону RBZ
@@ -850,4 +819,7 @@ RUS_base_production = {
 
 
 
+
 }
+
+

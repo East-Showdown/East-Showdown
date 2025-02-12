@@ -522,6 +522,19 @@ DepthStencilState DefaultDepthNoStencil
 	StencilEnable = no
 }
 
+DepthStencilState DefaultDepthStencilNoDepthWrite
+{
+	DepthEnable = yes
+	DepthWriteMask = "depth_write_zero"
+	DepthFunction = "comparison_less_equal"
+
+	StencilEnable = yes
+	FrontStencilFailOp = "stencil_op_keep"
+	FrontStencilDepthFailOp = "stencil_op_keep"
+	FrontStencilPassOp = "stencil_op_incr"
+	FrontStencilFunc = "comparison_equal"
+}
+
 Effect MapArrowDefault
 {
 	VertexShader = "ArrowVertexShader"
@@ -534,6 +547,13 @@ Effect MapArrowDefaultWithDepth
 	VertexShader = "ArrowVertexShader"
 	PixelShader = "ArrowPixelShader"
 	DepthStencilState = "DefaultDepthNoStencil"
+}
+
+Effect MapArrowDefaultWithDepthTestOnly
+{
+	VertexShader = "ArrowVertexShader"
+	PixelShader = "ArrowPixelShader"
+	DepthStencilState = "DefaultDepthStencilNoDepthWrite"
 }
 
 Effect MapArrowNoHeadWidthDepth
