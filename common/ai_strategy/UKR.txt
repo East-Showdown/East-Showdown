@@ -1,12 +1,14 @@
+#######################################################
+# 0. СТАРЫЕ БЛОКИ
+#######################################################
+
 UKR_do_not_attack_the_territory_of_the_russia = {
 	allowed = {
 		original_tag = UKR
 	}
-
 	enable = {
 		always = yes
 	}
-
 	abort = {
 		always = no
 	}
@@ -14,7 +16,7 @@ UKR_do_not_attack_the_territory_of_the_russia = {
 	ai_strategy = {
 		type = front_unit_request
 		tag = RBZ
-		value = -200
+		value =	-200
 	}
 }
 
@@ -22,15 +24,12 @@ UKR_wait_the_smo = {
 	allowed = {
 		original_tag = UKR
 	}
-
 	enable = {
 		always = yes
 	}
-	
 	abort = {
 		always = no
 	}
-
 	ai_strategy = {
 		type = prepare_for_war
 		id = RUS
@@ -38,142 +37,493 @@ UKR_wait_the_smo = {
 	}
 }
 
-UKR_counteroffensive = {
+
+UKR_hold_inland_before_SMO = {
 	allowed = {
 		original_tag = UKR
 	}
-
 	enable = {
-		has_global_flag = RUS_leave_from_kyiv
-	}
-
-	abort = {
+		# Активно пока нет флага начала СВО
 		NOT = {
-			has_global_flag = RUS_leave_from_kyiv
+			RUS = { has_country_flag = RUS_start_SMO }
 		}
 	}
-	
-	ai_strategy = {
-		type = front_control
-		tag = RUS
-		ratio = 0.1
-		ordertype = front
-		execution_type = rush
-		manual_attack = no
+	abort = {
+		RUS = { has_country_flag = RUS_start_SMO }
 	}
 
 	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 56 #херсон
-		value = -200
+		type = theatre_distribution_demand_increase
+		id = 256  # Odessa state
+		value = 15
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 159  # Kirovohrad
+		value = 15
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 105  # Poltava
+		value = 15
+	}
+	ai_strategy = {
+		type = theatre_distribution_demand_increase
+		id = 118  # Cherkasy
+		value = 15
+	}
+
+	ai_strategy = {
+		type = put_unit_buffers
+		ratio = 0.15
+		order_id = 1
+		states = {
+			256 159 105 118
+		}
+		subtract_invasions_from_need = yes
+		subtract_fronts_from_need = yes
 	}
 }
+
+
 
 UKR_war = {
 	allowed = {
 		original_tag = UKR
 	}
-
 	enable = {
 		AND = {
 			has_war_with = RUS
-			date < 2022.5.1
+			date < 2022.04.01
 		}
 	}
-    
 	abort = {
 		OR = {
-			NOT = {
-				has_war_with = RUS
-			}
-			date > 2022.5.1
+			NOT = { has_war_with = RUS }
+			date > 2022.04.01
 		}
 	}
-	
+
 	ai_strategy = {
 		type = front_unit_request
 		tag = RUS
 		value = 40
 	}
-
 	ai_strategy = {
 		type = front_unit_request
 		tag = DPR
 		value = 30
 	}
-
 	ai_strategy = {
 		type = front_unit_request
 		tag = LPR
-		value = 10  #30
+		value = 10
 	}
-
 	ai_strategy = {
 		type = garrison
 		value = -200
 	}
-
 	ai_strategy = {
 		type = front_unit_request
 		strategic_region = 28
 		value = -100
 	}
-
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 56 #херсон
-		value = -900
+		strategic_region = 56
+		value = -400
 	}
+	
 }
 
 UKR_war_2 = {
 	allowed = {
 		original_tag = UKR
 	}
-
 	enable = {
 		AND = {
 			has_war_with = RUS
-			date > 2022.5.5
+			date > 2022.05.05
 		}
 	}
-
 	abort = {
 		OR = {
-			NOT = {
-				has_war_with = RUS
-			}
-			date > 2022.5.5
+			NOT = { has_war_with = RUS }
+			date > 2022.05.05
 		}
 	}
-
 	ai_strategy = {
 		type = front_unit_request
 		tag = RUS
 		value = 35
 	}
-
 	ai_strategy = {
 		type = front_unit_request
 		tag = DPR
 		value = 35
 	}
-
 	ai_strategy = {
 		type = front_unit_request
 		tag = LPR
 		value = 30
 	}
-
 	ai_strategy = {
 		type = garrison
 		value = -200
 	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 28
+		value = -100
+	}
+}
 
-    ai_strategy = {
-        type = front_unit_request
-        strategic_region = 28
-        value = -100
+  
+
+
+#######################################################
+# 1. НАЧАЛО СВО (24.02.22 – 01.03.22): слабая оборона юга
+#######################################################
+UKR_war_south_stage1 = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		AND = {
+			has_war_with = RUS
+			date > 2022.02.24
+			date < 2022.03.10
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = RUS }
+			date > 2022.03.10
+		}
+	}
+
+	# Слабая оборона Херсона
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 56  # правый Херсон
+		value = -150
+	}
+	# Усиление Николаев(24) / Кривой Рог(61)
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 24
+		value = 200
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 61
+		value = 200
+	}
+
+	# Под Киевом мало войск
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 23
+		value = -100
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 68
+		value = -100
+	}
+
+	# Донецк(31) > Луганск(63)
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 31
+		value = 300
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 63
+		value = 100
+	}
+
+	# front_control = careful
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = careful
+		execute_order = yes
+		manual_attack = no
+		priority = 50
+	}
+
+}
+
+
+#######################################################
+# 2. УСИЛЕНИЕ КИЕВА (01.03.22 – 01.04.22)
+#######################################################
+UKR_defend_kyiv_stage2 = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		AND = {
+			has_war_with = RUS
+			date > 2022.02.24
+			date < 2022.05.01
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = RUS }
+			date > 2022.05.01
+		}
+	}
+
+	# Увеличиваем фронт-контроль Киева
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 23
+		value = 800
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 68
+		value = 800
+	}
+
+	# front_control = balanced
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 60
+	}
+}
+
+
+#######################################################
+# 3. ПОСЛЕ УХОДА РФ ИЗ ПОД КИЕВА (RUS_leave_from_kyiv)
+#######################################################
+UKR_after_RUS_leave_kyiv = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		RUS = { has_country_flag = RUS_failure_of_SMO } 
+	}
+	abort = {
+		NOT = { RUS = { has_country_flag = RUS_failure_of_SMO }  }
+	}
+
+	# Уменьшаем приоритет Киева
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 23
+		value = -200
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 68
+		value = -200
+	}
+
+	# front_control = balanced
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = no
+		priority = 120
+	}
+}
+
+UKR_front_control_1 = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		RUS = { has_country_flag = RUS_failure_of_SMO } 
+	}
+	abort = {
+		date > 2022.7.10
+	}
+
+	# front_control = balanced
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = careful
+		execute_order = yes
+		manual_attack = yes
+		priority = 200
+	}
+}
+
+
+UKR_front_control_2 = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		RUS = { has_country_flag = RUS_failure_of_SMO } 
+		date > 2022.7.10
+	}
+
+
+	# front_control = balanced
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = yes
+		priority = 300
+	}
+}
+
+#######################################################
+# 4. КОНТРНАСТУПЛЕНИЕ (ОСЕНЬ 2022), ЕСЛИ ЕСТЬ РЕСУРСЫ
+#######################################################
+UKR_counteroffensive_autumn2022 = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		AND = {
+			has_war_with = RUS
+			date > 2022.09.01
+			date < 2023.01.01
+
+			# eq + manpower ок
+			has_manpower > 5000
+			NOT = {
+				OR = {
+					has_equipment = { infantry_equipment < 20000 }
+					has_equipment = { artillery_equipment < 3000 }
+				}
+			}
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = RUS }
+			date > 2023.01.01
+			has_manpower < 3000
+		}
+	}
+
+	# Приоритет Харьков(44) и Луганск(63)
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 44
+		value = 600
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 63
+		value = 500
+	}
+	# Запорожье(57,58) маленький приоритет
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 57
+		value = 50
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 58
+		value = 50
+	}
+
+	# front_control = rush_weak (чтобы не было слишком агрессивно)
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = rush_weak
+		execute_order = yes
+		manual_attack = yes
+		priority = 200
+	}
+}
+
+
+#######################################################
+# 5. КОНТРНАСТУПЛЕНИЕ (ЛЕТО 2023), ЕСЛИ РФ ДЕРЖИТ ЮГ
+#######################################################
+UKR_counteroffensive_summer2023 = {
+	allowed = {
+		original_tag = UKR
+	}
+	enable = {
+		AND = {
+			has_war_with = RUS
+			date > 2023.06.01
+			date < 2023.09.01
+
+			# РФ контролит юг (пример state=253,231)
+			RUS = { controls_state = 664 }
+			RUS = { controls_state = 661 }
+			RUS = { controls_state = 665 }
+			RUS = { controls_state = 656 }
+			RUS = { controls_state = 237 }
+			RUS = { controls_state = 223 }
+			RUS = { controls_state = 666 }
+			RUS = { controls_state = 662 }
+			RUS = { controls_state = 661 }
+			RUS = { controls_state = 658 }
+			RUS = { controls_state = 655 }
+
+
+			has_manpower > 6000
+			NOT = {
+				OR = {
+					has_equipment = { infantry_equipment < 25000 }
+					has_equipment = { artillery_equipment < 4000 }
+				}
+			}
+		}
+	}
+	abort = {
+		OR = {
+			NOT = { has_war_with = RUS }
+			date > 2023.09.01
+			has_manpower < 3000
+		}
+	}
+
+	# Приоритет Херсон(56), Запорожье(57,58)
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 56
+		value = 600
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 57
+		value = 400
+	}
+	ai_strategy = {
+		type = front_unit_request
+		strategic_region = 58
+		value = 400
+	}
+
+	ai_strategy = {
+		type = front_control
+		tag = RUS
+		ordertype = front
+		execution_type = rush_weak
+		execute_order = yes
+		manual_attack = yes
+		priority = 250
 	}
 }
 
@@ -216,6 +566,13 @@ UKR_do_not_attack_the_territory_of_the_BLR = {
 	abort = {
 		always = no
 	}
+
+	ai_strategy = {
+		type = front_unit_request
+		tag = BLR
+		value = -50
+	}
+
 
 	ai_strategy = {
 		type = front_unit_request
@@ -264,7 +621,7 @@ UKR_PMR_defend = {
 	ai_strategy = {
 		type = front_unit_request
 		tag = PMR
-		value = 5
+		value = 10
 	}
 }
 
@@ -284,7 +641,7 @@ UKR_BLR_defend = {
 	ai_strategy = {
 		type = front_unit_request
 		tag = BLR
-		value = 10
+		value = 20
 	}
 }
 
