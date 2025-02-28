@@ -5185,6 +5185,57 @@ RUS_information_war = {
 			}
 		}
 	}
+	RUS_hacker_attacks_BSMO = {
+		icon = GFX_RUS_IPSO
+
+		fire_only_once = yes
+		days_remove = 1
+		cost = 5
+		
+		ai_will_do = {
+	    	factor = 1000
+        }
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = eslation_at_least_35
+				check_variable = { global.escalation > 34 }
+			}
+		}
+
+		visible = {
+			original_tag = RUS
+			has_completed_focus = RUS_operations_under_false_flag
+			NOT = {
+				has_completed_focus = RUS_SMO
+			}
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_hacker_attacks_BSMO"
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -5
+				tooltip = IW_5_ukr_minus_var_add_tt
+			}
+			UKR = {
+			    country_event = {
+			        id = ukr.103
+				    days = 0
+			    }
+			}
+			increase_escalation_by_1 = yes
+			hidden_effect = {
+				add_to_variable = {	
+					var = global.rus_information_war_var_sum
+					value = 5
+				}
+				clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
+		}
+	}
 	RUS_shelling_border = {
 		icon = RUS_FSB
 
@@ -10448,36 +10499,6 @@ RUS_real_man_business_categories = {
 			hidden_effect = {
 				country_event = {
 					id = rus.140
-					days = 0
-				}
-			}
-		}
-	}
-    RUS_Imperskiy_legion = {
-		icon = GFX_RUS_Imperskiy_legion
-		
-		cost = 25
-		fire_only_once = yes
-		days_remove = 30
-		
-		ai_will_do = {
-	    	factor = 30
-        }
-
-		visible = {
-	        has_completed_focus = RUS_Expand_VS_RF
-	    }
-
-		available = {
-			original_tag = RUS
-			date > 2022.6.1
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_Imperskiy_legion"
-			custom_effect_tooltip = RUS_Imperskiy_legion_cet
-			hidden_effect = {
-				country_event = {
-					id = rus.133
 					days = 0
 				}
 			}
