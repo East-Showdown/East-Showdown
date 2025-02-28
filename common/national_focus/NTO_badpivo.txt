@@ -1,0 +1,1895 @@
+focus_tree = {
+	id = nto_badpivo_focus
+	continuous_focus_position = { x = -40 y = 2510 } 
+	country = {
+		factor = 0
+		modifier = {
+			has_country_flag = nto_badpivo
+			add = 15
+			tag = nto
+		}
+	}
+
+	default = no
+
+	focus = {
+		id = nto_UKR_question
+		icon = GFX_nto_UKR_question
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		allow_branch = {
+			NOT = { has_country_flag = nto_UKR_question_closed_flag }
+		}
+		cost = 1
+		x = 20
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_question"
+			country_event = { id = nto_badpivo.1 days = 0 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_UKR_rise_from_the_ashes
+		icon = GFX_nto_UKR_rise_from_the_ashes
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+			hidden_trigger = {
+				always = no
+			}
+		}
+		relative_position_id = nto_UKR_question 
+		prerequisite = { focus = nto_UKR_question }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_rise_from_the_ashes"
+			news_event = { id = nto_badpivo.2 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_new_economic_aid_package
+		icon = GFX_nto_new_economic_aid_package
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_UKR_question 
+		prerequisite = { focus = nto_UKR_rise_from_the_ashes }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_economic_aid_package"
+			custom_effect_tooltip = nto_economic_aid_package_tt
+			#TODO AFTER ECONOMY REWORK
+			news_event = { id = nto_badpivo.3 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_restoration_fund_of_UKR
+		icon = GFX_nto_restoration_fund_of_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_economic_aid_package 
+		prerequisite = { focus = nto_new_economic_aid_package }
+		offset = {
+			x = 2
+			trigger = { has_country_flag = nto_UKR_corruption_closed_flag }
+		}
+		cost = 1
+		x = -12
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_economic_aid_package"
+			custom_effect_tooltip = nto_economic_aid_package_tt
+			#TODO AFTER ECONOMY REWORK
+			news_event = { id = nto_badpivo.4 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_rebuilding_destroyed_cities
+		icon = GFX_nto_rebuilding_destroyed_cities
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		bypass = {
+			UKR = { NOT = { AND = { controls_state = 208 controls_state = 103 controls_state = 253 } } }
+		}
+		relative_position_id = nto_restoration_fund_of_UKR 
+		prerequisite = { focus = nto_restoration_fund_of_UKR }
+		cost = 1
+		x = -3
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_rebuilding_destroyed_cities"
+			custom_effect_tooltip = nto_rebuilding_destroyed_cities_tt
+			hidden_effect = {
+				if = { limit = { UKR = { controls_state = 208 } } country_event = { id = nto_badpivo.5 days = 180 random_days = 180 } }
+				if = { limit = { UKR = { controls_state = 103 } } country_event = { id = nto_badpivo.6 days = 180 random_days = 180 } }
+				if = { limit = { UKR = { controls_state = 253 } } country_event = { id = nto_badpivo.7 days = 180 random_days = 180 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_help_to_educational_institutions
+		icon = GFX_nto_help_to_educational_institutions
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_fund_of_UKR 
+		prerequisite = { focus = nto_restoration_fund_of_UKR }
+		cost = 1
+		x = -1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_help_to_educational_institutions"
+			UKR = {
+				if = { limit = { has_idea = educational_deficit } swap_ideas = { remove_idea = educational_deficit add_idea = educational_shortened } }	
+				else_if = { limit = { has_idea = educational_shortened } swap_ideas = { remove_idea = educational_shortened add_idea = educational_basic } }
+				else_if = { limit = { has_idea = educational_basic } swap_ideas = { remove_idea = educational_basic add_idea = educational_increased } }	
+				else_if = { limit = { has_idea = educational_increased } swap_ideas = { remove_idea = educational_increased add_idea = educational_extended } }	
+				else_if = { limit = { has_idea = educational_extended } add_political_power = 200 } 
+			}
+			news_event = { id = nto_badpivo.11 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_the_return_of_refugees
+		icon = GFX_nto_the_return_of_refugees
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_fund_of_UKR 
+		prerequisite = { focus = nto_restoration_fund_of_UKR }
+		cost = 1
+		x = 1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_the_return_of_refugees"
+			hidden_effect = { 	
+				UKR = {
+					every_controlled_state = {
+						random_list = {
+							10 = { add_manpower = 0 }
+							10 = { add_manpower = 10 }
+							10 = { add_manpower = 100 }
+							10 = { add_manpower = 1000 }
+							10 = { add_manpower = 2000 }
+							10 = { add_manpower = 4000 }
+							10 = { add_manpower = 6000 }
+							10 = { add_manpower = 8000 }
+							10 = { add_manpower = 10000 }
+							10 = { add_manpower = 20000 }
+						}
+					}
+				}
+			}	
+			custom_effect_tooltip = nto_the_return_of_refugees_tt
+			news_event = { id = nto_badpivo.12 days = 1 } 
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_repair_bridges_across_the_dnieper
+		icon = GFX_nto_repair_bridges_across_the_dnieper
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_fund_of_UKR 
+		prerequisite = { focus = nto_restoration_fund_of_UKR }
+		cost = 1
+		x = 3
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_repair_bridges_across_the_dnieper"
+			#TODO
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_european_USAID
+		icon = GFX_nto_european_USAID
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_fund_of_UKR 
+		prerequisite = { focus = nto_rebuilding_destroyed_cities }
+		prerequisite = { focus = nto_help_to_educational_institutions }
+		prerequisite = { focus = nto_the_return_of_refugees }
+		prerequisite = { focus = nto_repair_bridges_across_the_dnieper }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_european_USAID"
+			#TODO AFTER ECONOMY REWORK
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_UKR_corruption_question
+		icon = GFX_nto_UKR_corruption_question
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		allow_branch = {
+			NOT = { has_country_flag = nto_UKR_corruption_closed_flag }
+		}
+		relative_position_id = nto_new_economic_aid_package 
+		prerequisite = { focus = nto_new_economic_aid_package }
+		cost = 1
+		x = -7
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_corruption_question"
+			country_event = { id = nto_badpivo.13 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_struggle_with_UKR_corruption
+		icon = GFX_nto_struggle_with_UKR_corruption
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+			has_country_flag = nto_UKR_corruption_open_flag
+		}
+		relative_position_id = nto_UKR_corruption_question 
+		prerequisite = { focus = nto_UKR_corruption_question }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_struggle_with_UKR_corruption"
+			news_event = { id = nto_badpivo.14 days = 1 }
+			if = { limit = { has_idea = total_corruption_level } swap_ideas = { remove_idea = total_corruption_level add_idea = destructive_corruption_level } }
+			else_if = { limit = { has_idea = destructive_corruption_level } swap_ideas = { remove_idea = destructive_corruption_level add_idea = high_corruption_level } }
+			else_if = { limit = { has_idea = high_corruption_level } swap_ideas = { remove_idea = high_corruption_level add_idea = medium_corruption_level } }
+			else_if = { limit = { has_idea = medium_corruption_level } swap_ideas = { remove_idea = medium_corruption_level add_idea = low_corruption_level } }
+			else_if = { limit = { has_idea = miserable_corruption_level } add_political_power = 200 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_spec_commision_struggle_with_UKR_corruption
+		icon = GFX_nto_struggle_with_UKR_corruption
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+			has_country_flag = nto_UKR_corruption_open_flag
+		}
+		relative_position_id = nto_struggle_with_UKR_corruption 
+		prerequisite = { focus = nto_struggle_with_UKR_corruption }
+		cost = 1
+		x = -1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_spec_commision_struggle_with_UKR_corruption"
+			news_event = { id = nto_badpivo.14 days = 1 }
+			if = { limit = { has_idea = total_corruption_level } swap_ideas = { remove_idea = total_corruption_level add_idea = destructive_corruption_level } }
+			else_if = { limit = { has_idea = destructive_corruption_level } swap_ideas = { remove_idea = destructive_corruption_level add_idea = high_corruption_level } }
+			else_if = { limit = { has_idea = high_corruption_level } swap_ideas = { remove_idea = high_corruption_level add_idea = medium_corruption_level } }
+			else_if = { limit = { has_idea = medium_corruption_level } swap_ideas = { remove_idea = medium_corruption_level add_idea = low_corruption_level } }
+			else_if = { limit = { has_idea = miserable_corruption_level } add_political_power = 200 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_demand_radical_measures_from_UKR
+		icon = GFX_nto_demand_radical_measures_from_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+			has_country_flag = nto_UKR_corruption_open_flag
+		}
+		relative_position_id = nto_struggle_with_UKR_corruption 
+		prerequisite = { focus = nto_struggle_with_UKR_corruption }
+		cost = 1
+		x = 1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_demand_radical_measures_from_UKR"
+			UKR = { country_event = { id = nto_badpivo.15 days = 1 } }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_energy_independence_of_UKR
+		icon = GFX_nto_energy_independence_of_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_economic_aid_package 
+		prerequisite = { focus = nto_new_economic_aid_package }
+		cost = 1
+		x = -4
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_energy_independence_of_UKR"
+			UKR = { news_event = { id = nto_badpivo.18 days = 1 } }
+			UKR = {
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_investments_in_clean_energy
+		icon = GFX_nto_investments_in_clean_energy
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_energy_independence_of_UKR 
+		prerequisite = { focus = nto_energy_independence_of_UKR }
+		cost = 1
+		x = -1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_investments_in_clean_energy"
+			UKR = {
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = wind_power_plant
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = solar_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+				
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_investments_in_thermal_power_plants
+		icon = GFX_nto_investments_in_thermal_power_plants
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_energy_independence_of_UKR 
+		prerequisite = { focus = nto_energy_independence_of_UKR }
+		cost = 1
+		x = 1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_investments_in_thermal_power_plants"
+			UKR = {
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = thermal_power_plant
+						level = 1
+						instant_build = yes
+					}
+				}
+
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_propose_new_nuclear_power_plants_projects_to_UKR
+		icon = GFX_nto_propose_new_nuclear_power_plants_projects_to_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_energy_independence_of_UKR 
+		prerequisite = { focus = nto_energy_independence_of_UKR }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_propose_new_nuclear_power_plants_projects_to_UKR"
+			UKR = { country_event = { id = nto_badpivo.19 days = 1 } }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_fortification_of_new_UKR
+		icon = GFX_nto_fortification_of_new_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_economic_aid_package 
+		prerequisite = { focus = nto_new_economic_aid_package }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_fortification_of_new_UKR"
+			UKR = { 
+				add_ideas = UKR_fortification_of_new_UKR_idea
+				every_controlled_state = {
+					limit = { NOT = { all_neighbor_state = { controller = { is_neighbor_of = RUS } } } }
+					add_building_construction = {
+						type = bunker
+						level = 4
+						instant_build = yes
+						province = {
+							all_provinces = yes
+							limit_to_border = yes
+						}
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_help_in_army_reforms
+		icon = GFX_nto_help_in_army_reforms
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_fortification_of_new_UKR 
+		prerequisite = { focus = nto_fortification_of_new_UKR }
+		cost = 1
+		x = -1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_help_in_army_reforms"
+			UKR = { add_command_power = 500 army_experience = 500 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_expand_airbases
+		icon = GFX_nto_expand_airbases
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_fortification_of_new_UKR 
+		prerequisite = { focus = nto_fortification_of_new_UKR }
+		cost = 1
+		x = 1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_expand_airbases"
+			UKR = { 
+				119 = {
+					add_building_construction = {
+						type = air_base
+						level = 5
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					prioritize = { 94 }
+					add_building_construction = {
+						type = air_base
+						level = 5
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					prioritize = { 115 }
+					add_building_construction = {
+						type = air_base
+						level = 5
+						instant_build = yes
+					}
+				}
+
+				random_controlled_state = {
+					prioritize = { 86 }
+					add_building_construction = {
+						type = air_base
+						level = 5
+						instant_build = yes
+					}
+				}
+
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_assist_in_transition_to_west_standarts
+		icon = GFX_nto_assist_in_transition_to_west_standarts
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_fortification_of_new_UKR 
+		prerequisite = { focus = nto_expand_airbases }
+		prerequisite = { focus = nto_help_in_army_reforms }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_assist_in_transition_to_west_standarts"
+			UKR = { 
+				add_tech_bonus = {
+					bonus = 0.5
+					uses = 3
+					category = land_doctrine
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_issue_of_secrecy
+		icon = GFX_nto_issue_of_secrecy
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_fortification_of_new_UKR 
+		prerequisite = { focus = nto_assist_in_transition_to_west_standarts }
+		cost = 1
+		x = 0
+		y = 3
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_issue_of_secrecy"
+			country_event = { id = nto_badpivo.21 days = 0 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_first_post_war_military_aid_package
+		icon = GFX_nto_first_post_war_military_aid_package
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+			hidden_trigger = {
+				OR = { has_country_flag = nto_issue_of_secrecy_accepted_flag has_country_flag = nto_issue_of_secrecy_denied_flag }
+			} 
+		}
+		relative_position_id = nto_fortification_of_new_UKR 
+		prerequisite = { focus = nto_issue_of_secrecy }
+		cost = 1
+		x = 0
+		y = 4
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_first_post_war_military_aid_package"
+			if = {
+				limit = { has_country_flag = nto_issue_of_secrecy_accepted_flag }
+				send_equipment = {
+					equipment = usa_fim92_stinger_equipment
+					amount = 1250
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_fgm148_javelin_equipment
+					amount = 1500
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_bgm71_tow_equipment
+					amount = 500
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_m120_equipment
+					amount = 125
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_fgm148_javelin_equipment
+					amount = 5000
+					target = UKR
+				}
+				
+				unlock_decision_category_tooltip = NTO_postwar_aid_category
+			}
+			else_if = {
+				limit = { has_country_flag = nto_issue_of_secrecy_denied_flag }
+				send_equipment = {
+					equipment = usa_fim92_stinger_equipment
+					amount = 2500
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_fgm148_javelin_equipment
+					amount = 3000
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_bgm71_tow_equipment
+					amount = 1000
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_m120_equipment
+					amount = 250
+					target = UKR
+				}
+	
+				send_equipment = {
+					equipment = usa_fgm148_javelin_equipment
+					amount = 10000
+					target = UKR
+				}
+				news_event = { id = nto_badpivo.22 days = 1 }
+
+				unlock_decision_category_tooltip = NTO_postwar_aid_category
+			}
+			else = { custom_effect_tooltip = nto_issue_of_secrecy_not_completed_tt }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_new_supplies_of_armored_vehicles
+		icon = GFX_nto_new_supplies_of_armored_vehicles
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_first_post_war_military_aid_package 
+		prerequisite = { focus = nto_first_post_war_military_aid_package }
+		cost = 1
+		x = -2
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_armored_vehicles"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_supply_of_promising_vehicles
+		icon = GFX_nto_supply_of_promising_vehicles
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_first_post_war_military_aid_package 
+		prerequisite = { focus = nto_new_supplies_of_armored_vehicles }
+		cost = 1
+		x = -2
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_supply_of_promising_vehicles"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_supplies_of_infantry_equipment
+		icon = GFX_nto_new_supplies_of_infantry_equipment
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_first_post_war_military_aid_package 
+		prerequisite = { focus = nto_first_post_war_military_aid_package }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_infantry_equipment"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_supplies_of_artillery
+		icon = GFX_nto_new_supplies_of_artillery
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_first_post_war_military_aid_package 
+		prerequisite = { focus = nto_first_post_war_military_aid_package }
+		cost = 1
+		x = 2
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_artillery"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_supplies_of_ammunition
+		icon = GFX_nto_new_supplies_of_ammunition
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_first_post_war_military_aid_package 
+		prerequisite = { focus = nto_new_supplies_of_artillery }
+		cost = 1
+		x = 2
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_ammunition"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_supplies_of_aviation
+		icon = GFX_nto_new_supplies_of_aviation
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_first_post_war_military_aid_package 
+		prerequisite = { focus = nto_supply_of_promising_vehicles }
+		prerequisite = { focus = nto_new_supplies_of_ammunition }
+		cost = 1
+		x = 0
+		y = 3
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_aviation"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_supplies_of_air_defense_missiles
+		icon = GFX_nto_new_supplies_of_air_defense_missiles
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_supplies_of_aviation 
+		prerequisite = { focus = nto_new_supplies_of_aviation }
+		cost = 1
+		x = -1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_air_defense_missiles"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_supplies_of_missiles
+		icon = GFX_nto_new_supplies_of_missiles
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_supplies_of_aviation 
+		prerequisite = { focus = nto_new_supplies_of_aviation }
+		cost = 1
+		x = 1
+		y = 1
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_supplies_of_missiles"
+			#TODO DECISION
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_new_program_of_rearmament_of_UKR_army
+		icon = GFX_nto_new_program_of_rearmament_of_UKR_army
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_supplies_of_aviation 
+		prerequisite = { focus = nto_new_supplies_of_air_defense_missiles }
+		prerequisite = { focus = nto_new_supplies_of_missiles }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus nto_new_program_of_rearmament_of_UKR_army"
+			#TODO EFFECT
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}	
+
+	focus = {
+		id = nto_restoration_of_factories
+		icon = GFX_nto_fortification_of_new_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_economic_aid_package 
+		prerequisite = { focus = nto_new_economic_aid_package }
+		cost = 1
+		x = 3
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_restoration_of_factories"
+			UKR = { 
+				add_ideas = UKR_fortification_of_new_UKR_idea
+				random_controlled_state = {
+					limit = { NOT = { state = 403 } }
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_rheinmetall_factories_in_UKR
+		icon = GFX_nto_rheinmetall_factories_in_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_of_factories 
+		prerequisite = { focus = nto_restoration_of_factories }
+		cost = 1
+		x = -1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_rheinmetall_factories_in_UKR"
+			UKR = { 
+				random_controlled_state = {
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_ENG_FRA_factories_in_UKR
+		icon = GFX_nto_rheinmetall_factories_in_UKR
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_of_factories 
+		prerequisite = { focus = nto_restoration_of_factories }
+		cost = 1
+		x = 1
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_rheinmetall_factories_in_UKR"
+			UKR = { 
+				random_controlled_state = {
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				#TODO LICENSE ON FRA AND ENG VEHICLES
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_investments_in_UKR_military_industrial_complex
+		icon = GFX_nto_investments_in_UKR_military_industrial_complex
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_restoration_of_factories 
+		prerequisite = { focus = nto_restoration_of_factories }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_investments_in_UKR_military_industrial_complex"
+			UKR = { 
+				if = { limit = { has_idea = UKR_MIC  } swap_ideas = { remove_idea = UKR_MIC add_idea = UKR_MIC2 } }
+				else_if = { limit = { has_idea = UKR_MIC2  } swap_ideas = { remove_idea = UKR_MIC2 add_idea = UKR_MIC3 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_development_of_UKR_minerals
+		icon = GFX_nto_development_of_UKR_minerals
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_new_economic_aid_package
+		prerequisite = { focus = nto_new_economic_aid_package }
+		cost = 1
+		x = 7
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_development_of_UKR_minerals"
+			news_event = { id = nto_badpivo.23 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_UKR_oil_reserves
+		icon = GFX_nto_UKR_oil_reserves
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		bypass = { UKR = { NOT = { AND = { controls_state = 82 controls_state = 96 controls_state = 105 controls_state = 170 controls_state = 132 } } } }
+		relative_position_id = nto_development_of_UKR_minerals 
+		prerequisite = { focus = nto_development_of_UKR_minerals }
+		cost = 1
+		x = -2
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_oil_reserves"
+			if = {
+				limit = { UKR = { controls_state = 82 } }
+				82 = { add_resource = { type = oil amount = 39 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 96 } }
+				96 = { add_resource = { type = oil amount = 51 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 105 } }
+				105 = { add_resource = { type = oil amount = 85 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 170 } }
+				170 = { add_resource = { type = oil amount = 43 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 132 } }
+				132 = { add_resource = { type = oil amount = 30 }  }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_UKR_rare_earth_metals
+		icon = GFX_nto_UKR_rare_earth_metals
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		bypass = { UKR = { NOT = { AND = { controls_state = 118 controls_state = 140 controls_state = 159 } } } }
+		relative_position_id = nto_development_of_UKR_minerals 
+		prerequisite = { focus = nto_development_of_UKR_minerals }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_rare_earth_metals"
+			if = {
+				limit = { UKR = { controls_state = 118 } }
+				118 = { add_resource = { type = aluminium amount = 45 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 140 } }
+				140 = { add_resource = { type = aluminium amount = 31 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 159 } }
+				159 = { add_resource = { type = aluminium amount = 22 }  }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_UKR_gas
+		icon = GFX_nto_UKR_gas
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		bypass = { UKR = { NOT = { AND = { controls_state = 82 controls_state = 96 controls_state = 105 controls_state = 170 controls_state = 132 } } } }
+		relative_position_id = nto_development_of_UKR_minerals 
+		prerequisite = { focus = nto_development_of_UKR_minerals }
+		cost = 1
+		x = 2
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_gas"
+			if = {
+				limit = { UKR = { controls_state = 82 } }
+				82 = { add_resource = { type = gas amount = 39 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 96 } }
+				96 = { add_resource = { type = gas amount = 51 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 105 } }
+				105 = { add_resource = { type = gas amount = 85 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 170 } }
+				170 = { add_resource = { type = gas amount = 43 }  }
+			}
+			if = {
+				limit = { UKR = { controls_state = 132 } }
+				132 = { add_resource = { type = gas amount = 30 }  }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_UKR_new_program_of_exploration_and_extraction_of_resources
+		icon = GFX_nto_UKR_new_program_of_exploration_and_extraction_of_resources
+		available = {
+			UKR = { exists = yes NOT = { is_puppet = yes has_war = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes has_war = yes } }
+		}
+		relative_position_id = nto_development_of_UKR_minerals 
+		prerequisite = { focus = nto_UKR_oil_reserves }
+		prerequisite = { focus = nto_UKR_rare_earth_metals }
+		prerequisite = { focus = nto_UKR_gas }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_UKR_new_program_of_exploration_and_extraction_of_resources"
+			#TODO DECISIONS
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+#SMO 2.0	
+
+	focus = {
+		id = nto_when_the_fog_rises_over_europe_again
+		icon = GFX_nto_when_the_fog_rises_over_europe_again
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		#allow_branch = {
+		#	has_country_flag = second_RUS_UKR_war_flag
+		#}
+		cost = 1
+		x = 30
+		y = 30
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_when_the_fog_rises_over_europe_again"
+			custom_effect_tooltip = nto_when_the_fog_rises_over_europe_again_tt
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_we_will_give_them_our_money
+		icon = GFX_nto_we_will_give_them_our_money
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_when_the_fog_rises_over_europe_again
+		prerequisite = { focus = nto_when_the_fog_rises_over_europe_again }
+		cost = 1
+		x = 5
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_we_will_give_them_our_money"
+			#TODO DECISIONS AFTER ECONOMY REWORK
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_and_weapons
+		icon = GFX_nto_and_weapons
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_we_will_give_them_our_money
+		prerequisite = { focus = nto_we_will_give_them_our_money }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_and_weapons"
+			#TODO DECISIONS
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_more_than_ever_before
+		icon = GFX_nto_more_than_ever_before
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_we_will_give_them_our_money
+		prerequisite = { focus = nto_and_weapons }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_more_than_ever_before"
+			#TODO DECISIONS
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_we_will_respond_immediately
+		icon = GFX_nto_we_will_respond_immediately
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_when_the_fog_rises_over_europe_again
+		prerequisite = { focus = nto_when_the_fog_rises_over_europe_again }
+		cost = 1
+		x = -5
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_we_will_respond_immediately"
+			custom_effect_tooltip = nto_we_will_respond_immediately_tt
+			hidden_effect = { country_event = { id = nto_badpivo.100 days = 0 } }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_last_european_war
+		icon = GFX_nto_last_european_war
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { NOT = { has_capitulated = yes is_puppet = yes} }
+			hidden_trigger = { always = no }
+		}
+		relative_position_id = nto_we_will_respond_immediately
+		prerequisite = { focus = nto_we_will_respond_immediately }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_last_european_war"
+			custom_effect_tooltip = nto_last_european_war_tt
+			hidden_effect = {
+				every_country = {
+					limit = { OR = { is_ally_with = NTO tag = NTO } }
+					declare_war_on = {
+						target = RUS
+						type = liberate_wargoal
+					}
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_mobilize_reserves
+		icon = GFX_nto_mobilize_reserves
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_last_european_war
+		prerequisite = { focus = nto_last_european_war }
+		cost = 1
+		x = -3
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_mobilize_reserves"
+			#TODO
+			custom_effect_tooltip = in_development
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_first_wave_of_mobilization
+		icon = GFX_nto_first_wave_of_mobilization
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_mobilize_reserves
+		prerequisite = { focus = nto_mobilize_reserves }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_first_wave_of_mobilization"
+			every_country = {
+				limit = { OR = { is_ally_with = NTO tag = NTO } }
+				if = { limit = { has_idea = volunteer_only } swap_ideas = { remove_idea = volunteer_only add_idea = limited_conscription } }	
+				else_if = { limit = { has_idea = limited_conscription } swap_ideas = { remove_idea = limited_conscription add_idea = extensive_conscription } }
+				else_if = { limit = { has_idea = extensive_conscription } swap_ideas = { remove_idea = extensive_conscription add_idea = service_by_requirement } }	
+				else_if = { limit = { has_idea = service_by_requirement } swap_ideas = { remove_idea = service_by_requirement add_idea = all_adults_serve } }	
+				else_if = { limit = { has_idea = all_adults_serve } swap_ideas = { remove_idea = all_adults_serve add_idea = scraping_the_barrel } }
+				else_if = { limit = { has_idea = scraping_the_barrel } add_manpower = 20000 } 
+				hidden_effect = { news_event = { id = nto_badpivo.101 days = 3 random_days = 7 } }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_low_service_age
+		icon = GFX_nto_low_service_age
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_mobilize_reserves
+		prerequisite = { focus = nto_first_wave_of_mobilization }
+		cost = 1
+		x = -2
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_low_service_age"
+			every_country = {
+				limit = { OR = { is_ally_with = NTO tag = NTO } }
+				if = { limit = { has_idea = mobilization_age_25_30 } swap_ideas = { remove_idea = mobilization_age_25_30 add_idea = mobilization_age_25 } }	
+				else_if = { limit = { has_idea = mobilization_age_25 } swap_ideas = { remove_idea = mobilization_age_25 add_idea = mobilization_age_22_24 } }
+				else_if = { limit = { has_idea = mobilization_age_22_24 } swap_ideas = { remove_idea = mobilization_age_22_24 add_idea = mobilization_age_20_22 } }	
+				else_if = { limit = { has_idea = mobilization_age_20_22 } swap_ideas = { remove_idea = mobilization_age_20_22 add_idea = mobilization_age_19_20 } }	
+				else_if = { limit = { has_idea = mobilization_age_19_20 } swap_ideas = { remove_idea = mobilization_age_19_20 add_idea = mobilization_age_18 } }
+				else_if = { limit = { has_idea = mobilization_age_18 } add_manpower = 20000 } 
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_second_wave_of_mobilization
+		icon = GFX_nto_second_wave_of_mobilization
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_mobilize_reserves
+		prerequisite = { focus = nto_mobilize_reserves }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_second_wave_of_mobilization"
+			every_country = {
+				limit = { OR = { is_ally_with = NTO tag = NTO } }
+				if = { limit = { has_idea = volunteer_only } swap_ideas = { remove_idea = volunteer_only add_idea = limited_conscription } }	
+				else_if = { limit = { has_idea = limited_conscription } swap_ideas = { remove_idea = limited_conscription add_idea = extensive_conscription } }
+				else_if = { limit = { has_idea = extensive_conscription } swap_ideas = { remove_idea = extensive_conscription add_idea = service_by_requirement } }	
+				else_if = { limit = { has_idea = service_by_requirement } swap_ideas = { remove_idea = service_by_requirement add_idea = all_adults_serve } }	
+				else_if = { limit = { has_idea = all_adults_serve } swap_ideas = { remove_idea = all_adults_serve add_idea = scraping_the_barrel } }
+				else_if = { limit = { has_idea = scraping_the_barrel } add_manpower = 20000 } 
+				hidden_effect = { news_event = { id = nto_badpivo.101 days = 3 random_days = 7 } }
+				hidden_effect = { news_event = { id = nto_badpivo.102 days = 2 random_days = 7 } }
+				hidden_effect = { news_event = { id = nto_badpivo.103 days = 1 random_days = 7 } }
+			
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_third_wave_of_mobilization
+		icon = GFX_nto_third_wave_of_mobilization
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_mobilize_reserves
+		prerequisite = { focus = nto_mobilize_reserves }
+		cost = 1
+		x = 0
+		y = 3
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_third_wave_of_mobilization"
+			every_country = {
+				limit = { OR = { is_ally_with = NTO tag = NTO } }
+				if = { limit = { has_idea = volunteer_only } swap_ideas = { remove_idea = volunteer_only add_idea = limited_conscription } }	
+				else_if = { limit = { has_idea = limited_conscription } swap_ideas = { remove_idea = limited_conscription add_idea = extensive_conscription } }
+				else_if = { limit = { has_idea = extensive_conscription } swap_ideas = { remove_idea = extensive_conscription add_idea = service_by_requirement } }	
+				else_if = { limit = { has_idea = service_by_requirement } swap_ideas = { remove_idea = service_by_requirement add_idea = all_adults_serve } }	
+				else_if = { limit = { has_idea = all_adults_serve } swap_ideas = { remove_idea = all_adults_serve add_idea = scraping_the_barrel } }
+				else_if = { limit = { has_idea = scraping_the_barrel } add_manpower = 20000 } 
+				hidden_effect = { news_event = { id = nto_badpivo.101 days = 3 random_days = 7 } }
+				hidden_effect = { news_event = { id = nto_badpivo.102 days = 2 random_days = 7 } }
+				hidden_effect = { news_event = { id = nto_badpivo.103 days = 1 random_days = 7 } }
+				hidden_effect = { news_event = { id = nto_badpivo.104 days = 1} }
+				add_stability = -0.2
+				add_war_support = -0.2
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_evict_RUS_from_UKR
+		icon = GFX_nto_evict_RUS_from_UKR
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_last_european_war
+		prerequisite = { focus = nto_last_european_war }
+		cost = 1
+		x = 0
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_evict_RUS_from_UKR"
+			every_state = {
+				limit = { AND = { is_controlled_by = RUS OR = { is_claimed_by = UKR is_core_of = UKR } } }
+				add_dynamic_modifier = { modifier = NTO_evict_RUS_from_UKR_dynamic_mod days = 200 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_final_rout
+		icon = GFX_nto_final_rout
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+			UKR = {
+				full_control_of_crimea = yes
+				full_control_of_donetsk = yes
+				full_control_of_lugansk = yes
+			}
+
+		}
+		relative_position_id = nto_last_european_war
+		prerequisite = { focus = nto_evict_RUS_from_UKR }
+		cost = 1
+		x = 0
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_final_rout"
+			news_event = { id = nto_badpivo.105 days = 1 }
+			#TODO AFTER RUSSIA REWORK
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_after_war_europe
+		icon = GFX_nto_after_war_europe
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_last_european_war
+		prerequisite = { focus = nto_final_rout }
+		cost = 1
+		x = 0
+		y = 3
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_after_war_europe"
+			country_event = { id = nto_badpivo.106 days = 1 }
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_war_bonds
+		icon = GFX_nto_war_bonds
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_last_european_war
+		prerequisite = { focus = nto_last_european_war }
+		cost = 1
+		x = 3
+		y = 1
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_war_bonds"
+			add_offsite_building = {
+				type = industrial_complex
+				level = 10
+			}
+			#TODO AFTER ECONOMY REWORK
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+	focus = {
+		id = nto_economic_mobilization
+		icon = GFX_nto_economic_mobilization
+		available = {
+			UKR = { exists = yes has_war = yes NOT = { is_puppet = yes } }
+			NTO = { has_war = yes NOT = { has_capitulated = yes is_puppet = yes} }
+		}
+		relative_position_id = nto_last_european_war
+		prerequisite = { focus = nto_war_bonds }
+		cost = 1
+		x = 3
+		y = 2
+		completion_reward = { 
+			log = "[GetDateText]: [Root.GetName]: Focus nto_economic_mobilization"
+			add_offsite_building = {
+				type = arms_factory
+				level = 15
+			}
+			#TODO AFTER ECONOMY REWORK
+		}
+
+		ai_will_do = {
+			factor = 300
+		}
+	}
+
+}
