@@ -3,6 +3,10 @@ focus_tree = {
 	continuous_focus_position = { x = -40 y = 2510 }
 	country = {
 		factor = 0
+		modifier = {
+			add = 10
+			tag = nto
+		}
 	}
 
 	default = no
@@ -92,6 +96,10 @@ focus_tree = {
 			country_event = nnto.4
 			add_stability = 0.05
 			add_political_power = 100
+			swap_ideas = {
+				remove_idea = strong_central_administration
+				add_idea = consolidated_power_center
+			}
 		}
 	}
 
@@ -137,7 +145,7 @@ focus_tree = {
 	}
 
 	focus = {
-		id = NTO_war_require_metalg
+		id = NTO_war_require_metal
 		icon = GFX_NTO_war_requires_metal
 		prerequisite = { focus = NTO_industrial_restructuring }
 		relative_position_id = NTO_Hameful_peace
@@ -357,7 +365,7 @@ focus_tree = {
 	focus = {
 		id = NTO_Europe_at_the_forefront_of_defense
 		icon = GFX_NTO_Europe_at_the_forefront_of_defense
-		prerequisite = { focus = NTO_war_require_metalg }
+		prerequisite = { focus = NTO_war_require_metal }
 		prerequisite = { focus = NTO_cut_social_assistance }
 		prerequisite = { focus = NTO_economic_stability }
 		prerequisite = { focus = NTO_complete_energy_independence focus = NTO_nuclear_power_issue }
@@ -715,12 +723,16 @@ focus_tree = {
 		x = 9 y = 16
 		cost = 1
 		completion_reward = {
-			NTO = {
-                declare_war_on = {
-                    target = RUS
-                    type = annex_everything
-                }
-            }
+			custom_effect_tooltip = nto_last_european_war_tt
+			hidden_effect = {
+				every_country = {
+					limit = { OR = { is_ally_with = NTO tag = NTO } }
+					declare_war_on = {
+						target = RUS
+						type = liberate_wargoal
+					}
+				}
+			}
 			news_event = nnews.18
 		}
 	}
@@ -828,8 +840,10 @@ focus_tree = {
 		cost = 1
 		completion_reward = {
 			hidden_effect = {
-				95 = { add_dynamic_modifier = { modifier = NTO_kick_Russia_out_of_Ukraine_dynamic_mod scope = NTO days = 200 } }
-				# дописать на какие стейты
+				every_state = {
+					limit = { AND = { is_controlled_by = RUS OR = { is_claimed_by = UKR is_core_of = UKR } } }
+					add_dynamic_modifier = { modifier = NTO_evict_RUS_from_UKR_dynamic_mod days = 200 }
+				}
 			}
 		}
 	}
