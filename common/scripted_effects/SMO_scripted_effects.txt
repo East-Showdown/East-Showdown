@@ -408,6 +408,25 @@ map_plan_defence_prepare = {
 	}
 }
 
+# THIS scope is COUNTRY
+map_plan_build_bunker_prepare_set = {
+	if = {
+		limit = { map_plan_build_bunker_available = yes }
+
+		add_command_power = -50
+
+		set_variable = { map_plan_build_bunker_cooldown = global.num_days }
+		add_to_variable = { map_plan_build_bunker_cooldown = 75 }
+		set_country_flag = {
+			flag = map_plan_build_bunker_cooldown_flag
+			days = 75
+		}
+
+		set_variable = { map_plan_build_bunker_region_index = selected_region }
+		set_temp_variable = { temp_modifier_type = 4 }
+		map_apply_modifier_action = yes
+	}
+}
 
 # THIS scope is COUNTRY
 # Must contain temp vars:
@@ -449,6 +468,14 @@ map_apply_modifier_action = {
 					limit = { check_variable = { temp_modifier_type = 3 } } #План защиты 
 					add_dynamic_modifier = {
 						modifier = map_plan_defence_modifier
+						scope = ROOT
+						days = 60
+					}
+				}
+				else_if = {
+					limit = { check_variable = { temp_modifier_type = 4 } } #Постройка укрепов
+					add_dynamic_modifier = {
+						modifier = map_plan_build_bunker_modifier
 						scope = ROOT
 						days = 60
 					}
