@@ -3883,9 +3883,7 @@ types = {
 		
 		show_target = {
 			NOT = { is_in_faction_with = FROM }
-			var:target_state = {
-				thermal_power_plant > 0
-			}
+
 		}
 	
 		available = {
@@ -4127,6 +4125,3636 @@ types = {
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+	rus_strikes_on_institute_rc = {
+		days_to_prepare = 1 #2
+		days_re_enable = 30
+		category = on_institute_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				tags = facility
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.facility = THIS.non_damaged_building_level@facility }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.05
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.1
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.15
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+
+	rus_institute_strike_bl = {
+		days_to_prepare = 1 #2
+		days_re_enable = 180
+		category = on_institute_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				thermal_power_plant > 0
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				tags = facility
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { rus_ballistic_missile_equipment }
+				amount = { min = 12 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_ballistic_missile_equipment = 8
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.65
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.15
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.facility = THIS.non_damaged_building_level@facility }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.05
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.1
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.15
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+
+	#удары по мостам
+	rus_strikes_on_bridges_KYIV_HYDRA_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 1
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = {
+		}
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 15949
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_HYDRA_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.1
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_HYDRA_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.1
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_HYDRA_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.1
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_NORTH_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 7400
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_NORTH_STRAIT
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.2
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_NORTH_STRAIT
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.2
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_NORTH_STRAIT
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.2
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_PRENORTH_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 12567
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PRENORTH_STRAIT
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.3
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PRENORTH_STRAIT
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.3
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PRENORTH_STRAIT
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.3
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_PODOLSK_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 7347
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PODOLSK_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.4
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PODOLSK_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.4
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PODOLSK_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.4
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_DARNITSKIY_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 2708
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_DARNITSKIY_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.5
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_DARNITSKIY_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.5
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_DARNITSKIY_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.5
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_METRO_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 18214
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_METRO_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.6
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_METRO_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.6
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_METRO_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.6
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_PATON_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 18213
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PATON_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.7
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PATON_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.7
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_PATON_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.7
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KYIV_SOUTH_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 16013
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_SOUTH_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.8
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_SOUTH_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.8
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KYIV_SOUTH_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.8
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_CHERKASI_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 7214
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = CHERKASI_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.9
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = CHERKASI_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.9
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = CHERKASI_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.9
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KREMENCHUG_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 11949
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KREMENCHUG_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.10
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KREMENCHUG_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.10
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KREMENCHUG_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.10
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KREMENCHUG_HPP_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 5419
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KREMENCHUG_HPP_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.11
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KREMENCHUG_HPP_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.11
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KREMENCHUG_HPP_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.11
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_SREDNEDNEPR_HPP_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 6831
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = SREDNEDNEPR_HPP_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.12
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = SREDNEDNEPR_HPP_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.12
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = SREDNEDNEPR_HPP_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.12
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_KAMENSKOE_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 273
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KAMENSKOE_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.13
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KAMENSKOE_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.13
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = KAMENSKOE_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.13
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_DNIPRO_KAYDAK_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 11683
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_KAYDAK_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.14
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_KAYDAK_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.14
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_KAYDAK_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.14
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_DNIPRO_AMUR_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 18751
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_AMUR_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.15
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_AMUR_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.15
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_AMUR_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.15
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_DNIPRO_CENTRAL_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 6609
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_CENTRAL_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.16
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_CENTRAL_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.16
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_CENTRAL_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.16
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_DNIPRO_MEREFO_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 4518
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_MEREFO_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.17
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_MEREFO_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.17
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_MEREFO_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.17
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_DNIPRO_SOUTH_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 6308
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_SOUTH_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.18
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_SOUTH_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.18
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_SOUTH_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.18
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_ZAPOROZHYE_FIRST_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 1316
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = ZAPOROZHYE_FIRST_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.19
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = ZAPOROZHYE_FIRST_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.19
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = ZAPOROZHYE_FIRST_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.19
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	rus_strikes_on_bridges_DNIPRO_HPP_STRAIT = {
+		days_to_prepare = 1 #2
+		days_re_enable = 365
+		category = on_bridge_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			original_tag = RUS
+		}
+		visible = { }
+		
+		show_target = {
+
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			province = 18419
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+			type = equipment
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			rus_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_HPP_STRAIT_BLOCKED
+						days = 14
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.20
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_HPP_STRAIT_BLOCKED
+						days = 60
+						value = 1
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.20
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_global_flag = {
+						flag = DNIPRO_HPP_STRAIT_BLOCKED
+					}
+					hidden_effect = {
+						var:victim_country = {
+							country_event = {
+								id = ukr_bridge.20
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
 				}
 			}
 		}
