@@ -1606,9 +1606,11 @@ WGN_missions_category = {
 			UKR = {
 				controls_province = 18294
 				controls_province = 18609
-				controls_province = 18702
-				controls_province = 18292
-				controls_province = 18315
+				OR = {
+					controls_province = 18702
+					controls_province = 18292
+					controls_province = 18315	
+				}
 			}
 		}
 
@@ -1627,6 +1629,158 @@ WGN_missions_category = {
 					modifier = WGN_offensive_modifier
 					days = 180
 				}
+			}
+		}
+	}
+
+	WGN_severodonetsk_decision = { 
+		icon = generic_formable_nations
+		fire_only_once = yes
+		cost = 30
+		days_remove = 3
+		ai_will_do = {
+			base = -999
+		}
+
+		available = {
+			original_tag = WGN
+			UKR = {
+				controls_province = 17656
+				controls_province = 18667
+				controls_province = 17629
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		 	has_completed_focus = WGN_planningofmilitaryoperations
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_severodonetsk_decision"
+			145 = {
+				add_dynamic_modifier = {
+					modifier = WGN_offensive_modifier
+					days = 10
+				}
+			}
+			activate_mission = WGN_severodonetsk_conquest
+		}
+	}
+
+	WGN_severodonetsk_conquest = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 17656
+					controls_province = 18667
+					controls_province = 17629
+				}
+			}
+			WGN = {
+				divisions_in_state = {
+					size > 4
+					state = 145
+				}
+			}
+		}
+		days_mission_timeout = 7
+		is_good = no
+		icon = generic_formable_nations
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_severodonetsk_conquest: complete_effect"
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
+			add_political_power = 100
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_severodonetsk_conquest: timeout_effect"
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
+		}
+	}
+
+	WGN_popasna_decision = { 
+		icon = generic_formable_nations
+		fire_only_once = yes
+		cost = 30
+		days_remove = 3
+		ai_will_do = {
+			base = -999
+		}
+
+		available = {
+			original_tag = WGN
+			UKR = {
+				controls_province = 13647
+				controls_province = 18605
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		 	has_completed_focus = WGN_planningofmilitaryoperations
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_popasna_decision"
+			145 = {
+				add_dynamic_modifier = {
+					modifier = WGN_offensive_modifier
+					days = 10
+				}
+			}
+			activate_mission = WGN_popasna_conquest
+		}
+	}
+
+	WGN_popasna_conquest = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 13647
+					controls_province = 18605
+				}
+			}
+			WGN = {
+				divisions_in_state = {
+					size > 4
+					state = 145
+				}
+			}
+		}
+		days_mission_timeout = 7
+		is_good = no
+		icon = generic_formable_nations
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_popasna_conquest: complete_effect"
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
+			add_political_power = 100
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_popasna_conquest: timeout_effect"
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
 			}
 		}
 	}
@@ -1660,14 +1814,20 @@ WGN_missions_category = {
 		icon = WGN_soledar_conquest
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_conquest: complete_effect"
-			add_war_support = 0.1
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
 			evgeniy_prigozhin = {
 				unit_leader_event = WGN_mission.2
 			}
 		}
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_conquest: timeout_effect"
-			add_war_support = -0.1
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
 			evgeniy_prigozhin = {
 				unit_leader_event = WGN_mission.3
 			}
@@ -1705,12 +1865,18 @@ WGN_missions_category = {
 		icon = WGN_bakhmut_conquest
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_conquest: complete_effect"
-			add_war_support = 0.1
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
 			add_political_power = 100
 		}
 		timeout_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_conquest: timeout_effect"
-			add_war_support = -0.1
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
 			evgeniy_prigozhin = {
 				unit_leader_event = WGN_mission.3
 			}
