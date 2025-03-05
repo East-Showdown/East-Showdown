@@ -12090,6 +12090,122 @@ RUS_provide_smolguns_ai = {
 			}
 		}
     }
+	RUS_fees_of_NBP_AK = {
+        icon = GFX_RUS_NBP
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
+
+		available = {
+			NOT = {
+				has_war_with = UKR
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_fees_of_KPRF_AK"
+			add_equipment_to_stockpile = {  
+			    type = infantry_ak12_equipment
+				amount = 100
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+			    type = infantry_akm_equipment
+				amount = 150
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+			    type = aa_9k32_strela_2_equipment
+				amount = 50
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+			    type = grenade_launcher_rpg18_muha_equipment
+				amount = 50
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {
+				type = atgm_9k11_malutka_equipment
+				amount = 80
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_uniform_vsr84_butan
+				amount = 150
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 100
+				producer = RUS 
+			}
+			hidden_effect = {
+				random_list = {
+					50 = { activate_mission = RUS_fees_of_KPRF_AK }
+					50 = { activate_mission = RUS_fees_of_KPRF_support }
+				}
+			}
+		}
+    }
+	RUS_fees_of_NBP_support = {
+        icon = GFX_RUS_NBP
+		
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 21
+		selectable_mission = no
+
+		available = {
+			NOT = {
+				has_war_with = UKR
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_fees_of_KPRF_support"
+			add_equipment_to_stockpile = {  
+			    type = support_equipment
+				amount = 150
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+			    type = engineering_equipment_0
+				amount = 50
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+			    type = arv_equipment_0
+				amount = 50
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+			    type = amv_equipment_0
+				amount = 50
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {
+                type = communication_equipment
+                amount = 25
+                producer = RUS
+            }
+			hidden_effect = {
+				random_list = {
+					50 = { activate_mission = RUS_fees_of_NBP_AK }
+					50 = { activate_mission = RUS_fees_of_NBP_support }
+				}
+			}
+		}
+    }
 }
 
 RUS_prisoners_of_war = {
@@ -15307,9 +15423,56 @@ RUS_Genshtab_redoubt = {
 		}
 
 		complete_effect = {
+		    army_experience = 15
 		    custom_effect_tooltip = RUS_training_obrspn_16_tt
 			hidden_effect = {
 				set_country_flag = RUS_training_obrspn_16_cf
+				add_command_power = -10
+			}
+		}
+	}
+	RUS_DRG_Harkov_Lugansk = {
+		icon = GFX_RUS_genshtab_specforces
+		fire_only_once = yes
+		cost = 0
+		days_remove = 15
+		ai_will_do = {
+			factor = 110
+		}
+        custom_cost_trigger = {
+            command_power > 9
+        }
+        custom_cost_text = decision_cost_CP_10
+		visible = {
+			NOT = {
+			    has_completed_focus = RUS_SMO
+			}
+		}
+
+		available = {
+		    NOT = {
+			    has_completed_focus = RUS_SMO
+			}
+			has_completed_focus = RUS_Preparing_for_Preemptive_Strike
+			custom_trigger_tooltip = {
+				tooltip = RUS_DRG_Harkov_Lugansk_trigger
+				has_country_flag = RUS_first_CHVK_cf
+			}
+		}
+		
+		modifier = {
+			
+		}
+		complete_effect = {
+		    hidden_effect = {
+				add_command_power = -10
+			}
+		}
+
+		remove_effect = {
+		    custom_effect_tooltip = RUS_DRG_Harkov_Lugansk_tt
+			hidden_effect = {
+				set_country_flag = RUS_DRG_Harkov_Lugansk_cf
 			}
 		}
 	}
@@ -15346,6 +15509,7 @@ RUS_Genshtab_redoubt = {
 		remove_effect = {
 			custom_effect_tooltip = RUS_first_CHVK_tt
 			hidden_effect = {
+			    set_country_flag = RUS_first_CHVK_cf
 				division_template = {
 					name = "Specpodrazdelenie Genshtaba (Redut)"	# Tanki vrym vrym
 					force_allow_recruiting = yes
@@ -15448,6 +15612,86 @@ RUS_Genshtab_redoubt = {
 				    	}
 			    	}
 				}
+			}
+		}
+	}
+	RUS_interbrigadi_NBP = {
+		icon = GFX_RUS_NBP
+		fire_only_once = yes
+		cost = 0
+		days_remove = 20
+		ai_will_do = {
+			factor = 110
+		}
+		custom_cost_trigger = {
+            command_power > 9
+        }
+        custom_cost_text = decision_cost_CP_10
+
+		visible = {
+		    has_country_flag = RUS_Drugaya_Rossia_Interbrigadi_cf
+		}
+
+		available = {
+			
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_interbrigadi_NBP_cet
+			hidden_effect = {
+			    ensure_unit_template_RUS_Dobrovolcheskoe_podrazdelenie_Genshtaba_Redut = yes
+			    load_oob = DPR_interbrigades_DR
+			}
+		}
+    }
+	RUS_SSO_special_operations = {
+		icon = GFX_RUS_SSO
+		fire_only_once = yes
+		cost = 0
+		days_remove = 25
+		ai_will_do = {
+			factor = 110
+		}
+        custom_cost_trigger = {
+		    political_power > 74
+            command_power > 49
+        }
+        custom_cost_text = decision_cost_CP_50_PP_75
+		visible = {
+			NOT = {
+			    has_completed_focus = RUS_SMO
+			}
+		}
+
+		available = {
+		    NOT = {
+			    has_completed_focus = RUS_SMO
+			}
+			has_completed_focus = RUS_special_operations_forces
+		}
+		
+		modifier = {
+			
+		}
+		
+		complete_effect = {
+		    hidden_effect = {
+			    add_political_power = -75
+				add_command_power = -50
+			}
+		}
+
+		remove_effect = {
+		    custom_effect_tooltip = RUS_SSO_special_operations_cef
+			hidden_effect = {
+				set_variable = { var = global.var_RUS_murder_Zelensky_success value = 40 }
+				set_variable = { var = global.var_RUS_murder_Zelensky_fall value = 60 }
 			}
 		}
 	}
