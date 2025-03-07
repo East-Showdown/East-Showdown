@@ -11,52 +11,145 @@ ammunition_on_daily = {
 }
 
 ammunition_calculate_tick_result_value = {	
-	set_variable = { ammunition_delta_value_k = ammunition_generation_k }
+    # Высчитываем итоговую генерацию готовых к бою боеприпасов
+    set_variable = { ammunition_generation_value_k = ammunition_produce_value_k }
+    add_to_variable = { ammunition_generation_value_k = ammunition_recovery_value_k }
+
+    # Высчитываем итоговое потребление готовых к бою боеприпасов
+    # TODO: Добавить дополнительные траты (передача боеприпасов, возврат на резервные склады)
+
+    # Высчитываем изменение количества готовых к применению боеприпасов
+	set_variable = { ammunition_delta_value_k = ammunition_generation_value_k }
 	subtract_from_variable = { ammunition_delta_value_k = ammunition_consumption_k }
 
+    # Снимаем со склада неготовые к применению (старые) боеприпасы
+    subtract_from_variable = { ammunition_old_value_k = ammunition_recovery_value_k }
+    # Добавляем на склад изменение количества готовых к применение боеприпасов
 	add_to_variable = { ammunition_value_k = ammunition_delta_value_k }
-    clamp_variable = { var = ammunition_value_k min = 0 max = ammunition_max_storage_capacity_k }
+
+    # Вычисляем суммарное количество боеприпасов на складе
+    set_variable = { sum_ammunition_value_k = ammunition_value_k }
+    add_to_variable = { sum_ammunition_value_k = ammunition_old_value_k }
+    
+    # Убираем лишние боеприпасы, если необходимо
+    ammunition_remove_excess_ammunition_if_needed = yes
+
+    # Проверяем, чтобы кол-во боеприпасов не ушло в минус
+    clamp_variable = { var = ammunition_value_k min = 0 }
+    clamp_variable = { var = ammunition_old_value_k min = 0 }
 }
 
+# THIS scope is COUNTRY
+ammunition_remove_excess_ammunition_if_needed = {
+    # Вычисляем, сколько боеприпасов выходит за пределы объёма складов
+    set_temp_variable = { temp_ammunition_excess_value_k = sum_ammunition_value_k }
+    subtract_from_temp_variable = { temp_ammunition_excess_value_k = ammunition_max_storage_capacity_k }
+
+    if = { # Если слишком много боеприпасов на складах
+        limit = { check_variable = { temp_ammunition_excess_value_k > 0 }}
+
+        if = { # Если превышение вместимости больше, чем количество старых боеприпасов
+            limit = { check_variable = { ammunition_old_value_k < temp_ammunition_excess_value_k } }
+
+            # Убираем полностью старые боеприпасы
+            subtract_from_temp_variable = { temp_ammunition_excess_value_k = ammunition_old_value_k }
+            set_variable = { ammunition_old_value_k = 0 }
+
+            # Убираем лишние готовые к использованию боеприпасы
+            clamp_variable = {
+                var = ammunition_value_k
+                max = ammunition_max_storage_capacity_k
+            }
+        }
+        else = { # Иначе превышение вместимости миньше или равно количеству старых боеприпасов
+            subtract_from_variable = { ammunition_old_value_k = temp_ammunition_excess_value_k }
+        }
+    }
+}
+
+# THIS scope is COUNTRY
+# Вычисляем генерацию боеприпасов
 ammunition_calculate_generation = {	
+    # Подготавливаем множитель эффективность заводов по производству боеприпасов
 	set_variable = { ammunition_plants_efficiency_factor_var = 1 }
 	add_to_variable = { ammunition_plants_efficiency_factor_var = modifier@ammunition_plants_efficiency_factor }
 	clamp_variable = { var = ammunition_plants_efficiency_factor_var min = 0 }
+
+    # Высчитываем соотношение распределения мощностей заводов боеприпасов
+    clamp_variable = { var = ammunition_produce_to_recovery_factor min = 0 max = 1 }    
+
+    # Высчиваем восстановление старых боеприпасов
+    set_variable = { ammunition_recovery_value_k = 1 }
+    subtract_from_variable = { ammunition_recovery_value_k = ammunition_produce_to_recovery_factor }
+    multiply_variable = { ammunition_recovery_value_k = modifier@ammunition_recovery_efficiency_factor }
+    clamp_variable = { var = ammunition_recovery_value_k min = 0 } 
+    multiply_variable = { ammunition_recovery_value_k = global.ammunition_recovery_value_factor_var }
+
+    # Очищаем излишек мощностей восстановления старых боеприпасов
+    set_variable = { ammunition_recovery_excess_factor = 0 }
+
+    if = { # Если пытается восстановить больше старых боеприпасов, чем есть на складе
+        limit = { check_variable = { ammunition_recovery_value_k > ammunition_old_value_k } }
+
+        # Высчитываем, сколько лишних процентов от восстановления перераспределить на производство новых боеприпасов
+        set_variable = { ammunition_recovery_excess_factor = ammunition_recovery_value_k }
+        subtract_from_variable = { ammunition_recovery_excess_factor = ammunition_old_value_k }
+        divide_variable = { ammunition_recovery_excess_factor = ammunition_recovery_value_k }
+    }
+
+    # Высчитываем производство новых боеприпасов
+    set_variable = { ammunition_produce_value_k = ammunition_produce_to_recovery_factor }
+    add_to_variable = { ammunition_produce_value_k = ammunition_recovery_excess_factor }
+    multiply_variable = { ammunition_produce_value_k = modifier@ammunition_produce_efficiency_factor }
+    clamp_variable = { var = ammunition_produce_value_k min = 0 } 
+    multiply_variable = { ammunition_produce_value_k = global.ammunition_produce_value_factor_var }
 }
 
+# THIS scope is COUNTRY
+# Вычисляет расход боеприпасов страны
 ammunition_calculate_consumption = {	
+    # Подготавливаем к использованию множитель расхода боеприпасов юнитам
 	set_variable = { ammunition_consumption_factor_var = 1 }
 	add_to_variable = { ammunition_consumption_factor_var = modifier@ammunition_consumption_factor }
 	clamp_variable = { var = ammunition_consumption_factor_var min = 0 }
 	
+    # Обнуляем переменную-счётчик расхода боеприпасов
 	set_variable = { ammunition_consumption_k = 0 }
 
-	if = {
+	if = { # Если у страны есть юниты под командованием генералорв
 		limit = { check_variable = { commanded_divisions > 0 } }
 
+        # Высчитываем расход боеприпасов от атакующих юнитов
 		set_variable = { ammunition_consumption_offensive_k = divisions_in_offensive_combat }
 		divide_variable = { ammunition_consumption_offensive_k = commanded_divisions }
 		multiply_variable = { ammunition_consumption_offensive_k = ammunition_default_max_consumption_k }
 		multiply_variable = { ammunition_consumption_offensive_k = global.ammunition_consumption_offensive_factor_var }  
 		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_factor_var }  
 
+        # Суммируем в расход боеприпасов расход от атакующих юнитов
 		add_to_variable = { ammunition_consumption_k = ammunition_consumption_offensive_k }
 		
+        # Высчитываем расход боеприпасов от обороняющихся юнитов
 		set_variable = { ammunition_consumption_defensive_k = num_units_defensive_combats }
 		divide_variable = { ammunition_consumption_defensive_k = commanded_divisions }
 		multiply_variable = { ammunition_consumption_defensive_k = ammunition_default_max_consumption_k }
 		multiply_variable = { ammunition_consumption_defensive_k = global.ammunition_consumption_defensive_factor_var }  
 		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_factor_var }  
 
+        # Суммируем в расход боеприпасов расход от обороняющихся юнитов
 		add_to_variable = { ammunition_consumption_k = ammunition_consumption_defensive_k }
 	}
 }
 
+# THIS scope is COUNTRY
+# Высчитывает вместимость всех складов страны
 ammunition_calculate_storage_capacity = {
+    # Учитываем базовую вместимость складов от построек
+	set_variable = { ammunition_max_storage_capacity_k = modifier@ammunition_capacity_k }
+
+    # Учитываем вместимость полевых складов юнитов (персональный запас юнитов на N дней)
 	set_variable = { ammunition_field_storage_capacity_k = ammunition_default_max_consumption_k }
 	multiply_variable = { ammunition_field_storage_capacity_k = global.ammunition_field_storage_for_consumption_days }
-
-	set_variable = { ammunition_max_storage_capacity_k = modifier@ammunition_capacity_k }
 	add_to_variable = { ammunition_max_storage_capacity_k = ammunition_field_storage_capacity_k }
 }
 
