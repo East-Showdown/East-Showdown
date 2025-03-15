@@ -154,6 +154,7 @@ WGN_decisions_category = {
 			}
 		}
 	}
+
 	WGN_umbrella_division_decision = {
 		icon = generic_formable_nations
 		icon = Rooster_division
@@ -179,6 +180,76 @@ WGN_decisions_category = {
 			custom_effect_tooltip = WGN_umbrella_division_tooltip
 			hidden_effect = {
 				load_oob = WGN_umbrella_division
+			}
+		}
+	}
+
+	WGN_expand_dshrg_rusich = {
+		icon = generic_formable_nations
+		fire_only_once = yes
+        cost = 30
+        days_remove = 10
+		ai_will_do = {
+			factor = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_expandthestormingcorps
+		}
+
+		available = {
+			original_tag = WGN
+			has_army_experience > 20
+	    }
+		
+		complete_effect = {
+			army_experience = 20
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_expand_dshrg_rusich"
+			add_units_to_division_template = {
+				template_name = "DSHRG Rusich"
+				regiments = {
+					spetsnaz = 0
+					spetsnaz = 0
+				}
+			}
+		}
+	}
+
+	WGN_expand_serbian_volunteers_division = {
+		icon = generic_formable_nations
+		fire_only_once = yes
+        cost = 30
+        days_remove = 10
+		ai_will_do = {
+			factor = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_expandthestormingcorps
+			has_country_flag = serbian_volunteers_exist
+		}
+
+		available = {
+			original_tag = WGN
+			has_army_experience > 20
+	    }
+		
+		complete_effect = {
+			army_experience = 20
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_expand_serbian_volunteers_division"
+			add_units_to_division_template = {
+				template_name = "Serbian Volunteers"
+				regiments = {
+					spetsnaz = 0
+				}
 			}
 		}
 	}
@@ -275,6 +346,7 @@ WGN_decisions_category = {
 			custom_effect_tooltip = WGN_SERBIAN_VOLUNTEERS_tooltip
 			hidden_effect = {
 				load_oob = WGN_serb
+				set_country_flag = serbian_volunteers_exist
 				add_to_variable = {
 					var = WGN_prisoner_recruitment_var_sum
 					value = 1
@@ -892,7 +964,7 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = yes
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 50
@@ -914,11 +986,19 @@ WGN_information_war = {
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_zelensky_flight"
-		    add_to_variable = {	
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
 				var = global.ukr_information_war_var_sum
-				value = -1
-				tooltip = IW_ukr_m_1_var_add_tt
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		    UKR = {
 			    add_political_power = -20
 				add_stability = -0.05
@@ -929,7 +1009,7 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = yes
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 50
@@ -952,11 +1032,19 @@ WGN_information_war = {
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_death_zaluzhny"
-		    add_to_variable = {	
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
 				var = global.ukr_information_war_var_sum
-				value = -1
-				tooltip = IW_ukr_m_1_var_add_tt
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		    UKR = {
 			    add_command_power = -20
 				add_war_support = -0.05
@@ -1004,9 +1092,9 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = no
-		days_re_enable = 30
+		days_re_enable = 60
 		days_remove = 4
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 35
@@ -1027,11 +1115,19 @@ WGN_information_war = {
 		}
 		
 		remove_effect = {
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 			UKR = {
 			    add_political_power = -10
 				add_stability = -0.02
@@ -1042,9 +1138,9 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = no
-		days_re_enable = 30
+		days_re_enable = 60
 		days_remove = 4
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 35
@@ -1066,11 +1162,19 @@ WGN_information_war = {
 		}
 		
 		remove_effect = {
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 			RUS = {
 			    add_war_support = 0.05
 				add_stability = 0.02
@@ -1081,9 +1185,9 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = no
-		days_re_enable = 30
+		days_re_enable = 60
 		days_remove = 4
-		cost = 30
+		cost = 80
 		
 		ai_will_do = {
 	    	factor = 35
@@ -1105,11 +1209,19 @@ WGN_information_war = {
 		}
 		
 		remove_effect = {
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 			RUS = {
 			    add_war_support = 0.05
 				add_stability = 0.05
@@ -1122,7 +1234,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1145,11 +1257,19 @@ WGN_information_war = {
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_VK"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_YouTube = {
@@ -1158,7 +1278,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1181,11 +1301,19 @@ WGN_information_war = {
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_YouTube"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_OK = {
@@ -1194,7 +1322,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1217,11 +1345,19 @@ WGN_information_war = {
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_OK"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_Telegram = {
@@ -1230,7 +1366,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1253,11 +1389,19 @@ WGN_information_war = {
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_Telegram"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_Twitter = {
@@ -1266,7 +1410,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1290,11 +1434,19 @@ WGN_information_war = {
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_Twitter"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_Facebook = {
@@ -1303,7 +1455,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1327,11 +1479,19 @@ WGN_information_war = {
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_Facebook"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_monthly_maintenance_costs = {
