@@ -13003,13 +13003,13 @@ RUS_smo_polit = {
 			}
 		}
 	}
-    RUS_raids_against_Communists = {
-		icon = GFX_RUS_raids_against_Communists
+    RUS_cleaning_political_space = {
+		icon = GFX_RUS_cleaning_political_space
 		
-		cost = 50
+		cost = 30
 		fire_only_once = no
 		days_remove = 20
-		days_re_enable = 1
+		days_re_enable = 10
 		
 		ai_will_do = {
 	    	factor = 30
@@ -13018,57 +13018,7 @@ RUS_smo_polit = {
 		visible = {
 	        NOT = {
 				has_government = communism
-			}
-	    }
-
-		available = {
-			original_tag = RUS
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_raids_against_Communists"
-		    add_popularity = {  ideology = communism  popularity = -0.05 }
-		}
-	}
-	RUS_raids_against_fascism = {
-		icon = GFX_RUS_raids_against_fascism
-		
-		cost = 50
-		fire_only_once = no
-		days_remove = 20
-		days_re_enable = 1
-		
-		ai_will_do = {
-	    	factor = 30
-        }
-
-		visible = {
-	        NOT = {
 				has_government = fascism
-			}
-	    }
-
-		available = {
-			original_tag = RUS
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_raids_against_fascism"
-		    add_popularity = {  ideology = fascism  popularity = -0.05 }
-		}
-	}
-	RUS_raids_against_democracy = {
-		icon = GFX_RUS_raids_against_democracy
-		
-		cost = 50
-		fire_only_once = no
-		days_remove = 20
-		days_re_enable = 1
-		
-		ai_will_do = {
-	    	factor = 30
-        }
-
-		visible = {
-	        NOT = {
 				has_government = democratic
 			}
 	    }
@@ -13076,60 +13026,132 @@ RUS_smo_polit = {
 		available = {
 			original_tag = RUS
 		}
+		modifier = {
+			political_power_factor = 0.05
+		}
 		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_raids_against_democracy"
-		    add_popularity = {  ideology = democratic  popularity = -0.05 }
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_cleaning_political_space"
+			add_stability = -0.035
+		    add_popularity = {  ideology = communism  popularity = -0.025 }
+			add_popularity = {  ideology = fascism  popularity = -0.025 }
+			add_popularity = {  ideology = democratic  popularity = -0.025 }
 		}
 	}
-	RUS_raids_against_neutrality = {
-		icon = GFX_RUS_raids_against_neutrality
+	RUS_Militarization_of_the_population = {
+		icon = GFX_RUS_Militarization_of_the_population
 		
-		cost = 50
+		cost = 15
 		fire_only_once = no
-		days_remove = 20
-		days_re_enable = 1
+		days_remove = 15
+		days_re_enable = 10
 		
 		ai_will_do = {
 	    	factor = 30
         }
 
 		visible = {
-	        NOT = {
-				has_government = neutrality
+	        original_tag = RUS
+	    }
+
+		available = {
+			original_tag = RUS
+		}
+		modifier = {
+		    party_popularity_stability_factor = 0.1
+			neutrality_drift = 0.015
+			army_core_defence_factor = 0.05
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_Militarization_of_the_population"
+			add_stability = 0.04
+		    add_war_support = 0.05
+			if = {
+				limit = { has_completed_focus = RUS_Anti_Ukrainian_media_campaign }
+				add_to_variable = {	
+					var = global.rus_information_war_var_sum
+					value = 2.5
+					tooltip = IW_2_5_var_add_tt
+				}
+				hidden_effect = {
+					add_to_variable = {	
+						var = global.ukr_information_war_var_sum
+						value = -2.5
+					}
+					if = {
+						limit = {
+							check_variable = { global.rus_information_war_var_sum > 100 }
+						}
+						set_variable = {	
+							var = global.rus_information_war_var_sum
+							value = 100
+						}
+					}
+					if = {
+						limit = {
+							check_variable = { global.ukr_information_war_var_sum > 100 }
+						}
+						set_variable = {	
+							var = global.ukr_information_war_var_sum
+							value = 100
+						}
+					}
+					if = {
+						limit = {
+							check_variable = { global.rus_information_war_var_sum < 0 }
+						}
+						set_variable = {	
+							var = global.rus_information_war_var_sum
+							value = 0
+						}
+					}
+					if = {
+						limit = {
+							check_variable = { global.ukr_information_war_var_sum < 0 }
+						}
+						set_variable = {	
+							var = global.ukr_information_war_var_sum
+							value = 0
+						}
+					}
+				}
+			}
+		}
+	}
+	RUS_finance_OPZSH = {
+		icon = GFX_RUS_finance_OPZSH
+		
+		cost = 30
+		fire_only_once = yes
+		days_remove = 15
+		
+		ai_will_do = {
+	    	factor = 30
+        }
+
+		visible = {
+	        original_tag = RUS
+			NOT = {
+				has_completed_focus = RUS_SMO
 			}
 	    }
 
 		available = {
 			original_tag = RUS
 		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_raids_against_neutrality"
-		    add_popularity = {  ideology = neutrality  popularity = -0.05 }
-		}
-	}
-	RUS_Militarization_of_the_population = {
-		icon = GFX_RUS_general_staff
-		
-		cost = 35
-		fire_only_once = no
-		days_remove = 15
-		days_re_enable = 5
-		
-		ai_will_do = {
-	    	factor = 30
-        }
-
-		visible = {
-	        has_completed_focus = RUS_Militarization
-	    }
-
-		available = {
-			original_tag = RUS
+		modifier = {
+		    civilian_factory_use = 1
 		}
 		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_Militarization_of_the_population"
-		    add_war_support = 0.05
-			add_command_power = 15
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_finance_OPZSH"
+			UKR = {
+			    add_popularity = {  ideology = neutrality  popularity = 0.035 }
+				add_stability = -0.05
+				swap_ideas = {
+			        remove_idea = UKR_Russophile_opposition
+				    add_idea = UKR_Russophile_opposition_1
+			    }
+			}
+			custom_effect_tooltip = RUS_finance_OPZSH_tt
 		}
 	}
 }
