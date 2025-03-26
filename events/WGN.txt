@@ -37,17 +37,6 @@ unit_leader_event = {
 		add_stability = -0.1
 		army_experience = -20
 		add_command_power = -50
-		add_power_balance_value = {
-			id = RUS_power_balance
-			value = 0.20
-		}
-		hidden_effect = {
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = 0.20
-			}	
-			set_country_flag = WGN_BM_fail
-		}
 	}
 }
 
@@ -109,14 +98,6 @@ country_event = {
 			swap_ideas = {
 				remove_idea = WGN_shell_hunger_idea
 				add_idea = WGN_shell_hunger_idea_2
-			}
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.1
-			}
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.1
 			}
 		}
 	}
@@ -212,7 +193,6 @@ country_event = {
 			}
 			remove_ideas = weak_ideology
 			remove_ideas = state_of_stability
-			add_ideas = { WGN_council_idea }
 			set_cosmetic_tag = RUS_neutrality
 			change_tag_from = WGN
 		}
@@ -286,19 +266,6 @@ country_event = {
 		complete_national_focus = WGN_victory
 		complete_national_focus = WGN_back_to_war
 		remove_ideas = WGN_shell_hunger_idea_3
-		if = {
-			limit = {
-				has_war_with = RUS
-			}
-			remove_mission = hold_rostov
-			remove_mission = hold_voronezh
-			white_peace = RUS
-			white_peace = CHE
-			white_peace = DPR
-			white_peace = LPR
-			remove_ideas = march_justice_idea
-			remove_ideas = march_justice_idea_2
-		}
 		hidden_effect = {
 		    country_event = {
 				id = wgn.14
@@ -374,19 +341,6 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = WGN.7.a
-		if = {
-			limit = {
-				has_war_with = RUS
-			}
-			remove_mission = hold_rostov
-			remove_mission = hold_voronezh
-			white_peace = RUS
-			white_peace = CHE
-			white_peace = DPR
-			white_peace = LPR
-			remove_ideas = march_justice_idea
-			remove_ideas = march_justice_idea_2
-		}
 		remove_ideas = WGN_shell_hunger_idea_3
 		complete_national_focus = WGN_no_blood
 		complete_national_focus = WGN_belarus
@@ -407,29 +361,12 @@ country_event = {
 	}
 	option = {
 		name = WGN.7.s
-		if = {
-			limit = {
-				has_war_with = RUS
-			}
-			swap_ideas = {
-				remove_idea = march_justice_idea
-				add_idea = march_justice_idea_2
-			}
-			activate_mission = take_moscow
-		}
 		complete_national_focus = WGN_destroy_shoigu
 		news_event = news.130 
-		if = {
-			limit = {
-				NOT = {
-					has_war_with = RUS
-				}
-			}
-			hidden_effect = {
-				country_event = {
-					id = WGN.4
-					hours = 6
-				}
+		hidden_effect = {
+			country_event = {
+				id = WGN.4
+				hours = 6
 			}
 		}
 	}
@@ -816,15 +753,10 @@ country_event = {
 	option = {
 		name = WGN.18.a
 		add_political_power = 100
-		add_war_support = 0.1
-		add_equipment_to_stockpile = {
-			type = motorized_equipment_1	
-			amount = 200
-			producer = RUS
-		}
 		add_to_war = {
 			targeted_alliance = RUS
 			enemy = UKR
+			hostility_reason = asked_to_join
 		}
 	}
 }
@@ -908,15 +840,7 @@ country_event = {
 	option = {
 		name = WGN.20.a
 		add_political_power = 10
-		add_power_balance_value = {
-			id = RUS_power_balance
-			value = -0.02
-		}
 		hidden_effect = {
-		    add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.02
-			}
 			country_event = {
 				id = WGN.21
 				days = 93
@@ -965,14 +889,18 @@ country_event = {
 	}
 }
 
-#Нужина убили кувалдой
+#Казнь Нужина
 country_event = {
 	id = WGN.23
 	title = WGN.23.t
 	desc = WGN.23.d
 	picture = GFX_country_event_044
 	fire_only_once = yes
-	is_triggered_only = yes
+	trigger = {
+		tag = WGN
+		has_completed_focus = WGN_kproject
+		date > 2022.11.12
+	}
 	immediate = {
 		hidden_effect = {
 			news_event = {
@@ -985,16 +913,6 @@ country_event = {
 		name = WGN.23.a
 		add_political_power = 50
 		army_experience = 10
-		add_power_balance_value = {
-			id = RUS_power_balance
-			value = -0.05
-		}
-		hidden_effect = {
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.05
-			}
-		}
 	}
 }
 #Пригожин бомбит Бахмут с СУ
@@ -1031,5 +949,63 @@ country_event = {
         	    disband = no
         	}
 		}
+    }
+}
+
+#Призыв Вагнера на войну
+country_event = {
+	id = WGN.26
+	title = WGN.26.t
+	desc = WGN.26.desc
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.26.a
+		complete_national_focus = WGN_modrfcooperation
+    }
+}
+
+#Предложить помощь РФ
+country_event = {
+	id = WGN.27
+	title = WGN.27.t
+	desc = WGN.27.desc
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.27.a
+		complete_national_focus = WGN_offerassistancetorussia
+    }
+}
+
+#Закон 300
+country_event = {
+	id = WGN.28
+	title = WGN.28.t
+	desc = WGN.28.desc
+    fire_only_once = yes
+	trigger = {
+		tag = WGN
+		war_length_with = {
+			tag = ukr
+			months = 2
+		}
+	}
+	option = {
+		name = WGN.28.a
+		add_ideas = WGN_law_300
+    }
+}
+
+#Уведомление о появлении баланса сил
+country_event = {
+	id = WGN.29
+	title = WGN.29.t
+	desc = WGN.29.desc
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.29.a
+		custom_effect_tooltip = WGN_29_tooltip
     }
 }
