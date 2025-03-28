@@ -9378,7 +9378,10 @@ RUS_Storm_Z_categories = {
     RUS_allow_recruitment_convicts_serious_crimes = {
 		icon = GFX_RUS_Storm_Z_icon
 		
-		cost = 50
+		custom_cost_trigger = {
+            command_power > 24
+        }
+        custom_cost_text = decision_cost_CP_25
 		fire_only_once = yes
 		
 		ai_will_do = {
@@ -9396,6 +9399,7 @@ RUS_Storm_Z_categories = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_allow_recruitment_convicts_serious_crimes"
 			custom_effect_tooltip = RUS_allow_recruitment_convicts_serious_crimes_cet
 			hidden_effect = {
+			    add_command_power = -25
 				add_to_variable = {	
 					var = RUS_Storm_Z_limit
 					value = 1
@@ -9415,18 +9419,7 @@ RUS_Storm_Z_categories = {
         }
 
 		visible = {
-		    count_triggers = {
-				amount = 2
-			    check_variable = { RUS_Storm_Z_central_russia > 2 }
-				check_variable = { RUS_Storm_Z_northwestern_russia > 2 }
-				check_variable = { RUS_Storm_Z_european_south > 2 }
-				check_variable = { RUS_Storm_Z_volga_region > 2 }
-				check_variable = { RUS_Storm_Z_ural > 2 }
-				check_variable = { RUS_Storm_Z_western_siberia > 2 }
-				check_variable = { RUS_Storm_Z_european_north > 2 }
-				check_variable = { RUS_Storm_Z_eastern_siberia > 2 }
-				check_variable = { RUS_Storm_Z_far_east > 2 }
-			}
+		    has_country_flag = RUS_establish_storm_V_cf
 	    }
 
 		available = {
@@ -10242,6 +10235,119 @@ RUS_Storm_Z_categories = {
 }
 
 RUS_real_man_business_categories = {
+    RUS_contraband_activity_OVER = {
+		icon = GFX_RUS_war_police
+
+		fire_only_once = yes 
+		days_remove = 40
+		custom_cost_trigger = {
+            command_power > 49
+        }
+        custom_cost_text = decision_cost_CP_50
+
+		available = {
+			original_tag = RUS
+			has_completed_focus = RUS_mobilize_MVD
+		}
+
+		visible = {
+			original_tag = RUS
+			has_country_flag = RUS_Storm_Z_contraband_cf
+		}
+		ai_will_do = {
+	    	factor = 40
+        }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_contraband_activity_control"
+		    hidden_effect = {
+				add_command_power = -50
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_contraband_activity_control"
+		    custom_effect_tooltip = RUS_contraband_activity_cef_delete
+			hidden_effect = {
+				set_country_flag = RUS_contraband_activity_OVER_cf
+				clr_country_flag = RUS_Storm_Z_contraband_cf
+				clr_country_flag = RUS_contraband_activity_cf
+				remove_dynamic_modifier = { modifier = RUS_contraband_modifer }
+			}
+		}
+	}
+    RUS_contraband_activity_control = {
+		icon = GFX_RUS_war_police
+
+		fire_only_once = yes 
+		days_remove = 30
+		custom_cost_trigger = {
+            command_power > 24
+        }
+        custom_cost_text = decision_cost_CP_25
+
+		available = {
+			original_tag = RUS
+			has_completed_focus = RUS_mobilize_MVD
+		}
+
+		visible = {
+			original_tag = RUS
+			has_country_flag = RUS_contraband_activity_cf
+		}
+		ai_will_do = {
+	    	factor = 40
+        }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_contraband_activity_control"
+		    hidden_effect = {
+				add_command_power = -25
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_contraband_activity_control"
+		    custom_effect_tooltip = RUS_contraband_activity_cef_effect_low
+			hidden_effect = {
+			    add_to_variable = { RUS_contraband_modifer_experience_gain_army_unit_factor = 0.025 }
+				add_to_variable = { RUS_contraband_modifer_command_power_gain_mult = 0.025 }
+				add_to_variable = { RUS_contraband_modifer_army_org = 1.5 }
+				add_to_variable = { RUS_contraband_modifer_army_morale_factor = 0.025 }
+				add_to_variable = { RUS_contraband_SMO_dynamic_days = -10 }
+			}
+		}
+	}
+	RUS_contraband_activity_Wagner = {
+		icon = GFX_RUS_Wagner
+
+		fire_only_once = yes 
+		days_remove = 15
+		cost = 40
+
+		available = {
+			original_tag = RUS
+			has_completed_focus = RUS_mobilize_MVD
+		}
+
+		visible = {
+			original_tag = RUS
+			has_country_flag = RUS_contraband_activity_cf
+		}
+		ai_will_do = {
+	    	factor = 40
+        }
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_contraband_activity_Wagner"
+		    custom_effect_tooltip = RUS_contraband_activity_cef_effect_low
+			hidden_effect = {
+			    add_to_variable = { RUS_contraband_modifer_experience_gain_army_unit_factor = 0.025 }
+				add_to_variable = { RUS_contraband_modifer_command_power_gain_mult = 0.025 }
+				add_to_variable = { RUS_contraband_modifer_army_org = 1.5 }
+				add_to_variable = { RUS_contraband_modifer_army_morale_factor = 0.025 }
+				add_to_variable = { RUS_contraband_modifer_org_loss_at_low_org_factor = -0.05 }
+				add_to_variable = { RUS_contraband_SMO_dynamic_days = -10 }
+			}
+		}
+	}
     RUS_railway_war_KGB = {
 		icon = BLR_KGB
 
