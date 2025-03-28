@@ -653,7 +653,7 @@ focus_tree = {
 			focus = WGN_tacticsofthefiringshaft
 		}
 		x = 46
-		y = 10Ы
+		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_сontinuousstorming"
 			custom_effect_tooltip = WGN_continuousstorming_tooltip
@@ -1118,6 +1118,247 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: WGN_interactionwithbloggers"
 			custom_effect_tooltip = WGN_decisionetc_tooltip
 		}
+	}
+
+	#Shell Hunger
+	focus = {
+		id = WGN_shell_starvation
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		x = 32
+		y = 12
+		allow_branch = {
+			has_global_flag = WGN_shell_hunger_flag
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_shell_starvation"
+			country_event = {
+				id = WGN.15
+				hours = 0
+			}
+		}
+	}
+
+	focus = {
+		id = WGN_appeal
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_shell_starvation
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_appeal"
+			country_event = {
+				id = WGN.30
+				hours = 24
+			}
+		}
+		x = 32
+		y = 13
+
+	}
+
+	focus = {
+		id = WGN_appeal_to_putin
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_appeal
+		}
+		mutually_exclusive = {
+			focus = WGN_continue_the_battle
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_appeal_to_putin"
+			RUS = {
+				country_event = rus.70
+			}
+			WGN = {
+				country_event = WGN.3
+			}
+		}
+		x = 33
+		y = 14
+
+
+	}
+
+	focus = {
+		id = WGN_continue_the_battle
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		mutually_exclusive = {
+			focus = WGN_appeal_to_putin
+		}
+		prerequisite = {
+			focus = WGN_appeal
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_continue_the_battle"
+			custom_effect_tooltip = WGN_continue_the_battle_tooltip
+			add_to_variable = { var = WGN_hunger_army_org_factor value = 0.1 }
+			add_to_variable = { var = WGN_hunger_experience_loss_factor value = -0.15 }
+		}
+		x = 31
+		y = 14
+
+	}
+	focus = {
+		id = WGN_fight_against_military_bureaucracy
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_fight_against_military_bureaucracy"
+			country_event = {
+				id = WGN.12
+				hours = 0
+			}
+		}
+		x = 35
+		y = 15
+
+	}
+
+	focus = {
+		id = WGN_military_improvisation
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_military_improvisation"
+			custom_effect_tooltip = WGN_military_improvisation_tooltip
+			add_to_variable = { var = WGN_hunger_supply_factor value = 0.15 }
+			add_to_variable = { var = WGN_hunger_army_org_factor value = 0.15 }
+			add_to_variable = { var = WGN_hunger_command_power_gain_mult value = 0.15 }
+			add_to_variable = { var = WGN_hunger_org_loss_when_moving value = -0.2 }
+		}
+		x = 33
+		y = 15
+	}
+
+	focus = {
+		id = WGN_loyalist_help
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_loyalist_help"
+			custom_effect_tooltip = WGN_loyalist_help_tooltip
+			add_to_variable = { var = WGN_hunger_supply_factor value = 0.3 }
+			add_to_variable = { var = WGN_hunger_political_power_factor value = 0.15 }
+		}
+		x = 31
+		y = 15
+	}
+
+	focus = {
+		id = WGN_never_give_up
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_never_give_up"
+			country_event = {
+				id = WGN.11
+				hours = 2
+			}
+		}
+		x = 29
+		y = 15
+	}
+
+
+	focus = {
+		id = WGN_march
+		icon = GFX_IMAGE_NOT_FOUND
+		cost = 1
+		prerequisite = {
+			focus = WGN_fight_against_military_bureaucracy
+		}
+		prerequisite = {
+			focus = WGN_military_improvisation
+		}
+		prerequisite = {
+			focus = WGN_loyalist_help
+		}
+		prerequisite = {
+			focus = WGN_never_give_up
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_march"
+			custom_effect_tooltip = WGN_march_tooltip
+			hidden_effect = {
+				set_global_flag = WGN_march_flag
+				country_event = {
+					id = super.2
+					hours = 4
+				}
+				country_event = {
+					id = WGN.17
+					hours = 0
+				}
+				news_event = {
+					id = news.142
+					hours = 1
+				}
+				news_event = {
+					id = news.143
+					hours = 2
+				}
+				news_event = {
+					id = news.125
+					hours = 4
+				}
+				news_event = {
+					id = news.126
+					hours = 6
+				}
+				news_event = {
+					id = news.127
+					hours = 8
+				}
+				news_event = {
+					id = news.128
+					hours = 10
+				}
+				news_event = {
+					id = news.129
+					hours = 12
+				}
+				RUS = {
+					country_event = {
+						id = rus.71
+						hours = 14
+					}
+					country_event = {
+						id = rus.195
+						hours = 2
+					}
+				}
+				WGN = {
+					country_event = {
+						id = WGN.7
+						hours = 16
+					}
+				}
+			}
+		}
+		x = 32
+		y = 16
+
 	}
 }
 
