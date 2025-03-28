@@ -3,8 +3,8 @@ def calculate_hp(base_hp, material_coef, construction_coef, state_coef):
 
 base_hp_map = {
     "малый мост": 100.0,
-    "средний мост": 200.0,
-    "большой мост": 300.0,
+    "средний мост": 300.0,
+    "большой мост": 400.0,
     "очень большой мост": 500.0,
     "дамба малая": 600.0,
     "дамба средняя": 800.0,
@@ -28,17 +28,17 @@ construction_coef_map = {
 }
 
 state_coef_map = {
-    "новый или реконструирован": 1.1,
-    "средний возраст": 1.0,
+    "новый или реконструирован": 1.0,
+    "средний возраст": 0.95,
     "старый": 0.9,
-    "очень старый": 0.6,
+    "очень старый": 0.8,
     "аварийное": 0.4
 }
 
-base_hp = base_hp_map["дамба крупная"]
+base_hp = base_hp_map["средний мост"]
 material_coef = material_coef_map["железобетон/сталь"]
-construction_coef = construction_coef_map["вантовый мост"]
-state_coef = state_coef_map["средний возраст"]
+construction_coef = construction_coef_map["балочный мост"]
+state_coef = state_coef_map["очень старый"]
 
 total_hp = calculate_hp(base_hp, material_coef, construction_coef, state_coef)
 
