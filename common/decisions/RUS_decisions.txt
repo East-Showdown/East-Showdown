@@ -5799,9 +5799,11 @@ RUS_SMO_deccat = {
 		days_remove = 3
 
 		remove_effect = {
+		    add_command_power = -50
 			WGN = {
 				country_event = WGN.26
 			}
+			custom_effect_tooltip = RUS_call_WGN_cet
 		}
 
 		complete_effect = {
@@ -9410,9 +9412,12 @@ RUS_Storm_Z_categories = {
 	RUS_establish_storm_V = {
 		icon = GFX_RUS_storm_V
 		
-		cost = 40
+		custom_cost_trigger = {
+            command_power > 39
+        }
+        custom_cost_text = decision_cost_CP_40
 		fire_only_once = yes
-		days_remove = 15
+		days_remove = 20
 		
 		ai_will_do = {
 	    	factor = 30
@@ -9423,15 +9428,12 @@ RUS_Storm_Z_categories = {
 	    }
 
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
+			
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_establish_storm_V: complete_effect"
 			hidden_effect = {
-				add_command_power = -20
+				add_command_power = -40
 			}
 		}
 		remove_effect = {
@@ -9443,6 +9445,10 @@ RUS_Storm_Z_categories = {
 					var = RUS_Storm_Z_limit
 					value = 1
 				}
+				add_to_variable = { RUS_crime_surge_modifier_min_export = 0.025 }
+				add_to_variable = { RUS_crime_surge_modifier_stability_factor = 0.05 }
+				add_to_variable = { RUS_crime_surge_modifier_political_power_factor = 0.05 }
+				add_to_variable = { RUS_crime_surge_modifier_production_speed_buildings_factor = 0.025 }
 				division_template = {
 					name = "Storm-V"
 					division_names_group = RUS_Storm_V_names_group
@@ -9473,13 +9479,9 @@ RUS_Storm_Z_categories = {
 							x = 1
 							y = 1
 						}
-						apc = {
+						towed_art = {
 							x = 2
 							y = 0
-						}
-						apc = {
-							x = 2
-							y = 1
 						}
 					}
 					support = {
@@ -9554,7 +9556,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_central_russia"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
+			instant_effect = {
+				rus_recover_stormz_templates = yes
+				rus_recover_stormv_templates = yes
+			}
+            add_to_variable = {	
+				var = RUS_Storm_Z_central_russia
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -9569,15 +9578,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_central_russia
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -9586,15 +9602,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -9624,7 +9640,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_northwestern_russia"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
+			instant_effect = {
+				rus_recover_stormz_templates = yes
+				rus_recover_stormv_templates = yes
+			}
+            add_to_variable = {	
+				var = RUS_Storm_Z_northwestern_russia
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -9639,15 +9662,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_northwestern_russia
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -9656,15 +9686,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -9694,12 +9724,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_european_south"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
 			instant_effect = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
 			}
-
+            add_to_variable = {	
+				var = RUS_Storm_Z_european_south
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -9714,15 +9746,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_european_south
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -9731,15 +9770,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -9769,12 +9808,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_volga_region"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
 			instant_effect = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
 			}
-
+            add_to_variable = {	
+				var = RUS_Storm_Z_volga_region
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -9789,15 +9830,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_volga_region
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -9806,15 +9854,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -9844,12 +9892,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_ural"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
 			instant_effect = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
 			}
-
+            add_to_variable = {	
+				var = RUS_Storm_Z_ural
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -9864,15 +9914,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_ural
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -9881,15 +9938,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -9919,12 +9976,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_western_siberia"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
 			instant_effect = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
 			}
-
+            add_to_variable = {	
+				var = RUS_Storm_Z_western_siberia
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -9939,15 +9998,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_western_siberia
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -9956,15 +10022,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -9994,12 +10060,14 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_european_north"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
 			instant_effect = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
 			}
-
+            add_to_variable = {	
+				var = RUS_Storm_Z_european_north
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -10014,15 +10082,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_european_north
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -10031,15 +10106,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -10069,10 +10144,13 @@ RUS_Storm_Z_categories = {
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_colonies_of_eastern_siberia"
-			custom_effect_tooltip = RUS_Storm_Z_conscription
 			instant_effect = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
+			}
+			add_to_variable = {	
+				var = RUS_Storm_Z_eastern_siberia
+				value = 1
 			}
 			if = {
 				limit = {
@@ -10088,15 +10166,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_eastern_siberia
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -10105,15 +10190,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -10147,7 +10232,10 @@ RUS_Storm_Z_categories = {
 				rus_recover_stormz_templates = yes
 				rus_recover_stormv_templates = yes
 			}
-			custom_effect_tooltip = RUS_Storm_Z_conscription
+			add_to_variable = {	
+				var = RUS_Storm_Z_far_east
+				value = 1
+			}
 			if = {
 				limit = {
 					has_country_flag = RUS_Storm_V_cf
@@ -10162,15 +10250,22 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
+					random = {
+						chance = 20
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-V\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
+						}
+					}
 				}
 			}
-			hidden_effect = {
-				add_to_variable = {	
-					var = RUS_Storm_Z_far_east
-					value = 1
-				}
-				random = {
-					chance = 90
+			else = {
+				custom_effect_tooltip = RUS_Storm_Z_conscription
+				hidden_effect = {
 					61 = {
 						create_unit = {
 							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
@@ -10179,15 +10274,15 @@ RUS_Storm_Z_categories = {
 							count = 1
 						}
 					}
-				}
-				random = {
-					chance = 10
-					61 = {
-						create_unit = {
-							division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
-							owner = RUS
-							prioritize_location = 14590
-							count = 1
+					random = {
+						chance = 50
+						61 = {
+							create_unit = {
+								division = "division_template = \"Storm-Z\" start_experience_factor = 0.01 start_equipment_factor = 0.01"
+								owner = RUS
+								prioritize_location = 14590
+								count = 1
+							}
 						}
 					}
 				}
@@ -10205,6 +10300,7 @@ RUS_Storm_Z_categories = {
 		available = {
 			NOT = {
 				has_war_with = UKR
+				has_country_flag = RUS_Storm_V_cf
 			}
 		}
 
@@ -10553,6 +10649,38 @@ RUS_real_man_business_categories = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_return_conscripts"
 			remove_ideas = RUS_SMO_conscripts_front
 			set_country_flag = RUS_return_conscripts_cf
+		}
+	}
+	RUS_UV_SMO_employment_prisoners = {
+		icon = GFX_RUS_Union_of_veterans_SMO
+
+		fire_only_once = yes 
+		days_remove = 60
+		cost = 40
+
+		available = {
+			original_tag = RUS
+			has_completed_focus = RUS_Reorganise_the_MIC_Commission
+		}
+
+		visible = {
+			original_tag = RUS
+			has_country_flag = RUS_crime_surge_cf
+		}
+		ai_will_do = {
+	    	factor = 40
+        }
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_UV_SMO_employment_prisoners"
+			add_stability = 0.025
+			add_to_variable = { RUS_crime_surge_modifier_consumer_goods_factor = 0.025 }
+		    add_to_variable = { RUS_crime_surge_modifier_production_speed_buildings_factor = 0.025 }
+			add_to_variable = { RUS_crime_surge_modifier_production_factory_max_efficiency_factor = 0.025 }
+			add_to_variable = { RUS_crime_surge_modifier_production_factory_efficiency_gain_factor = 0.05 }
+			add_to_variable = { RUS_Vpk_dynamic_mod_production_factory_max_efficiency_factor = 0.025 }
+			add_to_variable = { RUS_Vpk_dynamic_mod_production_factory_efficiency_gain_factor = 0.05 }
+			custom_effect_tooltip = RUS_UV_SMO_employment_prisoners_cet
 		}
 	}
 	RUS_grouping_O = {
