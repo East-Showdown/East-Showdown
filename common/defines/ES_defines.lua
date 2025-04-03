@@ -57,6 +57,7 @@ NDefines.NProduction.CIC_BANK_SPEED_BOOST_FACTOR = 0.25                 -- The C
 NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_VALUE = 1		-- The minimum number of factories we have to put on consumer goods by value.
 NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_PERCENT = 0.1	-- The minimum number of factories we have to put on consumer goods in percent.
 NDefines.NProduction.BASE_FACTORY_SPEED = 2 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
+NDefines.NProduction.MAX_EQUIPMENT_RESOURCES_NEED = 6 -- vanila 3 Max number of different strategic resources an equipment can be dependent on.
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 5	-- Weekly increase of PP.
 NDefines.NBuildings.MAX_BUILDING_LEVELS = 50			-- Max levels a building can have.
 NDefines.NBuildings.AIRBASE_CAPACITY_MULT = 50		-- Each level of airbase building multiplied by this gives capacity (max operational value). Value is int. 1 for each airplane.
@@ -436,6 +437,7 @@ NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show s
 NDefines.NTechnology.MAX_SUBTECHS = 10
 
 -- MPR
+NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.10 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
 NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.009 --0.0015
@@ -453,7 +455,7 @@ NDefines.NMilitary.FIELD_EXPERIENCE_MAX_PER_DAY	= 50 --1.2
 NDefines.NMilitary.INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.05 -- -0.10
 NDefines.NMilitary.RETREAT_SPEED_FACTOR = 0.50 -- 0.25
 NDefines.NMilitary.WITHDRAWING_SPEED_FACTOR = 0.30 -- 0.15
-NDefines.NMilitary.PLANNING_MAX = 0.10 -- 0.30
+NDefines.NMilitary.PLANNING_MAX = 0.01 -- 0.30
 NDefines.NMilitary.TRAINING_MAX_LEVEL = 3 -- 2
 NDefines.NMilitary.EXPERIENCE_COMBAT_FACTOR = 0.15 -- 0.25
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_GROUP_COST = 2 -- 5	
