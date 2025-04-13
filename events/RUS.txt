@@ -4705,6 +4705,11 @@ country_event = {
     fire_only_once = yes
 	trigger = {
 		tag = RUS
+		NOT = {
+			has_power_balance = {
+				id = RUS_power_balance
+			}
+		}
 		OR = {
 			WGN = {
 				OR = {
@@ -7084,5 +7089,85 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: rus.234.a executed"
 		add_command_power = 30
 		add_war_support = 0.025
+	}
+}
+
+country_event = {
+	id = rus_hidden.10
+	title = rus_hidden.10.t
+	desc = rus_hidden.10.d
+	fire_only_once = no
+	is_triggered_only = yes
+	hidden = yes
+	option = {
+		name = rus_hidden.10.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.10.a executed"
+		if = {
+			limit = {
+				has_war_with = UKR
+				has_country_flag = RUS_failure_SMO
+				UKR = {
+					surrender_progress < 0.75
+				}
+			}
+			country_event = { id = rus.235 days = 1 }
+			WGN = {
+				add_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
+				country_event = { id = rus.235 days = 1 }
+				country_event = { id = WGN.2 days = 5 }
+			}
+			CHE = {
+				country_event = { id = rus.235 days = 1 }
+			}
+			DPR = {
+				country_event = { id = rus.235 days = 1 }
+			}
+			LPR = {
+				country_event = { id = rus.235 days = 1 }
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.25
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.25
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_war_with = UKR
+				has_country_flag = RUS_failure_SMO
+				UKR = {
+					surrender_progress < 0.75
+				}
+				NOT = {
+					has_power_balance = {
+						id = RUS_power_balance
+					}
+				}
+			}
+			country_event = { id = rus.171 days = 10 }
+		}
+	}
+}
+
+country_event = {
+	id = rus.235
+	title = rus.235.t
+	desc = rus.235.desc
+	picture = GFX_country_event_228
+	is_triggered_only = yes
+
+	option = {
+		name = rus.235.a
+		log = "[GetDateText]: [This.GetName]: rus.235.a executed"
+		custom_effect_tooltip = RUS_EVENT_rus_235_cet
+		if = {
+			limit = { tag = WGN }
+			custom_effect_tooltip = WGN_EVENT_rus_235_cet
+		}
 	}
 }
