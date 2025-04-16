@@ -4715,34 +4715,7 @@ country_event = {
 	desc = rus.171.desc
 	picture = GFX_country_event_132
     fire_only_once = yes
-	trigger = {
-		tag = RUS
-		NOT = {
-			has_power_balance = {
-				id = RUS_power_balance
-			}
-		}
-		OR = {
-			WGN = {
-				OR = {
-					has_army_manpower = {
-						size > 20000
-					}
-					check_variable = {
-						var = WGN_successful_stormings
-						value = 2
-						compare = greater_than_or_equals
-					}
-				}
-			}
-			UKR = {
-				casualties_inflicted_by = {
-					opponent = WGN
-					thousands > 4
-				}
-			}
-		}	
-	}
+	is_triggered_only = yes
 	option = {
 		name = rus.171.a
 		log = "[GetDateText]: [This.GetName]: rus.171.a executed"
@@ -7124,11 +7097,14 @@ country_event = {
 			}
 			country_event = { id = rus.235 days = 1 }
 			country_event = { id = rus.236 days = 5 }
-			country_event = { id = rus.237 days = 227 }
 			WGN = {
 				add_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
 				country_event = { id = rus.235 days = 1 }
 				country_event = { id = WGN.2 days = 5 }
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.25
+				}
 			}
 			CHE = {
 				country_event = { id = rus.235 days = 1 }
@@ -7141,13 +7117,7 @@ country_event = {
 			}
 			add_power_balance_value = {
 				id = RUS_power_balance
-				value = 0.15
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = 0.15
-				}
+				value = 0.25
 			}
 		}
 		if = {
@@ -7163,7 +7133,23 @@ country_event = {
 					}
 				}
 			}
-			country_event = { id = rus.171 days = 10 }
+			WGN = {
+				country_event = { id = WGN.33 days = 3 }
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					date < 2022.12.27 
+				}
+				set_global_flag = RUS_WGN_Shell_def_started
+			}
+			if = {
+				limit = {
+					date > 2022.12.27 
+				}
+				country_event = { id = rus.238 days = 14 }
+			}
 		}
 	}
 }
@@ -7222,5 +7208,59 @@ country_event = {
 		name = rus.237.a
 		log = "[GetDateText]: [This.GetName]: rus.237.a executed"
 		
+	}
+}
+#Глава генштаба пидор и черт ебанный
+country_event = {
+	id = rus.238
+	title = rus.238.t
+	desc = rus.238.desc
+	picture = GFX_country_event_235
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+		    WGN = {
+				country_event = { id = WGN.34 days = 1 }
+			}
+		}
+	}
+
+	option = {
+		name = rus.238.a
+		log = "[GetDateText]: [This.GetName]: rus.238.a executed"
+		add_command_power = -20
+		add_war_support = -0.035
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.075
+		}
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -5
+			tooltip = IW_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+}
+
+country_event = {
+	id = rus.239
+	title = rus.239.t
+	desc = rus.239.desc
+	picture = GFX_country_event_234
+	is_triggered_only = yes
+
+	option = {
+		name = rus.239.a
+		log = "[GetDateText]: [This.GetName]: rus.239.a executed"
+		country_event = { id = rus.171 days = 10 }
 	}
 }
