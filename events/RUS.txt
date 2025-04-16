@@ -2,6 +2,7 @@ add_namespace = rus
 add_namespace = rus_hidden
 add_namespace = moa
 add_namespace = rus_brigdes
+add_namespace = rus_unit_leader_event
 
 country_event = {
 	id = rus.1
@@ -1232,15 +1233,22 @@ country_event = {
 	option = {
 		name = rus.70.a
 		log = "[GetDateText]: [This.GetName]: rus.70.a executed"
-		trigger = {
-			WGN = {
-				has_army_manpower = {
-					size > 50000
+		ai_chance = {
+			base = 10
+			modifier = {
+				add = 20
+				WGN = {
+					has_army_manpower = {
+						size > 50000
+					}
 				}
 			}
-			power_balance_value = {
-				id = WGN_power_balance
-				value < -0.8
+			modifier = {
+				add = 20
+				power_balance_value = {
+					id = WGN_power_balance
+					value < -0.8
+				}
 			}
 		}
 		WGN = {
@@ -1259,16 +1267,21 @@ country_event = {
 				hours = 2
 			}
 		}
-		trigger = {
-			OR = {
+		ai_chance = { 
+			base = 50
+			modifier = {
+				add = 20
 				WGN = {
 					has_army_manpower = {
-						size < 50000
+						size < 25000
 					}
 				}
+			}
+			modifier = {
+				add = 20
 				power_balance_value = {
 					id = WGN_power_balance
-					value > -0.8
+					value > -0.4
 				}
 			}
 		}
@@ -4704,6 +4717,11 @@ country_event = {
     fire_only_once = yes
 	trigger = {
 		tag = RUS
+		NOT = {
+			has_power_balance = {
+				id = RUS_power_balance
+			}
+		}
 		OR = {
 			WGN = {
 				OR = {
@@ -7051,5 +7069,158 @@ country_event = {
 			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
 			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
 		}
+	}
+}
+
+country_event = {
+	id = rus.233
+	title = rus.233.t
+	desc = rus.233.desc
+	picture = GFX_country_event_228
+	is_triggered_only = yes
+
+	option = {
+		name = rus.233.a
+		log = "[GetDateText]: [This.GetName]: rus.233.a executed"
+		unlock_decision_tooltip = RUS_SMO_zeki_zakon
+		hidden_effect = {
+			set_country_flag = RUS_SMO_zeki_zakon_unlack
+		}
+	}
+}
+
+country_event = {
+	id = rus.234
+	title = rus.234.t
+	desc = rus.234.desc
+	picture = GFX_country_event_230
+	is_triggered_only = yes
+
+	option = {
+		name = rus.234.a
+		log = "[GetDateText]: [This.GetName]: rus.234.a executed"
+		add_command_power = 30
+		add_war_support = 0.025
+	}
+}
+
+country_event = {
+	id = rus_hidden.10
+	title = rus_hidden.10.t
+	desc = rus_hidden.10.d
+	fire_only_once = no
+	is_triggered_only = yes
+	hidden = yes
+	option = {
+		name = rus_hidden.10.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.10.a executed"
+		if = {
+			limit = {
+				has_war_with = UKR
+				has_country_flag = RUS_failure_SMO
+				UKR = {
+					surrender_progress < 0.75
+				}
+			}
+			country_event = { id = rus.235 days = 1 }
+			country_event = { id = rus.236 days = 5 }
+			country_event = { id = rus.237 days = 227 }
+			WGN = {
+				add_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
+				country_event = { id = rus.235 days = 1 }
+				country_event = { id = WGN.2 days = 5 }
+			}
+			CHE = {
+				country_event = { id = rus.235 days = 1 }
+			}
+			DPR = {
+				country_event = { id = rus.235 days = 1 }
+			}
+			LPR = {
+				country_event = { id = rus.235 days = 1 }
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.15
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.15
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_war_with = UKR
+				has_country_flag = RUS_failure_SMO
+				UKR = {
+					surrender_progress < 0.75
+				}
+				NOT = {
+					has_power_balance = {
+						id = RUS_power_balance
+					}
+				}
+			}
+			country_event = { id = rus.171 days = 10 }
+		}
+	}
+}
+
+country_event = {
+	id = rus.235
+	title = rus.235.t
+	desc = rus.235.desc
+	picture = GFX_country_event_228
+	is_triggered_only = yes
+
+	option = {
+		name = rus.235.a
+		log = "[GetDateText]: [This.GetName]: rus.235.a executed"
+		custom_effect_tooltip = RUS_EVENT_rus_235_cet
+		if = {
+			limit = { tag = WGN }
+			custom_effect_tooltip = WGN_EVENT_rus_235_cet
+		}
+	}
+}
+
+country_event = {
+	id = rus.236
+	title = rus.236.t
+	desc = rus.236.desc
+	picture = GFX_country_event_231
+	is_triggered_only = yes
+
+	option = {
+		name = rus.236.a
+		log = "[GetDateText]: [This.GetName]: rus.236.a executed"
+		add_timed_idea = {
+			idea = RUS_Ammunition_restrictions_idea
+			days = 270
+		}
+	}
+}
+
+country_event = {
+	id = rus.237
+	title = rus.237.t
+	desc = rus.237.desc
+	picture = GFX_country_event_233
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+		    WGN = {
+				country_event = { id = WGN.32 days = 1 }
+			}
+		}
+	}
+
+	option = {
+		name = rus.237.a
+		log = "[GetDateText]: [This.GetName]: rus.237.a executed"
+		
 	}
 }
