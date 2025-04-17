@@ -7207,7 +7207,13 @@ country_event = {
 	option = {
 		name = rus.237.a
 		log = "[GetDateText]: [This.GetName]: rus.237.a executed"
-		
+		hidden_effect = {
+		    remove_ideas = RUS_Ammunition_restrictions_idea
+			add_timed_idea = {
+				idea = RUS_Ammunition_restrictions_idea
+				days = 300
+			}
+		}
 	}
 }
 #Глава генштаба пидор и черт ебанный
@@ -7217,12 +7223,13 @@ country_event = {
 	desc = rus.238.desc
 	picture = GFX_country_event_235
 	is_triggered_only = yes
-	
+	fire_only_once = yes
 	immediate = {
 		hidden_effect = {
 		    WGN = {
 				country_event = { id = WGN.34 days = 1 }
 			}
+			country_event = { id = rus_hidden.11 days = 51 }
 		}
 	}
 
@@ -7252,6 +7259,26 @@ country_event = {
 }
 
 country_event = {
+	id = rus_hidden.11
+	title = rus_hidden.11.t
+	desc = rus_hidden.11.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	option = {
+		name = rus_hidden.11.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.11.a executed"
+		if = {
+			limit = {
+				has_war_with = UKR
+			}
+			country_event = { id = rus.240 days = 0 }
+		}
+	}
+}
+
+
+country_event = {
 	id = rus.239
 	title = rus.239.t
 	desc = rus.239.desc
@@ -7262,5 +7289,67 @@ country_event = {
 		name = rus.239.a
 		log = "[GetDateText]: [This.GetName]: rus.239.a executed"
 		country_event = { id = rus.171 days = 10 }
+	}
+}
+
+country_event = {
+	id = rus_hidden.12
+	title = rus_hidden.12.t
+	desc = rus_hidden.12.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	option = {
+		name = rus_hidden.12.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.12.a executed"
+		if = {
+			limit = {
+				has_war_with = UKR
+			}
+			country_event = { id = rus.237 days = 0 }
+		}
+	}
+}
+
+#Обращенние артиллеристов
+country_event = {
+	id = rus.240
+	title = rus.240.t
+	desc = rus.240.desc
+	picture = GFX_country_event_237
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+		    WGN = {
+				country_event = { id = WGN.35 days = 0 }
+			}
+			country_event = { id = rus_hidden.12 days = 63 }
+		}
+	}
+
+	option = {
+		name = rus.240.a
+		log = "[GetDateText]: [This.GetName]: rus.240.a executed"
+		add_command_power = -30
+		add_war_support = -0.05
+		add_stability = -0.035
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.1
+		}
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -5
+			tooltip = IW_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 	}
 }
