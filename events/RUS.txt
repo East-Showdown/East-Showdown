@@ -1234,10 +1234,20 @@ country_event = {
 	option = {
 		name = rus.70.r
 		log = "[GetDateText]: [This.GetName]: rus.70.r executed"
-		WGN = {
-			country_event = {
-				id = WGN.6
-				hours = 2
+		add_command_power = 25
+		custom_effect_tooltip = RUS_event_RUS_70_tt_r
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = 0.3
+		}
+		hidden_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = 0.3
+			}
+			country_event = { id = rus.74 days = 3 }
+			WGN = {
+				country_event = { id = WGN.37 days = 4 }
 			}
 		}
 		ai_chance = { 
@@ -1261,7 +1271,46 @@ country_event = {
 	}
 	option = {
 		name = rus.70.a
+		trigger = {
+			has_completed_focus = RUS_inspection_in_the_Ministry_of_Defense
+		}
 		log = "[GetDateText]: [This.GetName]: rus.70.a executed"
+		add_command_power = -50
+		custom_effect_tooltip = RUS_event_RUS_70_tt_a
+		add_power_balance_value = {
+			id = RUS_power_balance
+			value = -0.4
+		}
+		hidden_effect = {
+			set_variable = { RUS_personnel_changes_modifier_command_power_gain_mult = -0.5 }
+			set_variable = { RUS_personnel_changes_modifier_experience_gain_army_factor = -0.35 }
+			set_variable = { RUS_personnel_changes_modifier_max_command_power_mult = -0.4 }
+			set_variable = { RUS_personnel_changes_modifier_training_time_factor = 0.25 }
+			set_variable = { RUS_personnel_changes_modifier_land_doctrine_cost_factor = 0.5 }
+			set_variable = { RUS_personnel_changes_modifier_military_industrial_organization_research_bonus = -0.35 }
+			set_variable = { RUS_personnel_changes_modifier_military_industrial_organization_design_team_assign_cost = 0.35 }
+			set_variable = { RUS_personnel_changes_modifier_army_leader_cost_factor = -0.1 }
+			set_variable = { RUS_personnel_changes_modifier_military_leader_cost_factor = -0.25 }
+			set_variable = { RUS_personnel_changes_modifier_army_speed_factor = -0.15 }
+			set_variable = { RUS_personnel_changes_modifier_army_morale_factor = -0.25 }
+			set_variable = { RUS_personnel_changes_modifier_army_org_factor = -0.1 }
+			set_variable = { RUS_personnel_changes_modifier_coordination_bonus = -0.15 }
+			set_variable = { RUS_personnel_changes_modifier_initiative_factor = -0.2 }
+			set_variable = { RUS_personnel_changes_modifier_max_planning_factor = -0.3 }
+			set_variable = { RUS_personnel_changes_modifier_planning_speed = -0.5 }
+			set_variable = { RUS_personnel_changes_modifier_experience_loss_factor = 0.25 }
+			
+			country_event = { id = rus.73 days = 5 }
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.4
+			}
+			clr_global_flag = WGN_shell_hunger_flag_worse
+			WGN = {
+				mark_focus_tree_layout_dirty = yes
+				country_event = { id = WGN.36 days = 6 }
+			}
+		}
 		ai_chance = {
 			base = 10
 			modifier = {
@@ -1280,12 +1329,69 @@ country_event = {
 				}
 			}
 		}
-		WGN = {
-			country_event = {
-				id = WGN.5
-				hours = 2
+		
+	}
+}
+#Тувинский цирк закончился
+country_event = {
+	id = rus.73
+	title = rus.73.t
+	desc = rus.73.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	picture = GFX_country_event_239
+	option = {
+		name = rus.73.a
+		log = "[GetDateText]: [This.GetName]: rus.73.a executed"
+		add_command_power = -100
+		add_stability = -0.05
+		remove_power_balance = {
+            id = RUS_power_balance
+        }
+	    add_dynamic_modifier = { modifier = RUS_personnel_changes_modifier }
+		custom_effect_tooltip = RUS_event_RUS_73_tt_a
+		hidden_effect = {
+			sergei_shoigy = {
+				remove_unit_leader_role = yes
+				remove_advisor_role = {
+					slot = high_command
+				}
+			}
+			set_global_flag = RUS_Wagner_victory_Evkyrov
+			unys_bek_evkyrov = {
+				promote_leader = yes
+				add_advisor_role = {
+                    activate = yes
+                    advisor = {
+                        slot = high_command
+                        cost = 100
+                        idea_token = RUS_sergei_shoigy
+                        traits = {
+                            army_commando_3
+                        }
+                    }
+                }
+			}
+			news_event = {
+				id = news.349
+				hours = 6
 			}
 		}
+	}
+}
+
+#Путин заступился за тувинский цирк
+country_event = {
+	id = rus.74
+	title = rus.74.t
+	desc = rus.74.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	picture = GFX_country_event_240
+	option = {
+		name = rus.74.a
+		log = "[GetDateText]: [This.GetName]: rus.74.a executed"
+		
 	}
 }
 
