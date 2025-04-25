@@ -1276,7 +1276,7 @@ country_event = {
 			power_balance_value = {
                 id = RUS_power_balance
                 value < -0.4
-            }
+			}
 		}
 		log = "[GetDateText]: [This.GetName]: rus.70.a executed"
 		add_command_power = -50
@@ -1303,8 +1303,8 @@ country_event = {
 			set_variable = { RUS_personnel_changes_modifier_max_planning_factor = -0.3 }
 			set_variable = { RUS_personnel_changes_modifier_planning_speed = -0.5 }
 			set_variable = { RUS_personnel_changes_modifier_experience_loss_factor = 0.25 }
-			
 			country_event = { id = rus.73 days = 5 }
+			country_event = { id = rus.80 days = 7 }
 			add_power_balance_value = {
 				id = WGN_power_balance
 				value = -0.4
@@ -1312,7 +1312,12 @@ country_event = {
 			clr_global_flag = WGN_shell_hunger_flag_worse
 			WGN = {
 				mark_focus_tree_layout_dirty = yes
+				country_event = { id = WGN.38 days = 2 }
 				country_event = { id = WGN.36 days = 6 }
+				country_event = { id = WGN.39 days = 7 }
+				mikhail_mizintsev = {
+					unit_leader_event = { id = wgn_unit_leader_event.2 days = 11 }
+				}
 			}
 		}
 		ai_chance = {
@@ -1347,6 +1352,7 @@ country_event = {
 	option = {
 		name = rus.73.a
 		log = "[GetDateText]: [This.GetName]: rus.73.a executed"
+		add_political_power = -150
 		add_command_power = -100
 		add_stability = -0.05
 		remove_power_balance = {
@@ -1398,7 +1404,7 @@ country_event = {
 	option = {
 		name = rus.74.a
 		log = "[GetDateText]: [This.GetName]: rus.74.a executed"
-		
+		add_political_power = 50
 	}
 }
 
@@ -1850,6 +1856,67 @@ country_event = {
 		}
 	}
 }
+country_event = {
+	id = rus.80
+	title = rus.80.t
+	desc = rus.80.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	picture = GFX_country_event_228
+	option = {
+		name = rus.80.a
+		log = "[GetDateText]: [This.GetName]: rus.80.a executed"
+		add_war_support = 0.035
+		add_command_power = 25
+		custom_effect_tooltip = RUS_event_80_tt
+		remove_ideas = {
+			RUS_Ammunition_restrictions_idea
+		}
+		custom_effect_tooltip = IW_5_var_add_tt
+		hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -5
+			}
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 5
+			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+}
+
+unit_leader_event = {
+	id = rus_unit_leader_event.1
+	title = rus_unit_leader_event.1.t
+	desc = rus_unit_leader_event.1.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rus_unit_leader_event.1.a
+		log = "[GetDateText]: [This.GetName]: rus.81.a executed"
+		add_command_power = 15
+		custom_effect_tooltip = RUS_event_81_tt
+		custom_effect_tooltip = IW_2_5_var_add_tt
+		hidden_effect = {
+		    clr_country_flag = RUS_mizintsev_na_butilky
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -2.5
+			}
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+}
+
 
 country_event = {
 	id = rus.71
@@ -7969,6 +8036,14 @@ country_event = {
 	desc = rus.242.desc
 	is_triggered_only = yes
     picture = GFX_country_event_228
+	immediate = {
+		hidden_effect = {
+		    set_country_flag = RUS_mizintsev_na_butilky
+		    mikhail_mizintsev = {
+				set_nationality = WGN
+			}
+		}
+	}
 	option = {
 		name = rus.242.a
 		log = "[GetDateText]: [This.GetName]: rus.242.a executed"
@@ -7979,13 +8054,13 @@ country_event = {
 		}
 		custom_effect_tooltip = RUS_event_242_cet
 		hidden_effect = {
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = 0.05
-			}
-			mikhail_mizintsev = {
-				remove_unit_leader_role = yes
+			WGN = {
+			    mikhail_mizintsev = {
+					unit_leader_event = { id = wgn_unit_leader_event.1 days = 1 }
+				}
 			}
 		}
 	}
 }
+
+
