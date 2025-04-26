@@ -1226,7 +1226,7 @@ focus_tree = {
 		select_effect = {
 			hidden_effect = {
 				mikhail_mizintsev = {
-					unit_leader_event = { id = wgn_unit_leader_event.3 days = 2 }
+					unit_leader_event = { id = wgn_unit_leader_event.3 hours = 12 }
 				}
 			}
 		}
@@ -1239,6 +1239,16 @@ focus_tree = {
 			custom_effect_tooltip = WGN_continue_the_battle_tooltip
 			add_to_variable = { WGN_hunger_political_power_factor = 0.2 }
 			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.15 }
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}
+				country_event = { id = WGN.42 hours = 6 }
+				RUS = {
+					country_event = { id = rus.243 hours = 6 }
+				}
+			}
 		}
 		x = 31
 		y = 14
@@ -1254,9 +1264,17 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_fight_against_military_bureaucracy"
-			country_event = {
-				id = WGN.12
-				hours = 0
+			add_political_power = 50
+			custom_effect_tooltip = WGN_fight_against_military_bureaucracy_cet
+			country_event = { id = WGN.46 hours = 6 }
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}
+				RUS = {
+					country_event = { id = rus.244 hours = 10 }
+				}
 			}
 		}
 		x = 35
@@ -1272,13 +1290,52 @@ focus_tree = {
 			focus = WGN_appeal_to_putin
 			focus = WGN_continue_the_battle
 		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_mikhail_mizintsev_PMC_commander_cet
+				has_country_flag = WGN_mikhail_mizintsev_PMC_commander
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_military_improvisation"
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.035
+			}
+			add_command_power = 35
 			custom_effect_tooltip = WGN_military_improvisation_tooltip
-			add_to_variable = { var = WGN_hunger_supply_factor value = 0.15 }
-			add_to_variable = { var = WGN_hunger_army_org_factor value = 0.15 }
-			add_to_variable = { var = WGN_hunger_command_power_gain_mult value = 0.15 }
-			add_to_variable = { var = WGN_hunger_org_loss_when_moving value = -0.2 }
+			add_to_variable = { WGN_hunger_supply_factor = 0.2 }
+			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.1 }
+			add_to_variable = { WGN_hunger_weekly_manpower = -50 }
+			add_to_variable = { WGN_hunger_army_org_factor = 0.15 }
+			add_to_variable = { WGN_shell_hunger_modifier_army_attack_factor = 0.05 }
+			add_to_variable = { WGN_shell_hunger_modifier_breakthrough_factor = 0.1 }
+			add_to_variable = { WGN_hunger_experience_loss_factor = 0.05 }
+			random_army_leader = {
+			    limit = { is_field_marshal = no NOT = { has_trait = logistics_wizard } }
+				add_unit_leader_trait = logistics_wizard
+			}
+			if = {
+				limit = { has_country_flag = WGN_mikhail_mizintsev_PMC_commander }
+				mikhail_mizintsev = {
+					add_advisor_role = {
+						advisor = {
+							slot = army_chief
+							cost = 100
+							idea_token = WGN_mikhail_mizintsev
+							traits = {
+								army_logistics_2
+							}
+						}
+					}
+				}
+			}
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.035
+				}
+			}
 		}
 		x = 33
 		y = 15
