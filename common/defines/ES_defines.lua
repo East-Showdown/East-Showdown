@@ -50,6 +50,7 @@ NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.002				-- Conversion scale for
 NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for every country
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
+NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.05 -- 0.01
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.04					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
 NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
 NDefines.NResistance.GARRISON_MANPOWER_LOST_BY_ATTACK = 0.016 	-- Ratio of manpower lost by garrison at each attack on garrison (this number will be reduced by the hardness of garrison template)
@@ -58,6 +59,7 @@ NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_VALUE =
 NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_PERCENT = 0.1	-- The minimum number of factories we have to put on consumer goods in percent.
 NDefines.NProduction.BASE_FACTORY_SPEED = 2 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 NDefines.NProduction.MAX_EQUIPMENT_RESOURCES_NEED = 6 -- vanila 3 Max number of different strategic resources an equipment can be dependent on.
+NDefines.NProduction.BASE_LAND_EQUIPMENT_CONVERSION_IC_COST_FACTOR = 0.1 -- vanilla 0.9, Fraction of the chassis industry cost which is always included in the conversion cost.
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 5	-- Weekly increase of PP.
 NDefines.NBuildings.MAX_BUILDING_LEVELS = 50			-- Max levels a building can have.
 NDefines.NBuildings.AIRBASE_CAPACITY_MULT = 50		-- Each level of airbase building multiplied by this gives capacity (max operational value). Value is int. 1 for each airplane.
@@ -437,6 +439,7 @@ NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show s
 NDefines.NTechnology.MAX_SUBTECHS = 10
 
 -- MPR
+NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.10 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
