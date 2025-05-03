@@ -1,0 +1,49 @@
+#РАСЧЕТ БЮДЖЕТА
+WGN_budget_raschet_se = {
+    #Обновляем
+	set_variable = { WGN_budget_minus_var = 0 }
+	
+	#РАСХОДЫ
+	
+	#Расчитываем зарплаты(ежемесячные) вагнеров(Кол-во менповера на полях сражений)
+	set_temp_variable = { WGN_deployed_army_manpower_tv = WGN.deployed_army_manpower_k }
+	
+	multiply_temp_variable = { WGN_deployed_army_manpower_tv = WGN_salaries_one_man_var }
+	add_to_variable = { WGN_budget_minus_var = WGN_deployed_army_manpower_tv }
+	#Расчитываем премии(ежемесячные) вагнеров в Украине(Кол-во менповера на полях сражений * рандом (0.01-0.05) )
+	if = {
+		limit = {
+			has_war = yes
+		}
+		set_temp_variable = { WGN_bonus_soldair_manpower_tv = 3.5 }
+		divide_temp_variable = { WGN_deployed_army_manpower_tv = WGN_bonus_soldair_manpower_tv }
+		add_to_variable = { WGN_budget_minus_var = WGN_deployed_army_manpower_tv }
+	}
+	#Расчитываем содержание(ежемесячное) на содержание вагнеров(Кол-во менповера на полях сражений)
+	set_temp_variable = { WGN_deployed_army_manpower_tv = WGN.deployed_army_manpower_k }
+	multiply_temp_variable = { WGN_deployed_army_manpower_tv = WGN_content_one_man_var }
+	add_to_variable = { WGN_budget_minus_var = WGN_deployed_army_manpower_tv }
+	#Добавляем расходы на кейтеринг Конкорда
+	add_to_variable = { WGN_budget_minus_var = WGN_kempering_minus }
+	#Добавляем расходы на рестораны Конкорда
+	add_to_variable = { WGN_budget_minus_var = WGN_restorans_minus }
+	#Добавляем расходы на недвижимость Конкорда
+	add_to_variable = { WGN_budget_minus_var = WGN_realty_minus }
+	#Добавляем расходы на медиа Конкорда
+	add_to_variable = { WGN_budget_minus_var = WGN_media_minus }
+	#Добавляем юридические расходы  Конкорда
+	add_to_variable = { WGN_budget_minus_var = WGN_adm_minus }
+	
+	#ДОХОДЫ
+	
+	#Добавляем доходы на кейтеринг Конкорда
+	add_to_variable = { WGN_budget_plus_var = WGN_kempering_plus }
+	#Добавляем доходы на рестораны Конкорда
+	add_to_variable = { WGN_budget_plus_var = WGN_restorans_plus }
+	#Добавляем доходы на недвижимость Конкорда
+	add_to_variable = { WGN_budget_plus_var = WGN_realty_plus }
+	#Добавляем доходы на медиа Конкорда
+	add_to_variable = { WGN_budget_plus_var = WGN_media_plus }
+	#Добавляем юридические доходы  Конкорда
+	add_to_variable = { WGN_budget_plus_var = WGN_adm_plus }
+}
