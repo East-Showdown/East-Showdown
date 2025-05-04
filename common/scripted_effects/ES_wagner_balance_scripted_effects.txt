@@ -2,7 +2,12 @@
 WGN_budget_raschet_se = {
     #Обновляем
 	set_variable = { WGN_budget_minus_var = 0 }
-	
+	set_variable = { WGN_salary_costs_minus_for_loc_var = 0 }
+	set_variable = { WGN_awards_costs_minus_for_loc_var = 0 }
+	set_variable = { WGN_content_costs_minus_for_loc_var = 0 }
+	set_variable = { WGN_general_costs_minus_for_loc_var = 0 }
+	set_variable = { WGN_costs_minus_for_loc_var = 0 }
+	set_variable = { WGN_general_concord_costs_minus_for_loc_var = 0 }
 	#РАСХОДЫ
 	
 	#Расчитываем зарплаты(ежемесячные) вагнеров(Кол-во менповера на полях сражений)
@@ -10,6 +15,27 @@ WGN_budget_raschet_se = {
 	
 	multiply_temp_variable = { WGN_deployed_army_manpower_tv = WGN_salaries_one_man_var }
 	add_to_variable = { WGN_budget_minus_var = WGN_deployed_army_manpower_tv }
+	add_to_variable = { WGN_salary_costs_minus_for_loc_var = WGN_deployed_army_manpower_tv } #loc
+	#Расчитываем зарплаты(ежемесячные) вагнеров(Африка)
+	africa_manpower_global_data = yes
+	set_temp_variable = { WGN_africa_manpower_var_tv = WGN_africa_manpower_var }
+	divide_temp_variable = { WGN_africa_manpower_var_tv = 1000 }
+	multiply_temp_variable = { WGN_africa_manpower_var_tv = WGN_salaries_one_man_var }
+	add_to_variable = { WGN_budget_minus_var = WGN_africa_manpower_var_tv }
+	add_to_variable = { WGN_salary_costs_minus_for_loc_var = WGN_africa_manpower_var_tv } #loc
+	#Расчитываем траты(ежемесячное) на содержание вагнеров(Африка)
+	set_temp_variable = { WGN_africa_manpower_var_tv = WGN_africa_manpower_var }
+	divide_temp_variable = { WGN_africa_manpower_var_tv = 1000 }
+	multiply_temp_variable = { WGN_africa_manpower_var_tv = WGN_content_one_man_var }
+	add_to_variable = { WGN_budget_minus_var = WGN_africa_manpower_var_tv }
+	add_to_variable = { WGN_content_costs_minus_for_loc_var = WGN_africa_manpower_var_tv } #loc
+	#Расчитываем премии(ежемесячные) вагнеров в Африке
+	set_temp_variable = { WGN_africa_manpower_var_tv = WGN_africa_manpower_var }
+	divide_temp_variable = { WGN_africa_manpower_var_tv = 1000 }
+	multiply_temp_variable = { WGN_africa_manpower_var_tv = WGN_salaries_one_man_var }
+	divide_temp_variable = { WGN_africa_manpower_var_tv = 4 }
+	add_to_variable = { WGN_budget_minus_var = WGN_africa_manpower_var_tv }
+	add_to_variable = { WGN_awards_costs_minus_for_loc_var = WGN_africa_manpower_var_tv } #loc
 	#Расчитываем премии(ежемесячные) вагнеров в Украине(Кол-во менповера на полях сражений * рандом (0.01-0.05) )
 	if = {
 		limit = {
@@ -18,11 +44,21 @@ WGN_budget_raschet_se = {
 		set_temp_variable = { WGN_bonus_soldair_manpower_tv = 3.5 }
 		divide_temp_variable = { WGN_deployed_army_manpower_tv = WGN_bonus_soldair_manpower_tv }
 		add_to_variable = { WGN_budget_minus_var = WGN_deployed_army_manpower_tv }
+		add_to_variable = { WGN_awards_costs_minus_for_loc_var = WGN_deployed_army_manpower_tv } #loc
 	}
-	#Расчитываем содержание(ежемесячное) на содержание вагнеров(Кол-во менповера на полях сражений)
+	#Расчитываем траты(ежемесячное) на содержание вагнеров(Кол-во менповера на полях сражений)
 	set_temp_variable = { WGN_deployed_army_manpower_tv = WGN.deployed_army_manpower_k }
 	multiply_temp_variable = { WGN_deployed_army_manpower_tv = WGN_content_one_man_var }
 	add_to_variable = { WGN_budget_minus_var = WGN_deployed_army_manpower_tv }
+	add_to_variable = { WGN_content_costs_minus_for_loc_var = WGN_deployed_army_manpower_tv } #loc
+	#Расчитываем общие расходы вагнера
+	add_to_variable = { WGN_general_costs_minus_for_loc_var = WGN_salary_costs_minus_for_loc_var }
+	add_to_variable = { WGN_general_costs_minus_for_loc_var = WGN_awards_costs_minus_for_loc_var }
+	add_to_variable = { WGN_general_costs_minus_for_loc_var = WGN_content_costs_minus_for_loc_var }
+	set_variable = { WGN_costs_minus_for_loc_var = WGN_general_costs_minus_for_loc_var }
+	divide_variable = { WGN_costs_minus_for_loc_var = 13 }
+	add_to_variable = { WGN_general_costs_minus_for_loc_var = WGN_costs_minus_for_loc_var }
+	add_to_variable = { WGN_budget_minus_var = WGN_costs_minus_for_loc_var }
 	#Добавляем расходы на кейтеринг Конкорда
 	add_to_variable = { WGN_budget_minus_var = WGN_kempering_minus }
 	#Добавляем расходы на рестораны Конкорда
@@ -33,9 +69,14 @@ WGN_budget_raschet_se = {
 	add_to_variable = { WGN_budget_minus_var = WGN_media_minus }
 	#Добавляем юридические расходы  Конкорда
 	add_to_variable = { WGN_budget_minus_var = WGN_adm_minus }
-	
+	#Расчитываем общие расходы конкорда
+	add_to_variable = { WGN_general_concord_costs_minus_for_loc_var = WGN_kempering_minus }
+	add_to_variable = { WGN_general_concord_costs_minus_for_loc_var = WGN_restorans_minus }
+	add_to_variable = { WGN_general_concord_costs_minus_for_loc_var = WGN_realty_minus }
+	add_to_variable = { WGN_general_concord_costs_minus_for_loc_var = WGN_media_minus }
+	add_to_variable = { WGN_general_concord_costs_minus_for_loc_var = WGN_adm_minus }
 	#ДОХОДЫ
-	
+	set_variable = { WGN_budget_plus_var = 0 }
 	#Добавляем доходы на кейтеринг Конкорда
 	add_to_variable = { WGN_budget_plus_var = WGN_kempering_plus }
 	#Добавляем доходы на рестораны Конкорда
@@ -46,4 +87,5 @@ WGN_budget_raschet_se = {
 	add_to_variable = { WGN_budget_plus_var = WGN_media_plus }
 	#Добавляем юридические доходы  Конкорда
 	add_to_variable = { WGN_budget_plus_var = WGN_adm_plus }
+	
 }
