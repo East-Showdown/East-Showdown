@@ -320,6 +320,7 @@ focus_tree = {
 					modifier = POL_Negotiations_with_Zelensky
 				}
 			}
+			country_event = { id = pol.26 }
 		}
 		cost = 0.5
 		x = 0
@@ -431,6 +432,8 @@ focus_tree = {
 				amount = 1000
 				target = UKR
 			}
+			country_event = { id = pol.27 }
+
 
 		}
 		cost = 0.5
@@ -461,6 +464,7 @@ focus_tree = {
 			POL = { add_to_variable = { ammunition_variable = -500 } }
 			custom_effect_tooltip = UKR_plus_500_ammo
 			custom_effect_tooltip = POL_minus_500_ammo
+			country_event = { id = pol.27 }
 		}
 		cost = 0.5
 		x = 2
@@ -481,6 +485,11 @@ focus_tree = {
 			custom_effect_tooltip = POL_Wtf_is_a_kilometr
 			NTO = {
 				add_manpower = 10000
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "FMTV"
+				amount = 4000
 			}
 		}
 		cost = 0.5
@@ -626,6 +635,13 @@ focus_tree = {
 				days = 124
 			}
 			add_ideas = POL_refugees_from_ukraine_always
+			hidden_effect = {
+				country_event = {
+					id = pol_falanga.1
+					random_days = 10
+					days = 100
+				}
+			}
 
 		}
 		
@@ -639,12 +655,32 @@ focus_tree = {
 	focus = {
 		id = POL_Preparing_for_war_with_Russia
 		icon = GFX_POL_Preparing_for_war_with_Russia
+		available = {
+			
+			has_completed_focus = POL_Close_from_the_Russian_Federation
+		}
 		prerequisite = { 
 			focus = POL_War_in_a_neighboring_country
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Preparing_for_war_with_Russia"
 			add_war_support = 0.05
+			country_event = { id = pol.30 }
+
+			
+			
+			add_equipment_to_stockpile = {
+				type = uniform_kzmp_beryozka_equipment
+				amount = 40000
+				producer = POL
+			}
+			add_equipment_to_stockpile = {
+				type = sov_brdm2_equipment
+				variant_name = "БРДМ-2"
+				amount = 100
+				producer = POL
+			}
+			
 			
 		}
 		search_filters = {
@@ -920,7 +956,9 @@ focus_tree = {
 		available = {
 			NOT = {
 				has_country_flag = pol19
+				has_completed_focus = POL_Strengthen_air_defense
 			}
+			
 		}
 		prerequisite = { 
 			focus = POL_Incident_in_Przewodow
@@ -997,7 +1035,7 @@ focus_tree = {
 			focus = POL_Proposal_to_NATO
 		}
 		mutually_exclusive = {
-			focus = POL_Peacekeepers_in_Western_Ukraine
+			focus = POL_nichego
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Peacekeepers_in_the_Ukrainian_Armed_Forces"
@@ -1073,7 +1111,7 @@ focus_tree = {
 			focus = POL_Incident_in_Przewodow
 		}
 		mutually_exclusive = {
-			focus = POL_The_question_of_peacekeepers
+			focus = POL_nichego
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Strengthen_air_defense"
@@ -1108,10 +1146,40 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_shoot_down_missiles_on_the_border"
-			custom_effect_tooltip = POL_shoot_down_missiles_on_the_border_tt
-			custom_effect_tooltip = POL_shoot_down_missiles_on_the_border_2_tt
-			custom_effect_tooltip = Zlonsky_bro
 			increase_escalation_by_1_5 = yes
+			country_event = pol.35
+			58 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}
+				add_building_construction = {
+					type = radar_station
+					level = 1
+				}
+			}
+			85 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}
+			}
+			97 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}	
+			}
+			38 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}
+				add_building_construction = {
+					type = radar_station
+					level = 1
+				}
+			}
 		}
 		cost = 2
 		x = 0
@@ -1123,19 +1191,19 @@ focus_tree = {
 	focus = {
 		id = POL_Self_intervention
 		icon = GFX_POL_Self_intervention
+		available = {
+			custom_trigger_tooltip = { 
+			tooltip = POL_Self_intervention_tt 
+			has_completed_focus = POL_new_army_giant
+			}
+		}
 		prerequisite = { 
 			focus = POL_Redeployment_to_the_frontiers
 		}
-		mutually_exclusive = {
-			focus = POL_Break_up_Belarus
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Self_intervention"
-			declare_war_on = {
-				target = RUS
-				type = annex_everything
-			}
+			hidden_effect = {
 			674 = { transfer_state_to = RBZ }	
 			675 = { transfer_state_to = RBZ }	
 			676 = { transfer_state_to = RBZ }	
@@ -1154,6 +1222,7 @@ focus_tree = {
 			689 = { transfer_state_to = RBZ }	
 			690 = { transfer_state_to = RBZ }	
 			691 = { transfer_state_to = RBZ }	
+			}
 			leave_faction = yes
 			create_faction = POL_UKR_FAC
 			POL = { add_to_faction = UKR }
@@ -1166,9 +1235,9 @@ focus_tree = {
 			}
 
 		}
-		cost = 3
-		x = 1
-		y = 3
+		cost = 5
+		x = 3
+		y = 6
 		relative_position_id = POL_Strengthen_air_defense
 		
     }
@@ -1242,12 +1311,16 @@ focus_tree = {
 	focus = {
 		id = POL_Break_up_Belarus
 		icon = GFX_POL_Break_up_Belarus
+		available = {
+			custom_trigger_tooltip = { 
+			tooltip = POL_Break_up_Belarus_tt 
+			has_country_flag = POL_Break_up_Belarus_available
+			}
+		}
 		prerequisite = { 
 			focus = POL_Redeployment_to_the_frontiers
 		}
-		mutually_exclusive = {
-			focus = POL_Self_intervention
-		}
+
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Break_up_Belarus"
@@ -1283,8 +1356,8 @@ focus_tree = {
 			}
 		}
 		cost = 3
-		x = -1
-		y = 3
+		x = -3
+		y = 6
 		relative_position_id = POL_Strengthen_air_defense
 		
     }
@@ -1479,6 +1552,11 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Buy_Patriot_complexes"
 			set_variable = { POL_Patriots_num = 16 }
 			custom_effect_tooltip = POL_deploy_Patriots
+			add_equipment_to_stockpile = {
+				type = nto_sam_mim104_equipment
+				amount = 500
+				producer = NTO
+			}
 
 		}
 		cost = 1.5
@@ -1512,6 +1590,12 @@ focus_tree = {
 				type = sp_artillery_tank_eng_challenger1_equipment
 				variant_name = "AHS Krab"
 				amount = 120
+			}
+			add_equipment_to_stockpile = {
+				type = sp_mlrs_imv_medium_1_equipment
+				variant_name = "WR-40 Langusta"
+				amount = 90
+				producer = POL
 			}
 
 		}
@@ -1585,6 +1669,92 @@ focus_tree = {
 		y = 5
 		relative_position_id = POL_increase_the_army_budget
     }
+
+
+	focus = {
+		id = POL_west_missiles
+		icon = under
+		prerequisite = { 
+			focus = POL_Orders_to_Germans
+		}
+		prerequisite = { 
+			focus = POL_Orders_to_Americans
+		}
+		prerequisite = { 
+			focus = POL_Orders_to_the_British
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus POL_west_missiles"
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_shtormshadow 
+				amount = 400
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_gmlrs
+				amount = 1500
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_taurus
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = nto_ballistic_missile_equipment_atacams
+				amount = 400
+				producer = NTO
+			}
+			NTO = {
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_light_guided_missile_equipment_shtormshadow
+					version = 0
+				}
+				cost_factor = 0
+			}
+
+
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_light_guided_missile_equipment_gmlrs
+					version = 0
+				}
+				cost_factor = 0
+			}
+
+
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_light_guided_missile_equipment_taurus
+					version = 0
+				}
+				cost_factor = 0
+			}
+
+
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_ballistic_missile_equipment_atacams
+					version = 0
+				}
+				cost_factor = 0
+			}
+			}
+
+
+			
+		}
+		cost = 5
+		x = -2
+		y = 6
+		relative_position_id = POL_increase_the_army_budget
+    }
+
 	focus = {
 		id = POL_Activation_of_intelligence_services
 		icon = GFX_POL_Activation_of_intelligence_services
@@ -1595,6 +1765,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Activation_of_intelligence_services"
 			upgrade_intelligence_agency = upgrade_passive_defense
 			custom_effect_tooltip = POL_activation_of_intel_tt
+			country_event = { id = pol.33 }
 		}
 		cost = 0.8
 		x = -3
@@ -1643,6 +1814,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Coordination_of_actions_with_the_Baltics"
 			add_ideas = {POL_baltic_cooperation}
+			country_event = { id = pol.29 }
 		}
 		cost = 1.5
 		x = -7
@@ -1651,26 +1823,26 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Large_scale_defense_project
-		icon = GFX_POL_Large_scale_defense_project
-		prerequisite = { 
-			focus = POL_Coordination_of_actions_with_the_Baltics
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus POL_Large_scale_defense_project"
-			add_ideas = Collective_Security_Baltic
-			LIT = {
-				add_ideas = Collective_Security_Baltic
+			icon = GFX_POL_Large_scale_defense_project
+			prerequisite = { 
+				focus = POL_Coordination_of_actions_with_the_Baltics
 			}
-			LAT = {
+			completion_reward = {
+				log = "[GetDateText]: [Root.GetName]: Focus POL_Large_scale_defense_project"
 				add_ideas = Collective_Security_Baltic
+				LIT = {
+					add_ideas = Collective_Security_Baltic
+				}
+				LAT = {
+					add_ideas = Collective_Security_Baltic
+				}
 			}
+			
+			cost = 1
+			x = 1
+			y = 1
+			relative_position_id = POL_Coordination_of_actions_with_the_Baltics
 		}
-		
-		cost = 1
-		x = 1
-		y = 1
-		relative_position_id = POL_Coordination_of_actions_with_the_Baltics
-    }
 	focus = {
 		id = POL_Additional_NATO_troops_in_the_region
 		icon = GFX_POL_Additional_NATO_troops_in_the_region
@@ -1835,8 +2007,14 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Purchase_of_missiles_for_aviation"
 			add_ideas = POL_Aviation_missiles
 			add_political_power = -100
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_shtormshadow 
+				amount = 300
+				producer = NTO
+			}
+			
 		}
-		cost = 1
+		cost = 2.5
 		x = -16
 		y = 1
 		relative_position_id = POL_increase_the_army_budget
@@ -1904,11 +2082,45 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_New_recruitment_in_TRO
 		}
+		available = {
+			has_completed_focus = POL_New_Arms_giants 
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Increase_your_army"
 			add_manpower = 80000
+			ensure_unit_template_POL_Pechotniy_batalion = yes
+			ensure_unit_template_POL_Artileriyskiy_batalion = yes
+
+			add_equipment_to_stockpile = {
+				type = apc_usa_m113_equipment
+				variant_name = "M113"
+				amount = 250
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "FMTV"
+				amount = 2000
+			}
+			add_equipment_to_stockpile = {
+				type = usa_fgm148_javelin_equipment
+				amount = 1500
+				producer = POL
+			}
+			48 = {
+			create_unit = {
+				division = "name = \"Nova Brygada Pechotna\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+				owner = POL
+				count = 60
+			}
+			create_unit = {
+				division = "name = \"Nova Brygada Artylerii\" division_template = \"Artileriyskiy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+				owner = POL
+				count = 20
+			}
+			}
+			
 		}
-		cost = 2
+		cost = 3
 		x = 0
 		y = 1
 		relative_position_id = POL_New_recruitment_in_TRO
@@ -1916,6 +2128,9 @@ focus_tree = {
 	focus = {
 		id = POL_Increase_in_NATO_army_in_Poland
 		icon = GFX_POL_Increase_in_NATO_army_in_Poland
+		available = {
+			has_political_power > 700
+		}
 		prerequisite = { 
 			focus = POL_Increase_your_army
 		}
@@ -1930,15 +2145,34 @@ focus_tree = {
 			add_equipment_to_stockpile = {
 				type = ifv_swe_cv90_equipment
 				variant_name = "BWP Borsuk"
-				amount = 600
+				amount = 1000
 			}
 			add_equipment_to_stockpile = {
 				type = apc_ger_boxer_equipment
 				variant_name = "KTO Rosomak"
-				amount = 600
+				amount = 1250
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "FMTV"
+				amount = 2000
+			}
+			add_equipment_to_stockpile = {
+				type = usa_fgm148_javelin_equipment
+				amount = 1500
+				producer = POL
+			}
+
+			ensure_unit_template_POL_Mechanizirovaniy_batalion_second = yes
+			48 = {
+			create_unit = {
+				division = "name = \"Nova Brygada Zmechanizowana\" division_template = \"Mechanizirovaniy batalion second\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+				owner = POL
+				count = 50
+			}
 			}
 		}
-		cost = 3
+		cost = 6
 		x = 0
 		y = 3
 		relative_position_id = POL_New_recruitment_in_TRO
@@ -1953,9 +2187,37 @@ focus_tree = {
 			focus = POL_Increase_in_NATO_army_in_Poland
 		}
 		completion_reward = {
+			
 			log = "[GetDateText]: [Root.GetName]: Focus POL_new_army_giant"
+			ensure_unit_template_POL_Abrams_Tankoviy_batalion = yes
+			ensure_unit_template_POL_Mechanizirovaniy_batalion_second = yes
+			ensure_unit_template_POL_Artileriyskiy_batalion = yes
+
+			48 = {
+				create_unit = {
+					division = "name = \"Nova Brygada Pechotna\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 30
+				}
+				create_unit = {
+					division = "name = \"Nova Brygada Zmechanizowana\" division_template = \"Mechanizirovaniy batalion second\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 30
+				}
+				create_unit = {
+					division = "name = \"Nova Brygada Tankova\" division_template = \"Abrams Tankoviy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 30
+				}
+				create_unit = {
+					division = "name = \"Nova Brygada Artylerii\" division_template = \"Artileriyskiy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 15
+				}
+			}
+			add_manpower = 25000
 		}
-		cost = 9	
+		cost = 10	
 		x = 0
 		y = 6
 		relative_position_id = POL_New_recruitment_in_TRO
@@ -2166,6 +2428,13 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Cancel_all_restrictions_on_Ukrainians"
 			add_stability = 0.03
 			custom_effect_tooltip = POL_ukro_refugees_tt
+			hidden_effect = {
+				country_event = {
+					id = pol.36
+					days = 250
+					random_days = 10
+				}
+			}
 		}
 		cost = 0.5
 		x = 4
@@ -2200,6 +2469,27 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Energy_assistance_to_Ukraine"
+			108 = { 
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+			112 = { 
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+
 		}
 		cost = 0.5
 		x = 0
@@ -2410,6 +2700,7 @@ focus_tree = {
 				modifier = RUS_POL_Conflict
 				}
 			}
+			country_event = { id = pol.28 }
 		}
 		cost = 0.5
 		x = 9
@@ -2450,6 +2741,9 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Simplify_the_bureaucracy_for_refugees"
 			custom_effect_tooltip = POL_ukro_refugees_tt
+			48 = { 
+				add_manpower = 45000
+			}
 		}
 		cost = 0.8
 		x = 0
@@ -2465,6 +2759,9 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Schools_and_kindergartens_for_refugees"
 			custom_effect_tooltip = POL_ukro_refugees_tt
+			48 = { 
+				add_manpower = 25000
+			}
 		}
 		cost = 0.9
 		x = 0
@@ -2480,6 +2777,11 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Integrate_refugees_into_the_economy"
 			add_ideas = POL_ukr_refugees_into_economy
+			add_offsite_building = {
+				type = industrial_complex
+				level = 1
+			}
+			country_event = { id = pol.31 }
 		}
 		cost = 1.8
 		x = 0
@@ -3316,10 +3618,12 @@ focus = {
 		random_owned_controlled_state = {
 			add_building_construction = {
 				type = arms_factory
-				level = 2
+				level = 4
 				instant_build = yes
 			}
 		}
+		country_event = { id = pol.32 }
+		add_political_power = 100
 	}
 	cost = 2
 	x = 4
@@ -3442,6 +3746,7 @@ focus = {
 			idea = POL_ukrainian_business_development
 			days = 90
 		}
+
 	}
 	cost = 1.5
 	x = -4
