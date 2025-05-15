@@ -1313,6 +1313,167 @@ LPR_main_gui = {
 		}
 	}
 
+	LPR_get_ammo = {
+		activation = {
+			has_war_with = UKR
+			original_tag = LPR
+	
+			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у ЛНР
+				#Высчитываем, сколько место осталось у ЛНР на складах
+				set_temp_variable = { ammo_needed = ammunition_free_space }
+				
+				#Ограничиваем максимумом в 100к
+				clamp_temp_variable = {
+					var = ammo_needed
+					min = 0
+					max = 100
+				}
+				
+				#У РФ должно быть в 10 раз больше боеприпасов, чем у ЛНР свободно
+				multiply_temp_variable = {
+					var = ammo_needed
+					value = 10
+				}
+				
+				RUS = {
+					check_variable = { ammunition_variable > ammo_needed }
+				}
+			}
+		}
+		available = {
+			NOT = {
+				custom_trigger_tooltip = {
+					tooltip = WGN_russia_have_ammo
+					#Высчитываем, сколько место осталось у ЛНР на складах
+					set_temp_variable = { ammo_needed = ammunition_free_space }
+					
+					#Ограничиваем максимумом в 100к
+					clamp_temp_variable = {
+						var = ammo_needed
+						min = 0
+						max = 100
+					}
+					
+					#У РФ должно быть в 10 раз больше боеприпасов, чем у ЛНР свободно
+					multiply_temp_variable = {
+						var = ammo_needed
+						value = 10
+					}
+					
+					RUS = {
+						check_variable = { ammunition_variable > ammo_needed }
+					}
+				}
+			}
+			
+		}
+		icon = WGN_ammo
+		fire_only_once = no
+		days_mission_timeout = 30
+		timeout_effect = {
+			#Высчитываем, сколько место осталось у ЛНР на складах
+			set_temp_variable = { ammo_needed = ammunition_free_space }
+
+			#Ограничиваем максимумом в 100к
+			clamp_temp_variable = {
+			  var = ammo_needed
+			  min = 0
+			  max = 100
+			}
+			
+			#Передаём боеприпасы
+			add_to_variable = { ammunition_variable = ammo_needed }
+			RUS = {
+				subtract_from_variable = { ammunition_variable = ammo_needed }
+			}
+			
+			custom_effect_tooltip = WGN_ammunition_supply_every_month
+		}
+	}
+
+	LPR_get_equipment = {
+        activation = {
+			has_war_with = UKR
+            original_tag = LPR
+        }
+		available = {
+            NOT = {
+				has_war_with = UKR
+			}
+        }
+        icon = generic_formable_nations  
+        fire_only_once = no
+        days_mission_timeout = 30
+        timeout_effect = {
+			add_fuel = 600000
+			add_equipment_to_stockpile = {
+				type = sov_brdm1_equipment
+				variant_name = "БРДМ-1"
+				amount = 10
+				producer = DPR
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "\"Тигр\""
+				producer = RUS
+				amount = 200
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "Урал-4350"
+				producer = RUS
+				amount = 250
+			}
+          	add_equipment_to_stockpile = {
+				type = infantry_ak74m_equipment	
+				amount = 1000
+				producer = RUS
+			}
+
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_1	
+				amount = 1500
+				producer = RUS
+			}
+
+			add_equipment_to_stockpile = {
+				type = atgm_3_eq	
+				amount = 50
+				producer = RUS
+			}
+
+			add_equipment_to_stockpile = {
+				type = grenade_launcher_rpg18_muha_equipment	
+				amount = 300
+				producer = RUS
+			}
+
+			add_equipment_to_stockpile = {
+				type = aa_9k34_strela_3_equipment
+				amount = 200
+				producer = RUS
+			}
+			
+			add_equipment_to_stockpile = {
+				type = mortar_2b24_podnos_equipment
+				amount = 25
+				producer = RUS
+			}
+
+			add_equipment_to_stockpile = {
+				type = support_equipment_1	
+				amount = 350
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_kzmp_beryozka_equipment
+				amount = 3000
+				producer = RUS
+			}
+		}
+    }
+}
+
 	LPR_mobilization_decision = {
 		icon = GFX_DPR_NM_DPR_simbol
 		fire_only_once = yes

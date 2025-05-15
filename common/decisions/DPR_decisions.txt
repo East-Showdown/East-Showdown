@@ -820,7 +820,25 @@ DPR_main_gui = {
         fire_only_once = no
         days_mission_timeout = 30
         timeout_effect = {
-			add_fuel = 400000
+			add_fuel = 600000
+			add_equipment_to_stockpile = {
+				type = sov_brdm1_equipment
+				variant_name = "БРДМ-1"
+				amount = 10
+				producer = DPR
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_1_equipment
+				variant_name = "\"Тигр\""
+				producer = RUS
+				amount = 200
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "Урал-4350"
+				producer = RUS
+				amount = 250
+			}
           	add_equipment_to_stockpile = {
 				type = infantry_ak74m_equipment	
 				amount = 1000
@@ -852,7 +870,7 @@ DPR_main_gui = {
 			}
 			
 			add_equipment_to_stockpile = {
-				type = mortar_2_eq	
+				type = mortar_2b24_podnos_equipment
 				amount = 25
 				producer = RUS
 			}
@@ -860,6 +878,11 @@ DPR_main_gui = {
 			add_equipment_to_stockpile = {
 				type = support_equipment_1	
 				amount = 350
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_kzmp_beryozka_equipment
+				amount = 3000
 				producer = RUS
 			}
 		}
@@ -2871,4 +2894,82 @@ DPR_shelling_category = {
 			}
 		}
     }
+
+	DPR_get_ammo = {
+		activation = {
+			has_war_with = UKR
+			original_tag = DPR
+	
+			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у ДНР
+				#Высчитываем, сколько место осталось у ДНР на складах
+				set_temp_variable = { ammo_needed = ammunition_free_space }
+				
+				#Ограничиваем максимумом в 100к
+				clamp_temp_variable = {
+					var = ammo_needed
+					min = 0
+					max = 100
+				}
+				
+				#У РФ должно быть в 10 раз больше боеприпасов, чем у ДНР свободно
+				multiply_temp_variable = {
+					var = ammo_needed
+					value = 10
+				}
+				
+				RUS = {
+					check_variable = { ammunition_variable > ammo_needed }
+				}
+			}
+		}
+		available = {
+			NOT = {
+				custom_trigger_tooltip = {
+					tooltip = WGN_russia_have_ammo
+					#Высчитываем, сколько место осталось у ДНР на складах
+					set_temp_variable = { ammo_needed = ammunition_free_space }
+					
+					#Ограничиваем максимумом в 100к
+					clamp_temp_variable = {
+						var = ammo_needed
+						min = 0
+						max = 100
+					}
+					
+					#У РФ должно быть в 10 раз больше боеприпасов, чем у ДНР свободно
+					multiply_temp_variable = {
+						var = ammo_needed
+						value = 10
+					}
+					
+					RUS = {
+						check_variable = { ammunition_variable > ammo_needed }
+					}
+				}
+			}
+			
+		}
+		icon = WGN_ammo
+		fire_only_once = no
+		days_mission_timeout = 30
+		timeout_effect = {
+			#Высчитываем, сколько место осталось у ДНР на складах
+			set_temp_variable = { ammo_needed = ammunition_free_space }
+
+			#Ограничиваем максимумом в 100к
+			clamp_temp_variable = {
+			  var = ammo_needed
+			  min = 0
+			  max = 100
+			}
+			
+			#Передаём боеприпасы
+			add_to_variable = { ammunition_variable = ammo_needed }
+			RUS = {
+				subtract_from_variable = { ammunition_variable = ammo_needed }
+			}
+			
+			custom_effect_tooltip = WGN_ammunition_supply_every_month
+		}
+	}
 }
