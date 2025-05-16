@@ -46,7 +46,6 @@ NDefines.NDiplomacy.LICENSE_ACCEPTANCE_TECH_DIFFERENCE_BASE = 20    -- Acceptanc
 NDefines.NCountry.CONVOY_LENDLEASE_RANGE_FACTOR = 1				-- How much range affects convoy need for lend lease
 NDefines.NCountry.CONVOY_INTERNATIONAL_MARKET_RANGE_FACTOR = 1	-- How much range affects convoy need for international market
 NDefines.NCountry.CONVOY_RANGE_FACTOR = 1                        -- how much range affects convoy need
-NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.002				-- Conversion scale for planes to air supply
 NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for every country
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
