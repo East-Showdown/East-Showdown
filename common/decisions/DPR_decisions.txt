@@ -930,6 +930,30 @@ DPR_main_gui = {
 			}
 			if = {
 				limit = {
+					has_completed_focus = DPR_Modernisation_t64_and_t72
+					has_completed_focus = DPR_arms_supplies_from_Russia
+				}
+				add_equipment_to_stockpile = {
+					type = tank_rus_t90_equipment
+					variant_name = "Т-90М \"Прорыв-3\""
+					amount = 5
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = tank_sov_t72_equipment
+					variant_name = "Т-72Б3"
+					amount = 5
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = tank_sov_t80_equipment
+					variant_name = "Т-80БВ"
+					amount = 5
+					producer = UKR
+				}
+			}
+			if = {
+				limit = {
 					date < 2022.12.28
 				}
 				add_equipment_to_stockpile = {
@@ -978,10 +1002,30 @@ DPR_main_gui = {
 					amount = 1000
 					producer = RUS
 				}
+			}	
+			if = {
+				limit = {
+					has_completed_focus = DPR_arms_supplies_from_Russia
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_akm_equipment
+					amount = 2000
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = grenade_launcher_rpg18_muha_equipment	
+					amount = 300
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = atgm_9k115_metis_equipment
+					amount = 250
+					producer = RUS
+				}
 			}
 		}
     }
-		DPR_russian_dobrobaty = {
+	DPR_russian_dobrobaty = {
 		icon = GFX_RUS_People_militia
 		
 		fire_only_once = yes
@@ -2309,124 +2353,61 @@ DPR_main_gui = {
 			}
 		}
 	}
-}
-
-DPR_shelling_category = {
-	DPR_russian_organisation_decision = {
-		icon = GFX_RUS_general_staff
-		fire_only_once = yes
-		cost = 65
-		days_remove = 15
-		visible = {
-		   	has_completed_focus = DPR_Russian_organisation_structure
-		}
-		remove_effect = {
-			army_experience = 35
-			custom_effect_tooltip = DPR_russian_organisation_decision_cet
-			add_to_variable = { DPR_NM_DPR_army_speed_factor = 0.03 }
-			add_to_variable = { DPR_NM_DPR_army_attack_speed_factor = 0.075 }	
-			add_to_variable = { DPR_NM_DPR_modifier_command_power_gain_mult = 0.1 }
-			add_to_variable = { DPR_NM_DPR_army_attack_factor = 0.045 }
-		}
-		ai_will_do = {
-			factor = 50
-		}
-	}
-
-	DPR_begin_the_integration_decision = {
-		icon = GFX_RUS_general_staff
-		fire_only_once = yes
-		cost = 75
-		days_remove = 15
-		visible = {
-		   	has_completed_focus = DPR_begin_the_integration_of_militia_in_VSRF
-		}
-		remove_effect = {
-			add_command_power = 35
-			army_experience = 25
-			custom_effect_tooltip = DPR_begin_the_integration_decision_cet
-			add_to_variable = { DPR_NM_DPR_experience_loss_factor = -0.165 }
-			add_to_variable = { DPR_NM_DPR_max_planning = 0.17 }	
-			add_to_variable = { DPR_NM_DPR_army_defence_factor = 0.06 }
-			add_to_variable = { DPR_NM_DPR_army_speed_factor = 0.03 }
-		}
-		ai_will_do = {
-			factor = 50
-		}
-	}
-
-	DPR_united_staff_decision = {
-		icon = GFX_RUS_general_staff
-		fire_only_once = yes
-		cost = 55
-		days_remove = 20
-		visible = {
-		   	has_completed_focus = DPR_united_general_staff
-		}
-		remove_effect = {
-			add_command_power = 35
-			custom_effect_tooltip = DPR_united_staff_decision_cet
-			add_to_variable = { DPR_NM_DPR_planning_speed = 0.105 }
-			add_to_variable = { DPR_NM_DPR_modifier_command_power_gain_mult = 0.15 }	
-			add_to_variable = { DPR_NM_DPR_experience_gain_army_factor = 0.035 }
-			add_to_variable = { DPR_NM_DPR_equipment_upgrade_xp_cost = -0.075 }
-		}
-		ai_will_do = {
-			factor = 50
-		}
-	}
-
-	DPR_shturm_decision = {
-		icon = GFX_RUS_trips
-		fire_only_once = yes
-		custom_cost_trigger = { command_power > 39 }
-		custom_cost_text = decision_cost_CP_40	
+	DPR_attracting_voentorgs = {
+		icon = GFX_RUS_fees_of_volunteer_organizations
 		
-		days_remove = 12
-		visible = {
-		   	has_completed_focus = DPR_first_donetzzzzk_army_corps
+		is_good = yes
+		fire_only_once = no
+		days_mission_timeout = 10
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_completed_focus = DPR_realese_components
+			}
+			original_tag = DPR
 		}
-		complete_effect = {
-			hidden_effect = {
-				add_command_power = -40
+		activation = {
+			has_completed_focus = DPR_realese_components
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: DPR_attracting_voentorgs"
+			add_equipment_to_stockpile = {
+				type = uniform_kzmp_beryozka_equipment
+				amount = 125
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_vsr84_butan_equipment
+				amount = 100
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_vsr93_barviha_equipment
+				amount = 75
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_emr_cifra_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 75
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b3_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b5_equipment
+				amount = 25
+				producer = RUS
 			}
 		}
-		remove_effect = {
-			add_command_power = 45
-			custom_effect_tooltip = DPR_shturm_decision_cet
-			add_to_variable = { DPR_NM_DPR_breakthrough_factor = 0.125 }
-			add_to_variable = { DPR_NM_DPR_experience_loss_factor = 0.05 }	
-			add_to_variable = { DPR_NM_DPR_army_attack_factor = 0.075 }
-		}
-		ai_will_do = {
-			factor = 50
-		}
 	}
-
-	DPR_contract_service_ads_decision = {
-		icon = GFX_RUS_return_conscripts
-		fire_only_once = no
-		cost = 65
-		days_remove = 15
-		days_re_enable = 30
-		visible = {
-		   	has_completed_focus = DPR_ads_of_contract_serve_in_the_republic
-		}
-		modifier = {
-			weekly_manpower = 750
-			war_support_weekly = 0.015
-			war_stability_factor = 0.035
-		}
-		remove_effect = {
-			add_command_power = 25
-			army_experience = 5
-			add_manpower = 1500
-		}
-		ai_will_do = {
-			factor = 50
-		}
-	}
-
 	DPR_fees_of_different_volunteers = {
         icon = GFX_RUS_fees_of_volunteer_organizations
 		
@@ -2921,8 +2902,6 @@ DPR_shelling_category = {
 				}
 			}
 		}
-
-
     }
 
 	DPR_fees_of_voenkory_organizations_support_equipment = {
@@ -3145,5 +3124,151 @@ DPR_shelling_category = {
 			}
 		}
     }
+	DPR_restore_donetsk = {
+		icon = generic_formable_nations
+		fire_only_once = yes
+		cost = 50
+		days_remove = 30
+
+		visible = {
+			original_tag = DPR
+			has_war_with = UKR
+		}
+
+		available = {
+			controls_province = 18569
+			controls_province = 17207
+			controls_province = 18799
+			controls_province = 18534
+			controls_province = 18526
+		}
+
+		ai_will_do = {
+			factor = 50
+		}
+		remove_effect = {
+			set_variable = {
+				DPR_hum_industry_free_repair_factor = 0.5
+			}
+			custom_effect_tooltip = DPR_restore_donetsk_tt
+		}
+	}
+}
+
+DPR_shelling_category = {
+	DPR_russian_organisation_decision = {
+		icon = GFX_RUS_general_staff
+		fire_only_once = yes
+		cost = 65
+		days_remove = 15
+		visible = {
+		   	has_completed_focus = DPR_Russian_organisation_structure
+		}
+		remove_effect = {
+			army_experience = 35
+			custom_effect_tooltip = DPR_russian_organisation_decision_cet
+			add_to_variable = { DPR_NM_DPR_army_speed_factor = 0.03 }
+			add_to_variable = { DPR_NM_DPR_army_attack_speed_factor = 0.075 }	
+			add_to_variable = { DPR_NM_DPR_modifier_command_power_gain_mult = 0.1 }
+			add_to_variable = { DPR_NM_DPR_army_attack_factor = 0.045 }
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_begin_the_integration_decision = {
+		icon = GFX_RUS_general_staff
+		fire_only_once = yes
+		cost = 75
+		days_remove = 15
+		visible = {
+		   	has_completed_focus = DPR_begin_the_integration_of_militia_in_VSRF
+		}
+		remove_effect = {
+			add_command_power = 35
+			army_experience = 25
+			custom_effect_tooltip = DPR_begin_the_integration_decision_cet
+			add_to_variable = { DPR_NM_DPR_experience_loss_factor = -0.165 }
+			add_to_variable = { DPR_NM_DPR_max_planning = 0.17 }	
+			add_to_variable = { DPR_NM_DPR_army_defence_factor = 0.06 }
+			add_to_variable = { DPR_NM_DPR_army_speed_factor = 0.03 }
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_united_staff_decision = {
+		icon = GFX_RUS_general_staff
+		fire_only_once = yes
+		cost = 55
+		days_remove = 20
+		visible = {
+		   	has_completed_focus = DPR_united_general_staff
+		}
+		remove_effect = {
+			add_command_power = 35
+			custom_effect_tooltip = DPR_united_staff_decision_cet
+			add_to_variable = { DPR_NM_DPR_planning_speed = 0.105 }
+			add_to_variable = { DPR_NM_DPR_modifier_command_power_gain_mult = 0.15 }	
+			add_to_variable = { DPR_NM_DPR_experience_gain_army_factor = 0.035 }
+			add_to_variable = { DPR_NM_DPR_equipment_upgrade_xp_cost = -0.075 }
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_shturm_decision = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 39 }
+		custom_cost_text = decision_cost_CP_40	
+		
+		days_remove = 12
+		visible = {
+		   	has_completed_focus = DPR_first_donetzzzzk_army_corps
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -40
+			}
+		}
+		remove_effect = {
+			add_command_power = 45
+			custom_effect_tooltip = DPR_shturm_decision_cet
+			add_to_variable = { DPR_NM_DPR_breakthrough_factor = 0.125 }
+			add_to_variable = { DPR_NM_DPR_experience_loss_factor = 0.05 }	
+			add_to_variable = { DPR_NM_DPR_army_attack_factor = 0.075 }
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_contract_service_ads_decision = {
+		icon = GFX_RUS_return_conscripts
+		fire_only_once = no
+		cost = 65
+		days_remove = 15
+		days_re_enable = 30
+		visible = {
+		   	has_completed_focus = DPR_ads_of_contract_serve_in_the_republic
+		}
+		modifier = {
+			weekly_manpower = 750
+			war_support_weekly = 0.015
+			war_stability_factor = 0.035
+		}
+		remove_effect = {
+			add_command_power = 25
+			army_experience = 5
+			add_manpower = 1500
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
 
 }
