@@ -16,8 +16,17 @@
 # PREV is a COUNTRY scope
 # THIS is STATE scope
 precalculate_energy_state_tick = {
-	calculate_energy_state_consumption = yes
-	calculate_energy_state_generation = yes
+	if = { # Если в стейте поменялось потребление и генерация энергии постройками
+		limit = { NOT = { check_variable = { prev_energy_gain_modifier = modifier@energy_gain_modifier } } }
+		set_variable = { prev_energy_gain_modifier = modifier@energy_gain_modifier }
+
+		calculate_energy_state_consumption = yes
+		calculate_energy_state_generation = yes
+	}
+
+	# Суммируем расчитанные значения в переменные страны
+	calculate_energy_country_state_consumption = yes
+	calculate_energy_country_state_generation = yes
 }
 
 # PREV is a COUNTRY scope
@@ -90,7 +99,13 @@ calculate_energy_state_consumption = {
 	# Сумарные локальные затраты энергии
 	set_variable = { energy_consumption = energy_population_consumption }
 	add_to_variable = { energy_consumption = energy_buildings_consumption }
+}
 
+# PREV is COUNTRY
+# THIS is STATE scope
+#
+# Считаем суммарное потребление энергии в стейте для страны
+calculate_energy_country_state_consumption = {
 	# Добавляем данные в общую энергосеть, к которой подключен стейт
 	var:energy_system_tag = {
 		# Общее потребление
@@ -146,7 +161,13 @@ calculate_energy_state_generation = {
 		add_to_variable = { PREV.energy_hydro_power_plant_units_generation = energy_hydro_power_plant_units_generation }
 		add_to_variable = { energy_generation = energy_hydro_power_plant_units_generation }
 	}
+}
 
+# PREV is COUNTRY scope
+# THIS is STATE scope
+#
+# Считаем генерацию энергии в стейте
+calculate_energy_country_state_generation = {
 	if = { # Если есть какая-либо генерация в стейте
 		limit = { check_variable = { energy_generation > 0 } }
 
@@ -164,7 +185,6 @@ calculate_energy_state_generation = {
 		}
 	}
 }
-
 
 # PREV is COUNTRY scope
 # THIS is STATE scope
