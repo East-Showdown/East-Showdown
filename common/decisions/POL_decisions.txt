@@ -2,6 +2,101 @@ POL_supported_opposition_category = {
 	
 }
 
+
+
+POL_RUSSIAN_POLAND_WAR_category = {
+	POL_WAR_mission = {
+		icon = GFX_POL_map_grey
+		fire_only_once = yes
+		available = {		
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			always = no
+		}
+		cancel_trigger = {
+			has_war = no
+			NOT = {
+				has_full_control_of_state = 58
+				has_full_control_of_state = 85
+				has_full_control_of_state = 48
+				has_full_control_of_state = 38
+				has_full_control_of_state = 37
+			}
+			UKR = { 
+				has_capitulated = yes
+			}
+			casualties > 124999
+		}
+		icon = mission_icon
+		is_good = yes
+		days_mission_timeout = POL.WAR_WITH_RUS_DAYS
+		selectable_mission = no
+
+		cancel_effect = {
+			white_peace = RUS
+			leave_faction = yes
+			NTO = { 
+				add_to_faction = POL
+			}
+		}
+
+		timeout_effect = {
+			white_peace = RUS
+			leave_faction = yes
+			NTO = { 
+				add_to_faction = POL
+			}
+		}
+	}
+
+	POL_Expand_days = {
+		fire_only_once = yes
+		available = {		
+		}
+		visible = {
+			has_war_with = RUS
+		}
+		ai_will_do = {
+			factor = 50
+		}
+		days_remove = 1
+		days_re_enable = 20
+		cost = 100
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision POL_Expand_days: remove_effect"
+			custom_effect_tooltip = POL_Expand_days_tt
+			add_to_variable = {
+				var = POL.WAR_WITH_RUS_DAYS
+				value = 30
+			}
+		}
+	}
+
+	POL_WAR_WITH_RYSNYA = {
+		icon = GFX_lend_leas_NTO
+		fire_only_once = no
+		available = {
+		}
+		visible = {
+			has_war_with = RUS
+		}
+		days_remove = 7
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision POL_WAR_WITH_RYSNYA: remove_effect"
+			leave_faction = yes
+			white_peace = RUS
+			NTO = { 
+				add_to_faction = POL
+			}
+			}
+		}
+
+
+}
+
 POL_parlament_elections_category = {
 	POL_platform_start_tv_campain = {
 		icon = GFX_POL_map_grey
@@ -2692,28 +2787,7 @@ POL_Deploy_Patriots_category = {
 		}
 		}
 	 
-		POL_POL_WAR_WITH_RYSNYA_category = {
 
-		POL_WAR_WITH_RYSNYA = {
-			icon = GFX_lend_leas_NTO
-			fire_only_once = no
-			available = {
-			}
-			visible = {
-				has_war_with = RUS
-			}
-			days_remove = 7
-			remove_effect = {
-				log = "[GetDateText]: [Root.GetName]: Decision POL_WAR_WITH_RYSNYA: remove_effect"
-				leave_faction = yes
-				white_peace = RUS
-				
-				}
-			}
-
-		
-
-		}
 
 
 		POL_energy_category = { 
@@ -3271,7 +3345,7 @@ POL_Deploy_Patriots_category = {
 				}
 				icon = mission_icon
 				is_good = yes
-				days_mission_timeout = 100
+				days_mission_timeout = POL.FALANGA_MISSION_DAYS
 				selectable_mission = no
 				cancel_effect = {
 					remove_ideas = POL_Civil_War
@@ -3280,6 +3354,20 @@ POL_Deploy_Patriots_category = {
 					news_event = news_falanga.9
 
 					hidden_effect = {
+						clr_country_flag = POL_Falanga_PIZDEC
+
+						48 = { 
+							set_demilitarized_zone = no
+						}
+						55 = { 
+							set_demilitarized_zone = no
+						}
+						71 = { 
+							set_demilitarized_zone = no
+						}
+						58 = { 
+							set_demilitarized_zone = no
+						}
 
 					58 = { 
 						set_variable = {
@@ -3387,7 +3475,15 @@ POL_Deploy_Patriots_category = {
 					add_political_power = -500
 					army_experience = -100
 					custom_effect_tooltip = DESTROYED_FALANGA_TT
+
 					hidden_effect = {
+						clr_country_flag = POL_Falanga_PIZDEC
+						if = {
+							limit = { 
+								has_country_flag = POL_Falanga_PIZDEC
+							}
+							add_political_power = -1000
+						}
 
 					58 = { 
 						set_variable = {
