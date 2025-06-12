@@ -1711,14 +1711,8 @@ leader_traits = {
 				fort = {
 					attack = 0.15
 				}
-				army_artillery_attack_factor = 0.15
 			}
 			enable_ability = siege_artillery
-			
-			slot = high_command
-			specialist_advisor_trait = army_artillery_1
-			expert_advisor_trait = army_artillery_2
-			genius_advisor_trait = army_artillery_3
 			
 			ai_will_do = {
 				factor = 1
@@ -3829,5 +3823,79 @@ leader_traits = {
 		}
 
 		attack_skill_factor = 1
+	}
+
+	artillery_commander = {
+		type = corps_commander
+		gain_xp = {
+			set_temp_variable = { temp = num_units }
+			multiply_temp_variable = { temp = 0.5 }
+			check_variable = { num_artillery > temp }
+		}
+		custom_gain_xp_trigger_tooltip = artillery_ratio_over_50
+		
+		cost = 750
+		modifier = {
+			army_artillery_attack_factor = 0.1
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+
+		slot = high_command
+		specialist_advisor_trait = army_artillery_1
+		expert_advisor_trait = army_artillery_2
+		genius_advisor_trait = army_artillery_3
+		
+		gui_row = 17
+	}
+
+	heavy_artillery_commander = {
+		type = corps_commander
+	
+			gain_xp = {
+				always = no # not gainable
+			}
+	
+			modifier = {
+				modifier_army_sub_unit_sp_heavy_art_max_org_factor = 0.1
+			}
+			
+			ai_will_do = {
+				factor = 1
+			}
+			
+			any_parent = { artillery_commander }
+
+			mutually_exclusive = attack_artillery_commander
+	
+			trait_type = assignable_trait
+			gui_row = 17
+	}
+
+	attack_artillery_commander = {
+		type = corps_commander
+	
+			gain_xp = {
+				always = no # not gainable
+			}
+	
+			modifier = {
+				modifier_army_sub_unit_MLRS_attack_factor = 0.05
+				modifier_army_sub_unit_towed_art_attack_factor = 0.05
+				modifier_army_sub_unit_sp_art_attack_factor = 0.05
+			}
+			
+			ai_will_do = {
+				factor = 1
+			}
+			
+			any_parent = { artillery_commander }
+
+			mutually_exclusive = heavy_artillery_commander
+	
+			trait_type = assignable_trait
+			gui_row = 18
 	}
 }
