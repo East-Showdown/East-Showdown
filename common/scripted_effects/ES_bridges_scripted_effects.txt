@@ -1,3 +1,8 @@
+
+
+
+
+
 init_all_dnipro_bridges_2022_data = {
 	set_variable = { global.Kyiv_HPP_MAX_HP = 1900 }
 	set_variable = { global.Kyiv_HPP_CURRENT_HP = 1900 }
@@ -82,6 +87,9 @@ init_dnirpo_bridges_damage_data = {
 	multiply_variable = { global.DniproHes_HPP_DAMAGE = global.DAM_WEEKLY_HP_LOSS_PERCENT }
 	multiply_variable = { global.Kahovka_HPP_DAMAGE = global.DAM_WEEKLY_HP_LOSS_PERCENT }
 }
+
+
+
 
 
 init_dnirpo_bridges_critical_hp_data = {
@@ -683,7 +691,7 @@ init_dnipro_objects_array = {
 #Update All Dnipro Objects
 update_all_dnipro_objects = {
 
-
+	log = "INFO:update_all_dnipro_objects: entering temp_obj_name for-each loop"
 
 
 
@@ -691,17 +699,6 @@ update_all_dnipro_objects = {
         array = global.dnipro_objects
         value = temp_obj_name
         index = i
-
-        #set_temp_variable = { is_dam = global.dnipro_obj_is_dam^i }
-		#
-        #set_temp_variable = { cur_hp = global.dnipro_obj_current_hp^i }
-        #set_temp_variable = { max_hp = global.dnipro_obj_max_hp^i }
-        #set_temp_variable = { strait_id = global.dnipro_obj_strait^i }
-        #set_temp_variable = { start_loss_hp = global.dnipro_obj_start_loss_hp^i }
-        #set_temp_variable = { weekly_loss = global.dnipro_obj_weekly_loss^i }
-        #set_temp_variable = { crit_hp = global.dnipro_obj_critical_hp^i }
-        #set_temp_variable = { repair_hp = global.dnipro_obj_repair_hp^i }
-		#
 
         clamp_variable = {
             var = global.dnipro_obj_current_hp^i
@@ -724,12 +721,80 @@ update_all_dnipro_objects = {
             min = 0
             max = global.dnipro_obj_max_hp^i
         }
-		
+	}
+	log = "INFO:update_all_dnipro_objects: temp_obj_name - exit"	
+	autorepair_all_dnipro_objects = yes
+	log = "INFO:update_all_dnipro_objects: under - exit"	
+	autoblocking_all_dnipro_straits_objects = yes
+
+}
+
+autorepair_all_dnipro_objects = { 
+	log = "INFO:update_all_dnipro_objects: var ROOT.bridges_repairing_is_allowed: [?THIS.GetTag] [?ROOT.bridges_repairing_is_allowed]"
+	
+	if = {
+			limit = { 
+				check_variable = { ROOT.bridges_repairing_is_allowed = 1 }
+			}
+			set_temp_variable = { ROOT.repair_rate = 69 }	
+			log = "INFO:update_all_dnipro_objects: temp repair_rate initialized: [?ROOT.repair_rate]"
+
+			if = { 
+				limit = { 
+					check_variable = { ROOT.REPAIR_PRIORITY = 1 }
+				}
+			set_temp_variable = { ROOT.repair_rate = global.DEFAULT_AUTO_REPAIR_RATE_LOW_PRIORITY }
+			log = "INFO:update_all_dnipro_objects: value of temp repair_rate setted: [?ROOT.repair_rate]"
+			}
+
+			if = { 
+				limit = { 
+					check_variable = { ROOT.REPAIR_PRIORITY = 2 }
+				}
+			set_temp_variable = { ROOT.repair_rate = global.DEFAULT_AUTO_REPAIR_RATE_MEDIUM_PRIORITY }
+			log = "INFO:update_all_dnipro_objects: value of temp repair_rate setted: [?ROOT.repair_rate]"
+			}
+			
+			if = { 
+				limit = { 
+					check_variable = { ROOT.REPAIR_PRIORITY = 3 }
+				}
+			set_temp_variable = { ROOT.repair_rate = global.DEFAULT_AUTO_REPAIR_RATE_HIGH_PRIORITY }
+			log = "INFO:update_all_dnipro_objects: value of temp repair_rate setted: [?ROOT.repair_rate]"
+			}
+			
+			log = "INFO:update_all_dnipro_objects: entering under for-each loop"
+			for_each_loop = {
+				array = global.dnipro_objects
+				index = i
+				value = _under	
+				
+			if = {
+				limit = {
+					check_variable = { global.dnipro_obj_current_hp^i < global.dnipro_obj_max_hp^i }
+				}
+
+				set_temp_variable = { ROOT.repair_add = global.dnipro_obj_max_hp^i }
+				log = "INFO:update_all_dnipro_objects: temp ROOT.repair_add initialized: [?ROOT.repair_add]"
+				multiply_temp_variable = { ROOT.repair_add = repair_rate }      
+				log = "INFO:update_all_dnipro_objects: temp ROOT.repair_add * temp repair_rate: [?ROOT.repair_add]"
+
+				add_to_variable = { var = global.dnipro_obj_current_hp^i value = repair_add }
+				log = "INFO:update_all_dnipro_objects: temp ROOT.repair_add * temp repair_rate: [?ROOT.repair_add]"
+				clamp_variable = {
+					var = global.dnipro_obj_current_hp^i
+					min = 0
+					max = global.dnipro_obj_max_hp^i
+				}								
+			}
 		}
+	}
+}
 
 
-		#ПРОСТИТЕ МЕНЯ, ЗА ЭТОТ ГОВНОКОД	
 
+
+autoblocking_all_dnipro_straits_objects = { 
 		if = { 
 			limit = {
 				OR = { 
@@ -1296,13 +1361,7 @@ update_all_dnipro_objects = {
 			}
 			clr_global_flag = CRIMEA_STRAIT_BLOCKED
 		}
-
 }
-
-#ТЕСТЫ
-ESB_VARIABLE_CHECK_TEST = { }
-ESB_BRIDGE_ATTACK_TEST = { }
-
 
 
 
