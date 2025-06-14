@@ -19,13 +19,15 @@ focus_tree = {
 	focus = {
 		id = POL_Happy_New_Year_Poland
 		icon = GFX_POL_happy_new_year_poland
+		available = {
+			always = no
+		}
 		cost = 0.2
 		x = 20
 		y = 0
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Happy_New_Year_Poland"
 			add_political_power = 100
-			country_event = pol.6
 		}
     }
 	focus = {
@@ -67,6 +69,7 @@ focus_tree = {
 			custom_effect_tooltip = OSCE_save_ukraine_from_war
 			custom_effect_tooltip = Reduce_human_dies
 			custom_effect_tooltip = Zlonsky_bro
+			army_experience = 15
 		}
 		cost = 0.2
 		x = -2
@@ -265,11 +268,14 @@ focus_tree = {
 			custom_effect_tooltip = Warn_the_EU_tylpan
 			custom_effect_tooltip = Polska_nayobka
 			UKR = {
+				add_political_power = 25
 			add_opinion_modifier = {
 				target = POL
 				modifier = support_us
 			}
 		}
+
+			NTO = { EU_parliament_support_add_15 = yes }
 		}
 
 		cost = 0.3
@@ -320,6 +326,7 @@ focus_tree = {
 					modifier = POL_Negotiations_with_Zelensky
 				}
 			}
+			country_event = { id = pol.26 }
 		}
 		cost = 0.5
 		x = 0
@@ -362,6 +369,8 @@ focus_tree = {
 				}
 			}
 			custom_effect_tooltip = Pol_conflict_with_Germany
+			NTO = { EU_parliament_support_add_15 = yes }
+
 		}
 		cost = 0.5
 		x = -2
@@ -406,6 +415,7 @@ focus_tree = {
 			increase_escalation_by_0_05 = yes
 			add_war_support = 0.05
 			add_political_power = 50
+			army_experience = 25
 		}
 		cost = 0.5
 		x = 0
@@ -431,6 +441,8 @@ focus_tree = {
 				amount = 1000
 				target = UKR
 			}
+			country_event = { id = pol.27 }
+
 
 		}
 		cost = 0.5
@@ -461,6 +473,7 @@ focus_tree = {
 			POL = { add_to_variable = { ammunition_variable = -500 } }
 			custom_effect_tooltip = UKR_plus_500_ammo
 			custom_effect_tooltip = POL_minus_500_ammo
+			country_event = { id = pol.27 }
 		}
 		cost = 0.5
 		x = 2
@@ -481,6 +494,11 @@ focus_tree = {
 			custom_effect_tooltip = POL_Wtf_is_a_kilometr
 			NTO = {
 				add_manpower = 10000
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "FMTV"
+				amount = 4000
 			}
 		}
 		cost = 0.5
@@ -516,6 +534,11 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Meeting_of_leaders_of_France_Germany_Poland"
 			custom_effect_tooltip = Jafar_Jackson_Tooltip
+			NTO = { 
+				add_political_power = 75
+			}
+			NTO = { EU_parliament_support_add_15 = yes }
+
 		}
 		cost = 0.5
 		x = 2
@@ -565,6 +588,8 @@ focus_tree = {
 		 completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Shout_to_the_EU"
 			custom_effect_tooltip = sanctions_to_russia_by_pol
+			NTO = { EU_parliament_support_add_15 = yes }
+
 		}
 		cost = 0.5
 		x = 2
@@ -626,6 +651,12 @@ focus_tree = {
 				days = 124
 			}
 			add_ideas = POL_refugees_from_ukraine_always
+			hidden_effect = {
+				country_event = {
+					id = pol_falanga.0
+					days = 1
+				}
+			}
 
 		}
 		
@@ -639,12 +670,42 @@ focus_tree = {
 	focus = {
 		id = POL_Preparing_for_war_with_Russia
 		icon = GFX_POL_Preparing_for_war_with_Russia
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+			has_completed_focus = POL_Close_from_the_Russian_Federation
+		}
 		prerequisite = { 
 			focus = POL_War_in_a_neighboring_country
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Preparing_for_war_with_Russia"
 			add_war_support = 0.05
+			country_event = { id = pol.30 }
+
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.3
+				uses = 3
+				category = land_doctrine
+			}
+			
+			
+			add_equipment_to_stockpile = {
+				type = uniform_kzmp_beryozka_equipment
+				amount = 40000
+				producer = POL
+			}
+			add_equipment_to_stockpile = {
+				type = sov_brdm2_equipment
+				variant_name = "БРДМ-2"
+				amount = 100
+				producer = POL
+			}
+			
 			
 		}
 		search_filters = {
@@ -664,6 +725,12 @@ focus_tree = {
 		}
 		available = {
 			has_political_power > 100
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_increase_the_army_budget"
@@ -878,6 +945,12 @@ focus_tree = {
 		icon = GFX_POL_Incident_in_Przewodow
 		available = {
 			date = 2022.11.15
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 
 		completion_reward = {
@@ -898,6 +971,14 @@ focus_tree = {
 		}
 		prerequisite = { 
 			focus = POL_Incident_in_Przewodow
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		mutually_exclusive = {
 			focus = POL_Strengthen_air_defense
@@ -920,7 +1001,15 @@ focus_tree = {
 		available = {
 			NOT = {
 				has_country_flag = pol19
+				has_completed_focus = POL_Strengthen_air_defense
 			}
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+			
 		}
 		prerequisite = { 
 			focus = POL_Incident_in_Przewodow
@@ -945,6 +1034,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_The_question_of_peacekeepers
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Prepare"
 			add_war_support = -0.025
@@ -966,6 +1063,12 @@ focus_tree = {
 		available = {
 			has_country_flag = focus_POL_Prepare_complete
 			NOT = { has_country_flag = focus_POL_Proposal_to_NATO_delay }
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		prerequisite = { 
 			focus = POL_Prepare
@@ -997,7 +1100,15 @@ focus_tree = {
 			focus = POL_Proposal_to_NATO
 		}
 		mutually_exclusive = {
-			focus = POL_Peacekeepers_in_Western_Ukraine
+			focus = POL_nichego
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Peacekeepers_in_the_Ukrainian_Armed_Forces"
@@ -1021,6 +1132,14 @@ focus_tree = {
 			focus = POL_Peacekeepers_in_the_Ukrainian_Armed_Forces
 			focus = POL_Peacekeepers_in_Western_Ukraine
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_increase_corpus"
 			swap_ideas = {
@@ -1043,6 +1162,14 @@ focus_tree = {
 		}
 		mutually_exclusive = {
 			focus = POL_Peacekeepers_in_the_Ukrainian_Armed_Forces
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Peacekeepers_in_Western_Ukraine"
@@ -1068,13 +1195,20 @@ focus_tree = {
 		icon = GFX_POL_Strengthen_air_defense
 		available = {
 			has_country_flag = option_b_selected
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		prerequisite = { 
 			focus = POL_Incident_in_Przewodow
 		}
 		mutually_exclusive = {
-			focus = POL_The_question_of_peacekeepers
+			focus = POL_nichego
 		}
+
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Strengthen_air_defense"
 			58 = {
@@ -1106,12 +1240,50 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Strengthen_air_defense
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_shoot_down_missiles_on_the_border"
-			custom_effect_tooltip = POL_shoot_down_missiles_on_the_border_tt
-			custom_effect_tooltip = POL_shoot_down_missiles_on_the_border_2_tt
-			custom_effect_tooltip = Zlonsky_bro
 			increase_escalation_by_1_5 = yes
+			country_event = pol.35
+			58 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}
+				add_building_construction = {
+					type = radar_station
+					level = 1
+				}
+			}
+			85 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}
+			}
+			97 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}	
+			}
+			38 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 1
+				}
+				add_building_construction = {
+					type = radar_station
+					level = 1
+				}
+			}
 		}
 		cost = 2
 		x = 0
@@ -1123,19 +1295,38 @@ focus_tree = {
 	focus = {
 		id = POL_Self_intervention
 		icon = GFX_POL_Self_intervention
+		available = {
+			UKR = {
+				has_war_with = RUS
+			}
+			custom_trigger_tooltip = { 
+			tooltip = POL_Self_intervention_tt 
+			has_completed_focus = POL_new_army_giant
+			}
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		prerequisite = { 
 			focus = POL_Redeployment_to_the_frontiers
 		}
-		mutually_exclusive = {
-			focus = POL_Break_up_Belarus
-		}
-
+		
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Self_intervention"
-			declare_war_on = {
-				target = RUS
-				type = annex_everything
+
+			FROM = {
+					set_portraits = {
+						character = Andj
+						civilian = {
+							large = "/gfx/leaders/POL/HolyAndj.png"
+						}
+				}
 			}
+
+			hidden_effect = {
 			674 = { transfer_state_to = RBZ }	
 			675 = { transfer_state_to = RBZ }	
 			676 = { transfer_state_to = RBZ }	
@@ -1148,27 +1339,41 @@ focus_tree = {
 			683 = { transfer_state_to = RBZ }	
 			684 = { transfer_state_to = RBZ }	
 			685 = { transfer_state_to = RBZ }	
-			686 = { transfer_state_to = RBZ }	
-			687 = { transfer_state_to = RBZ }	
 			688 = { transfer_state_to = RBZ }	
-			689 = { transfer_state_to = RBZ }	
-			690 = { transfer_state_to = RBZ }	
 			691 = { transfer_state_to = RBZ }	
+			}
+
 			leave_faction = yes
 			create_faction = POL_UKR_FAC
 			POL = { add_to_faction = UKR }
 			set_country_flag = WAR_WITH_RYSNYA
-			BLR = {
-				leave_faction = yes
-			}
-			KAZ = {
-				leave_faction = yes
+
+			add_to_war = {
+				targeted_alliance = UKR
+				enemy = RUS
 			}
 
+			set_variable = {
+				POL.WAR_WITH_RUS_DAYS = 256
+			}
+
+			activate_mission = POL_WAR_mission 
+
+			hidden_effect = {
+				country_event = { id = POL_super.1 hours = 3 }
+			}
+
+			#BLR = {
+			#	leave_faction = yes
+			#}
+			#KAZ = {
+			#	leave_faction = yes
+			#}
+
 		}
-		cost = 3
-		x = 1
-		y = 3
+		cost = 5
+		x = 3
+		y = 6
 		relative_position_id = POL_Strengthen_air_defense
 		
     }
@@ -1178,6 +1383,14 @@ focus_tree = {
 		icon = GFX_POL_Redeployment_to_the_frontiers
 		prerequisite = { 
 			focus = POL_shoot_down_missiles_on_the_border
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Redeployment_to_the_frontiers"
@@ -1242,12 +1455,22 @@ focus_tree = {
 	focus = {
 		id = POL_Break_up_Belarus
 		icon = GFX_POL_Break_up_Belarus
+		available = {
+			custom_trigger_tooltip = { 
+			tooltip = POL_Break_up_Belarus_tt 
+			has_country_flag = POL_Break_up_Belarus_available
+			}
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		prerequisite = { 
 			focus = POL_Redeployment_to_the_frontiers
 		}
-		mutually_exclusive = {
-			focus = POL_Self_intervention
-		}
+
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Break_up_Belarus"
@@ -1283,8 +1506,8 @@ focus_tree = {
 			}
 		}
 		cost = 3
-		x = -1
-		y = 3
+		x = -3
+		y = 6
 		relative_position_id = POL_Strengthen_air_defense
 		
     }
@@ -1294,6 +1517,14 @@ focus_tree = {
 		icon = GFX_POL_Defense_from_Kaliningrad
 		prerequisite = { 
 			focus = POL_Fortifications_on_the_border_with_Belarus
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Defense_from_Kaliningrad"
@@ -1407,6 +1638,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Defense_from_Kaliningrad
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Accommodation_of_additional_air_defense_systems"
 			
@@ -1437,6 +1676,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_increase_the_army_budget
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Raise_the_military_industrial_complex"
 			swap_ideas = {
@@ -1454,6 +1701,14 @@ focus_tree = {
 		icon = GFX_POL_Buy_Abrams
 		prerequisite = { 
 			focus = POL_Raise_the_military_industrial_complex
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Buy_Abrams"
@@ -1475,10 +1730,23 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Buy_Abrams
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Buy_Patriot_complexes"
 			set_variable = { POL_Patriots_num = 16 }
 			custom_effect_tooltip = POL_deploy_Patriots
+			add_equipment_to_stockpile = {
+				type = nto_sam_mim104_equipment
+				amount = 500
+				producer = NTO
+			}
 
 		}
 		cost = 1.5
@@ -1491,6 +1759,14 @@ focus_tree = {
 		icon = GFX_POL_Domestic_orders
 		prerequisite = { 
 			focus = POL_Buy_Patriot_complexes
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Domestic_orders"
@@ -1513,6 +1789,12 @@ focus_tree = {
 				variant_name = "AHS Krab"
 				amount = 120
 			}
+			add_equipment_to_stockpile = {
+				type = sp_mlrs_imv_medium_1_equipment
+				variant_name = "WR-40 Langusta"
+				amount = 90
+				producer = POL
+			}
 
 		}
 		cost = 2.5
@@ -1525,6 +1807,14 @@ focus_tree = {
 		icon = GFX_POL_Orders_to_the_British
 		prerequisite = { 
 			focus = POL_Domestic_orders
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Orders_to_the_British"
@@ -1541,6 +1831,14 @@ focus_tree = {
 		icon = GFX_POL_Orders_to_Koreans
 		prerequisite = { 
 			focus = POL_Domestic_orders
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Orders_to_Koreans"
@@ -1559,6 +1857,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Domestic_orders
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Orders_to_Germans"
 			set_country_flag = POL_Orders_to_Germans_Allowed
@@ -1575,6 +1881,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Domestic_orders
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Orders_to_Americans"
 			set_country_flag = POL_Orders_to_Americans_Allowed
@@ -1585,16 +1899,119 @@ focus_tree = {
 		y = 5
 		relative_position_id = POL_increase_the_army_budget
     }
+
+
+	focus = {
+		id = POL_west_missiles
+		icon = GFX_POL_west_missiles
+		prerequisite = { 
+			focus = POL_Orders_to_Germans
+		}
+		prerequisite = { 
+			focus = POL_Orders_to_Americans
+		}
+		prerequisite = { 
+			focus = POL_Orders_to_the_British
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus POL_west_missiles"
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_shtormshadow 
+				amount = 400
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_gmlrs
+				amount = 1500
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_taurus
+				amount = 200
+				producer = NTO
+			}
+			add_equipment_to_stockpile = {
+				type = nto_ballistic_missile_equipment_atacams
+				amount = 400
+				producer = NTO
+			}
+			NTO = {
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_light_guided_missile_equipment_shtormshadow
+					version = 0
+				}
+				cost_factor = 0
+			}
+
+
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_light_guided_missile_equipment_gmlrs
+					version = 0
+				}
+				cost_factor = 0
+			}
+
+
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_light_guided_missile_equipment_taurus
+					version = 0
+				}
+				cost_factor = 0
+			}
+
+
+			create_production_license = {
+				target = POL
+				equipment = {
+					type = nto_ballistic_missile_equipment_atacams
+					version = 0
+				}
+				cost_factor = 0
+			}
+			}
+
+
+			
+		}
+		cost = 5
+		x = -2
+		y = 6
+		relative_position_id = POL_increase_the_army_budget
+    }
+
 	focus = {
 		id = POL_Activation_of_intelligence_services
 		icon = GFX_POL_Activation_of_intelligence_services
 		prerequisite = { 
 			focus = POL_increase_the_army_budget
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Activation_of_intelligence_services"
 			upgrade_intelligence_agency = upgrade_passive_defense
 			custom_effect_tooltip = POL_activation_of_intel_tt
+			country_event = { id = pol.33 }
 		}
 		cost = 0.8
 		x = -3
@@ -1606,6 +2023,14 @@ focus_tree = {
 		icon = GFX_POL_Support_GUR
 		prerequisite = { 
 			focus = POL_Activation_of_intelligence_services
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_help_gur"
@@ -1625,6 +2050,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Activation_of_intelligence_services
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Strengthen_the_search_for_FSB_agents"
 			upgrade_intelligence_agency = upgrade_passive_defense
@@ -1640,9 +2073,37 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_increase_the_army_budget
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Coordination_of_actions_with_the_Baltics"
 			add_ideas = {POL_baltic_cooperation}
+			country_event = { id = pol.29 }
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.25
+				uses = 1
+				category = land_doctrine
+			}
+			LIT = { 
+				add_doctrine_cost_reduction = {
+					cost_reduction = 0.5
+					uses = 3
+					category = land_doctrine
+				}
+			}
+			LAT = { 
+				add_doctrine_cost_reduction = {
+					cost_reduction = 0.5
+					uses = 3
+					category = land_doctrine
+				}
+			}
 		}
 		cost = 1.5
 		x = -7
@@ -1651,31 +2112,47 @@ focus_tree = {
     }
 	focus = {
 		id = POL_Large_scale_defense_project
-		icon = GFX_POL_Large_scale_defense_project
-		prerequisite = { 
-			focus = POL_Coordination_of_actions_with_the_Baltics
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus POL_Large_scale_defense_project"
-			add_ideas = Collective_Security_Baltic
-			LIT = {
-				add_ideas = Collective_Security_Baltic
+			icon = GFX_POL_Large_scale_defense_project
+			prerequisite = { 
+				focus = POL_Coordination_of_actions_with_the_Baltics
 			}
-			LAT = {
-				add_ideas = Collective_Security_Baltic
+			available = {
+				NOT = { 
+					custom_trigger_tooltip = {
+						tooltip = TRYASKA_IN_POLAND_TT
+						has_country_flag = TRYASKA_IN_POLAND
+					}
+				}
 			}
+			completion_reward = {
+				log = "[GetDateText]: [Root.GetName]: Focus POL_Large_scale_defense_project"
+				add_ideas = Collective_Security_Baltic
+				LIT = {
+					add_ideas = Collective_Security_Baltic
+				}
+				LAT = {
+					add_ideas = Collective_Security_Baltic
+				}
+			}
+			
+			cost = 1
+			x = 1
+			y = 1
+			relative_position_id = POL_Coordination_of_actions_with_the_Baltics
 		}
-		
-		cost = 1
-		x = 1
-		y = 1
-		relative_position_id = POL_Coordination_of_actions_with_the_Baltics
-    }
 	focus = {
 		id = POL_Additional_NATO_troops_in_the_region
 		icon = GFX_POL_Additional_NATO_troops_in_the_region
 		prerequisite = { 
 			focus = POL_Large_scale_defense_project
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Additional_NATO_troops_in_the_region"
@@ -1692,6 +2169,14 @@ focus_tree = {
 		icon = GFX_POL_Preparing_the_defense_of_the_Suwalki_corridor
 		prerequisite = { 
 			focus = POL_Coordination_of_actions_with_the_Baltics
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Preparing_the_defense_of_the_Suwalki_corridor"
@@ -1747,6 +2232,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Preparing_the_defense_of_the_Suwalki_corridor
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_General_Air_Defense_Aviation_Forces"
 			37 = { add_building_construction = { type = air_base level = 1 }  }
@@ -1769,7 +2262,15 @@ focus_tree = {
 				tooltip = POL_Exercise_Steadfast_Defender_tt
 				date < 2024.6.1
 			}
+
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
+
 		
 		prerequisite = { 
 			focus = POL_increase_the_army_budget
@@ -1800,6 +2301,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Exercise_Steadfast_Defender
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Negotiate_arms_supplies"
 			country_event = pol.7
@@ -1815,9 +2324,22 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Exercise_Steadfast_Defender
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Improvements_to_our_doctrine"
 			army_experience = 800
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.5
+				uses = 2
+				category = land_doctrine
+			}
 			
 		}
 		cost = 1
@@ -1831,12 +2353,26 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_increase_the_army_budget
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Purchase_of_missiles_for_aviation"
 			add_ideas = POL_Aviation_missiles
 			add_political_power = -100
+			add_equipment_to_stockpile = {
+				type = nto_light_guided_missile_equipment_shtormshadow 
+				amount = 300
+				producer = NTO
+			}
+			
 		}
-		cost = 1
+		cost = 2.5
 		x = -16
 		y = 1
 		relative_position_id = POL_increase_the_army_budget
@@ -1849,6 +2385,14 @@ focus_tree = {
 		}
 		mutually_exclusive = {
 			focus = POL_Stick_to_the_NATO_school
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Study_the_experience_of_Ukraine"
@@ -1869,6 +2413,14 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = POL_Study_the_experience_of_Ukraine
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Stick_to_the_NATO_school"
 			add_ideas = POL_nato_school
@@ -1883,6 +2435,14 @@ focus_tree = {
 		icon = GFX_POL_New_recruitment_in_TRO
 		prerequisite = { 
 			focus = POL_increase_the_army_budget
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_New_recruitment_in_TRO"
@@ -1904,11 +2464,51 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_New_recruitment_in_TRO
 		}
+		available = {
+			has_completed_focus = POL_New_Arms_giants 
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Increase_your_army"
 			add_manpower = 80000
+			ensure_unit_template_POL_Pechotniy_batalion = yes
+			ensure_unit_template_POL_Artileriyskiy_batalion = yes
+
+			add_equipment_to_stockpile = {
+				type = apc_usa_m113_equipment
+				variant_name = "M113"
+				amount = 250
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "FMTV"
+				amount = 2000
+			}
+			add_equipment_to_stockpile = {
+				type = usa_fgm148_javelin_equipment
+				amount = 1500
+				producer = POL
+			}
+			48 = {
+			create_unit = {
+				division = "name = \"Nova Brygada Pechotna\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+				owner = POL
+				count = 60
+			}
+			create_unit = {
+				division = "name = \"Nova Brygada Artylerii\" division_template = \"Artileriyskiy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+				owner = POL
+				count = 20
+			}
+			}
+			
 		}
-		cost = 2
+		cost = 3
 		x = 0
 		y = 1
 		relative_position_id = POL_New_recruitment_in_TRO
@@ -1916,6 +2516,15 @@ focus_tree = {
 	focus = {
 		id = POL_Increase_in_NATO_army_in_Poland
 		icon = GFX_POL_Increase_in_NATO_army_in_Poland
+		available = {
+			has_political_power > 700
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		prerequisite = { 
 			focus = POL_Increase_your_army
 		}
@@ -1930,15 +2539,34 @@ focus_tree = {
 			add_equipment_to_stockpile = {
 				type = ifv_swe_cv90_equipment
 				variant_name = "BWP Borsuk"
-				amount = 600
+				amount = 1000
 			}
 			add_equipment_to_stockpile = {
 				type = apc_ger_boxer_equipment
 				variant_name = "KTO Rosomak"
-				amount = 600
+				amount = 1250
+			}
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "FMTV"
+				amount = 2000
+			}
+			add_equipment_to_stockpile = {
+				type = usa_fgm148_javelin_equipment
+				amount = 1500
+				producer = POL
+			}
+
+			ensure_unit_template_POL_Mechanizirovaniy_batalion_second = yes
+			48 = {
+			create_unit = {
+				division = "name = \"Nova Brygada Zmechanizowana\" division_template = \"Mechanizirovaniy batalion second\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+				owner = POL
+				count = 50
+			}
 			}
 		}
-		cost = 3
+		cost = 6
 		x = 0
 		y = 3
 		relative_position_id = POL_New_recruitment_in_TRO
@@ -1948,14 +2576,50 @@ focus_tree = {
 
 	focus = {
 		id = POL_new_army_giant
-		icon = under
+		icon = GFX_POL_new_army_giant
 		prerequisite = { 
 			focus = POL_Increase_in_NATO_army_in_Poland
 		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus POL_new_army_giant"
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
-		cost = 9	
+		completion_reward = {
+			
+			log = "[GetDateText]: [Root.GetName]: Focus POL_new_army_giant"
+			ensure_unit_template_POL_Abrams_Tankoviy_batalion = yes
+			ensure_unit_template_POL_Mechanizirovaniy_batalion_second = yes
+			ensure_unit_template_POL_Artileriyskiy_batalion = yes
+
+			48 = {
+				create_unit = {
+					division = "name = \"Nova Brygada Pechotna\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 30
+				}
+				create_unit = {
+					division = "name = \"Nova Brygada Zmechanizowana\" division_template = \"Mechanizirovaniy batalion second\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 30
+				}
+				create_unit = {
+					division = "name = \"Nova Brygada Tankova\" division_template = \"Abrams Tankoviy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 30
+				}
+				create_unit = {
+					division = "name = \"Nova Brygada Artylerii\" division_template = \"Artileriyskiy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					owner = POL
+					count = 15
+				}
+			}
+			add_manpower = 25000
+		}
+		cost = 10	
 		x = 0
 		y = 6
 		relative_position_id = POL_New_recruitment_in_TRO
@@ -1963,9 +2627,17 @@ focus_tree = {
 
 	focus = {
 		id = POL_ammo_plants
-		icon = under
+		icon = GFX_POL_new_prod
 		prerequisite = { 
 			focus = POL_Increase_in_NATO_army_in_Poland
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_ammo_plants"
@@ -1991,9 +2663,17 @@ focus_tree = {
 
 	focus = {
 		id = POL_ammo_plants_2
-		icon = under
+		icon = GFX_POL_new_prod2
 		prerequisite = { 
 			focus = POL_Increase_in_NATO_army_in_Poland
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_ammo_plants_2"
@@ -2019,9 +2699,17 @@ focus_tree = {
 
 	focus = {
 		id = POL_ammo_silos
-		icon = under
+		icon = GFX_POL_ammo_silos
 		prerequisite = { 
 			focus = POL_Increase_in_NATO_army_in_Poland
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_New_army_giant"
@@ -2046,9 +2734,17 @@ focus_tree = {
 
 	focus = {
 		id = POL_ammo_silos_2
-		icon = under
+		icon = GFX_POL_ammo_silos_2
 		prerequisite = { 
 			focus = POL_ammo_silos
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_New_army_giant"
@@ -2079,6 +2775,14 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_Increase_in_NATO_army_in_Poland
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Nuclear_weapons_in_Poland"
 			custom_effect_tooltip = POL_Nuclear_weapons_in_Poland_3_tt
@@ -2094,6 +2798,14 @@ focus_tree = {
 		icon = GFX_POL_Start_negotiations_with_the_USA
 		prerequisite = {
 			focus = POL_Nuclear_weapons_in_Poland
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Start_negotiations_with_the_USA"
@@ -2121,6 +2833,12 @@ focus_tree = {
 		}
 		available = {
 			always = no
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		mutually_exclusive = {
 			focus = POL_Failure
@@ -2143,6 +2861,12 @@ focus_tree = {
 		}
 		available = {
 			always = no
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		mutually_exclusive = {
 			focus = POL_Deployment_of_nuclear_weapons
@@ -2162,10 +2886,25 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_War_in_a_neighboring_country
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Cancel_all_restrictions_on_Ukrainians"
 			add_stability = 0.03
 			custom_effect_tooltip = POL_ukro_refugees_tt
+			hidden_effect = {
+				country_event = {
+					id = pol.36
+					days = 250
+					random_days = 10
+				}
+			}
 		}
 		cost = 0.5
 		x = 4
@@ -2177,6 +2916,14 @@ focus_tree = {
 		icon = GFX_POL_Urgent_cash_assistance_to_Ukraine
 		prerequisite = { 
 			focus = POL_Cancel_all_restrictions_on_Ukrainians
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Urgent_cash_assistance_to_Ukraine"
@@ -2198,8 +2945,37 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Urgent_cash_assistance_to_Ukraine
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Energy_assistance_to_Ukraine"
+			108 = { 
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+			112 = { 
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+
 		}
 		cost = 0.5
 		x = 0
@@ -2217,6 +2993,14 @@ focus_tree = {
 			custom_effect_tooltip = POL_Arm_the_UKRARMY_tt
 			set_country_flag = POL_military_help_to_UKR
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		cost = 0.5
 		x = 0
 		y = 3
@@ -2227,6 +3011,14 @@ focus_tree = {
 		icon = GFX_POL_Supply_of_infantry_equipment
 		prerequisite = { 
 			focus = POL_Arm_the_Ukrainian_Armed_Forces
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Supply_of_infantry_equipment"
@@ -2246,6 +3038,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Supply_of_infantry_equipment
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Ammunition_supplies"
 			custom_effect_tooltip = POL_Ammunition_supplies_tt
@@ -2260,6 +3060,14 @@ focus_tree = {
 		icon = GFX_POL_send_BMP_BTR
 		prerequisite = { 
 			focus = POL_Ammunition_supplies
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_BMP_BTR"
@@ -2277,6 +3085,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_send_BMP_BTR
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_tanks"
 			custom_effect_tooltip = POL_send_tanks_tt
@@ -2291,6 +3107,14 @@ focus_tree = {
 		icon = GFX_POL_send_AntiAir
 		prerequisite = { 
 			focus = POL_send_tanks
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_AntiAir"
@@ -2307,6 +3131,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Ammunition_supplies
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_armored_vech"
 			custom_effect_tooltip = POL_send_armored_vech_tt
@@ -2321,6 +3153,14 @@ focus_tree = {
 		icon = GFX_POL_send_Artillery
 		prerequisite = { 
 			focus = POL_send_armored_vech
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_Artillery"
@@ -2341,6 +3181,14 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_SPG"
 			custom_effect_tooltip = POL_send_SPG_tt
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		cost = 0.5
 		x = -1
 		y = 8
@@ -2354,6 +3202,14 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = POL_send_AntiAir
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_Helicopter"
@@ -2370,6 +3226,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_send_Helicopter
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_send_aircraft"
 			custom_effect_tooltip = POL_send_aircraft_tt
@@ -2384,6 +3248,14 @@ focus_tree = {
 		icon = GFX_POL_send_Western_equipment
 		prerequisite = { 
 			focus = POL_send_aircraft
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		#TODO : сделать зависимость от фокусов НАТО на поставку техники натовского архетипа
 		completion_reward = {
@@ -2402,6 +3274,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_War_in_a_neighboring_country
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Closing_airspace_for_the_Russian_Federation"
 			RUS = {
@@ -2410,6 +3290,7 @@ focus_tree = {
 				modifier = RUS_POL_Conflict
 				}
 			}
+			country_event = { id = pol.28 }
 		}
 		cost = 0.5
 		x = 9
@@ -2421,6 +3302,14 @@ focus_tree = {
 		icon = GFX_POL_Organize_a_refugee_assistance_center
 		prerequisite = { 
 			focus = POL_Urgent_cash_assistance_to_Ukraine
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Organize_a_refugee_assistance_center"
@@ -2447,9 +3336,20 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Organize_a_refugee_assistance_center
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Simplify_the_bureaucracy_for_refugees"
 			custom_effect_tooltip = POL_ukro_refugees_tt
+			48 = { 
+				add_manpower = 45000
+			}
 		}
 		cost = 0.8
 		x = 0
@@ -2462,9 +3362,20 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Simplify_the_bureaucracy_for_refugees
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Schools_and_kindergartens_for_refugees"
 			custom_effect_tooltip = POL_ukro_refugees_tt
+			48 = { 
+				add_manpower = 25000
+			}
 		}
 		cost = 0.9
 		x = 0
@@ -2477,9 +3388,22 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Schools_and_kindergartens_for_refugees
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Integrate_refugees_into_the_economy"
 			add_ideas = POL_ukr_refugees_into_economy
+			add_offsite_building = {
+				type = industrial_complex
+				level = 1
+			}
+			country_event = { id = pol.31 }
 		}
 		cost = 1.8
 		x = 0
@@ -2492,12 +3416,22 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Closing_airspace_for_the_Russian_Federation
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Organize_trips_for_politicians_to_Kyiv"
 			custom_effect_tooltip = Zlonsky_bro
 			UKR = {
 				add_stability = 0.025
 			}
+
+			NTO = { EU_parliament_support_add_15 = yes }
 
 		}
 		cost = 0.5
@@ -2510,6 +3444,14 @@ focus_tree = {
 		icon = GFX_POL_Expel_Russian_diplomats
 		prerequisite = { 
 			focus = POL_Organize_trips_for_politicians_to_Kyiv
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Expel_Russian_diplomats"
@@ -2537,6 +3479,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Expel_Russian_diplomats
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Recognize_Putin_as_a_war_criminal"
 			RUS = {
@@ -2551,6 +3501,8 @@ focus_tree = {
 			}
 			custom_effect_tooltip = Zlonsky_bro
 			custom_effect_tooltip = POL_Nuclear_weapons_in_Poland_2_tt
+			NTO = { EU_parliament_support_add_15 = yes }
+
 		}
 		cost = 0.5
 		x = 0
@@ -2562,6 +3514,14 @@ focus_tree = {
 		icon = GFX_POL_Close_the_passage_of_the_Russian_Federation
 		prerequisite = { 
 			focus = POL_Recognize_Putin_as_a_war_criminal
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Close_the_passage_of_the_Russian_Federation"
@@ -2591,6 +3551,14 @@ focus_tree = {
 		prerequisite = { 
 			focus = POL_Confiscate_Russian_assets
 		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Close_from_the_Russian_Federation"
 			RUS = {
@@ -2617,6 +3585,14 @@ focus_tree = {
 		icon = GFX_POL_Confiscate_Russian_assets
 		prerequisite = { 
 			focus = POL_Recognize_Putin_as_a_war_criminal
+		}
+		available = {
+			NOT = { 
+				custom_trigger_tooltip = {
+					tooltip = TRYASKA_IN_POLAND_TT
+					has_country_flag = TRYASKA_IN_POLAND
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus POL_Confiscate_Russian_assets"
@@ -2865,6 +3841,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_War_in_a_neighboring_country
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		add_political_power = 50
 	}
@@ -2880,6 +3864,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Energy_Question
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		48 = { add_building_construction = { type = solar_power_plant level = 10 } }
 	}
@@ -2894,6 +3886,14 @@ focus = {
 	icon = GFX_POL_build_new_wind_power_plant
 	prerequisite = { 
 		focus = POL_build_new_solar_power_plant
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		48 = { add_building_construction = { type = wind_power_plant level = 10 } }
@@ -2916,6 +3916,14 @@ focus = {
 	completion_reward = {
 		add_ideas = POL_energy_prior_eco
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	cost = 2.5
 	x = 0
 	y = 3
@@ -2928,6 +3936,14 @@ focus = {
 	icon = GFX_POL_expand_belhatyv_tpp
 	prerequisite = { 
 		focus = POL_Energy_Question
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		set_variable = { belhatyv_tpp_build_days = 400 }
@@ -2949,6 +3965,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_expand_belhatyv_tpp
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		set_variable = { opol_tpp_build_days = 400 }
 		activate_mission = opolskaya_tpp_mission
@@ -2969,6 +3993,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_expand_opol_tpp
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	mutually_exclusive = {
 		focus = POL_build_new_ecoenergy
 	}
@@ -2987,6 +4019,14 @@ focus = {
 	icon = GFX_POL_zarnovec_npp
 	prerequisite = { 
 		focus = POL_Energy_Question
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		set_variable = { zarnovec_ntpp_build_days = 1500 }
@@ -3007,6 +4047,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_zarnovec_npp
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		set_variable = { new_npp_build_days = 1800 }
 		activate_mission = new_npp_mission
@@ -3025,6 +4073,14 @@ focus = {
 	icon = GFX_POL_build_new_substation
 	prerequisite = { 
 		focus = POL_Energy_Question
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		37 = { add_building_construction = { type = electrical_substation level = 1 } }
@@ -3053,6 +4109,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_build_new_substation
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		37 = { add_building_construction = { type = electrical_substation_big level = 1 } }
 		38 = { add_building_construction = { type = electrical_substation_big level = 1 } }
@@ -3077,6 +4141,14 @@ focus = {
 	icon = GFX_POL_Continued_development_of_small_businesses
 	prerequisite = { 
 		focus = POL_War_in_a_neighboring_country
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		random_owned_controlled_state = {
@@ -3103,6 +4175,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Continued_development_of_small_businesses
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		add_timed_idea = {
 			idea = POL_european_investments_into_cities
@@ -3119,6 +4199,14 @@ focus = {
 	icon = GFX_POL_Subsidies_to_farmers
 	prerequisite = { 
 		focus = POL_Receiving_European_investments
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		add_political_power = -50
@@ -3137,6 +4225,14 @@ focus = {
 	icon = GFX_POL_Contribution_to_Polish_giants
 	prerequisite = { 
 		focus = POL_Receiving_European_investments
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		48 = {
@@ -3172,6 +4268,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Contribution_to_Polish_giants
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	prerequisite = {
 		focus = POL_Subsidies_to_farmers
 	}
@@ -3200,6 +4304,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Development_of_airports
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		add_offsite_building = {
 			type = industrial_complex
@@ -3219,6 +4331,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Investments_in_industry
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		48 = {
 			add_extra_state_shared_building_slots = 3
@@ -3236,6 +4356,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Development_of_Warsaw
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		add_ideas = {
 			POL_regional_development
@@ -3251,6 +4379,14 @@ focus = {
 	icon = GFX_POL_Development_of_western_regions
 	prerequisite = { 
 		focus = POL_Development_of_Warsaw
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		custom_effect_tooltip = POL_west_event_after_360_days_tt
@@ -3269,8 +4405,16 @@ focus = {
 
 focus = {
 	id = POL_Industrial_Giants
-	icon = UNDER
+	icon = GFX_POL_Industrial_Giants
 
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 
 	prerequisite = { 
 		focus = POL_Development_of_eastern_regions
@@ -3308,6 +4452,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Investments_in_industry
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		swap_ideas = {
 			remove_idea = POL_Military_industrial_complex_Poland
@@ -3316,10 +4468,12 @@ focus = {
 		random_owned_controlled_state = {
 			add_building_construction = {
 				type = arms_factory
-				level = 2
+				level = 4
 				instant_build = yes
 			}
 		}
+		country_event = { id = pol.32 }
+		add_political_power = 100
 	}
 	cost = 2
 	x = 4
@@ -3331,6 +4485,14 @@ focus = {
 	icon = GFX_POL_Expansion_of_the_metallurgical_industry
 	prerequisite = { 
 		focus = POL_Development_of_airports
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		48 = {
@@ -3350,6 +4512,14 @@ focus = {
 	icon = GFX_POL_Investments_in_resource_excavation
 	prerequisite = { 
 		focus = POL_Expansion_of_the_metallurgical_industry
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		78 = {
@@ -3381,9 +4551,17 @@ focus = {
 
 focus = {
 	id = POL_whereisgas
-	icon = under
+	icon = GFX_POL_whereisgas
 	prerequisite = { 
 		focus = POL_Investments_in_resource_excavation
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		85 = {
@@ -3406,6 +4584,14 @@ focus = {
 	icon = GFX_POL_Development_of_airports
 	prerequisite = { 
 		focus = POL_Development_of_airports
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		log = "[GetDateText]: [Root.GetName]: POL_Investments_in_resource_excavation"
@@ -3435,6 +4621,14 @@ focus = {
 	prerequisite = { 
 		focus = POL_Increase_in_trade_with_Ukraine
 	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
+	}
 	completion_reward = {
 		log = "[GetDateText]: [Root.GetName]: POL_Simplify_taxes_for_Ukrainian_business_in_our_country"
 		add_political_power = -50
@@ -3442,6 +4636,7 @@ focus = {
 			idea = POL_ukrainian_business_development
 			days = 90
 		}
+
 	}
 	cost = 1.5
 	x = -4
@@ -3453,6 +4648,14 @@ focus = {
 	icon = GFX_POL_Contracts_with_Rheinmetall
 	prerequisite = { 
 		focus = POL_Expansion_of_the_military_industry
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		log = "[GetDateText]: [Root.GetName]: POL_Contracts_with_Rheinmetall"
@@ -3469,6 +4672,14 @@ focus = {
 	icon = GFX_POL_Construction_of_new_military_factories
 	prerequisite = { 
 		focus = POL_Expansion_of_the_military_industry
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	completion_reward = {
 		58 = {
@@ -3499,9 +4710,17 @@ focus = {
 
 focus = {
 	id = POL_New_Arms_giants
-	icon = under
+	icon = GFX_POL_New_Arms_giants
 	prerequisite = { 
 		focus = POL_Construction_of_new_military_factories
+	}
+	available = {
+		NOT = { 
+			custom_trigger_tooltip = {
+				tooltip = TRYASKA_IN_POLAND_TT
+				has_country_flag = TRYASKA_IN_POLAND
+			}
+		}
 	}
 	prerequisite = {
 		focus = POL_Contracts_with_Rheinmetall
@@ -3535,6 +4754,7 @@ focus = {
 	available = {
 		has_country_flag = POL_farmer_strikes_on_border
 	}
+
 	prerequisite = { 
 		focus = POL_Receiving_European_investments
 	}

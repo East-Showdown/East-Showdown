@@ -64,10 +64,6 @@ leader_traits = {
 			type = land
 			trait_type = personality_trait
 			
-			modifier = {
-				max_dig_in = 5
-			}
-			
 			non_shared_modifier = {
 				experience_gain_factor = -0.15
 			}
@@ -230,6 +226,7 @@ leader_traits = {
 			modifier = {
 				planning_speed = -0.20
 				wounded_chance_factor = -0.5
+				max_planning = 0.1
 			}
 			
 			
@@ -330,7 +327,8 @@ leader_traits = {
 			attack_skill = 1
 	
 			modifier = {
-				army_morale_factor = -0.10
+				army_morale_factor = 0.05
+				army_org_factor = 0.05
 			}
 	
 			new_commander_weight = {
@@ -1270,7 +1268,7 @@ leader_traits = {
 			}
 			
 			trait_type = basic_terrain_trait
-			gui_row = 7
+			gui_row = 8
 		}
 	
 		adaptable = { 
@@ -1301,6 +1299,7 @@ leader_traits = {
 					jungle_rat
 					ranger
 					urban_assault_specialist
+					village_assault_specialist
 					winter_specialist
 				}
 				num_parents_needed = 2
@@ -1325,7 +1324,7 @@ leader_traits = {
 			any_parent = { winter_specialist }
 	
 			trait_type = assignable_terrain_trait
-			gui_row = 7
+			gui_row = 8
 		}
 	
 		
@@ -1522,7 +1521,7 @@ leader_traits = {
 				factor = 1
 			}
 			trait_type = basic_terrain_trait
-			gui_row = 6
+			gui_row = 7
 		}
 	
 		ranger = { 
@@ -1543,7 +1542,7 @@ leader_traits = {
 				factor = 1
 			}
 			trait_type = basic_terrain_trait
-			gui_row = 5
+			gui_row = 6
 		}
 	
 		urban_assault_specialist = { 
@@ -1554,9 +1553,29 @@ leader_traits = {
 			cost = 500
 			modifier = {
 				urban = {
+					attack = 0.15
+					defence = 0.15
+				}
+			}
+			
+			ai_will_do = {
+				factor = 1
+			}
+			trait_type = basic_terrain_trait
+			gui_row = 5
+		}
+
+		village_assault_specialist = { 
+			type = corps_commander
+			gain_xp = {
+				is_fighting_in_terrain = village
+			}
+			cost = 500
+			modifier = {
+				village = {
 					movement = 0.05
-					attack = 0.1
-					defence = 0.1
+					attack = 0.05
+					defence = 0.05
 				}
 			}
 			
@@ -1692,14 +1711,8 @@ leader_traits = {
 				fort = {
 					attack = 0.15
 				}
-				army_artillery_attack_factor = 0.15
 			}
 			enable_ability = siege_artillery
-			
-			slot = high_command
-			specialist_advisor_trait = army_artillery_1
-			expert_advisor_trait = army_artillery_2
-			genius_advisor_trait = army_artillery_3
 			
 			ai_will_do = {
 				factor = 1
@@ -1746,8 +1759,6 @@ leader_traits = {
 			ai_will_do = {
 				factor = 1
 			}
-	
-			mutually_exclusive = ambusher
 			
 			trait_type = assignable_trait
 			any_parent = { infantry_leader }
@@ -1761,15 +1772,12 @@ leader_traits = {
 			}
 			cost = 500
 			modifier = {
-				max_dig_in = 5
-				recon_factor_while_entrenched = 0.25
+				max_dig_in = 8
 			}
 			
 			ai_will_do = {
 				factor = 1
 			}
-			
-			mutually_exclusive = infantry_expert
 	
 			trait_type = assignable_trait
 			any_parent = { infantry_leader }
@@ -3719,7 +3727,7 @@ leader_traits = {
 			base = 0
 		}
 	}
-	
+
 	wgn_leader = {
 		type = land
 		trait_type = personality_trait
@@ -3747,5 +3755,146 @@ leader_traits = {
 		new_commander_weight = {
 			base = 0
 		}
+	}
+
+	promising_leader = {
+		type = land
+		trait_type = personality_trait
+		non_shared_modifier = {
+			experience_gain_factor = 0.15
+		}
+	}
+
+	master_of_organisation = {
+		type = land
+		trait_type = personality_trait
+		modifier = {
+			army_org_factor = 0.1
+		}
+	}
+
+ 	steel_fortitude = {
+		type = land
+		trait_type = personality_trait
+		modifier = {
+			army_strength_factor = 0.1
+			experience_loss_factor = -0.1
+		}		
+	}
+
+	adaptive_genius = {
+		type = land
+		trait_type = personality_trait
+		non_shared_modifier = {
+			terrain_trait_xp_gain_factor = 0.3
+		}
+	}
+	war_theorist = {
+		type = land
+		trait_type = personality_trait
+		modifier = {
+			custom_modifier_tooltip = war_theorist_tt
+		}
+        daily_effect = {
+            gain_xp = 1
+        }
+	}
+
+	commander_logistician = {
+		type = land
+		trait_type = personality_trait
+		logistics_skill = 1
+		modifier = {
+			supply_consumption_factor = -0.075
+			supply_factor = 0.05
+		}
+
+		logistics_skill_factor = 1
+	}
+
+	ruthless = {
+		type = land
+		trait_type = personality_trait
+		modifier = {
+			breakthrough_factor = 0.025
+			army_attack_factor = 0.025
+			planning_speed = 0.1
+		}
+
+		attack_skill_factor = 1
+	}
+
+	artillery_commander = {
+		type = corps_commander
+		gain_xp = {
+			set_temp_variable = { temp = num_units }
+			multiply_temp_variable = { temp = 0.5 }
+			check_variable = { num_artillery > temp }
+		}
+		custom_gain_xp_trigger_tooltip = artillery_ratio_over_50
+		
+		cost = 750
+		modifier = {
+			army_artillery_attack_factor = 0.1
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+
+		slot = high_command
+		specialist_advisor_trait = army_artillery_1
+		expert_advisor_trait = army_artillery_2
+		genius_advisor_trait = army_artillery_3
+		
+		gui_row = 17
+	}
+
+	heavy_artillery_commander = {
+		type = corps_commander
+	
+			gain_xp = {
+				always = no # not gainable
+			}
+	
+			modifier = {
+				modifier_army_sub_unit_sp_heavy_art_max_org_factor = 0.1
+			}
+			
+			ai_will_do = {
+				factor = 1
+			}
+			
+			any_parent = { artillery_commander }
+
+			mutually_exclusive = attack_artillery_commander
+	
+			trait_type = assignable_trait
+			gui_row = 17
+	}
+
+	attack_artillery_commander = {
+		type = corps_commander
+	
+			gain_xp = {
+				always = no # not gainable
+			}
+	
+			modifier = {
+				modifier_army_sub_unit_MLRS_attack_factor = 0.05
+				modifier_army_sub_unit_towed_art_attack_factor = 0.05
+				modifier_army_sub_unit_sp_art_attack_factor = 0.05
+			}
+			
+			ai_will_do = {
+				factor = 1
+			}
+			
+			any_parent = { artillery_commander }
+
+			mutually_exclusive = heavy_artillery_commander
+	
+			trait_type = assignable_trait
+			gui_row = 18
 	}
 }
