@@ -413,7 +413,7 @@ focus_tree = {
 
 	focus = {
 		id = BLR_kgb_is_watching_you
-		icon = GFX_BLR_meeting_at_the_kgb_office
+		icon = GFX_BLR_kgb_is_watching_you
 		relative_position_id = BLR_plan_the_third_republic_referendum
 		available = {
 			hidden_trigger = {
@@ -535,6 +535,11 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			swap_ideas = {
+				remove_idea = BLR_ruble_collapse
+				add_idea = BLR_ruble_collapse_2
+			}
+			add_political_power = 20
 		}
 		x = -12
 		y = 1
@@ -555,6 +560,19 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			if = { limit = { has_idea = BLR_ruble_collapse_2 } 
+				swap_ideas = {
+					remove_idea = BLR_ruble_collapse_2
+					add_idea = BLR_ruble_collapse_3
+				}
+			}
+			if = { limit = { has_idea = BLR_ruble_collapse_3 } 
+				swap_ideas = {
+					remove_idea = BLR_ruble_collapse_3
+					add_idea = BLR_ruble_collapse_4
+				}
+			}
+			add_political_power = 10
 		}
 		x = -1
 		y = 1
@@ -575,6 +593,19 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			if = { limit = { has_idea = BLR_ruble_collapse_2 } 
+				swap_ideas = {
+					remove_idea = BLR_ruble_collapse_2
+					add_idea = BLR_ruble_collapse_3
+				}
+			}
+			if = { limit = { has_idea = BLR_ruble_collapse_3 } 
+				swap_ideas = {
+					remove_idea = BLR_ruble_collapse_3
+					add_idea = BLR_ruble_collapse_4
+				}
+			}
+			add_political_power = 10
 		}
 		x = 1
 		y = 1
@@ -598,6 +629,10 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			swap_ideas = {
+				remove_idea = BLR_ruble_collapse_4
+				add_idea = BLR_stable_ruble
+			}
 		}
 		x = 0
 		y = 2
@@ -618,6 +653,16 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			modify_timed_idea = {
+				idea = BLR_crisis_echo_with_RUS
+				days = -30
+			}
+			swap_ideas = {
+				remove_idea = BLR_under_sanctions
+				add_idea = BLR_under_sanctions_2
+			}
+			add_political_power = 25
+			country_event = { id = blr.12 days = 1 }
 		}
 		x = -5
 		y = 1
@@ -638,6 +683,7 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			country_event = blr.13
 		}
 		x = -2
 		y = 1
@@ -670,6 +716,9 @@ focus_tree = {
 		id = BLR_fate_of_mcdonalds
 		icon = GFX_BLR_fate_of_mcdonalds
 		relative_position_id = BLR_request_help_from_RUS
+		available = {
+			has_completed_focus = BLR_replace_west_products_with_RUS
+		}
 		prerequisite = {
 			focus = BLR_request_help_from_RUS
 		} 
@@ -678,6 +727,7 @@ focus_tree = {
 			factor = 100
 		}
 		completion_reward = {
+			country_event = blr.14
 		}
 		x = 0
 		y = 1
@@ -2351,14 +2401,27 @@ focus_tree = {
 		id = BLR_act_as_a_mediator_in_the_negotiations
 		icon = GFX_BLR_act_as_a_mediator_in_the_negotiations
 		relative_position_id = BLR_RUS_UKR_war
+		available = {
+			RUS = { has_completed_focus = RUS_Start_the_negotiation_process }
+		}
 		prerequisite = {
 			focus = BLR_RUS_UKR_war
 		}
-		cost = 0
+		cost = 1
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			custom_effect_tooltip = BLR_act_as_a_mediator_in_the_negotiations_tt
+			hidden_effect = {
+				add_to_variable = {	
+					var = global.SMO_progress_of_the_peace_talks
+					value = 3
+				}
+			}
+			reduce_escalation_by_2 = yes
+			add_stability = 0.02
+			unlock_decision_category_tooltip = BLR_help_RUS_category
 		}
 		x = 5
 		y = 1
@@ -2374,11 +2437,31 @@ focus_tree = {
 		prerequisite = {
 			focus = BLR_act_as_a_mediator_in_the_negotiations
 		}
-		cost = 0
+		cost = 2
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			RUS = {
+				add_timed_idea = {
+					idea = RUS_humanitarian_aid_to_the_front
+					days = 30
+				}
+			}
+			DPR = {
+				add_timed_idea = {
+					idea = LDPR_humanitarian_aid_from_BLR
+					days = 30
+				}
+			}
+			LPR = {
+				add_timed_idea = {
+					idea = LDPR_humanitarian_aid_from_BLR
+					days = 30
+				}
+			}
+			unlock_decision_tooltip = BLR_send_humanitarian_aid_to_RUS
+			unlock_decision_tooltip = BLR_send_humanitarian_aid_to_LDPR
 		}
 		x = 0
 		y = 1
@@ -2391,14 +2474,45 @@ focus_tree = {
 		id = BLR_prepare_equipment_for_the_RUS_armed_forces
 		icon = GFX_BLR_prepare_equipment_for_the_RUS_armed_forces
 		relative_position_id = BLR_act_as_a_mediator_in_the_negotiations
+		available = {
+			has_equipment = {
+				tank_sov_chassis > 74
+			}
+			has_equipment = {
+				ifv_sov_chassis > 99
+			}
+			has_equipment = {
+				apc_chassis > 99
+			}
+		}
 		prerequisite = {
 			focus = BLR_sending_a_humanitarian_mission
 		}
-		cost = 0
+		cost = 5
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			send_equipment = {
+				equipment = tank_sov_chassis
+				amount = 75
+				target = RUS
+			}
+			send_equipment = {
+				equipment = ifv_sov_chassis
+				amount = 100
+				target = RUS
+			}
+
+			send_equipment = {
+				equipment = apc_chassis
+				amount = 100
+				target = RUS
+			}
+			unlock_decision_tooltip = BLR_send_armored_equipment_to_RUS
+			unlock_decision_tooltip = BLR_send_infantry_equipment_to_RUS
+			unlock_decision_tooltip = BLR_send_artillery_equipment_to_RUS
+			unlock_decision_tooltip = BLR_send_motorized_equipment_to_RUS 
 		}
 		x = 0
 		y = 2
@@ -2411,14 +2525,24 @@ focus_tree = {
 		id = BLR_sending_ammunition
 		icon = GFX_BLR_sending_ammunition
 		relative_position_id = BLR_act_as_a_mediator_in_the_negotiations
+		available = {
+			check_variable = {
+				var = ammunition_variable
+				value > 99
+			}
+		}
 		prerequisite = {
 			focus = BLR_prepare_equipment_for_the_RUS_armed_forces
 		}
-		cost = 0
+		cost = 5
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			subtract_from_variable = { ammunition_variable = 100 }
+			RUS = { add_to_variable = { ammunition_variable = 100 } }
+			custom_effect_tooltip = BLR_AMMO_100K_to_RUS
+			unlock_decision_tooltip = BLR_send_ammunition_to_RUS
 		}
 		x = 0
 		y = 3
@@ -2438,12 +2562,12 @@ focus_tree = {
 			focus = BLR_help_with_the_march_on_kiev
 		}
 		mutually_exclusive = {
-			focus = BLR_preparation_before_the_war
+			focus = BLR_preparation_for_the_war
 		}
 		mutually_exclusive = {
 			focus = BLR_send_volunteers
 		}
-		cost = 0
+		cost = 1
 		ai_will_do = {
 			factor = 100
 		}
@@ -2463,7 +2587,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BLR_getting_out_of_the_conflict
 		}
-		cost = 0
+		cost = 10
 		ai_will_do = {
 			factor = 100
 		}
@@ -2487,12 +2611,12 @@ focus_tree = {
 			focus = BLR_help_with_the_march_on_kiev
 		}
 		mutually_exclusive = {
-			focus = BLR_preparation_before_the_war
+			focus = BLR_preparation_for_the_war
 		}
 		mutually_exclusive = {
 			focus = BLR_getting_out_of_the_conflict
 		}
-		cost = 0
+		cost = 5
 		ai_will_do = {
 			factor = 100
 		}
@@ -2512,7 +2636,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BLR_send_volunteers
 		}
-		cost = 0
+		cost = 10
 		ai_will_do = {
 			factor = 100
 		}
@@ -2526,9 +2650,34 @@ focus_tree = {
 	}
 
 	focus = {
-		id = BLR_preparation_before_the_war
-		icon = GFX_BLR_preparation_before_the_war
+		id = BLR_preparation_for_the_war
+		icon = GFX_BLR_preparation_for_the_war
 		relative_position_id = BLR_act_as_a_mediator_in_the_negotiations
+		available = {
+			RUS = {  
+				war_length_with = {
+					tag = UKR
+					months = 1
+				}
+				NOT = {
+					OR = {
+						has_idea = RUS_disruption_of_the_operation
+						has_idea = RUS_disruption_of_the_operation_singleplayer
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = BLR_preparation_for_the_war_RUS_plans_trigger_tt
+					NOT = {
+						has_country_flag = SMO_full_scale_invasion
+						has_country_flag = SMO_offensive_on_kyiv
+						has_country_flag = SMO_concentrated_attack_on_kyiv
+					}	
+				}
+			}
+			has_army_size = {
+				size > 59
+			}
+		}
 		prerequisite = {
 			focus = BLR_sending_ammunition
 		}
@@ -2541,11 +2690,17 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BLR_getting_out_of_the_conflict
 		}
-		cost = 0
+		cost = 10
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			add_war_support = 0.1
+			add_timed_idea = {
+				idea = BLR_army_transfer
+				days = 7
+			}
+			#Сделать ивент о выборе наступления после добавления ПЗ РБ
 		}
 		x = 4
 		y = 4
@@ -2559,13 +2714,17 @@ focus_tree = {
 		icon = GFX_BLR_opening_of_the_second_front
 		relative_position_id = BLR_act_as_a_mediator_in_the_negotiations
 		prerequisite = {
-			focus = BLR_preparation_before_the_war
+			focus = BLR_preparation_for_the_war
 		}
-		cost = 0
+		cost = 10
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			declare_war_on = {
+				target = UKR
+				type = take_state
+			}
 		}
 		x = 4
 		y = 5
@@ -2582,7 +2741,7 @@ focus_tree = {
 			focus = BLR_sending_ammunition
 		}
 		mutually_exclusive = {
-			focus = BLR_preparation_before_the_war
+			focus = BLR_preparation_for_the_war
 		}
 		mutually_exclusive = {
 			focus = BLR_send_volunteers
@@ -2590,7 +2749,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BLR_getting_out_of_the_conflict
 		}
-		cost = 0
+		cost = 1
 		ai_will_do = {
 			factor = 100
 		}
@@ -2773,11 +2932,24 @@ focus_tree = {
 		prerequisite = {
 			focus = BLR_RUS_UKR_war
 		}
-		cost = 0
+		cost = 1
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			add_opinion_modifier = {
+				target = POL
+				modifier = BLR_escalation_on_border
+			}
+			add_opinion_modifier = {
+				target = LIT
+				modifier = BLR_escalation_on_border
+			}
+			add_opinion_modifier = {
+				target = LAT
+				modifier = BLR_escalation_on_border
+			}
+			country_event = blr.15
 		}
 		x = 7
 		y = 1
@@ -2793,11 +2965,20 @@ focus_tree = {
 		prerequisite = {
 			focus = BLR_filtering_the_border_with_POL_and_baltic
 		}
-		cost = 0
+		cost = 2
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			add_opinion_modifier = {
+				target = UKR
+				modifier = BLR_escalation_on_border
+			}
+			add_timed_idea = {
+				idea = BLR_construction_of_forts
+				days = 365
+			}
+			custom_effect_tooltip = BLR_strengthen_the_border_with_UKR_tt
 		}
 		x = 0
 		y = 1
@@ -2813,11 +2994,48 @@ focus_tree = {
 		prerequisite = {
 			focus = BLR_strengthen_the_border_with_UKR
 		}
-		cost = 0
+		cost = 5
 		ai_will_do = {
 			factor = 100
 		}
 		completion_reward = {
+			30 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 2
+					instant_build = yes
+				}
+			}
+			49 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 2
+					instant_build = yes
+				}
+			}
+			50 = {
+				add_building_construction = {
+					type = anti_air_building
+					level = 2
+					instant_build = yes
+				}
+			}
+
+			49 = {
+				add_building_construction = {
+					type = rocket_site
+					level = 1
+					instant_build = yes
+				}
+			}
+
+			50 = {
+				add_building_construction = {
+					type = rocket_site
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 		x = 0
 		y = 2
