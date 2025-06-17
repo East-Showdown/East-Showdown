@@ -1,5 +1,6 @@
 add_namespace = WGN
 add_namespace = WGN_mission
+add_namespace = wgn_unit_leader_event
 
 unit_leader_event = {
 	id = WGN_mission.1
@@ -37,17 +38,6 @@ unit_leader_event = {
 		add_stability = -0.1
 		army_experience = -20
 		add_command_power = -50
-		add_power_balance_value = {
-			id = RUS_power_balance
-			value = 0.20
-		}
-		hidden_effect = {
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = 0.20
-			}	
-			set_country_flag = WGN_BM_fail
-		}
 	}
 }
 
@@ -95,36 +85,21 @@ country_event = {
 #начало снарядного голода
 country_event = {
 	id = WGN.2
+	picture = GFX_country_event_168
 	title = WGN.2.t
 	desc = WGN.2.d
 	fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = WGN.2.a
-		custom_effect_tooltip = WGN_no_shell_tooltip
-		hidden_effect = {
-			WGN = {
-				load_focus_tree = WGN_2
-			}
-			swap_ideas = {
-				remove_idea = WGN_shell_hunger_idea
-				add_idea = WGN_shell_hunger_idea_2
-			}
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.1
-			}
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.1
-			}
-		}
+		set_global_flag = WGN_shell_hunger_flag
 	}
 }
 
 #обращение к путину
 country_event = {
 	id = WGN.3
+	picture = GFX_country_event_238
 	title = WGN.3.t
 	desc = WGN.3.d
 	fire_only_once = yes
@@ -204,22 +179,38 @@ country_event = {
 			add_popularity = { ideology = fascism popularity = 0.6 }
 			set_party_name = {  
 				ideology = fascism
-				long_name = prigozhin_war_junta_long  
+				long_name = prigozhin_war_junta_long 
 				name = prigozhin_war_junta
+			}
+			set_party_name = {  
+				ideology = neutrality
+				long_name = not_functioning_long  
+				name = not_functioning
+			}
+			set_party_name = {  
+				ideology = communism
+				long_name = not_functioning_long  
+				name = not_functioning
+			}
+			set_party_name = {  
+				ideology = democratic
+				long_name = not_functioning_long  
+				name = not_functioning
 			}
 			remove_power_balance = {
 				id = RUS_power_balance
 			}
 			remove_ideas = weak_ideology
 			remove_ideas = state_of_stability
-			add_ideas = { WGN_council_idea }
-			set_cosmetic_tag = RUS_neutrality
+			set_cosmetic_tag = RUS_first_wagner_win
 			change_tag_from = WGN
 		}
 		BOR = {
 			country_event = bor_hidden.1
 		}
-		set_global_flag = RUS_Wagner_victory	
+		set_global_flag = RUS_branch_operational_tactical_blocked
+		set_global_flag = RUS_Wagner_victory
+		mark_focus_tree_layout_dirty = yes
 		hidden_effect = {
 		    RUS = {
 		        country_event = {
@@ -267,6 +258,8 @@ country_event = {
 				var = global.loyalty_of_the_military_elite
 				value = 100
 			}
+			set_stability = 0.05
+			set_war_support = 0.65
 		}
 	}
 	option = {
@@ -283,22 +276,6 @@ country_event = {
 				retire = yes
 			}
 		}
-		complete_national_focus = WGN_victory
-		complete_national_focus = WGN_back_to_war
-		remove_ideas = WGN_shell_hunger_idea_3
-		if = {
-			limit = {
-				has_war_with = RUS
-			}
-			remove_mission = hold_rostov
-			remove_mission = hold_voronezh
-			white_peace = RUS
-			white_peace = CHE
-			white_peace = DPR
-			white_peace = LPR
-			remove_ideas = march_justice_idea
-			remove_ideas = march_justice_idea_2
-		}
 		hidden_effect = {
 		    country_event = {
 				id = wgn.14
@@ -312,7 +289,8 @@ country_event = {
 country_event = {
 	id = WGN.5
 	title = WGN.5.t
-	desc = WGN.5.d
+	desc = WGN.5.
+	picture = GFX_country_event_169
 	fire_only_once = yes
 	is_triggered_only = yes
 	option = {
@@ -325,6 +303,7 @@ country_event = {
 		}
 		hidden_effect = {
 			clr_global_flag = WGN_shell_hunger_flag
+			clr_global_flag = WGN_shell_hunger_flag_worse
 		}
 		RUS = {
 			retire_character = sergei_shoigy
@@ -347,8 +326,7 @@ country_event = {
 			set_variable = { RUS_crisis_developed_Putinism_weekly_manpower = -50 }
 			set_variable = { RUS_crisis_developed_Putinism_consumer_goods_factor = 0.05 }			
 		}
-		remove_ideas = WGN_shell_hunger_idea_3
-		complete_national_focus = WGN_back_to_war
+
 	}
 }
 
@@ -357,11 +335,12 @@ country_event = {
 	id = WGN.6
 	title = WGN.6.t
 	desc = WGN.6.d
+	picture = GFX_country_event_170
 	fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = WGN.6.a
-		complete_national_focus = WGN_march
+		complete_national_focus = WGN_continue_the_battle
 	}
 }
 
@@ -374,22 +353,6 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = WGN.7.a
-		if = {
-			limit = {
-				has_war_with = RUS
-			}
-			remove_mission = hold_rostov
-			remove_mission = hold_voronezh
-			white_peace = RUS
-			white_peace = CHE
-			white_peace = DPR
-			white_peace = LPR
-			remove_ideas = march_justice_idea
-			remove_ideas = march_justice_idea_2
-		}
-		remove_ideas = WGN_shell_hunger_idea_3
-		complete_national_focus = WGN_no_blood
-		complete_national_focus = WGN_belarus
 		news_event = news.131
 		ai_chance = {
 			base = 10
@@ -407,29 +370,11 @@ country_event = {
 	}
 	option = {
 		name = WGN.7.s
-		if = {
-			limit = {
-				has_war_with = RUS
-			}
-			swap_ideas = {
-				remove_idea = march_justice_idea
-				add_idea = march_justice_idea_2
-			}
-			activate_mission = take_moscow
-		}
-		complete_national_focus = WGN_destroy_shoigu
 		news_event = news.130 
-		if = {
-			limit = {
-				NOT = {
-					has_war_with = RUS
-				}
-			}
-			hidden_effect = {
-				country_event = {
-					id = WGN.4
-					hours = 6
-				}
+		hidden_effect = {
+			country_event = {
+				id = WGN.4
+				hours = 6
 			}
 		}
 	}
@@ -487,6 +432,32 @@ country_event = {
 	option = {
 		name = WGN.10.a
 		complete_national_focus = WGN_utkin_orchestra
+	}
+	option = {
+		name = WGN.10.b
+		complete_national_focus = WGN_utkin_orchestra
+		custom_effect_tooltip = WGN_10_b_cet
+		hidden_effect = {
+		    country_event = {
+				id = WGN.53
+				hours = 0
+			}
+		}
+	}
+}
+
+#Гайд: Экономика
+country_event = {
+	id = WGN.53
+	title = WGN.53.t
+	desc = WGN.53.d
+	picture = GFX_country_event_253
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = WGN.53.a
+		
 	}
 }
 
@@ -626,7 +597,7 @@ country_event = {
 	}
 }
 
-#ШОЙГК ГЕРАСИМ ГДЕ БАНАН?
+#Кульминация конфликта с морф
 country_event = {
 	id = WGN.15
 	title = WGN.15.t
@@ -634,19 +605,30 @@ country_event = {
 	picture = GFX_country_event_036
 	fire_only_once = yes
 	is_triggered_only = yes
-	option = {
-		name = WGN.15.a
-		add_political_power = 50
-		RUS = {
-		    country_event = {
-				id = rus.105
-				hours = 1
+	immediate = {
+		hidden_effect = {
+		    RUS = {
+		        country_event = {
+				    id = rus.105
+				    hours = 1
+			    }
+		    }
+			news_event = {
+				id = news.133
+				hours = 2
 			}
 		}
-		news_event = {
-			id = news.133
-			hours = 2
+	}
+	option = {
+		name = WGN.15.a
+		add_political_power = 75
+		add_command_power = 50
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.15
 		}
+		custom_effect_tooltip = IW_25_rus_minus_var_add_tt
+		custom_effect_tooltip = WGN_no_shell_tooltip
 		hidden_effect = {
 		    if = {
 			    limit = {
@@ -655,6 +637,16 @@ country_event = {
 					}
 				}
 				play_song = "prigozhin_bombit"
+			}
+			complete_national_focus = WGN_appeal
+			set_portraits = {
+				character = evgeniy_prigozhin
+				civilian = {
+					large = "/gfx/leaders/WGN/evgeniy_prigozhin_after_shell.dds"
+				}
+				army = {
+					large = "/gfx/leaders/WGN/evgeniy_prigozhin_after_shell.dds"
+				}
 			}
 		}
 	}
@@ -798,10 +790,6 @@ country_event = {
 		    add_stability = -0.02
 			add_war_support = -0.07
 		}
-		news_event = {
-			id = news.140
-			hours = 1
-		}
 	}
 }
 
@@ -816,15 +804,10 @@ country_event = {
 	option = {
 		name = WGN.18.a
 		add_political_power = 100
-		add_war_support = 0.1
-		add_equipment_to_stockpile = {
-			type = motorized_equipment_1	
-			amount = 200
-			producer = RUS
-		}
 		add_to_war = {
 			targeted_alliance = RUS
 			enemy = UKR
+			hostility_reason = asked_to_join
 		}
 	}
 }
@@ -908,15 +891,7 @@ country_event = {
 	option = {
 		name = WGN.20.a
 		add_political_power = 10
-		add_power_balance_value = {
-			id = RUS_power_balance
-			value = -0.02
-		}
 		hidden_effect = {
-		    add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.02
-			}
 			country_event = {
 				id = WGN.21
 				days = 93
@@ -965,14 +940,18 @@ country_event = {
 	}
 }
 
-#Нужина убили кувалдой
+#Казнь Нужина
 country_event = {
 	id = WGN.23
 	title = WGN.23.t
 	desc = WGN.23.d
 	picture = GFX_country_event_044
 	fire_only_once = yes
-	is_triggered_only = yes
+	trigger = {
+		tag = WGN
+		has_completed_focus = WGN_kproject
+		date > 2022.11.12
+	}
 	immediate = {
 		hidden_effect = {
 			news_event = {
@@ -985,16 +964,6 @@ country_event = {
 		name = WGN.23.a
 		add_political_power = 50
 		army_experience = 10
-		add_power_balance_value = {
-			id = RUS_power_balance
-			value = -0.05
-		}
-		hidden_effect = {
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.05
-			}
-		}
 	}
 }
 #Пригожин бомбит Бахмут с СУ
@@ -1032,4 +1001,721 @@ country_event = {
         	}
 		}
     }
+}
+
+#Призыв Вагнера на войну
+country_event = {
+	id = WGN.26
+	title = WGN.26.t
+	desc = WGN.26.desc
+    fire_only_once = yes
+	is_triggered_only = yes
+	picture = GFX_country_event_226
+	option = {
+		name = WGN.26.a
+		complete_national_focus = WGN_modrfcooperation
+    }
+}
+
+#Предложить помощь РФ
+country_event = {
+	id = WGN.27
+	title = WGN.27.t
+	desc = WGN.27.desc
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.27.a
+		complete_national_focus = WGN_offerassistancetorussia
+    }
+}
+
+#Закон 300
+country_event = {
+	id = WGN.28
+	title = WGN.28.t
+	desc = WGN.28.desc
+	picture = GFX_country_event_172
+    fire_only_once = yes
+	trigger = {
+		tag = WGN
+		has_war_with = UKR
+		date > 2023.04.22
+	}
+	option = {
+		name = WGN.28.a
+		add_ideas = WGN_law_300
+    }
+}
+
+#Уведомление о появлении баланса сил
+country_event = {
+	id = WGN.29
+	title = WGN.29.t
+	desc = WGN.29.desc
+    fire_only_once = yes
+	is_triggered_only = yes
+	picture = GFX_country_event_132
+	option = {
+		name = WGN.29.a
+		custom_effect_tooltip = WGN_29_tooltip
+    }
+}
+
+#Обращение к минобороны рф
+country_event = {
+	id = WGN.30
+	title = WGN.30.t
+	desc = WGN.30.desc
+	picture = GFX_country_event_171
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.30.a
+    }
+}
+
+#№ К-2022/07
+country_event = {
+	id = WGN.31
+	title = WGN.31.t
+	desc = WGN.31.desc
+	picture = GFX_country_event_228
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.31.a
+		custom_effect_tooltip = WGN_31_event_cet
+		hidden_effect = {
+			set_country_flag = WGN_project_K_allow
+		}
+    }
+}
+
+#Ситуация с БП ухудшилась
+country_event = {
+	id = WGN.32
+	title = WGN.32.t
+	desc = WGN.32.desc
+	picture = GFX_country_event_232
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.32.a
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = 0.1
+		}
+		custom_effect_tooltip = WGN_32_event_cet
+		hidden_effect = {
+		    complete_national_focus = WGN_shell_starvation
+			set_global_flag = WGN_shell_hunger_flag_worse
+			mark_focus_tree_layout_dirty = yes
+		    set_global_flag = WGN_shell_hunger_flag_2
+			set_variable = { WGN_hunger_weekly_manpower = -150 }
+			set_variable = { WGN_hunger_supply_factor = -0.55 }
+			set_variable = { WGN_hunger_command_power_gain_mult = -0.3 }
+			set_variable = { WGN_hunger_army_org_factor = -0.35 }
+			set_variable = { WGN_hunger_experience_loss_factor = 0.65 }
+			set_variable = { WGN_hunger_political_power_factor = -0.45 }
+			set_variable = { WGN_hunger_org_loss_when_moving = 0.3 }
+			set_variable = { WGN_shell_hunger_modifier_army_attack_factor = -0.15 }
+			set_variable = { WGN_shell_hunger_modifier_breakthrough_factor = -0.3 }
+		}
+    }
+}
+
+#Пригожин признает управление ЧВК
+country_event = {
+	id = WGN.33
+	title = WGN.33.t
+	desc = WGN.33.desc
+	picture = GFX_country_event_234
+    fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			RUS = {
+				country_event = { id = rus.239 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = WGN.33.a
+		add_political_power = 50
+    }
+}
+
+#Глава генштаба пидор и черт ебанный
+country_event = {
+	id = WGN.34
+	title = WGN.34.t
+	desc = WGN.34.desc
+	picture = GFX_country_event_236
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.34.a
+		add_political_power = 50
+		add_command_power = 30
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.075
+		}
+		custom_effect_tooltip = IW_5_rus_minus_var_add_tt
+    }
+}
+
+#Обращенние артиллеристов
+country_event = {
+	id = WGN.35
+	title = WGN.35.t
+	desc = WGN.35.desc
+	picture = GFX_country_event_237
+	immediate = {
+		hidden_effect = {
+			country_event = { id = WGN.41 days = 2 }
+			country_event = { id = WGN.40 days = 6 }
+		}
+	}
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.35.a
+		add_political_power = 75
+		add_command_power = 40
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.1
+		}
+		custom_effect_tooltip = IW_5_rus_minus_var_add_tt
+		custom_effect_tooltip = WGN_event_35_cet
+		hidden_effect = {
+			set_country_flag = WGN_BOP_2
+		}
+    }
+}
+
+#Тувинский цирк закончился
+country_event = {
+	id = WGN.36
+	title = WGN.36.t
+	desc = WGN.36.desc
+	picture = GFX_country_event_239
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.36.a
+		remove_power_balance = {
+            id = WGN_power_balance
+        }
+		custom_effect_tooltip = WGN_event_WGN_36_tt_a
+    }
+}
+
+#Путин заступился за тувинский цирк
+country_event = {
+	id = WGN.37
+	title = WGN.37.t
+	desc = WGN.37.desc
+	picture = GFX_country_event_240
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.37.a
+		add_country_leader_trait = in_disgrace
+		hidden_effect = {
+			RUS = {
+				add_dynamic_modifier = { modifier = RUS_prigoshin_in_disegre_modifier }
+			}
+		}
+    }
+}
+
+#Путин заступился за слонов
+country_event = {
+	id = WGN.38
+	title = WGN.38.t
+	desc = WGN.38.desc
+	picture = GFX_country_event_243
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.38.a
+		add_command_power = 50
+    }
+}
+
+#Конец снарядного голода
+country_event = {
+	id = WGN.39
+	title = WGN.39.t
+	desc = WGN.39.desc
+	picture = GFX_country_event_242
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.39.a
+		add_command_power = 25
+		custom_effect_tooltip = WGN_event_WGN_39_tt
+		remove_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
+		hidden_effect = {
+			clr_global_flag = WGN_shell_hunger_flag
+			clr_global_flag = WGN_shell_hunger_flag_2
+		}
+    }
+}
+
+#Пригожин обращение (22 февраля) - Дайте Снаряды Вагнерам
+country_event = {
+	id = WGN.40
+	title = WGN.40.t
+	desc = WGN.40.desc
+	picture = GFX_country_event_244
+    fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			RUS = {
+				country_event = { id = rus.83 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = WGN.40.a
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.1
+		}
+		add_political_power = 25
+		custom_effect_tooltip = WGN_event_WGN_40_tt
+    }
+}
+
+#Отчет от Минобра (18 феврлаля)
+country_event = {
+	id = WGN.41
+	title = WGN.41.t
+	desc = WGN.41.desc
+	picture = GFX_country_event_228
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.41.a
+		add_political_power = -50
+    }
+}
+
+#Дедушка Мудачье
+country_event = {
+	id = WGN.42
+	title = WGN.42.t
+	desc = WGN.42.desc
+	picture = GFX_country_event_245
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.42.a
+		add_political_power = 30
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.05
+		}
+		hidden_effect = {
+			country_event = { id = WGN.43 days = 1 }
+		}
+    }
+}
+
+#Ответ редакциям
+country_event = {
+	id = WGN.43
+	title = WGN.43.t
+	desc = WGN.43.desc
+	picture = GFX_country_event_246
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.43.a
+		hidden_effect = {
+			country_event = { id = WGN.44 days = 0 }
+		}
+    }
+	option = {
+		name = WGN.43.b
+		add_political_power = -50
+		custom_effect_tooltip = WGN_event_43_cet
+		hidden_effect = {
+			country_event = { id = WGN.45 days = 0 }
+		}
+    }
+}
+
+#Ответ редакциям - вариант А
+country_event = {
+	id = WGN.44
+	title = WGN.44.t
+	desc = WGN.44.desc
+	picture = GFX_country_event_246
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.44.a
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.025
+		}
+    }
+}
+
+#Ответ редакциям - вариант Б
+country_event = {
+	id = WGN.45
+	title = WGN.45.t
+	desc = WGN.45.desc
+	picture = GFX_country_event_246
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.45.a
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.05
+		}
+		if = {
+		    limit = { evgeniy_prigozhin = { has_trait = in_disgrace } }
+			custom_effect_tooltip = WGN_event_45_cet
+			hidden_effect = {
+				RUS = {
+					add_dynamic_modifier = { modifier = RUS_prigoshin_in_disegre_modifier_1 }
+				}
+				add_dynamic_modifier = { modifier = RUS_prigoshin_in_disegre_modifier_1 }
+			}
+		}
+		else = {
+			add_country_leader_trait = in_disgrace
+			hidden_effect = {
+				RUS = {
+					add_dynamic_modifier = { modifier = RUS_prigoshin_in_disegre_modifier }
+				}
+			}
+		}
+    }
+}
+
+#Солдаты ВС РФ просят перехода в Вагнер
+country_event = {
+	id = WGN.46
+	title = WGN.46.t
+	desc = WGN.46.desc
+	picture = GFX_country_event_247
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.46.a
+		add_command_power = 25
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.05
+		}
+    }
+}
+
+#Наталья Хим дала Женьке (боеприпасы)
+country_event = {
+	id = WGN.47
+	title = WGN.47.t
+	desc = WGN.47.desc
+	picture = GFX_country_event_248
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.47.a
+		add_political_power = 40
+		add_command_power = 25
+		add_to_variable = { ammunition_variable = 2.5 }
+		custom_effect_tooltip = WGN_ammunition_supply_natalia_him_help
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.035
+		}
+		hidden_effect = {
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.035
+			}
+		}
+    }
+}
+
+#Инициатива Суровикина - отказ
+country_event = {
+	id = WGN.48
+	title = WGN.48.t
+	desc = WGN.48.desc
+	picture = GFX_country_event_249
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.48.a
+		add_command_power = -30
+    }
+}
+
+#Инициатива Суровикина - принятие
+country_event = {
+	id = WGN.49
+	title = WGN.49.t
+	desc = WGN.49.desc
+	picture = GFX_country_event_249
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.49.a
+		add_command_power = -15
+    }
+}
+
+#Удар по лагерю - за день до
+country_event = {
+	id = WGN.50
+	title = WGN.50.t
+	desc = WGN.50.desc
+	picture = GFX_country_event_250
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.50.a
+		add_command_power = -15
+    }
+}
+
+#Пригожин проспонсировал группу «Ленинград»
+country_event = {
+	id = WGN.51
+	title = WGN.51.t
+	desc = WGN.51.desc
+	picture = GFX_country_event_251
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.51.a
+		add_political_power = 15
+		custom_effect_tooltip = WGN_budget_var_remove_1
+		custom_effect_tooltip = WGN_pressure_on_smolniy_cet
+		add_to_variable = { WGN_pressure_on_smolniy_var = 1 }
+		add_to_variable = { WGN_budget_var = -0.005 }
+    }
+	option = {
+		name = WGN.51.b
+		add_political_power = 15
+		custom_effect_tooltip = WGN_budget_var_remove_1
+		custom_effect_tooltip = WGN_pressure_on_smolniy_cet
+		add_to_variable = { WGN_pressure_on_smolniy_var = 1 }
+		add_to_variable = { WGN_budget_var = -0.005 }
+		trigger = {
+			is_ai = no
+		}
+		custom_effect_tooltip = WGN_event_51_b
+		hidden_effect = {
+			play_song = Prigoshin_Leningrad_pesnya
+		}
+    }
+}
+
+#Развертывание в Мали
+country_event = {
+	id = WGN.52
+	title = WGN.52.t
+	desc = WGN.52.desc
+	picture = GFX_country_event_252
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = WGN.52.a
+		custom_effect_tooltip = WGN_event_52_Mali
+		hidden_effect = {
+			set_variable = { map_africa_enabled_region_indexes^map_africa_sahel_region_index = 0 }
+			set_variable = { map_africa_military_personnel_pool_indexes^global.map_africa_sahel_region_index = 350 }
+			set_variable = { map_africa_political_strategists_pool_indexes^global.map_africa_sahel_region_index = 5 }
+			set_variable = { map_africa_military_instructors_pool_indexes^global.map_africa_sahel_region_index = 50 }
+			set_variable = { map_africa_interpreter_RUS^global.map_africa_sahel_region_index = 4 }
+			set_variable = { map_africa_interpreter_NTO^global.map_africa_sahel_region_index = 2 }
+			add_manpower = -400
+			set_variable = { map_africa_military_personnel_pool_free = WGN.manpower }
+			map_africa_calculate_sum_used_manpower = yes
+			WGN_budget_raschet_se = yes
+		}
+    }
+}
+
+#Ратибор ответка делимханову
+country_event = {
+	id = WGN.54
+	title = WGN.54.t
+	desc = WGN.54.desc
+	picture = GFX_country_event_254
+    fire_only_once = yes
+	trigger = {
+		date > 2023.05.29
+	}
+	option = {
+		name = WGN.54.a
+    }
+}
+
+#Жека жгет pt.1
+country_event = {
+	id = WGN.55
+	title = WGN.55.t
+	desc = WGN.55.desc
+	picture = GFX_country_event_256
+    fire_only_once = yes
+	option = {
+		name = WGN.55.a
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.1
+		}
+		custom_effect_tooltip = WGN_event_55_cet
+    }
+}
+
+#Жека жгет pt.2
+country_event = {
+	id = WGN.56
+	title = WGN.56.t
+	desc = WGN.56.desc
+	picture = GFX_country_event_246
+    fire_only_once = yes
+	option = {
+		name = WGN.56.a
+		
+    }
+}
+
+#Жека жгет pt.3
+country_event = {
+	id = WGN.57
+	title = WGN.57.t
+	desc = WGN.57.desc
+	picture = GFX_country_event_246
+    fire_only_once = yes
+	option = {
+		name = WGN.57.a
+    }
+}
+
+#Жека жгет pt.4
+country_event = {
+	id = WGN.58
+	title = WGN.58.t
+	desc = WGN.58.desc
+	picture = GFX_country_event_246
+    fire_only_once = yes
+	option = {
+		name = WGN.58.a
+    }
+}
+
+#Уебаны уволили слона
+unit_leader_event = {
+	id = wgn_unit_leader_event.1
+	title = wgn_unit_leader_event.1.t
+	desc = wgn_unit_leader_event.1.desc
+	is_triggered_only = yes
+    fire_only_once = yes
+	option = {
+		name = wgn_unit_leader_event.1.a
+		log = "[GetDateText]: [This.GetName]: wgn_unit_leader_event.1.a executed"
+		add_political_power = -30
+		add_command_power = -15
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = 0.05
+		}
+	}
+}
+
+#Уебаны вернули слона
+unit_leader_event = {
+	id = wgn_unit_leader_event.2
+	title = wgn_unit_leader_event.2.t
+	desc = wgn_unit_leader_event.2.desc
+	is_triggered_only = yes
+    fire_only_once = yes
+	option = {
+		name = wgn_unit_leader_event.2.a
+		log = "[GetDateText]: [This.GetName]: wgn_unit_leader_event.2.a executed"
+		add_political_power = 25
+		hidden_effect = {
+			mikhail_mizintsev = {
+				set_nationality = RUS
+			}
+			RUS = {
+			    mikhail_mizintsev = {
+					unit_leader_event = { id = rus_unit_leader_event.1 days = 0 }
+				}
+			}
+		}
+	}
+}
+
+#Слон перешел в ЧВК Вагнер
+unit_leader_event = {
+	id = wgn_unit_leader_event.3
+	title = wgn_unit_leader_event.3.t
+	desc = wgn_unit_leader_event.3.desc
+	is_triggered_only = yes
+    fire_only_once = yes
+	option = {
+		name = wgn_unit_leader_event.3.a
+		log = "[GetDateText]: [This.GetName]: wgn_unit_leader_event.3.a executed"
+		add_political_power = 40
+		add_command_power = 30
+		add_power_balance_value = {
+			id = WGN_power_balance
+			value = -0.025
+		}
+		mikhail_mizintsev = {
+			add_unit_leader_trait = wgn_commander
+		}
+		hidden_effect = {
+		    mikhail_mizintsev = {
+				set_portraits = {
+					army={
+						large="/gfx/leaders/WGN/mikhail_mizintsev.dds"
+					}
+				}
+			}
+		    set_country_flag = WGN_mikhail_mizintsev_PMC_commander
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.025
+			}
+			news_event = {
+				id = news.361
+				hours = 6
+			}
+		}
+	}
+}
+
+#Помощь от слона
+unit_leader_event = {
+	id = wgn_unit_leader_event.4
+	title = wgn_unit_leader_event.4.t
+	desc = wgn_unit_leader_event.4.desc
+	is_triggered_only = yes
+    fire_only_once = yes
+	option = {
+		name = wgn_unit_leader_event.4.a
+		log = "[GetDateText]: [This.GetName]: wgn_unit_leader_event.4.a executed"
+		add_command_power = 35
+		RUS = {
+			sergei_syrovikin = {
+				unit_leader_event = { id = rus_unit_leader_event.2 days = 0 }
+			}
+		}
+	}
 }
