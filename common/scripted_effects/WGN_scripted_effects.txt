@@ -2419,11 +2419,10 @@ RASHET_OF_SUCCES_MARCH_JUSTACHE = {
 	}
 	if = {
 		limit = { 
-			check_variable = {
-				var = WGN_March_power_balance_var
-				value = 0
-				compare = less_than
-			} 
+			power_balance_value = {
+				id = WGN_power_balance
+				value < 0
+			}
 		}
 		set_variable = { WGN_March_power_balance_SUCCES_var = WGN_March_power_balance_var }
 		multiply_variable = { WGN_March_power_balance_SUCCES_var = 50 }
@@ -2432,24 +2431,30 @@ RASHET_OF_SUCCES_MARCH_JUSTACHE = {
 	}
 	if = {
 		limit = { 
-			check_variable = {
-				var = WGN_March_power_balance_var
-				value = 0
-				compare = greater_than
-			} 
+			power_balance_value = {
+				id = WGN_power_balance
+				value > 0
+			}
 		}
 		set_variable = { WGN_March_power_balance_FALL_var = WGN_March_power_balance_var }
-		multiply_variable = { WGN_March_power_balance_FALL_var = -50 }
+		multiply_variable = { WGN_March_power_balance_FALL_var = 50 }
 		add_to_variable = { WGN_March_power_balance_FALL_var = 50 }
 		subtract_from_variable = { WGN_March_power_balance_SUCCES_var = WGN_March_power_balance_FALL_var }	
 	}
 	if = {
 		limit = { 
-			check_variable = {
-				var = WGN_March_power_balance_var
-				value = 0
-				compare = equals
-			} 
+			NOT = { 
+				OR = { 
+					power_balance_value = {
+						id = WGN_power_balance
+						value > 0
+					}
+					power_balance_value = {
+						id = WGN_power_balance
+						value < 0
+					}
+				}
+			}
 		}
 		set_variable = { WGN_March_power_balance_FALL_var = 50 }
 		set_variable = { WGN_March_power_balance_SUCCES_var = 50 }
