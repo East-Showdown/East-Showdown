@@ -1,0 +1,48 @@
+# set_temp_variable = { SuppressWarnings = 1 } в параметрах вызова не приводит к выкидыванию предупреждения о старом методе
+
+# -----------------------------------------------------------
+# PUBLIC: ESAPI_transfer_state_building	[ESAPI_SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+# 
+# 
+# Перед вызовом установи переменные:
+#  api_src_state_id – исходный стейт
+#  api_trg_state_id – целевой стейт
+#  api_building_type – токен здания (token:<STATE_BUILDING_ID> )
+#  api_amount – сколько переносим
+#  api_consider_energy_opt  (0|1) – надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#  api_put_extra_slots_opt  (0|1) – нужно ли класть в стейт экстра-слоты, кладёт количество равно n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#  		api_put_number_extra_slots_opt  – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# -----------------------------------------------------------
+
+ESAPI_transfer_state_building = {
+	# ---------- version check ----------
+	set_temp_variable = { method_version = 0500 }
+	ESAPI_int_check_version = yes
+	# -----------------------------------
+
+	if = {
+		limit = { 
+			ROOT = {
+			check_variable = { api_src_state_id > 0 }
+            check_variable = { api_trg_state_id > 0 }
+            check_variable = { api_amount > 0 }
+            NOT = { check_variable = { api_building_type = 0 } }
+			}
+		} 
+		ROOT = { ESAPI_int_transfer_state_building = yes }
+	} else = {
+		log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: : transfer_state_building – missing or invalid parameters."
+		log = "[EasyScriptsAPI] api_src_state_id=[?api_src_state_id] api_trg_state_id=[?api_trg_state_id] api_building_type=[?api_building_type] api_amount=[?api_amount]"
+	}
+}
+
+
+#TODO Добавляет в x-стейт n-количество построек, при необходимости дополнительные слоты, при необходимости рассчитывает подстанции 
+ESAPI_add_state_building = { } 
+
+
+#TODO Добавляет в x-стейте меняет количество населения. Реализовать и связать с механикой населения.
+ESAPI_add_state_population = { } 
+
