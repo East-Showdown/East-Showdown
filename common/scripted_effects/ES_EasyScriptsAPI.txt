@@ -12,7 +12,7 @@
 # Перед вызовом установи temp переменные:
 #  api_src_state_id – исходный стейт
 #  api_trg_state_id – целевой стейт
-#  api_building_type – токен здания (token:<STATE_BUILDING_ID> )
+#  api_building_type – токен здания (token:<building> )
 #  api_amount – сколько переносим
 #  api_consider_energy_opt  (0|1) – надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
 #  api_put_extra_slots_opt  (0|1) – нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
@@ -49,11 +49,55 @@ ESAPI_transfer_state_building = {
 }
 
 
-ESAPI_random_transfer_state_building = {}
 
 
-#TODO Добавляет в x-стейт n-количество построек, при необходимости дополнительные слоты, при необходимости рассчитывает подстанции 
-ESAPI_add_state_building = { } 
+
+
+
+# ===========================================================
+# PUBLIC:  ESAPI_add_state_building [SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+# 
+# 
+# Перед вызовом установи temp переменные:
+#   api_state_id – целевой стейт
+#   api_building_type – токен здания (token:<building> )
+#   api_amount – сколько строим
+#   api_consider_energy_opt – (0|1)  надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#   api_put_extra_slots_opt – (0|1)  нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#   api_put_number_extra_slots_opt – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# ===========================================================
+
+ESAPI_add_state_building = {
+	set_temp_variable = { method_version = 0600 }
+	ESAPI_int_check_version = yes
+
+	set_temp_variable = { loc_sugar_api_state_id = api_state_id }
+	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
+	set_temp_variable = { loc_sugar_api_amount = api_amount }
+	set_temp_variable = { loc_sugar_api_consider_energy_opt = api_consider_energy_opt }
+
+	
+    if = {
+        limit = {
+            ROOT = {
+                check_variable = { api_state_id > 0 }
+                check_variable = { api_amount > 0 }
+                NOT = { check_variable = { api_building_type = 0 } }
+            }
+        }
+        ROOT = { ESAPI_int_add_state_building = yes }
+    }
+    else = {
+        log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: add_state_building – missing or invalid parameters."
+        log = "[EasyScriptsAPI] api_state_id=[?api_state_id] api_building_type=[?api_building_type] api_amount=[?api_amount]"
+    }	
+} 
+
+
+
+
 
 
 #TODO Добавляет в x-стейте меняет количество населения. Реализовать и связать с механикой населения.
