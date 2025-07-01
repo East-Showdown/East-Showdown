@@ -4867,9 +4867,53 @@ country_event = {
 	option = {
 		name = rus.156.a
 		log = "[GetDateText]: [This.GetName]: rus.156.a executed"
-		add_political_power = -20
-		add_war_support = -0.05
+		add_command_power = -20
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -5
+			tooltip = IW_5_minus_var_add_tt
+		}
+		set_country_flag = SMO_first_failure
+		
+		remove_ideas = armored_columns_spirit
+		add_ideas = frontline_improvisation_spirit
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			news_event = {
+                id = news.310
+                days = 1
+            }
+		}
     }
+}
+
+country_event = {
+	id = rus_hidden.14
+	title = rus_hidden.14.t
+	desc = rus_hidden.14.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = { 
+				UKR = { 
+					surrender_progress < 0.35
+					has_war_with = RUS
+				}
+			}
+			country_event = rus.156
+		}
+	}
+	option = {
+		name = rus_hidden.14.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.14.a executed"
+	}
 }
 
 country_event = {
@@ -4924,6 +4968,15 @@ country_event = {
 	option = {
 		name = rus.158.a
 		log = "[GetDateText]: [This.GetName]: rus.158.a executed"
+		if = { 
+			limit = { 
+				has_idea = armored_columns_spirit
+			}
+			hidden_effect = {
+				remove_ideas = armored_columns_spirit
+			}	
+			add_ideas = frontline_improvisation_spirit	
+		}
 		add_political_power = -60
 		add_command_power = -30
 		add_war_support = -0.05
