@@ -427,9 +427,9 @@ focus_tree = {
 			hidden_effect = {
 				add_dynamic_modifier = { modifier = RUS_sic_SMO_traits }
 				set_variable = { RUS_sic_SMO_army_org_factor = 0.05 }
-				set_variable = { RUS_sic_SMO_max_planning_factor = 0.15 }
+				set_variable = { RUS_sic_SMO_max_planning_factor = -0.1 }
 				set_variable = { RUS_sic_SMO_experience_gain_army_unit_factor = 0.075 }
-				set_variable = { RUS_sic_SMO_command_power_gain_mult = 0.05 }
+				set_variable = { RUS_sic_SMO_command_power_gain_mult = -0.15 }
 				news_event = { id = news.16 days = 15 }
 			}
 		}
@@ -1828,6 +1828,9 @@ focus_tree = {
 		}
 		allow_branch = {
  			has_completed_focus = RUS_SMO
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
         }
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Lightning_strike"
@@ -2361,8 +2364,7 @@ focus_tree = {
         }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Blitzkrieg_has_stalled"
-		    custom_effect_tooltip = RUS_new_focus
-			custom_effect_tooltip = in_development
+		    custom_effect_tooltip = CEF_RUS_Blitzkrieg_has_stalled
 		}
 	}
 	focus = {
@@ -2391,17 +2393,45 @@ focus_tree = {
 			factor = 1
 		}
 	}
+	#focus = {
+		#id = RUS_deny_wrong_tactics
+		#icon = GFX_RUS_deny_wrong_tactics
+		#relative_position_id = RUS_Review_the_operation
+		#prerequisite = { focus = RUS_Review_the_operation  }
+		#mutually_exclusive = { focus = RUS_stabilize_the_front }
+		#cost = 0.143
+		#x = -1
+		#y = 1
+		#completion_reward = {
+			#log = "[GetDateText]: [Root.GetName]: Focus RUS_deny_wrong_tactics"
+			#add_command_power = 15
+			#army_experience = 5
+			#random_army_leader = {
+			#	add_unit_leader_trait = inflexible_strategist
+			#}
+			#random_army_leader = {
+			#	add_unit_leader_trait = brilliant_strategist
+			#}
+			#custom_effect_tooltip = remove_armored_columns_tt
+			#custom_effect_tooltip = RUS_new_decisions
+			#hidden_effect = {
+				#remove_ideas = armored_columns_spirit
+			#}
+		#}
+		#ai_will_do = {
+			#factor = 1
+		#}
+	#}
 	focus = {
-		id = RUS_deny_wrong_tactics
-		icon = GFX_RUS_deny_wrong_tactics
+		id = RUS_SMO_tactics_of_the_firing_shaft
+		icon = GFX_RUS_tactics_of_the_firing_shaft
 		relative_position_id = RUS_Review_the_operation
-		prerequisite = { focus = RUS_Review_the_operation  }
-		mutually_exclusive = { focus = RUS_stabilize_the_front }
+		prerequisite = { focus = RUS_front_saving_units  }
 		cost = 0.143
 		x = -1
-		y = 1
+		y = 2
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_deny_wrong_tactics"
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_tactics_of_the_firing_shaft"
 			add_command_power = 15
 			army_experience = 5
 			random_army_leader = {
@@ -2423,10 +2453,17 @@ focus_tree = {
 	focus = {
 		id = RUS_front_saving_units
 		icon = GFX_RUS_front_saving_units
-		relative_position_id = RUS_deny_wrong_tactics
-		prerequisite = { focus = RUS_deny_wrong_tactics  }
+		relative_position_id = RUS_Review_the_operation
+		prerequisite = { focus = RUS_Review_the_operation  }
+		mutually_exclusive = { focus = RUS_stabilize_the_front }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_front_saving_units_trigger
+				has_country_flag = RUS_front_saving_units_cf
+			}
+		}
 		cost = 0.143
-		x = 0
+		x = -1
 		y = 1
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_front_saving_units"
@@ -2451,7 +2488,13 @@ focus_tree = {
 		icon = GFX_RUS_stabilize_the_front
 		relative_position_id = RUS_Review_the_operation
 		prerequisite = { focus = RUS_Review_the_operation  }
-		mutually_exclusive = { focus = RUS_deny_wrong_tactics }
+		mutually_exclusive = { focus = RUS_front_saving_units }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_stabilize_the_front_trigger
+				has_country_flag = RUS_stabilize_the_front_cf
+			}
+		}
 		cost = 0.143
 		x = 1
 		y = 1
@@ -2500,7 +2543,7 @@ focus_tree = {
 		icon = 404
 		relative_position_id = RUS_go_to_defense
 		prerequisite = { focus = RUS_go_to_defense  }
-		prerequisite = { focus = RUS_front_saving_units  }
+		prerequisite = { focus = RUS_SMO_tactics_of_the_firing_shaft  }
 		cost = 0.143
 		x = -1
 		y = 1
