@@ -4372,20 +4372,48 @@ country_event = {
         }
     }
 }
-#ОДШБр «Ветераны»
+#Выборы - безусловная победа верховного
 country_event = {
 	id = rus.141
 	title = rus.141.t
 	desc = rus.141.desc
-	picture = GFX_country_event_096
+	picture = GFX_country_event_276
     fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = rus.141.a
 		log = "[GetDateText]: [This.GetName]: rus.141.a executed"
+		add_political_power = 100
+		add_popularity = {
+			ideology = neutrality
+			popularity = 0.15
+		}
         hidden_effect = {
-			load_oob = RUS_ODSHBr_Veterany
-        }
+			if = {
+				limit = { has_completed_focus = RUS_Election_conservatism }
+				set_portraits = {
+					character = vladimir_putin
+					civilian = {
+						large = "/gfx/leaders/RUS/lideri/vladimir_putin_hist_2024.dds"
+					}
+				}
+			}
+			if = {
+				limit = { has_completed_focus = RUS_Election_militarisation }
+				set_cosmetic_tag = RUS_2024_military
+				set_portraits = {
+					character = vladimir_putin
+					civilian = {
+						large = "/gfx/leaders/RUS/lideri/vladimir_putin_milit_2024.dds"
+					}
+				}
+			}
+			complete_national_focus = RUS_Election_2024
+			news_event = {
+				id = news.373
+				days = 1
+			}
+		}
     }
 }
 #Послание Пыпы фед. собранию
@@ -4402,6 +4430,9 @@ country_event = {
         custom_effect_tooltip = RUS_142_a_cet
 		hidden_effect = {
 			complete_national_focus = RUS_Election_conservatism
+		}
+		ai_chance = {
+			factor = 100
 		}
     }
 	option = {
