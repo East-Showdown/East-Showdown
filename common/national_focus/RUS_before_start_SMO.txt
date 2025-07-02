@@ -427,9 +427,9 @@ focus_tree = {
 			hidden_effect = {
 				add_dynamic_modifier = { modifier = RUS_sic_SMO_traits }
 				set_variable = { RUS_sic_SMO_army_org_factor = 0.05 }
-				set_variable = { RUS_sic_SMO_max_planning_factor = 0.15 }
+				set_variable = { RUS_sic_SMO_max_planning_factor = -0.1 }
 				set_variable = { RUS_sic_SMO_experience_gain_army_unit_factor = 0.075 }
-				set_variable = { RUS_sic_SMO_command_power_gain_mult = 0.05 }
+				set_variable = { RUS_sic_SMO_command_power_gain_mult = -0.15 }
 				news_event = { id = news.16 days = 15 }
 			}
 		}
@@ -1616,12 +1616,13 @@ focus_tree = {
 				} 
 					
 				country_event = { id = rus.150 days = 4 }
-				country_event = { id = rus.13 days = 7 }
+				country_event = { id = rus.13 days = 14 }
 				country_event = { id = rus.107 hours = 8 }
-				country_event = { id = super.1 hours = 7 }
+				country_event = { id = super.1 hours = 15 }
+				country_event = { id = rus_hidden.14 days = 12 }
 				if = {
 					limit = { NOT = { has_completed_focus = RUS_inspection_in_the_Ministry_of_Defense } }
-					country_event = { id = rus.67 days = 5 hours = 10 }
+					country_event = { id = rus.67 days = 9 hours = 10 }
 				}
 				
 				#оставил пока так, потом добавлю регионы
@@ -1660,8 +1661,8 @@ focus_tree = {
 					145 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
 					176 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
 				}
-				country_event = { id = rus.133 days = 5 }
-				country_event = { id = rus.200 days = 8 }
+				country_event = { id = rus.133 days = 10 }
+				country_event = { id = rus.200 days = 24 }
                 country_event = { id = rus_hidden.7 days = 0 }
 
 				if = {
@@ -1807,7 +1808,10 @@ focus_tree = {
 			LPR = { country_event = {  id = rus.217 hours = 1 } country_event = { id = rus.219 hours = 3 } }
 			RUS = { add_to_faction = DPR }
 			RUS = { add_to_faction = LPR }
-
+			if = {
+				limit = { has_country_flag = UKR_VZLOM_ANUSA }
+				UKR = { country_event = {  id = ukr.103 hours = 1 } }
+			}
 			bz_on_SMO_start = yes
 		}
 	}
@@ -1822,6 +1826,12 @@ focus_tree = {
 		y = 1
 		ai_will_do = {
 			factor = 1
+		}
+		offset = {
+			x = -2
+			trigger = {
+				has_country_flag = RUS_failure_of_SMO
+			}
 		}
 		allow_branch = {
  			has_completed_focus = RUS_SMO
@@ -2010,6 +2020,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		allow_branch = {
+			has_completed_focus = RUS_Lightning_strike
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+        }
 		available = {
 		    custom_trigger_tooltip = {
 				tooltip = RUS_failure_of_SMO_trigger
@@ -2045,6 +2061,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		allow_branch = {
+			has_completed_focus = RUS_Lightning_strike
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+        }
 		bypass = {
 			has_country_flag = RUS_failure_of_SMO
 		}
@@ -2076,6 +2098,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		allow_branch = {
+			has_completed_focus = RUS_Lightning_strike
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+        }
 		bypass = {
 			has_country_flag = RUS_failure_of_SMO
 		}
@@ -2328,10 +2356,10 @@ focus_tree = {
 		id = RUS_Blitzkrieg_has_stalled
 		icon = GFX_RUS_Blitzkrieg_has_stalled
 		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_Army_maneuvers  }
+		prerequisite = { focus = RUS_SMO }
 		cost = 0.143
 		x = 0
-		y = 5
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2340,8 +2368,7 @@ focus_tree = {
         }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Blitzkrieg_has_stalled"
-		    custom_effect_tooltip = RUS_new_focus
-			custom_effect_tooltip = in_development
+		    custom_effect_tooltip = CEF_RUS_Blitzkrieg_has_stalled
 		}
 	}
 	focus = {
@@ -2349,7 +2376,7 @@ focus_tree = {
 		icon = GFX_RUS_Review_the_operation
 		relative_position_id = RUS_Blitzkrieg_has_stalled
 		prerequisite = { focus = RUS_Blitzkrieg_has_stalled }
-		cost = 0.143
+		cost = 1.5
 		x = 0
 		y = 1 
 		completion_reward = {
@@ -2370,16 +2397,48 @@ focus_tree = {
 			factor = 1
 		}
 	}
+	#focus = {
+		#id = RUS_deny_wrong_tactics
+		#icon = GFX_RUS_deny_wrong_tactics
+		#relative_position_id = RUS_Review_the_operation
+		#prerequisite = { focus = RUS_Review_the_operation  }
+		#mutually_exclusive = { focus = RUS_stabilize_the_front }
+		#cost = 0.143
+		#x = -1
+		#y = 1
+		#completion_reward = {
+			#log = "[GetDateText]: [Root.GetName]: Focus RUS_deny_wrong_tactics"
+			#add_command_power = 15
+			#army_experience = 5
+			#random_army_leader = {
+			#	add_unit_leader_trait = inflexible_strategist
+			#}
+			#random_army_leader = {
+			#	add_unit_leader_trait = brilliant_strategist
+			#}
+			#custom_effect_tooltip = remove_armored_columns_tt
+			#custom_effect_tooltip = RUS_new_decisions
+			#hidden_effect = {
+				#remove_ideas = armored_columns_spirit
+			#}
+		#}
+		#ai_will_do = {
+			#factor = 1
+		#}
+	#}
 	focus = {
-		id = RUS_deny_wrong_tactics
-		icon = 404
+		id = RUS_SMO_tactics_of_the_firing_shaft
+		icon = GFX_RUS_tactics_of_the_firing_shaft
 		relative_position_id = RUS_Review_the_operation
-		prerequisite = { focus = RUS_Review_the_operation  }
-		cost = 0.143
+		prerequisite = { focus = RUS_front_saving_units  }
+		cost = 2
 		x = -1
-		y = 1
+		y = 2
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_deny_wrong_tactics"
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_tactics_of_the_firing_shaft"
+			hidden_effect = {
+				remove_ideas = armored_columns_spirit
+			}
 			add_command_power = 15
 			army_experience = 5
 			random_army_leader = {
@@ -2388,10 +2447,13 @@ focus_tree = {
 			random_army_leader = {
 				add_unit_leader_trait = brilliant_strategist
 			}
-			custom_effect_tooltip = remove_armored_columns_tt
+			add_ideas = smoke_and_fire_spirit
 			custom_effect_tooltip = RUS_new_decisions
-			hidden_effect = {
-				remove_ideas = armored_columns_spirit
+			
+			add_tech_bonus = {
+				bonus = 0.75
+				uses = 1
+				category = artillery
 			}
 		}
 		ai_will_do = {
@@ -2400,11 +2462,18 @@ focus_tree = {
 	}
 	focus = {
 		id = RUS_front_saving_units
-		icon = 404
-		relative_position_id = RUS_deny_wrong_tactics
-		prerequisite = { focus = RUS_deny_wrong_tactics  }
-		cost = 0.143
-		x = 0
+		icon = GFX_RUS_front_saving_units
+		relative_position_id = RUS_Review_the_operation
+		prerequisite = { focus = RUS_Review_the_operation  }
+		mutually_exclusive = { focus = RUS_stabilize_the_front }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_front_saving_units_trigger
+				has_country_flag = RUS_front_saving_units_cf
+			}
+		}
+		cost = 1.5
+		x = -1
 		y = 1
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_front_saving_units"
@@ -2414,11 +2483,14 @@ focus_tree = {
 			add_tech_bonus = {
 				name = land_doctrine
 				bonus = 0.5
-				uses = 1
+				uses = 2
 				category = sso_doctrine_category
 			}
 			add_to_variable = { RUS_VCRF_army_strength_factor = 0.05 }
-			add_to_variable = { RUS_VCRF_special_forces_cap = 0.025 }
+			add_to_variable = { RUS_VCRF_special_forces_cap = 0.05 }
+			add_to_variable = { RUS_VCRF_breakthrough_factor = 0.075 }
+			add_to_variable = { RUS_VCRF_experience_loss_factor = 0.1 }
+			add_to_variable = { RUS_VCRF_modifier_command_power_gain_mult = -0.05 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -2426,21 +2498,33 @@ focus_tree = {
 	}
 	focus = {
 		id = RUS_stabilize_the_front
-		icon = 404
+		icon = GFX_RUS_stabilize_the_front
 		relative_position_id = RUS_Review_the_operation
 		prerequisite = { focus = RUS_Review_the_operation  }
-		cost = 0.143
+		mutually_exclusive = { focus = RUS_front_saving_units }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_stabilize_the_front_trigger
+				has_country_flag = RUS_stabilize_the_front_cf
+			}
+		}
+		cost = 1.5
 		x = 1
 		y = 1
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_stabilize_the_front"
 			add_command_power = 35
+			army_experience = 30
 			aleksandr_dvornikov = {
 				add_unit_leader_trait = thorough_planner
 			}
 			valery_gerasimov = {
 				add_unit_leader_trait = master_of_organisation
 			}
+			custom_effect_tooltip = RUS_stabilize_the_front_cet
+			add_to_variable = { RUS_VCRF_army_org_factor = 0.1 }
+			add_to_variable = { RUS_VCRF_army_org_regain = 0.075 }
+			add_to_variable = { RUS_VCRF_modifier_command_power_gain_mult = 0.05 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -2448,25 +2532,36 @@ focus_tree = {
 	}
 	focus = {
 		id = RUS_go_to_defense
-		icon = 404
+		icon = GFX_RUS_go_to_defense
 		relative_position_id = RUS_stabilize_the_front
 		prerequisite = { focus = RUS_stabilize_the_front  }
-		cost = 0.143
+		cost = 2
 		x = 0
 		y = 1
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_stabilize_the_front"
+			hidden_effect = {
+				remove_ideas = armored_columns_spirit
+			}
 			add_command_power = 25
 			army_experience = 25
 			custom_effect_tooltip = RUS_go_to_defense_cet
-			sergei_syrovikin = {
-				remove_unit_leader_trait = aggressive_assaulter
+			random_army_leader = {
 				add_unit_leader_trait = unyielding_defender
+			}
+			random_army_leader = {
 				add_unit_leader_trait = defensive_doctrine
 			}
-			add_to_variable = { RUS_VCRF_army_morale_factor = 0.035 }
-			add_to_variable = { RUS_VCRF_army_org_regain = 0.045 }
-			add_to_variable = { RUS_VCRF_dig_in_speed_factor = 0.05 }
+			add_ideas = static_warfare_spirit
+			
+			add_tech_bonus = {
+				name = land_doctrine
+				bonus = 0.75
+				uses = 2
+				category = infantry_doctrine_category
+			}
+			add_to_variable = { RUS_VCRF_army_morale_factor = 0.05 }
+			add_to_variable = { RUS_VCRF_army_defence_factor = 0.05 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -2474,11 +2569,11 @@ focus_tree = {
 	}
 	focus = {
 		id = RUS_prepare_for_new_campaing
-		icon = 404
+		icon = GFX_RUS_prepare_for_new_campaing
 		relative_position_id = RUS_go_to_defense
 		prerequisite = { focus = RUS_go_to_defense  }
-		prerequisite = { focus = RUS_front_saving_units  }
-		cost = 0.143
+		prerequisite = { focus = RUS_SMO_tactics_of_the_firing_shaft  }
+		cost = 1.5
 		x = -1
 		y = 1
 		completion_reward = {
@@ -2713,6 +2808,10 @@ focus_tree = {
 		y = 1
 		ai_will_do = {
 			factor = 1
+		}
+
+		completion_reward = {
+			
 		}
 	}
 	focus = {
@@ -4742,6 +4841,7 @@ focus_tree = {
         }
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Putins_course"
+			custom_effect_tooltip = RUS_Putins_course_cet
 		    add_political_power = 45
 		    add_stability = 0.025
 		}
@@ -5418,6 +5518,12 @@ focus_tree = {
 		prerequisite = { focus = RUS_MROT focus = RUS_demographics }
 		mutually_exclusive = { focus = RUS_Election_militarisation }
 		cost = 0.143
+		available = {
+			custom_trigger_tooltip = {
+			    tooltip = RUS_only_events
+			    always = no
+			}
+		}
 		x = -3
 		y = 9
 		ai_will_do = {
@@ -5425,7 +5531,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_conservatism"
-		    
+		    custom_effect_tooltip = RUS_Election_conservatism_cet
 		}
 	}
 	focus = {
@@ -5446,9 +5552,15 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+			    tooltip = RUS_only_events
+			    always = no
+			}
+		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_militarisation"
-		    
+		    custom_effect_tooltip = RUS_Election_militarisation_cet
 		}
 	}
 	focus = {
@@ -5462,9 +5574,15 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+			custom_trigger_tooltip = {
+			    tooltip = RUS_only_events
+			    always = no
+			}
+		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_militarisation"
-		    
+		    custom_effect_tooltip = RUS_Election_2024_cet
 		}
 	}
 	focus = {
@@ -7960,6 +8078,28 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_People_Front"
 		    add_political_power = 50
 			custom_effect_tooltip = RUS_People_Front_cet
+			add_equipment_to_stockpile = {  
+				type = imv_civil_0_equipment
+				amount = 2000
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {  
+				type = imv_civil_1_equipment
+				amount = 800
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {  
+				type = imv_civil_2_equipment
+				amount = 500
+				producer = RUS
+			}			
+			
+			add_equipment_to_stockpile = {  
+				type = imv_civil_3_equipment
+				amount = 400
+				producer = RUS
+			}
+
 			hidden_effect = {
 			    add_to_variable = { var = RUS_assistance_to_veterans_political_power_cost value = 0.25 }
 				add_to_variable = { var = RUS_assistance_to_veterans_army_org_factor value = 0.02 }
@@ -8207,6 +8347,28 @@ focus_tree = {
 			
 		}
 		completion_reward={
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 4
+				tooltip = IW_4_var_add_tt
+			}
+			UKR = {
+				add_stability = -0.001
+				add_war_support = -0.002
+				add_political_power = -100
+				add_equipment_to_stockpile = {
+					type = imv_civil_0_equipment
+					amount = -50
+				}
+			}
+			hidden_effect = {
+				add_to_variable = {	
+					var = global.ukr_information_war_var_sum
+					value = -4
+				}
+				clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
 			
 		}
 	}
@@ -8536,6 +8698,8 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_anti_ukr_terrorism"
+			upgrade_intelligence_agency = upgrade_passive_defense
+
 		    
 		}
 	}
