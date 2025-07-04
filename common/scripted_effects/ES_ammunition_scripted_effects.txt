@@ -245,27 +245,24 @@ ammunition_calculate_generation = {
 	set_variable = { ammunition_plants_efficiency_factor_var = 1 }
 	add_to_variable = { ammunition_plants_efficiency_factor_var = modifier@ammunition_plants_efficiency_factor }
 	clamp_variable = { var = ammunition_plants_efficiency_factor_var min = 0 }
-
-    # Высчитываем соотношение распределения мощностей заводов боеприпасов на производство и на восстановление боеприпасов
-    clamp_variable = { var = ammunition_produce_to_recovery_factor min = 0 max = 1 }   
-    set_variable = { ammunition_produce_factor = ammunition_produce_to_recovery_factor }
-    set_variable = { ammunition_recovery_factor = 1 }
-    subtract_from_variable = { ammunition_recovery_factor = ammunition_produce_to_recovery_factor }
+    
+    set_variable = { ammunition_produce_factor_result = ammunition_produce_factor }
+    set_variable = { ammunition_recovery_factor_result = ammunition_recovery_factor }
 
     # Высчитываем объём производства заводов
     set_variable = { ammunition_plans_production_base_value = modifier@daily_ammunition_gain }
     divide_variable = { ammunition_plans_production_base_value = 1000 }
 
-    set_variable = { ammunition_plans_production_value = ammunition_plans_production_base_value }
-    multiply_variable = { ammunition_plans_production_value = ammunition_plants_efficiency_factor_var }
+    set_variable = { ammunition_plants_production_value = ammunition_plans_production_base_value }
+    multiply_variable = { ammunition_plants_production_value = ammunition_plants_efficiency_factor_var }
 
     # Высчитываем восстановление старых боеприпасов
-    set_variable = { ammunition_recovery_efficiency_factor_var = 1 }
+    set_variable = { ammunition_recovery_efficiency_factor_var = 2 }
     subtract_from_variable = { ammunition_recovery_efficiency_factor_var = modifier@ammunition_recovery_efficiency_factor }
     clamp_variable = { var = ammunition_recovery_efficiency_factor_var min = 0 }
 
-    set_variable = { ammunition_recovery_value_k = ammunition_plans_production_value }
-    multiply_variable = { ammunition_recovery_value_k = ammunition_recovery_factor }
+    set_variable = { ammunition_recovery_value_k = ammunition_plants_production_value }
+    multiply_variable = { ammunition_recovery_value_k = ammunition_recovery_factor_result }
     multiply_variable = { ammunition_recovery_value_k = ammunition_recovery_efficiency_factor_var }
 
     # Очищаем излишек мощностей восстановления старых боеприпасов
@@ -278,44 +275,41 @@ ammunition_calculate_generation = {
         set_variable = { ammunition_recovery_excess_factor = ammunition_recovery_value_k }
         subtract_from_variable = { ammunition_recovery_excess_factor = ammunition_old_value_k }
         divide_variable = { ammunition_recovery_excess_factor = ammunition_recovery_value_k }
+
+        # Ограничиваем восстановление старых боеприпасов
+        set_variable = { ammunition_recovery_value_k = ammunition_old_value_k }
+
+        # Передаём излишние мощности с восстановления старых на производство новых
+        set_variable = { ammunition_recovery_excess_factor_to_produce_mult = ammunition_recovery_excess_factor }
+        multiply_variable = { ammunition_recovery_excess_factor_to_produce_mult = ammunition_recovery_factor }
+        add_to_variable = { ammunition_produce_factor_result = ammunition_recovery_excess_factor_to_produce_mult }
+
+        set_temp_variable = { ammunition_recovery_excess_factor_to_recovery_mult = 1 }
+        subtract_from_temp_variable = { ammunition_recovery_excess_factor_to_recovery_mult = ammunition_recovery_excess_factor }
+        multiply_variable = { ammunition_recovery_factor_result = ammunition_recovery_excess_factor_to_recovery_mult }
     }
 
-    # Высчитываем производство новых боеприпасов
+    # Высчитываем производство новых боеприпасов    
     set_variable = { ammunition_produce_efficiency_factor_var = 1 }
     subtract_from_variable = { ammunition_produce_efficiency_factor_var = modifier@ammunition_produce_efficiency_factor }
     clamp_variable = { var = ammunition_produce_efficiency_factor_var min = 0 }
 
-
-    
-
-    
-
-    # Высчитываем производство новых боеприпасов
-    set_variable = { ammunition_produce_value_k = ammunition_produce_to_recovery_factor }
-    add_to_variable = { ammunition_produce_value_k = ammunition_recovery_excess_factor }
-    multiply_variable = { ammunition_produce_value_k = modifier@ammunition_produce_efficiency_factor }
-    clamp_variable = { var = ammunition_produce_value_k min = 0 } 
-    multiply_variable = { ammunition_produce_value_k = ammunition_produce_value_factor_var }
+    set_variable = { ammunition_produce_value_k = ammunition_plants_production_value }
+    multiply_variable = { ammunition_produce_value_k = ammunition_produce_factor_result }
+    multiply_variable = { ammunition_produce_value_k = ammunition_produce_efficiency_factor_var }
+    clamp_variable = { var = ammunition_produce_value_k min = 0 }
 }
 
 # THIS scope is COUNTRY
 # Вычисляет расход боеприпасов страны
 ammunition_calculate_consumption = {	
     # Подготавливаем к использованию множитель расхода боеприпасов юнитам
-	set_variable = { ammunition_consumption_factor_var = 1 }
-	add_to_variable = { ammunition_consumption_factor_var = modifier@ammunition_consumption_factor }
-	clamp_variable = { var = ammunition_consumption_factor_var min = 0 }
+	clamp_variable = { var = ammunition_consumption_supply_factor_var min = 0 max = 2 }    
+	clamp_variable = { var = ammunition_consumption_offensive_supply_factor_var min = 0 max = 2 }    
+	clamp_variable = { var = ammunition_consumption_defensive_supply_factor_var min = 0 max = 2 }
 	
     # Обнуляем переменную-счётчик расхода боеприпасов
 	set_variable = { ammunition_consumption_k = 0 }
-
-    if = {
-        limit = { original_tag = RUS }
-        log = "commanded_divisions = [?commanded_divisions]"
-        log = "ammunition_consumption_offensive_base_k [?ammunition_consumption_offensive_base_k]"
-        log = "ammunition_consumption_offensive_factor_var [?ammunition_consumption_offensive_factor_var]"
-        log = "ammunition_consumption_factor_var [?ammunition_consumption_factor_var]"
-    }
 
 	if = { # Если у страны есть юниты под командованием генералов
 		limit = { check_variable = { commanded_divisions > 0 } }
@@ -323,7 +317,8 @@ ammunition_calculate_consumption = {
         # Высчитываем расход боеприпасов от атакующих юнитов
 		set_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_base_k }
 		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_factor_var }  
-		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_factor_var }  
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_supply_factor_var }  
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_supply_factor_var }  
 
         # Суммируем в расход боеприпасов расход от атакующих юнитов
 		add_to_variable = { ammunition_consumption_k = ammunition_consumption_offensive_k }
@@ -331,7 +326,8 @@ ammunition_calculate_consumption = {
         # Высчитываем расход боеприпасов от обороняющихся юнитов
 		set_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_base_k }
 		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_factor_var }  
-		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_factor_var }  
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_supply_factor_var }  
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_supply_factor_var }  
 
         # Суммируем в расход боеприпасов расход от обороняющихся юнитов
 		add_to_variable = { ammunition_consumption_k = ammunition_consumption_defensive_k }
@@ -375,8 +371,13 @@ ammunition_calculate_tick_result_value = {
     ammunition_remove_excess_ammunition_if_needed = yes
 
     # Проверяем, чтобы кол-во боеприпасов не ушло в минус
+    clamp_variable = { var = sum_ammunition_value_k min = 0 }
     clamp_variable = { var = ammunition_value_k min = 0 }
     clamp_variable = { var = ammunition_old_value_k min = 0 }
+
+    # Высчитываем заполненность складов
+    set_variable = { ammunition_silos_filling_factor = sum_ammunition_value_k }
+    divide_variable = { ammunition_silos_filling_factor = ammunition_max_storage_capacity_k }
         
     set_variable = { ammo_ratio_var = ammunition_value_k }
     divide_variable = { ammo_ratio_var = ammunition_max_storage_capacity_k }
@@ -428,5 +429,91 @@ ammunition_remove_excess_ammunition_if_needed = {
         else = { # Иначе превышение вместимости миньше или равно количеству старых боеприпасов
             subtract_from_variable = { ammunition_old_value_k = temp_ammunition_excess_value_k }
         }
+    }
+}
+
+ammunition_calculate_tick_army_effects = {
+
+}
+
+# THIS scope is COUNTRY
+# Must contain temp_delta
+ammunition_change_produce_recovery_factors = {    
+    add_to_variable = { ammunition_produce_factor = temp_delta }
+    subtract_from_variable = { ammunition_recovery_factor  = temp_delta }
+    
+    if = {
+        limit = { check_variable = { ammunition_produce_factor > 1 } }
+
+        set_temp_variable = { temp = 1 }
+        subtract_from_temp_variable = { temp = ammunition_produce_factor }
+
+        add_to_variable = { ammunition_produce_factor = temp }
+        subtract_from_variable = { ammunition_recovery_factor = temp }
+    } 
+    else_if = {
+        limit = { check_variable = { ammunition_produce_factor < 0 } }
+        
+        add_to_variable = { ammunition_recovery_factor = ammunition_produce_factor }
+        set_variable = { ammunition_produce_factor = 0 }
+    }
+
+    set_temp_variable = { temp_sum = ammunition_produce_factor }
+    add_to_temp_variable = { temp_sum = ammunition_recovery_factor }
+
+    if = {
+        limit = { NOT = { check_variable = { temp_sum = 1 } } }
+        
+        set_temp_variable = { temp = 1 }
+        subtract_from_temp_variable = { temp = temp_sum }
+
+        add_to_variable = { ammunition_recovery_factor = temp }
+    }
+}
+
+ammunition_change_supply_factor = {
+    add_to_variable = { ammunition_consumption_supply_factor_var = temp_delta }
+    
+    if = {
+        limit = { check_variable = { ammunition_consumption_supply_factor_var > 2 } }
+        set_variable = { ammunition_consumption_supply_factor_var = 2 }
+    } 
+    else_if = {
+        limit = { check_variable = { ammunition_consumption_supply_factor_var < 0.25 } }
+        
+        set_variable = { ammunition_consumption_supply_factor_var = 0.25 }
+    }
+}
+
+ammunition_change_offensive_defensive_supply_factors = {
+    add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp_delta }
+    subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var  = temp_delta }
+    
+    if = {
+        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var > 1.9 } }
+
+        set_temp_variable = { temp = 1.9 }
+        subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
+
+        add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }
+        subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
+    } 
+    else_if = {
+        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var < 0.1 } }
+        
+        add_to_variable = { ammunition_consumption_defensive_supply_factor_var = ammunition_consumption_offensive_supply_factor_var }
+        set_variable = { ammunition_consumption_offensive_supply_factor_var = 0.1 }
+    }
+
+    set_temp_variable = { temp_sum = ammunition_consumption_offensive_supply_factor_var }
+    add_to_temp_variable = { temp_sum = ammunition_consumption_defensive_supply_factor_var }
+
+    if = {
+        limit = { NOT = { check_variable = { temp_sum = 2 } } }
+        
+        set_temp_variable = { temp = 2 }
+        subtract_from_temp_variable = { temp = temp_sum }
+
+        add_to_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
     }
 }
