@@ -312,22 +312,17 @@ ammunition_calculate_generation = {
 ammunition_calculate_consumption = {	
     # Подготавливаем к использованию множитель расхода боеприпасов юнитам
 	clamp_variable = { var = ammunition_consumption_supply_factor_var min = 0 max = 2 }    
-	clamp_variable = { var = ammunition_consumption_offensive_supply_factor_var min = 0 max = 2 }    
-	clamp_variable = { var = ammunition_consumption_defensive_supply_factor_var min = 0 max = 2 }
+	clamp_variable = { var = ammunition_consumption_offensive_supply_factor_var min = -1 max = 1 }    
+	clamp_variable = { var = ammunition_consumption_defensive_supply_factor_var min = -1 max = 1 }
 
         
     set_variable = { ammunition_consumption_supply_offensive_result_factor_var = ammunition_consumption_supply_factor_var}
-    multiply_variable = { ammunition_consumption_supply_offensive_result_factor_var = ammunition_consumption_offensive_supply_factor_var }
+    add_to_variable = { ammunition_consumption_supply_offensive_result_factor_var = ammunition_consumption_offensive_supply_factor_var }
+	clamp_variable = { var = ammunition_consumption_supply_offensive_result_factor_var min = 0 }   
     
     set_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_supply_factor_var}
-    multiply_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_defensive_supply_factor_var } 
-
-    set_variable = { ammunition_consumption_supply_sum_factor_var = ammunition_consumption_offensive_supply_factor_var }
-    add_to_variable = { ammunition_consumption_supply_sum_factor_var = ammunition_consumption_defensive_supply_factor_var }
-
-    set_variable = { ammunition_consumption_relative_off_to_def_supply_factor = ammunition_consumption_offensive_supply_factor_var }
-    subtract_from_variable = { ammunition_consumption_relative_off_to_def_supply_factor = ammunition_consumption_defensive_supply_factor_var }
-    divide_variable = { ammunition_consumption_relative_off_to_def_supply_factor = ammunition_consumption_supply_sum_factor_var }
+    add_to_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_defensive_supply_factor_var } 
+	clamp_variable = { var = ammunition_consumption_supply_defensive_result_factor_var min = 0 }   
 	
     # Обнуляем переменную-счётчик расхода боеприпасов
 	set_variable = { ammunition_consumption_k = 0 }
@@ -338,8 +333,7 @@ ammunition_calculate_consumption = {
         # Высчитываем расход боеприпасов от атакующих юнитов
 		set_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_base_k }
 		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_factor_var } 
-		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_supply_factor_var }  
-		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_supply_factor_var }  
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_supply_offensive_result_factor_var }  
         
 
         # Суммируем в расход боеприпасов расход от атакующих юнитов
@@ -348,8 +342,7 @@ ammunition_calculate_consumption = {
         # Высчитываем расход боеприпасов от обороняющихся юнитов
 		set_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_base_k }
 		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_factor_var }  
-		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_supply_factor_var }  
-		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_supply_factor_var } 
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_supply_defensive_result_factor_var }  
 
         # Суммируем в расход боеприпасов расход от обороняющихся юнитов
 		add_to_variable = { ammunition_consumption_k = ammunition_consumption_defensive_k }
@@ -559,6 +552,7 @@ ammunition_calculate_tick_army_effects_army_attack_factor = {
                 set_temp_variable = { api_y2 = global.ammunition_consumption_offensive_supply_factor_effects_army_attack_factor_value^temp_next_index }
                 set_temp_variable = { api_target_x = ammunition_consumption_supply_offensive_result_factor_var }
                 set_temp_variable = { api_target_y = 0 }
+                set_temp_variable = { api_precision_multiplier = 1000 }
 
                 # Вычисляем через линейную интерполяцию нужное значение
                 ESAPI_calculate_linear = yes
@@ -637,6 +631,7 @@ ammunition_calculate_tick_army_effects_army_defence_factor = {
                 set_temp_variable = { api_y2 = global.ammunition_result_defensive_supply_factor_effects_army_defence_factor_value^temp_next_index }
                 set_temp_variable = { api_target_x = ammunition_consumption_supply_defensive_result_factor_var }
                 set_temp_variable = { api_target_y = 0 }
+                set_temp_variable = { api_precision_multiplier = 1000 }
 
                 # Вычисляем через линейную интерполяцию нужное значение
                 ESAPI_calculate_linear = yes
@@ -721,6 +716,7 @@ ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_supply = {
                 set_temp_variable = { api_y2 = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_value^temp_next_index }
                 set_temp_variable = { api_target_x = ammunition_consumption_supply_factor_var }
                 set_temp_variable = { api_target_y = 0 }
+                set_temp_variable = { api_precision_multiplier = 1000 }
 
                 # Вычисляем через линейную интерполяцию нужное значение
                 ESAPI_calculate_linear = yes
@@ -743,7 +739,7 @@ ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_su
     }
     else_if = { # Если лежит до или на первом референсном значении
         limit = { check_variable = { 
-            var = ammunition_consumption_defensive_supply_factor_var 
+            var = ammunition_consumption_offensive_supply_factor_var 
             value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^0 
             compare = less_than_or_equals
         } }
@@ -755,7 +751,7 @@ ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_su
     }
     else_if = { # Если лежит после последнего референсного значения
         limit = { check_variable = { 
-            var = ammunition_consumption_defensive_supply_factor_var 
+            var = ammunition_consumption_offensive_supply_factor_var 
             value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^temp_last_index 
             compare = greater_than
         } }
@@ -779,12 +775,12 @@ ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_su
             if = {
                 limit = { # Если target_x находится в диапазоне (x0; x1]
                     check_variable = { 
-                        var = ammunition_consumption_defensive_supply_factor_var
+                        var = ammunition_consumption_offensive_supply_factor_var
                         value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^current_index
                         compare = greater_than
                     } 
                     check_variable = { 
-                        var = ammunition_consumption_defensive_supply_factor_var
+                        var = ammunition_consumption_offensive_supply_factor_var
                         value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^temp_next_index 
                         compare = less_than_or_equals
                     }
@@ -795,8 +791,9 @@ ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_su
                 set_temp_variable = { api_y1 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_value^current_index }
                 set_temp_variable = { api_x2 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^temp_next_index }
                 set_temp_variable = { api_y2 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_value^temp_next_index }
-                set_temp_variable = { api_target_x = ammunition_consumption_defensive_supply_factor_var }
+                set_temp_variable = { api_target_x = ammunition_consumption_offensive_supply_factor_var }
                 set_temp_variable = { api_target_y = 0 }
+                set_temp_variable = { api_precision_multiplier = 1000 }
 
                 # Вычисляем через линейную интерполяцию нужное значение
                 ESAPI_calculate_linear = yes
@@ -814,7 +811,8 @@ ammunition_calculate_tick_ai = {
 
     set_variable = { ammunition_ai_supply_demiliter = ammunition_default_max_consumption_k }
     set_variable = { ammunition_delta_value_k_only_negative = ammunition_delta_value_k }
-    clamp_variable = { var = ammunition_delta_value_k_only_negative max = 0 }
+    multiply_variable = { ammunition_delta_value_k_only_negative = -1 }
+    clamp_variable = { var = ammunition_delta_value_k_only_negative min = 0 }
     subtract_from_variable = { ammunition_ai_supply_demiliter = ammunition_delta_value_k_only_negative }
     multiply_variable = { ammunition_ai_supply_demiliter = global.ammunition_ai_supply_days_left_formula_factor }
     add_to_variable = { ammunition_ai_supply_demiliter = ammunition_delta_value_k_only_negative }
@@ -897,6 +895,18 @@ ammunition_calculate_tick_ai_supply_factor = {
                 # Вычисляем через линейную интерполяцию нужное значение
                 ESAPI_calculate_linear = yes
 
+                
+                #if = {
+                #    limit = { original_tag = RUS }
+                #    log = "!!!!![?THIS.GetTag]"
+                #    log = "    api_x1 = [?api_x1]"
+                #    log = "    api_y1 = [?api_y1]"
+                #    log = "    api_x2 = [?api_x2]"
+                #    log = "    api_y2 = [?api_y2]"
+                #    log = "    api_target_x = [?api_target_x]"
+                #    log = "    api_target_y = [?api_target_y]"
+                #}
+
                 add_to_variable = { ammunition_ai_supply_factor = api_target_y }
                 add_to_temp_variable = { temp_break_flag = 1 }    
             }
@@ -961,28 +971,28 @@ ammunition_change_offensive_defensive_supply_factors = {
     subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var  = temp_delta }
     
     if = {
-        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var > 1.9 } }
+        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var > 0.5 } }
 
-        set_temp_variable = { temp = 1.9 }
+        set_temp_variable = { temp = 0.5 }
         subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
 
         add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }
         subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
     } 
     else_if = {
-        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var < 0.1 } }
+        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var < -0.5 } }
         
         add_to_variable = { ammunition_consumption_defensive_supply_factor_var = ammunition_consumption_offensive_supply_factor_var }
-        set_variable = { ammunition_consumption_offensive_supply_factor_var = 0.1 }
+        set_variable = { ammunition_consumption_offensive_supply_factor_var = -0.5 }
     }
 
     set_temp_variable = { temp_sum = ammunition_consumption_offensive_supply_factor_var }
     add_to_temp_variable = { temp_sum = ammunition_consumption_defensive_supply_factor_var }
 
     if = {
-        limit = { NOT = { check_variable = { temp_sum = 2 } } }
+        limit = { NOT = { check_variable = { temp_sum = 0 } } }
         
-        set_temp_variable = { temp = 2 }
+        set_temp_variable = { temp = 0 }
         subtract_from_temp_variable = { temp = temp_sum }
 
         add_to_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
