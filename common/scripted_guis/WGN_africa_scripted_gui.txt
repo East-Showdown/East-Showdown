@@ -23,7 +23,30 @@ scripted_gui = {
         ai_enabled = {
             original_tag = WGN
         }
-		effects = {			
+		effects = {	
+			WGN_quartering_Molkino_click = {
+				if = {
+					limit = { has_completed_focus = WGN_redeployment command_power > 49 check_variable = { map_africa_manpower_pool_free > 860 } NOT = { num_divisions > 15 } }
+					add_manpower = -861
+					add_command_power = -50
+					subtract_from_variable = { map_africa_manpower_pool_free = 861 }
+					if = {
+						limit = { num_divisions < 8 }
+						activate_mission = WGN_quartering_the_unit_Molkino
+					}
+					if = {
+						limit = { num_divisions > 7 num_divisions < 12 }
+						activate_mission = WGN_quartering_the_unit_Molkino_1
+					}
+					if = {
+						limit = { num_divisions > 11 num_divisions < 16 }
+						activate_mission = WGN_quartering_the_unit_Molkino_2
+					}
+					
+					
+					add_to_variable = { WGN_count_of_unit_quartering = 1 }
+				}
+			}
 			WGN_open_africa_gui_button_click = {
 				if = {
 					limit = { NOT = { has_country_flag = WGN_AFRICA_WINDOW_OPEN } }
@@ -76,7 +99,7 @@ scripted_gui = {
 		
 		triggers = {
 			WGN_mali_button_visible = {
-				check_variable = { map_africa_enabled_region_indexes^map_africa_sahel_region_index = 0 }
+				has_country_flag = WGN_mali_operation_is_on
 			}
 		}
 

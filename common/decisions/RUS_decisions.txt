@@ -5212,14 +5212,17 @@ RUS_information_war = {
 				value = -5
 				tooltip = IW_5_ukr_minus_var_add_tt
 			}
-			UKR = {
-			    country_event = {
-			        id = ukr.103
-				    days = 0
-			    }
+			effect_tooltip = {
+				UKR = {
+					country_event = {
+						id = ukr.103
+						days = 0
+					}
+				}
 			}
 			increase_escalation_by_1 = yes
 			hidden_effect = {
+				set_country_flag = UKR_VZLOM_ANUSA
 				add_to_variable = {	
 					var = global.rus_information_war_var_sum
 					value = 5
@@ -5773,6 +5776,42 @@ RUS_information_war = {
 			add_war_support = 0.02
 		}
 	}
+
+	#ахуенный тэг я доволен
+	RUS_kicks_opfl_ukr = {
+		icon = RUS_discrediting_Ukraine
+
+		fire_only_once = yes
+		cost = 25
+		
+		ai_will_do = {
+	    	base = 0
+			modifier = {
+				add = 1000
+				date > 2022.03.18
+			}
+        }
+
+		visible = { original_tag = RUS has_completed_focus = RUS_SMO has_global_flag = ukr_kicks_opfl }
+		
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_kicks_opfl_ukr"
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -2
+				tooltip = IW_2_ukr_minus_var_add_tt
+			}
+			hidden_effect = {
+				add_to_variable = {	
+					var = global.rus_information_war_var_sum
+					value = 2
+				}
+				clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
+			clr_global_flag = ukr_kicks_opfl
+		}
+	}
 }
 
 RUS_SMO_deccat = {
@@ -6132,7 +6171,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_full_scale_invasion = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6183,7 +6225,11 @@ RUS_SMO_deccat = {
 				state = 638
 				state = 637
 				state = 117	
-				state = 126		 
+				state = 126	
+				state = 889			
+				state = 704
+				state = 705
+				state = 706
 			}
 		}
 		
@@ -6221,16 +6267,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_full_scale_invasion: complete_effect"
 		    set_country_flag = SMO_full_scale_invasion
 		    hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}	
 		remove_effect = {
@@ -6273,7 +6315,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_offensive_on_kyiv = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6335,7 +6380,11 @@ RUS_SMO_deccat = {
 				state = 638
 				state = 637
 				state = 117	
-				state = 126		 
+				state = 126		
+				state = 889			
+				state = 704
+				state = 705
+				state = 706
 			}
 		}
 
@@ -6355,16 +6404,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_offensive_on_kyiv: complete_effect"
 			set_country_flag = SMO_offensive_on_kyiv
 			hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}
 		remove_effect = {
@@ -6395,7 +6440,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_concentrated_attack_on_kyiv = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6428,6 +6476,9 @@ RUS_SMO_deccat = {
 				state = 399
 				state = 400
 				state = 401
+				state = 704
+				state = 705
+				state = 706
 			}
 		}
 
@@ -6448,16 +6499,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_concentrated_attack_on_kyiv: complete_effect"
 			set_country_flag = SMO_concentrated_attack_on_kyiv
 			hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}
 		remove_effect = {
@@ -6506,6 +6553,7 @@ RUS_SMO_deccat = {
 					add_state_core = 637
 					add_state_core = 117	
 					add_state_core = 126	
+					add_state_core = 889	
 
 					transfer_state = 302
 					transfer_state = 634
@@ -6538,7 +6586,8 @@ RUS_SMO_deccat = {
 					transfer_state = 638
 					transfer_state = 637
 					transfer_state = 117	
-					transfer_state = 126		
+					transfer_state = 126	
+					transfer_state = 889						
 				}
 				RUS = {
 					add_state_core = 398
@@ -6562,7 +6611,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_from_border_to_border = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6622,6 +6674,10 @@ RUS_SMO_deccat = {
 				state = 637
 				state = 117	
 				state = 126	
+				state = 889	
+				state = 704
+				state = 705
+				state = 706
 			}
 		}
 
@@ -6641,16 +6697,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_from_border_to_border: complete_effect"
 			set_country_flag = SMO_from_border_to_border
 			hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}
 		remove_effect = {
@@ -6673,7 +6725,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_offensive_towards_novorossia = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6716,6 +6771,10 @@ RUS_SMO_deccat = {
 				state = 637
 				state = 117	
 				state = 126	
+				state = 889	
+				state = 704
+				state = 705
+				state = 706
 			}
 		}
 
@@ -6735,16 +6794,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_offensive_towards_novorossia: complete_effect"
 			set_country_flag = SMO_offensive_towards_novorossia
 			hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}
 		remove_effect = {
@@ -6804,7 +6859,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_send_troops_to_the_republic_of_donbass = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6812,6 +6870,14 @@ RUS_SMO_deccat = {
 	    	factor = 0
 			modifier = {  add = 1000  is_historical_focus_on = no }
         }
+		
+		highlight_states = {
+			highlight_state_targets = { 
+				state = 704
+				state = 705
+				state = 706
+			}
+		}
 
 		visible = {
 	        original_tag = RUS
@@ -6846,16 +6912,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_send_troops_to_the_republic_of_donbass: complete_effect"
 			set_country_flag = SMO_send_troops_to_the_republic_of_donbass
 			hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}
 		remove_effect = {
@@ -6946,7 +7008,10 @@ RUS_SMO_deccat = {
 	RUS_gp_SMO_offensive_on_the_dnieper = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 74
+        }
+        custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
 		days_remove = 7
 		
@@ -6969,6 +7034,9 @@ RUS_SMO_deccat = {
 				state = 622
 				state = 617
 				state = 336
+				state = 704
+				state = 705
+				state = 706
 			}
 		}
 
@@ -7005,16 +7073,12 @@ RUS_SMO_deccat = {
 					}
 				}
 			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_30_tt
-				command_power > 29
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_gp_SMO_offensive_on_the_dnieper: complete_effect"
 			set_country_flag = SMO_offensive_on_the_dnieper
 			hidden_effect = {
-				add_command_power = -30
+				add_command_power = -75
 			}
 		}
 		remove_effect = {
@@ -7080,7 +7144,10 @@ RUS_SMO_deccat = {
 	RUS_assault_Kiev = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 35
+		custom_cost_trigger = {
+            command_power > 34
+        }
+        custom_cost_text = decision_cost_CP_35
 		fire_only_once = yes
 		days_remove = 14
 		
@@ -7102,16 +7169,12 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
 			
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_assault_Kiev: complete_effect"
 			hidden_effect = {
-				add_command_power = -20
+				add_command_power = -35
 			}
 		}
 		remove_effect = {
@@ -7125,7 +7188,10 @@ RUS_SMO_deccat = {
 	RUS_assault_Kharkov = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 35
+		custom_cost_trigger = {
+            command_power > 24
+        }
+        custom_cost_text = decision_cost_CP_25
 		fire_only_once = yes
 		days_remove = 14
 		
@@ -7148,16 +7214,12 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
 			
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_assault_Kharkov: complete_effect"
 			hidden_effect = {
-				add_command_power = -20
+				add_command_power = -25
 			}
 		}
 		remove_effect = {
@@ -7171,7 +7233,10 @@ RUS_SMO_deccat = {
 	RUS_assault_Kherson = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 35
+		custom_cost_trigger = {
+            command_power > 24
+        }
+        custom_cost_text = decision_cost_CP_25
 		fire_only_once = yes
 		days_remove = 14
 		
@@ -7188,16 +7253,12 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
 			
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_assault_Kherson: complete_effect"
 			hidden_effect = {
-				add_command_power = -20
+				add_command_power = -25
 			}
 		}
 		remove_effect = {
@@ -7211,7 +7272,10 @@ RUS_SMO_deccat = {
 	RUS_assault_Mariupol = {
 		icon = GFX_RUS_general_staff
 		
-		cost = 35
+		custom_cost_trigger = {
+            command_power > 24
+        }
+        custom_cost_text = decision_cost_CP_25
 		fire_only_once = yes
 		days_remove = 14
 		
@@ -7228,16 +7292,12 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
 			
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_assault_Mariupol: complete_effect"
 			hidden_effect = {
-				add_command_power = -20
+				add_command_power = -25
 			}
 		}
 		remove_effect = {
@@ -7251,7 +7311,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Gostomel = {
 		icon = GFX_RUS_VDV
 		
-		cost = 25
+		custom_cost_trigger = {
+            command_power > 14
+        }
+        custom_cost_text = decision_cost_CP_15
 		fire_only_once = yes
 		days_remove = 5
 		
@@ -7273,15 +7336,11 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_10_tt
-				command_power > 9
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Gostomel: complete_effect"
 			hidden_effect = {
-				add_command_power = -10
+				add_command_power = -15
 			}
 		}
 		remove_effect = {
@@ -7293,7 +7352,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Vasilkov = {
 		icon = GFX_RUS_VDV
 		
-		cost = 25
+		custom_cost_trigger = {
+            command_power > 14
+        }
+        custom_cost_text = decision_cost_CP_15
 		fire_only_once = yes
 		days_remove = 5
 		
@@ -7315,15 +7377,11 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_10_tt
-				command_power > 9
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Vasilkov: complete_effect"
 			hidden_effect = {
-				add_command_power = -10
+				add_command_power = -15
 			}
 		}
 		remove_effect = {
@@ -7335,7 +7393,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Herson = {
 		icon = GFX_RUS_VDV
 		
-		cost = 25
+		custom_cost_trigger = {
+            command_power > 14
+        }
+        custom_cost_text = decision_cost_CP_15
 		fire_only_once = yes
 		days_remove = 5
 		
@@ -7361,15 +7422,11 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_10_tt
-				command_power > 9
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Herson: complete_effect"
 			hidden_effect = {
-				add_command_power = -10
+				add_command_power = -15
 			}
 		}
 		remove_effect = {
@@ -7381,7 +7438,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Kharkov = {
 		icon = GFX_RUS_VDV
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 19
+        }
+        custom_cost_text = decision_cost_CP_20
 		fire_only_once = yes
 		days_remove = 10
 		
@@ -7399,10 +7459,6 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Kharkov: complete_effect"
@@ -7419,7 +7475,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Odessa = {
 		icon = GFX_RUS_VDV
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 19
+        }
+        custom_cost_text = decision_cost_CP_20
 		fire_only_once = yes
 		days_remove = 10
 		
@@ -7438,8 +7497,8 @@ RUS_SMO_deccat = {
 		available = {
 			original_tag = RUS
 			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
+				tooltip = SMO_landing_Odessa_trigger
+				has_country_flag = SMO_landing_zmiiniy
 			}
 		}
 		complete_effect = {
@@ -7457,7 +7516,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Nikolaev = {
 		icon = GFX_RUS_VDV
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 19
+        }
+        custom_cost_text = decision_cost_CP_20
 		fire_only_once = yes
 		days_remove = 10
 		
@@ -7476,8 +7538,8 @@ RUS_SMO_deccat = {
 		available = {
 			original_tag = RUS
 			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
+				tooltip = SMO_landing_Odessa_trigger
+				has_country_flag = SMO_landing_zmiiniy
 			}
 		}
 		complete_effect = {
@@ -7495,7 +7557,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_Zaporozhye = {
 		icon = GFX_RUS_VDV
 		
-		cost = 30
+		custom_cost_trigger = {
+            command_power > 19
+        }
+        custom_cost_text = decision_cost_CP_20
 		fire_only_once = yes
 		days_remove = 10
 		
@@ -7513,10 +7578,6 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_20_tt
-				command_power > 19
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Zaporozhye: complete_effect"
@@ -7533,7 +7594,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_zmiiniy = {
 		icon = GFX_RUS_Marine_Corps
 		
-		cost = 25
+		custom_cost_trigger = {
+            command_power > 14
+        }
+        custom_cost_text = decision_cost_CP_15
 		fire_only_once = yes
 		days_remove = 5
 		
@@ -7558,15 +7622,11 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_10_tt
-				command_power > 9
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_zmiiniy: complete_effect"
 			hidden_effect = {
-				add_command_power = -10
+				add_command_power = -15
 			}
 		}
 		remove_effect = {
@@ -7578,7 +7638,10 @@ RUS_SMO_deccat = {
 	RUS_do_SMO_landing_berdyansk = {
 		icon = GFX_RUS_Marine_Corps
 		
-		cost = 25
+		custom_cost_trigger = {
+            command_power > 14
+        }
+        custom_cost_text = decision_cost_CP_15
 		fire_only_once = yes
 		days_remove = 5
 		
@@ -7604,15 +7667,11 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_10_tt
-				command_power > 9
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_berdyansk: complete_effect"
 			hidden_effect = {
-				add_command_power = -10
+				add_command_power = -15
 			}
 		}
 		remove_effect = {
@@ -7624,7 +7683,10 @@ RUS_SMO_deccat = {
 	RUS_operational_center_of_airborne_operations = {
 		icon = GFX_RUS_VDV
 		
-		cost = 40
+		custom_cost_trigger = {
+            command_power > 29
+        }
+        custom_cost_text = decision_cost_CP_30
 		fire_only_once = yes
 		
 		ai_will_do = {
@@ -7634,13 +7696,10 @@ RUS_SMO_deccat = {
 		visible = {
 	        original_tag = RUS
 			OR = {
-				has_country_flag = { flag = SMO_send_troops_to_the_republic_of_donbass  days > 7 }
-				has_country_flag = { flag = SMO_offensive_towards_novorossia  days > 7 }
 				has_country_flag = { flag = SMO_from_border_to_border  days > 7 }
 				has_country_flag = { flag = SMO_concentrated_attack_on_kyiv  days > 7 }
 				has_country_flag = { flag = SMO_offensive_on_kyiv  days > 7 }
 				has_country_flag = { flag = SMO_full_scale_invasion  days > 7 }
-				has_country_flag = { flag = SMO_offensive_on_the_dnieper  days > 7 }
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
@@ -7649,16 +7708,12 @@ RUS_SMO_deccat = {
 
 		available = {
 			original_tag = RUS
-			custom_trigger_tooltip = {
-				tooltip = SMO_choosing_plan_trigger_command_power_50_tt
-				command_power > 49
-			}
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_operational_center_of_airborne_operations"
 		    custom_effect_tooltip = RUS_operational_center_of_airborne_operations_cet
 			hidden_effect = {
-				add_command_power = -50
+				add_command_power = -30
 				set_country_flag = RUS_expand_the_preparation_of_amphibious_operations_cf
 				mark_focus_tree_layout_dirty = yes
 			}
@@ -9372,7 +9427,241 @@ RUS_SMO_deccat = {
 			highlight_color_before_active = 2
 		}
 	}
+	
+	RUS_hold_Gostomel_airport = {
+		icon = GFX_RUS_VDV
+		is_good = yes
+		days_mission_timeout = 7
+		selectable_mission = no
+		fire_only_once = yes
 
+		activation = {
+			always = no
+		}
+
+		available = {
+			UKR = {
+				controls_province = 18128
+			}
+		}
+
+		timeout_effect = {
+			if = {
+				limit = { 94 = { has_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS } } }
+				hidden_effect = {
+					86 = { remove_dynamic_modifier = { modifier = RUS_offensive_modifier } add_dynamic_modifier = { modifier = RUS_offensive_modifier_2 scope = RUS days = 15 } }
+					73 = { remove_dynamic_modifier = { modifier = RUS_offensive_modifier } add_dynamic_modifier = { modifier = RUS_offensive_modifier_2 scope = RUS days = 15 } }
+					94 = { remove_dynamic_modifier = { modifier = RUS_offensive_modifier } }
+					95 = { remove_dynamic_modifier = { modifier = RUS_offensive_modifier } add_dynamic_modifier = { modifier = RUS_offensive_modifier_2 scope = RUS days = 15 } }
+				}
+				94 = {
+					add_dynamic_modifier = { modifier = RUS_offensive_modifier_2 scope = RUS days = 15 }
+				}
+			}
+			else = {
+				hidden_effect = {
+					95 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					86 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					73 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+				}
+				94 = {
+					add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 15 }
+				}
+			}
+		}
+		highlight_states = {
+			highlight_provinces = { 18128 }
+		}
+	}
+	RUS_hold_Vasykkov_airport = {
+		icon = GFX_RUS_VDV
+		is_good = yes
+		days_mission_timeout = 7
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			UKR = {
+				controls_province = 9258
+			}
+		}
+
+		timeout_effect = {
+			104 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 15 }
+			}
+			106 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 15 }
+			}
+		}
+		highlight_states = {
+			highlight_provinces = { 9258 }
+		}
+	}
+	RUS_hold_Kharkov_desant = {
+		icon = GFX_RUS_VDV
+		is_good = yes
+		days_mission_timeout = 12
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			UKR = {
+				controls_province = 15111
+			}
+		}
+
+		timeout_effect = {
+			if = {
+				limit = { 103 = { has_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS } } }
+				hidden_effect = {
+					103 = { remove_dynamic_modifier = { modifier = RUS_offensive_modifier } }
+				}
+				103 = {
+					add_dynamic_modifier = { modifier = RUS_offensive_modifier_2 scope = RUS days = 20 }
+				}
+			}
+			else = {
+				103 = {
+					add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+				}
+			}
+		}
+		highlight_states = { 
+			highlight_provinces = { 15111 }
+		}
+	}
+	RUS_hold_Zaporoshie_desant = {
+		icon = GFX_RUS_VDV
+		is_good = yes
+		days_mission_timeout = 12
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			num_divisions_in_states = {
+				count < 4
+				states = { 208 671 222 }
+			}	
+			UKR = {
+				controls_state = 208
+			}
+		}
+
+		timeout_effect = {
+			208 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			671 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			222 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			669 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			670 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			667 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			210 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+		}
+		highlight_states = { 
+			highlight_provinces = { 15111 }
+		}
+	}
+	RUS_hold_Odessa_desant = {
+		icon = GFX_RUS_Marine_Corps
+		is_good = yes
+		days_mission_timeout = 12
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			num_divisions_in_states = {
+				count < 4
+				states = { 256 }
+			}	
+			UKR = {
+				controls_state = 256
+			}
+		}
+
+		timeout_effect = {
+			256 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			271 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			235 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			227 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+		}
+		highlight_states = { 
+			highlight_state_targets = { state = 256 }
+		}
+	}
+	RUS_hold_Nikolaev_desant = {
+		icon = GFX_RUS_Marine_Corps
+		is_good = yes
+		days_mission_timeout = 12
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			num_divisions_in_states = {
+				count < 4
+				states = { 233 }
+			}	
+			UKR = {
+				controls_state = 233
+			}
+		}
+
+		timeout_effect = {
+			233 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			209 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+			215 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+		}
+		highlight_states = { 
+			highlight_state_targets = { state = 233 }
+		}
+	}
 
 }
 

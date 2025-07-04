@@ -2,6 +2,8 @@ on_actions = {
 	on_startup = {
         effect = {
 
+			set_variable = { global.mod_version = 0600 }
+
 			news_event = {
 				id = holy_news.1
 				days = 1213
@@ -24,8 +26,6 @@ on_actions = {
 			set_variable = {
 				SMO_SELECTED_BRIDGE_VARIABLE = -1
 			}
-			
-			
 			news_event = {
 				id = news.208
 				days = 924
@@ -42,10 +42,10 @@ on_actions = {
 				}
 			}
 
-			news_event = {
-				id = news.1021
-				days = 776
-			}
+			#news_event = {
+			#	id = news.1021
+			#	days = 776
+			#}
 
 			if = {
 				limit = {
@@ -185,6 +185,11 @@ on_actions = {
 			293 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			172 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			173 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			715 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			213 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			221 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			716 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			717 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 
 			NTO = { add_dynamic_modifier = { modifier = NTO_Civilized_World } }
 
@@ -212,6 +217,8 @@ on_actions = {
 				country_event = { id = rus.2 days = 95 }
 				country_event = { id = rus.221 days = 15 }
 				country_event = { id = rus.222 days = 18 }
+				country_event = { id = rus.267 days = 425 }
+				country_event = { id = rus.268 days = 1279 }
 				mikhail_mizintsev = {
 					unit_leader_event = { id = rus_unit_leader_event.4 days = 266 }
 				}
@@ -232,7 +239,6 @@ on_actions = {
 				set_variable = { RUS_state_of_stability_drift_defence_factor = 0.5 }
 				set_variable = { RUS_state_of_stability_drift_neutrality_drift = 0.05 }
 				set_variable = { RUS_state_of_stability_political_power_factor = 0.1 }
-				set_variable = { RUS_VCRF_army_defence_factor = -0.15 }
 				set_variable = { RUS_VCRF_surrender_limit = 0.1 }
 				set_variable = { RUS_VCRF_planning_speed = -0.4 }
 				set_variable = { RUS_VCRF_max_planning = 0.1 }
@@ -397,10 +403,6 @@ on_actions = {
 				add_ideas = West_economy_issue
 			}
 
-			CHE = {
-				add_ideas = West_economy_issue
-			}
-
 			HUN = {
 				add_ideas = West_economy_issue
 			}
@@ -470,6 +472,10 @@ on_actions = {
                 set_variable = { RUS_Vpk_dynamic_mod_production_speed_arms_factory_factor = -0.075 }
                 set_variable = { RUS_Vpk_dynamic_mod_equipment_conversion_speed = -0.15 }
                 set_variable = { RUS_Vpk_dynamic_mod_ammunition_plants_efficiency_factor = 0.2 }
+				news_event = {
+					id = news.372
+					days = 46
+				}
             }
 			if = {
 				limit = {
@@ -852,17 +858,27 @@ on_actions = {
 			}
 			if = {
 				limit = {
-					UKR = {
-		    			has_war_with = WGN
-					}
-					date = 2022.11.13
-					date < 2022.11.14
+					has_global_flag = RUS_WGN_event_23_def_started
+					date > 2022.11.13
 				}
 				WGN = {
 					country_event = {
-			    		id = rus.113
+			    		id = WGN.23
 						days = 0
 					}
+				}
+				clr_global_flag = RUS_WGN_event_23_def_started
+			}
+			if = {
+				limit = {
+					WGN = {
+						has_country_flag = RUS_Wagner_march_for_24_june
+					}
+					date = 2023.06.23
+				}
+				WGN = {
+					country_event = WGN_hidden.1
+					clr_country_flag = RUS_Wagner_march_for_24_june
 				}
 			}
 			if = {
@@ -1000,6 +1016,25 @@ on_actions = {
 			}
 			if = {
 				limit = {
+					UKR = {
+						has_completed_focus = UKR_million_ammo_per_year
+					}
+				}
+				add_to_variable = {
+					UKR_million_ammo_per_year = ammunition_daily
+				}
+			}
+		}
+	}
+	on_daily_WGN = {
+		effect = {
+			set_variable = { map_africa_manpower_pool_free = WGN.manpower }
+		}
+	}
+	on_daily_RUS = {
+		effect = {
+			if = {
+				limit = {
 				    date > 2023.05.20
 					has_global_flag = WGN_shell_hunger_flag_worse
 					has_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
@@ -1011,17 +1046,53 @@ on_actions = {
 			if = {
 				limit = {
 					UKR = {
-						has_completed_focus = UKR_million_ammo_per_year
+					   	has_war_with = RUS
+					}
+					date = 2022.4.14
+					date < 2022.4.15
+				}
+				RUS = {
+					country_event = {
+						  	id = rus.113
+						days = 0
 					}
 				}
-				add_to_variable = {
-					UKR_million_ammo_per_year = ammunition_daily
+			}
+			if = {
+				limit = {
+					has_war_with = UKR
+					controls_province = 10145
+				}
+				RUS = {
+					country_event = {
+						id = rus.118
+						days = 0
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_war_with = UKR
+					has_country_leader = {
+						character = vladimir_putin
+						ruling_only = yes
+					}
+					surrender_progress < 0.15
+					date = 2024.2.28
+				}
+				RUS = {
+					country_event = {
+						id = rus.142
+						days = 0
+					}
+					country_event = {
+						id = rus.141
+						days = 20
+					}
 				}
 			}
 		}
 	}
-
-
 
 	on_weekly = {
 		effect = {
@@ -1300,19 +1371,22 @@ on_actions = {
 	}
 	on_capitulation = {
 		effect = { 
-		    RUS = {
-				divide_variable = {
-                    var = RUS_recruitment_of_volunteers_weekly_manpower
-                    value = 2
-                }
-			}
 			if = {
 				limit = {
+					NOT = {
+						has_global_flag = RUS_Wagner_victory
+					}
 					ROOT = {
 						original_tag = UKR
 					}
 					FROM = {
 						original_tag = RUS
+					}
+				}
+				RUS = {
+					divide_variable = {
+						var = RUS_recruitment_of_volunteers_weekly_manpower
+						value = 2
 					}
 				}
 				UKR = {
@@ -1384,6 +1458,35 @@ on_actions = {
 						hours = 3
 					}
 			    }
+			}
+			if = {
+				limit = {
+					has_global_flag = RUS_Wagner_victory
+					ROOT = {
+						original_tag = UKR
+					}
+					FROM = {
+						original_tag = RUS
+					}
+				}
+				RUS = {
+					divide_variable = {
+						var = RUS_recruitment_of_volunteers_weekly_manpower
+						value = 2
+					}
+					annex_country = {
+						target = LPR
+						transfer_troops = yes
+					}
+					annex_country = {
+						target = DPR
+						transfer_troops = yes
+					}
+					annex_country = {
+						target = UKR
+						transfer_troops = no
+					}
+				}
 			}
 
 			#MEME
