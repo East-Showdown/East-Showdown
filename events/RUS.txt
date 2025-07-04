@@ -398,9 +398,12 @@ country_event = {
 	desc = rus.13.desc
 	fire_only_once = yes
 	is_triggered_only = yes
+	picture = GFX_country_event_278
 	immediate = {
-		NTO = {
-			complete_national_focus = nto_impose_sanctions
+		hidden_effect = {
+			NTO = {
+				complete_national_focus = nto_impose_sanctions
+			}
 		}
 	}
 	option = {
@@ -651,6 +654,20 @@ country_event = {
 	}
 }
 
+#Комитет спасения за жизнь и порядок
+country_event = {
+	id = rus.22
+	title = rus.22.t
+	desc = rus.22.desc
+	picture = GFX_country_event_279
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.22.a
+		log = "[GetDateText]: [This.GetName]: rus.22.a executed"
+	}
+}
+
 country_event = {
 	id = rus.29
 	title = rus.29.t
@@ -702,6 +719,45 @@ country_event = {
 		}
 		add_war_support = 0.03
 		set_global_flag = strelkov_rus_hire
+	}
+}
+
+country_event = {
+	id = rus.33
+	title = rus.33.t
+	desc = rus.33.d
+	picture = GFX_country_event_277
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.33.o
+		log = "[GetDateText]: [This.GetName]: rus.33.o executed"
+		add_political_power = 50
+		add_stability = 0.05
+		add_war_support = 0.075
+		if = {
+			limit = {
+				has_war = yes
+				NOT = {
+					has_completed_focus = RUS_for_russia_for_truth
+				}
+			}
+			complete_national_focus = RUS_for_russia_for_truth
+		}
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = 7.5
+			tooltip = IW_7_5_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = -7.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			news_event = { id = news.182 days = 1 }
+		}
 	}
 }
 
