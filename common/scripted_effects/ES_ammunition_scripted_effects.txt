@@ -994,6 +994,15 @@ ammunition_change_supply_factor = {
 }
 
 ammunition_supply_factor_clamp = {
+	if = {
+        limit = { 
+			original_tag = RUS 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation 
+			check_variable = { ammunition_consumption_supply_factor_var > 0.75 }
+		}
+        set_variable = { ammunition_consumption_supply_factor_var = 0.75 }
+    }
+	
     if = {
         limit = { check_variable = { ammunition_consumption_supply_factor_var > 2 } }
         set_variable = { ammunition_consumption_supply_factor_var = 2 }
@@ -1017,6 +1026,19 @@ ammunition_change_offensive_defensive_supply_factors_clamp = {
         limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var > 0.5 } }
 
         set_temp_variable = { temp = 0.5 }
+        subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
+
+        add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }
+        subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
+    } 
+	if = {
+        limit = { 
+			original_tag = RUS 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation 
+			check_variable = { ammunition_consumption_offensive_supply_factor_var > -0.25 } 
+		}
+
+        set_temp_variable = { temp = -0.25 }
         subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
 
         add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }
