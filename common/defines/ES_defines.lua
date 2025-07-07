@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 16								-- 0.4.1.0
+NDefines.NGame.SAVE_VERSION = 17								-- 0.6.0.0
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -46,7 +46,6 @@ NDefines.NDiplomacy.LICENSE_ACCEPTANCE_TECH_DIFFERENCE_BASE = 20    -- Acceptanc
 NDefines.NCountry.CONVOY_LENDLEASE_RANGE_FACTOR = 1				-- How much range affects convoy need for lend lease
 NDefines.NCountry.CONVOY_INTERNATIONAL_MARKET_RANGE_FACTOR = 1	-- How much range affects convoy need for international market
 NDefines.NCountry.CONVOY_RANGE_FACTOR = 1                        -- how much range affects convoy need
-NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.002				-- Conversion scale for planes to air supply
 NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for every country
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain

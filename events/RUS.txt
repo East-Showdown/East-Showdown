@@ -379,7 +379,7 @@ country_event = {
 		add_war_support = 0.02
 		army_experience = 5
 		hidden_effect = {
-			 
+			activate_mission = RUS_hold_Gostomel_airport
 			load_oob = gostomel
 			UKR = {
 				country_event = {
@@ -398,9 +398,12 @@ country_event = {
 	desc = rus.13.desc
 	fire_only_once = yes
 	is_triggered_only = yes
+	picture = GFX_country_event_278
 	immediate = {
-		NTO = {
-			complete_national_focus = nto_impose_sanctions
+		hidden_effect = {
+			NTO = {
+				complete_national_focus = nto_impose_sanctions
+			}
 		}
 	}
 	option = {
@@ -651,6 +654,20 @@ country_event = {
 	}
 }
 
+#Комитет спасения за жизнь и порядок
+country_event = {
+	id = rus.22
+	title = rus.22.t
+	desc = rus.22.desc
+	picture = GFX_country_event_279
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.22.a
+		log = "[GetDateText]: [This.GetName]: rus.22.a executed"
+	}
+}
+
 country_event = {
 	id = rus.29
 	title = rus.29.t
@@ -702,6 +719,45 @@ country_event = {
 		}
 		add_war_support = 0.03
 		set_global_flag = strelkov_rus_hire
+	}
+}
+
+country_event = {
+	id = rus.33
+	title = rus.33.t
+	desc = rus.33.d
+	picture = GFX_country_event_277
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.33.o
+		log = "[GetDateText]: [This.GetName]: rus.33.o executed"
+		add_political_power = 50
+		add_stability = 0.05
+		add_war_support = 0.075
+		if = {
+			limit = {
+				has_war = yes
+				NOT = {
+					has_completed_focus = RUS_for_russia_for_truth
+				}
+			}
+			complete_national_focus = RUS_for_russia_for_truth
+		}
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = 7.5
+			tooltip = IW_7_5_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = -7.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			news_event = { id = news.182 days = 1 }
+		}
 	}
 }
 
@@ -1877,9 +1933,6 @@ country_event = {
 		add_war_support = 0.035
 		add_command_power = 25
 		custom_effect_tooltip = RUS_event_80_tt
-		remove_ideas = {
-			RUS_Ammunition_restrictions_idea
-		}
 		custom_effect_tooltip = IW_5_var_add_tt
 		hidden_effect = {
 			add_to_variable = {	
@@ -2302,7 +2355,6 @@ country_event = {
 			value = -25
 			tooltip = IW_25_minus_var_add_tt
 		}
-		custom_effect_tooltip = RUS_event_rus_105_tt
 		hidden_effect = {
 		    add_to_variable = {
 				var = global.ukr_information_war_var_sum
@@ -2418,7 +2470,7 @@ country_event = {
 		add_war_support = 0.02
 		army_experience = 5
 		hidden_effect = {
-			 
+			activate_mission = RUS_hold_Vasykkov_airport
 			load_oob = RUS_vasilkov_desant
 			UKR = {
 				country_event = {
@@ -4373,36 +4425,76 @@ country_event = {
         }
     }
 }
-#ОДШБр «Ветераны»
+#Выборы - безусловная победа верховного
 country_event = {
 	id = rus.141
 	title = rus.141.t
 	desc = rus.141.desc
-	picture = GFX_country_event_096
+	picture = GFX_country_event_276
     fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = rus.141.a
 		log = "[GetDateText]: [This.GetName]: rus.141.a executed"
+		add_political_power = 100
+		add_popularity = {
+			ideology = neutrality
+			popularity = 0.15
+		}
         hidden_effect = {
-			load_oob = RUS_ODSHBr_Veterany
-        }
+			if = {
+				limit = { has_completed_focus = RUS_Election_conservatism }
+				set_portraits = {
+					character = vladimir_putin
+					civilian = {
+						large = "/gfx/leaders/RUS/lideri/vladimir_putin_hist_2024.dds"
+					}
+				}
+			}
+			if = {
+				limit = { has_completed_focus = RUS_Election_militarisation }
+				set_cosmetic_tag = RUS_2024_military
+				set_portraits = {
+					character = vladimir_putin
+					civilian = {
+						large = "/gfx/leaders/RUS/lideri/vladimir_putin_milit_2024.dds"
+					}
+				}
+			}
+			complete_national_focus = RUS_Election_2024
+			news_event = {
+				id = news.373
+				days = 1
+			}
+		}
     }
 }
-#ЧВК «Уран»
+#Послание Пыпы фед. собранию
 country_event = {
 	id = rus.142
 	title = rus.142.t
 	desc = rus.142.desc
-	picture = GFX_country_event_097
+	picture = GFX_country_event_275
     fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = rus.142.a
 		log = "[GetDateText]: [This.GetName]: rus.142.a executed"
-        hidden_effect = {
-			load_oob = RUS_CHVK_Uran
-        }
+        custom_effect_tooltip = RUS_142_a_cet
+		hidden_effect = {
+			complete_national_focus = RUS_Election_conservatism
+		}
+		ai_chance = {
+			factor = 100
+		}
+    }
+	option = {
+		name = rus.142.b
+		log = "[GetDateText]: [This.GetName]: rus.142.a executed"
+        custom_effect_tooltip = RUS_142_b_cet
+		hidden_effect = {
+			complete_national_focus = RUS_Election_militarisation
+		}
     }
 }
 #Батальон богдана хмельницкого
@@ -4868,9 +4960,53 @@ country_event = {
 	option = {
 		name = rus.156.a
 		log = "[GetDateText]: [This.GetName]: rus.156.a executed"
-		add_political_power = -20
-		add_war_support = -0.05
+		add_command_power = -20
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -5
+			tooltip = IW_5_minus_var_add_tt
+		}
+		set_country_flag = SMO_first_failure
+		
+		remove_ideas = armored_columns_spirit
+		add_ideas = frontline_improvisation_spirit
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			news_event = {
+                id = news.310
+                days = 1
+            }
+		}
     }
+}
+
+country_event = {
+	id = rus_hidden.14
+	title = rus_hidden.14.t
+	desc = rus_hidden.14.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = { 
+				UKR = { 
+					surrender_progress < 0.35
+					has_war_with = RUS
+				}
+			}
+			country_event = rus.156
+		}
+	}
+	option = {
+		name = rus_hidden.14.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.14.a executed"
+	}
 }
 
 country_event = {
@@ -4925,6 +5061,15 @@ country_event = {
 	option = {
 		name = rus.158.a
 		log = "[GetDateText]: [This.GetName]: rus.158.a executed"
+		if = { 
+			limit = { 
+				has_idea = armored_columns_spirit
+			}
+			hidden_effect = {
+				remove_ideas = armored_columns_spirit
+			}	
+			add_ideas = frontline_improvisation_spirit	
+		}
 		add_political_power = -60
 		add_command_power = -30
 		add_war_support = -0.05
@@ -5186,12 +5331,13 @@ country_event = {
 	option = {
 		name = rus.171.a
 		log = "[GetDateText]: [This.GetName]: rus.171.a executed"
-		set_power_balance = {
-            id = RUS_power_balance
-            left_side = default_left_side
-            right_side = default_right_side
-        }
+		custom_effect_tooltip = RUS_171_tooltip
 		hidden_effect = {
+			set_power_balance = {
+				id = RUS_power_balance
+				left_side = default_left_side
+				right_side = default_right_side
+			}
 			add_dynamic_modifier = {
 				modifier = WGN_start_ideas_modifier
 			}
@@ -5205,6 +5351,20 @@ country_event = {
 					modifier = WGN_start_ideas_modifier
 				}
 				country_event = WGN.29
+			}
+			if = {
+				limit = {
+					date < 2022.11.13 
+				}
+				set_global_flag = RUS_WGN_event_23_def_started
+			}
+			if = {
+				limit = {
+					date > 2022.11.13 
+				}
+				WGN = {
+					country_event = { id = WGN.23 days = 31 }
+				}
 			}
 		}
     }
@@ -5314,8 +5474,7 @@ country_event = {
 		add_war_support = 0.02
 		army_experience = 5
 		hidden_effect = {
-			 
-
+			activate_mission = RUS_hold_Kharkov_desant
 			103 = {
 				create_unit = {
 					division = "name = \"Desantnaya gruppa 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Paratroopers batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
@@ -5399,7 +5558,7 @@ country_event = {
 		add_war_support = 0.02
 		army_experience = 5
 		hidden_effect = {
-			 
+			activate_mission = RUS_hold_Odessa_desant
 			256 = {
 				create_unit = {
 					division = "name = \"Desantnaya gruppa 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Paratroopers batalion\" start_experience_factor = 0.5 start_equipment_factor = 1"
@@ -5483,7 +5642,7 @@ country_event = {
 		add_war_support = 0.02
 		army_experience = 5
 		hidden_effect = {
-			 
+			activate_mission = RUS_hold_Nikolaev_desant
 
 			233 = {
 				create_unit = {
@@ -5568,7 +5727,7 @@ country_event = {
 		add_war_support = 0.02
 		army_experience = 5
 		hidden_effect = {
-			 
+			activate_mission = RUS_hold_Zaporoshie_desant
 			210 = {
 				create_unit = {
 					division = "name = \"Desantniy otryad 11-y otdel'noy gvardeyskoy desantno-shturmovoy brigady\" division_template = \"Light paratrooper\" start_experience_factor = 0.4 start_equipment_factor = 1"
@@ -6408,7 +6567,7 @@ country_event = {
 			check_variable = { RUS_rosconservation_zapas < 1500 }
 		}
 		original_tag = RUS
-		RUS = { check_variable = { ammunition_variable < 6000 } }
+		RUS = { check_variable = { ammunition_value_k < 6000 } }
 	}
 
 	immediate = {
@@ -6433,7 +6592,7 @@ country_event = {
 	trigger = {
 		has_global_flag = start_rosconservation
 		original_tag = RUS
-		RUS = { check_variable = { ammunition_variable > 9000 } }
+		RUS = { check_variable = { ammunition_value_k > 9000 } }
 	}
 
 	immediate = {
@@ -6461,7 +6620,7 @@ country_event = {
 		has_global_flag = close_rosconservation
 		has_global_flag = again_restore_warehouse
 		original_tag = RUS
-		check_variable = { ammunition_variable > 14000 }
+		check_variable = { ammunition_value_k > 14000 }
 		NOT = {
 			check_variable = { RUS_ammunition_warehouse_count_restore = 0 }
 			has_global_flag = restore_warehouse_refusal
@@ -6481,7 +6640,7 @@ country_event = {
 				check_variable = { RUS_ammunition_warehouse_count_restore = 1500 } 
 			}
 			add_to_variable = { RUS_rosconservation_zapas = 1500 }
-			add_to_variable = { ammunition_variable = -1500 }
+			add_to_variable = { ammunition_value_k = -1500 }
 			add_to_variable = { RUS_ammunition_warehouse_count_restore = -1500 }
 		}
 		if = {
@@ -6489,7 +6648,7 @@ country_event = {
 				check_variable = { RUS_ammunition_warehouse_count_restore = 3000 } 
 			}
 			add_to_variable = { RUS_rosconservation_zapas = 3000 }
-			add_to_variable = { ammunition_variable = -3000 }
+			add_to_variable = { ammunition_value_k = -3000 }
 			add_to_variable = { RUS_ammunition_warehouse_count_restore = -3000 }
 		}
 		if = {
@@ -6497,7 +6656,7 @@ country_event = {
 				check_variable = { RUS_ammunition_warehouse_count_restore = 4500 } 
 			}
 			add_to_variable = { RUS_rosconservation_zapas = 4500 }
-			add_to_variable = { ammunition_variable = -4500 }
+			add_to_variable = { ammunition_value_k = -4500 }
 			add_to_variable = { RUS_ammunition_warehouse_count_restore = -4500 }
 		}
 		if = {
@@ -6505,7 +6664,7 @@ country_event = {
 				check_variable = { RUS_ammunition_warehouse_count_restore = 6000 } 
 			}
 			add_to_variable = { RUS_rosconservation_zapas = 6000 }
-			add_to_variable = { ammunition_variable = -6000 }
+			add_to_variable = { ammunition_value_k = -6000 }
 			add_to_variable = { RUS_ammunition_warehouse_count_restore = -6000 }
 		}
 		if = {
@@ -6513,7 +6672,7 @@ country_event = {
 				check_variable = { RUS_ammunition_warehouse_count_restore > 6000 } 
 			}
 			add_to_variable = { RUS_rosconservation_zapas = 6000 }
-			add_to_variable = { ammunition_variable = -6000 }
+			add_to_variable = { ammunition_value_k = -6000 }
 			add_to_variable = { RUS_ammunition_warehouse_count_restore = -6000 }
 			set_global_flag = again_restore_warehouse
 		}
@@ -6989,10 +7148,19 @@ country_event = {
 	id = rus.215
 	title = rus.215.t
 	desc = rus.215.desc
-	picture = sergei_syrovikin
+	picture = GFX_country_event_228
     fire_only_once = yes
 	is_triggered_only = yes
-	
+	immediate = {
+		hidden_effect = {
+			clear_variable = RUS_sic_SMO_max_planning_factor
+			clear_variable = RUS_sic_SMO_experience_gain_army_unit_factor
+			set_variable = { RUS_sic_SMO_initiative_factor = 0.075 }
+			set_variable = { RUS_sic_SMO_army_org_factor = 0.1 }
+			set_variable = { RUS_sic_SMO_command_power_gain_mult = 0.05 }
+			set_variable = { RUS_sic_SMO_supply_consumption_factor = 0.1 }
+		}
+	}
 	option = {
 		name = rus.215.a
 		log = "[GetDateText]: [This.GetName]: rus.215.a executed"
@@ -7000,45 +7168,20 @@ country_event = {
 		custom_effect_tooltip = CIS_Dvornikov_cet
 		custom_effect_tooltip = CIS_Dvornikov_traits
 		hidden_effect = {
-			add_dynamic_modifier = { modifier = RUS_sic_SMO_traits }
-			set_variable = { RUS_sic_SMO_army_defence_factor = 0.05 }
-			set_variable = { RUS_sic_SMO_dig_in_speed_factor = 0.25 }
-			set_variable = { RUS_sic_SMO_supply_consumption_factor = 0.1 }
-			set_variable = { RUS_sic_SMO_attrition = -0.15 }
-			clear_variable = RUS_sic_SMO_experience_gain_army_unit_factor
-			clear_variable = RUS_sic_SMO_army_org_factor
-			clear_variable = RUS_sic_SMO_command_power_gain_mult
-			clear_variable = RUS_sic_SMO_special_forces_cap
-			clear_variable = RUS_sic_SMO_special_forces_attack_factor
-			clear_variable = RUS_sic_SMO_land_night_attack
-			clear_variable = RUS_sic_SMO_special_forces_training_time_factor
-			clear_variable = RUS_sic_SMO_training_time_army_factor
-			clear_variable = RUS_sic_SMO_army_speed_factor
-			clear_variable = RUS_sic_SMO_army_morale_factor
-			clear_variable = RUS_sic_SMO_pocket_penalty
-			clear_variable = RUS_sic_SMO_experience_gain_army_unit_factor
-			clear_variable = RUS_sic_SMO_max_planning_factor
-			clear_variable = RUS_sic_SMO_terrain_penalty_reduction
-			clear_variable = RUS_sic_SMO_command_power_gain_mult
 			clr_country_flag = CIS_general_staff
-			clr_country_flag = CIS_Surovikin
-			clr_country_flag = CIS_Gerasimov
-			clr_country_flag = CIS_Teplinsky
-			clr_country_flag = CIS_Salyukov
+			set_country_flag = RUS_front_saving_units_cf
 		}
 	}
 	option = {
 		name = rus.215.b
 		log = "[GetDateText]: [This.GetName]: rus.215.b executed"
-		add_political_power = -150
-		army_experience  = -25
-		add_command_power = -50
-		add_stability = -0.025
-		custom_effect_tooltip = CIS_general_staff_cet_debuff
-		custom_effect_tooltip = CIS_general_staff_traits_debuff
-		set_variable = { RUS_sic_SMO_army_speed_factor = -0.05 }
-		set_variable = { RUS_sic_SMO_max_planning_factor = -0.025 }
-		set_variable = { RUS_sic_SMO_army_org_factor = -0.05 }		
+		set_country_flag = CIS_Dvornikov
+		custom_effect_tooltip = CIS_Dvornikov_cet
+		custom_effect_tooltip = CIS_Dvornikov_traits
+		hidden_effect = {
+			clr_country_flag = CIS_general_staff
+			set_country_flag = RUS_stabilize_the_front_cf
+		}	
 	}
 }
 
@@ -7491,7 +7634,7 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 		    UKR = {
-				country_event = { id = ukr.106 days = 0 }
+				country_event = { id = ukr.108 days = 0 }
 			}
 		}
 	}
@@ -7572,7 +7715,7 @@ country_event = {
 			country_event = { id = rus.236 days = 5 }
 			WGN = {
 				add_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 2 }
 				country_event = { id = WGN.2 days = 5 }
 				add_power_balance_value = {
 					id = WGN_power_balance
@@ -7580,13 +7723,13 @@ country_event = {
 				}
 			}
 			CHE = {
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 3 }
 			}
 			DPR = {
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 4 }
 			}
 			LPR = {
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 4 }
 			}
 			add_power_balance_value = {
 				id = RUS_power_balance
@@ -7639,6 +7782,15 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: rus.235.a executed"
 		custom_effect_tooltip = RUS_EVENT_rus_235_cet
 		if = {
+			limit = { tag = RUS }
+			custom_effect_tooltip = RUS_EVENT_rus_tag_235_cet
+			hidden_effect = {
+				set_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation
+				ammunition_supply_factor_clamp = yes
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+		}
+		if = {
 			limit = { tag = WGN }
 			custom_effect_tooltip = WGN_EVENT_rus_235_cet
 		}
@@ -7651,14 +7803,11 @@ country_event = {
 	desc = rus.236.desc
 	picture = GFX_country_event_231
 	is_triggered_only = yes
-
+	fire_only_once = yes
 	option = {
 		name = rus.236.a
 		log = "[GetDateText]: [This.GetName]: rus.236.a executed"
-		add_timed_idea = {
-			idea = RUS_Ammunition_restrictions_idea
-			days = 270
-		}
+		activate_mission = RUS_stop_offensive_mission
 	}
 }
 
@@ -7668,7 +7817,7 @@ country_event = {
 	desc = rus.237.desc
 	picture = GFX_country_event_233
 	is_triggered_only = yes
-	
+	fire_only_once = yes
 	immediate = {
 		hidden_effect = {
 		    WGN = {
@@ -7684,13 +7833,6 @@ country_event = {
 		add_power_balance_value = {
 			id = RUS_power_balance
 			value = 0.1
-		}
-		hidden_effect = {
-		    remove_ideas = RUS_Ammunition_restrictions_idea
-			add_timed_idea = {
-				idea = RUS_Ammunition_restrictions_idea
-				days = 300
-			}
 		}
 	}
 }
@@ -7762,7 +7904,7 @@ country_event = {
 	desc = rus.239.desc
 	picture = GFX_country_event_234
 	is_triggered_only = yes
-
+	fire_only_once = yes
 	option = {
 		name = rus.239.a
 		log = "[GetDateText]: [This.GetName]: rus.239.a executed"
@@ -7797,7 +7939,7 @@ country_event = {
 	desc = rus.240.desc
 	picture = GFX_country_event_237
 	is_triggered_only = yes
-	
+	fire_only_once = yes
 	immediate = {
 		hidden_effect = {
 		    WGN = {
@@ -7840,7 +7982,7 @@ country_event = {
 	desc = rus.241.desc
 	picture = GFX_country_event_228
 	is_triggered_only = yes
-	
+	fire_only_once = yes
 	immediate = {
 		hidden_effect = {
 			country_event = { id = rus.242 days = 4 }
@@ -7860,6 +8002,7 @@ country_event = {
 	title = rus.242.t
 	desc = rus.242.desc
 	is_triggered_only = yes
+	fire_only_once = yes
     picture = GFX_country_event_228
 	immediate = {
 		hidden_effect = {
@@ -7895,6 +8038,7 @@ country_event = {
 	title = rus.243.t
 	desc = rus.243.desc
 	is_triggered_only = yes
+	fire_only_once = yes
     picture = GFX_country_event_245
 	option = {
 		name = rus.243.a
@@ -7927,6 +8071,7 @@ country_event = {
 	title = rus.244.t
 	desc = rus.244.desc
 	is_triggered_only = yes
+	fire_only_once = yes
     picture = GFX_country_event_247
 	option = {
 		name = rus.244.a
@@ -7958,6 +8103,7 @@ country_event = {
 	title = rus.245.t
 	desc = rus.245.desc
 	is_triggered_only = yes
+	fire_only_once = yes
     picture = GFX_country_event_249
 	option = {
 		name = rus.245.a
@@ -7972,6 +8118,7 @@ country_event = {
 	title = rus.246.t
 	desc = rus.246.desc
 	is_triggered_only = yes
+	fire_only_once = yes
     picture = GFX_country_event_249
 	option = {
 		name = rus.246.a
@@ -7985,6 +8132,7 @@ country_event = {
 	title = rus.247.t
 	desc = rus.247.desc
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.247.a
 		log = "[GetDateText]: [This.GetName]: rus.247.a executed"
@@ -8009,6 +8157,7 @@ country_event = {
 	desc = rus.248.desc
 	picture = GFX_country_event_256
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.248.a
 		log = "[GetDateText]: [This.GetName]: rus.248.a executed"
@@ -8027,6 +8176,7 @@ country_event = {
 	desc = rus.249.desc
 	picture = GFX_country_event_238
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.249.a
 		log = "[GetDateText]: [This.GetName]: rus.249.a executed"
@@ -8041,6 +8191,7 @@ country_event = {
 	desc = rus.250.desc
 	picture = GFX_country_event_257
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.250.a
 		log = "[GetDateText]: [This.GetName]: rus.250.a executed"
@@ -8055,6 +8206,7 @@ country_event = {
 	desc = rus.251.desc
 	picture = GFX_country_event_220
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.251.a
 		log = "[GetDateText]: [This.GetName]: rus.251.a executed"
@@ -8069,6 +8221,7 @@ country_event = {
 	desc = rus.252.desc
 	picture = GFX_country_event_246
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.252.a
 		log = "[GetDateText]: [This.GetName]: rus.252.a executed"
@@ -8083,19 +8236,437 @@ country_event = {
 	desc = rus.253.desc
 	picture = GFX_country_event_258
 	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
 		name = rus.253.a
 		log = "[GetDateText]: [This.GetName]: rus.253.a executed"
 		
 	}
-	
+}
+
+#Жека жгет нахуй pt.3 (Суровикин против)
+country_event = {
+	id = rus.254
+	title = rus.254.t
+	desc = rus.254.desc
+	picture = GFX_country_event_259
+	is_triggered_only = yes
+	fire_only_once = yes
 	option = {
-		name = rus.253.b
-		log = "[GetDateText]: [This.GetName]: rus.253.b executed"
+		name = rus.254.a
+		log = "[GetDateText]: [This.GetName]: rus.254.a executed"
 		
 	}
 }
 
+#Жека взял ростов
+country_event = {
+	id = rus.255
+	title = rus.255.t
+	desc = rus.255.desc
+	picture = GFX_country_event_260
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.255.a
+		log = "[GetDateText]: [This.GetName]: rus.255.a executed"
+		
+	}
+}
+
+#Беларусы согласны на посредничество
+country_event = {
+	id = rus.256
+	title = rus.256.t
+	desc = rus.256.desc
+	picture = GFX_country_event_226
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.256.a
+		log = "[GetDateText]: [This.GetName]: rus.256.a executed"
+		
+	}
+}
+
+#Оборона на Оке
+country_event = {
+	id = rus.257
+	title = rus.257.t
+	desc = rus.257.desc
+	picture = GFX_country_event_265
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.257.a
+		log = "[GetDateText]: [This.GetName]: rus.257.a executed"
+		
+	}
+}
+
+#Оборона на Оке
+country_event = {
+	id = rus.258
+	title = rus.258.t
+	desc = rus.258.desc
+	picture = GFX_country_event_264
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.258.a
+		log = "[GetDateText]: [This.GetName]: rus.258.a executed"
+		
+	}
+}
+
+#Все обошлось
+country_event = {
+	id = rus.259
+	title = rus.259.t
+	desc = rus.259.desc
+	picture = GFX_country_event_267
+	is_triggered_only = yes
+	fire_only_once = yes
+	immediate = {
+		set_variable = { RUS_crisis_developed_Putinism_stability_factor = -0.15 }
+		set_variable = { RUS_crisis_developed_Putinism_war_support_factor = -0.15 }
+		set_variable = { RUS_crisis_developed_Putinism_political_advisor = 1 }
+		set_variable = { RUS_crisis_developed_Putinism_drift_defence_factor = -0.3 }
+		set_variable = { RUS_crisis_developed_Putinism_drift_neutrality_drift = -0.1 }
+		set_variable = { RUS_crisis_developed_Putinism_political_power_factor = -0.6 }
+		set_variable = { RUS_crisis_developed_Putinism_land_doctrine_cost_factor = 0.3}
+		set_variable = { RUS_crisis_developed_Putinism_command_abilities_cost_factor = 0.25 }
+		set_variable = { RUS_crisis_developed_Putinism_command_power_gain_mult = -0.3 }
+		set_variable = { RUS_crisis_developed_Putinism_weekly_manpower = -50 }
+		set_variable = { RUS_crisis_developed_Putinism_consumer_goods_factor = 0.05 }		
+	}
+	option = {
+		name = rus.259.a
+		log = "[GetDateText]: [This.GetName]: rus.259.a executed"
+		custom_effect_tooltip = RUS_after_march
+		add_political_power = -100
+		remove_dynamic_modifier = { modifier = state_of_stability }
+		add_dynamic_modifier = { modifier = crisis_developed_Putinism }
+		custom_effect_tooltip = RUS_after_march_1
+		hidden_effect = {
+			412 = { 
+				transfer_state_to = WGN 
+				add_core_of = WGN
+				set_state_name = STATE_412_WGN
+			}
+			411 = { 
+				transfer_state_to = RUS 
+				set_state_name = STATE_411_RUS
+			}
+			set_victory_points = {
+				province = 9828
+				value = 7
+			}
+			set_province_name = { id = 9828 name = VICTORY_POINTS_9828_CEL }
+			remove_power_balance = {
+				id = RUS_power_balance
+			}
+			remove_power_balance = {
+				id = WGN_power_balance
+			}
+			mark_focus_tree_layout_dirty = yes
+		}
+	}
+}
+
+#Зумеры В С Е
+country_event = {
+	id = rus.260
+	title = rus.260.t
+	desc = rus.260.desc
+	picture = GFX_country_event_268
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.260.a
+		log = "[GetDateText]: [This.GetName]: rus.260.a executed"
+		
+	}
+}
+
+#Уткин сдается
+country_event = {
+	id = rus.261
+	title = rus.261.t
+	desc = rus.261.desc
+	picture = GFX_country_event_220
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.261.a
+		log = "[GetDateText]: [This.GetName]: rus.261.a executed"
+		hidden_effect = {
+			country_event = { id = rus.262 days = 14 }
+		}
+	}
+}
+
+#Уткин убился
+country_event = {
+	id = rus.262
+	title = rus.262.t
+	desc = rus.262.desc
+	picture = GFX_country_event_272
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.262.a
+		log = "[GetDateText]: [This.GetName]: rus.262.a executed"
+		add_political_power = -35
+	}
+}
+
+#Конец пиздец плохого марша
+country_event = {
+	id = rus.263
+	title = rus.263.t
+	desc = rus.263.desc
+	picture = GFX_country_event_009
+	is_triggered_only = yes
+	fire_only_once = yes
+	immediate = {
+		set_variable = { RUS_crisis_developed_Putinism_stability_factor = -0.25 }
+		set_variable = { RUS_crisis_developed_Putinism_war_support_factor = -0.35 }
+		set_variable = { RUS_crisis_developed_Putinism_political_advisor = 1.5 }
+		set_variable = { RUS_crisis_developed_Putinism_drift_defence_factor = -0.35 }
+		set_variable = { RUS_crisis_developed_Putinism_drift_neutrality_drift = -0.15 }
+		set_variable = { RUS_crisis_developed_Putinism_political_power_factor = -0.7 }
+		set_variable = { RUS_crisis_developed_Putinism_land_doctrine_cost_factor = 0.35 }
+		set_variable = { RUS_crisis_developed_Putinism_command_abilities_cost_factor = 0.35 }
+		set_variable = { RUS_crisis_developed_Putinism_command_power_gain_mult = -0.35 }
+		set_variable = { RUS_crisis_developed_Putinism_weekly_manpower = -50 }
+		set_variable = { RUS_crisis_developed_Putinism_consumer_goods_factor = 0.075 }		
+	}
+	option = {
+		name = rus.263.a
+		log = "[GetDateText]: [This.GetName]: rus.263.a executed"
+		custom_effect_tooltip = RUS_after_march
+		add_political_power = -200
+		remove_dynamic_modifier = { modifier = state_of_stability }
+		add_dynamic_modifier = { modifier = crisis_developed_Putinism }
+		hidden_effect = {
+			mark_focus_tree_layout_dirty = yes
+		}
+	}
+}
+
+#Доклад
+country_event = {
+	id = rus.264
+	title = rus.264.t
+	desc = rus.264.desc
+	picture = GFX_country_event_220
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.264.a
+		log = "[GetDateText]: [This.GetName]: rus.264.a executed"
+		add_political_power = 30
+		add_command_power = 15
+	}
+}
+
+#Докладная записка по итогу попытки взять харьков
+country_event = {
+	id = rus.265
+	title = rus.265.t
+	desc = rus.265.desc
+	picture = GFX_country_event_274
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.265.a
+		log = "[GetDateText]: [This.GetName]: rus.265.a executed"
+		add_command_power = -20
+	}
+}
+
+country_event = {
+	id = rus_hidden.13
+	title = rus_hidden.13.t
+	desc = rus_hidden.13.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = { 
+				UKR = { 
+					controls_province = 330
+					controls_province = 12081
+					controls_province = 15006
+				}
+			}
+			random_list = {
+				60 = { country_event = { id = rus.265 days = 0 } }
+				40 = {  }
+			}
+		}
+	}
+	option = {
+		name = rus_hidden.13.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.13.a executed"
+	}
+}
+
+#Корейцы на войне
+country_event = {
+	id = rus.266
+	title = rus.266.t
+	desc = rus.266.desc
+	picture = GFX_country_event_274
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rus.266.a
+		log = "[GetDateText]: [This.GetName]: rus.266.a executed"
+		ensure_unit_template_RUS_Shturmovaya_brigada_Severnoy_Koreii = yes
+		512 = {
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-il' Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.5"
+				owner = RUS
+				prioritize_location = 14682
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-i Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 10101
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-sam Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 10101
+				count = 1
+			}
+		}
+		513 = {
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-sa Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 7550
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-o Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 7550
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-yuk Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 4494
+				count = 1
+			}
+		}
+		516 = {
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-chil Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 507
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-pal' Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 507
+				count = 1
+			}
+			
+		}
+		517 = {
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-ku Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 992
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-shhip Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 1828
+				count = 1
+			}
+			create_unit = {
+				division = "name = \"Choson Inmingun Kansup Kundan Che-shhibil' Thyksu Edan\" division_template = \"Shturmovaya brigada KNA KNDR\" start_experience_factor = 0.18 start_equipment_factor = 0.7"
+				owner = RUS
+				prioritize_location = 1828
+				count = 1
+			}
+		}
+		add_corps_commander_role = {
+			Character = kim_en_bok
+			skill = 2
+			attack_skill = 3
+			defense_skill = 1
+			planning_skill = 2
+			logistics_skill = 3
+			traits={ juche_discipline promising_leader master_of_organisation adaptive_genius }
+		}
+	}
+}
+
+#повышение ивана попова
+country_event = {
+	id = rus.267
+	title = rus.267.t
+	desc = rus.267.desc
+	picture = GFX_country_event_228
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus.267.a
+		log = "[GetDateText]: [This.GetName]: rus.267.a executed"
+		add_command_power = -10
+		recruit_character = ivan_popov
+		army_experience = 5
+	}
+}
+
+#гибель гудкова
+country_event = {
+	id = rus.268
+	title = rus.268.t
+	desc = rus.268.desc
+	fire_only_once = yes
+    is_triggered_only = yes
+	picture = GFX_country_event_228
+
+	option = {
+		name = rus.268.a
+		log = "[GetDateText]: [This.GetName]: rus.268.a executed"
+		retire_character = mikhail_gudkov
+	}
+}
+
+#Арест Ивана Попова
+country_event = {
+	id = rus.269
+	title = rus.269.t
+	desc = rus.269.desc
+	fire_only_once = yes
+    is_triggered_only = yes
+	picture = GFX_country_event_228
+
+	option = {
+		name = rus.269.a
+		log = "[GetDateText]: [This.GetName]: rus.269.a executed"
+		retire_character = ivan_popov
+	}
+	option = {
+		name = rus.269.b
+		log = "[GetDateText]: [This.GetName]: rus.269.b executed"
+		retire_character = ivan_popov
+		set_country_flag = ivan_popov_second_chance
+	}
+}
 
 unit_leader_event = {
 	id = rus_unit_leader_event.1
@@ -8222,14 +8793,14 @@ unit_leader_event = {
 	}
 }
 
-
 #Чечню штырит
 country_event = {
 	id = rus_wagner_path.1
 	title = rus_wagner_path.1.t
 	desc = rus_wagner_path.1.desc
 	is_triggered_only = yes
-
+	fire_only_once = yes
+	picture = GFX_country_event_255
 	option = {
 		name = rus_wagner_path.1.a
 		log = "[GetDateText]: [This.GetName]: rus_wagner_path.1.a executed"
@@ -8254,6 +8825,7 @@ country_event = {
 	title = rus_wagner_path.2.t
 	desc = rus_wagner_path.2.desc
 	is_triggered_only = yes
+	fire_only_once = yes
 	picture = GFX_country_event_255
 	option = {
 		name = rus_wagner_path.2.a
@@ -8275,6 +8847,7 @@ country_event = {
 	title = rus_wagner_path.3.t
 	desc = rus_wagner_path.3.desc
 	is_triggered_only = yes
+	fire_only_once = yes
 	picture = GFX_country_event_255
 	option = {
 		name = rus_wagner_path.3.a

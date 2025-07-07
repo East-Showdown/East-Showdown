@@ -240,7 +240,7 @@ WGN_budget_category = {
 			
 			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у Вагнера
 				#Высчитываем, сколько место осталось у Вагнера на складах
-				set_temp_variable = { ammo_needed = ammunition_free_space }
+				set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 				
 				#Ограничиваем максимумом в 40к
 				clamp_temp_variable = {
@@ -256,18 +256,19 @@ WGN_budget_category = {
 				}
 				
 				RUS = {
-					check_variable = { ammunition_variable > ammo_needed }
+					check_variable = { ammunition_value_k > ammo_needed }
 				}
 			}
 		}
 		available = {
 			OR = {
 				has_global_flag = WGN_shell_hunger_flag
-				NOT = {
-					custom_trigger_tooltip = {
-						tooltip = WGN_russia_have_ammo
+				
+				custom_trigger_tooltip = {
+					tooltip = WGN_russia_have_ammo
+					NOT = {
 						#Высчитываем, сколько место осталось у Вагнера на складах
-						set_temp_variable = { ammo_needed = ammunition_free_space }
+						set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 						
 						#Ограничиваем максимумом в 40к
 						clamp_temp_variable = {
@@ -275,18 +276,19 @@ WGN_budget_category = {
 							min = 0
 							max = 40
 						}
-						
+
 						#У РФ должно быть в 10 раз больше боеприпасов, чем у Вагнера свободно
 						multiply_temp_variable = {
 							var = ammo_needed
 							value = 10
 						}
-						
+
 						RUS = {
-							check_variable = { ammunition_variable > ammo_needed }
+							check_variable = { ammunition_value_k > ammo_needed }
 						}
 					}
 				}
+				
 			}
 		}
 		icon = WGN_ammo
@@ -294,7 +296,7 @@ WGN_budget_category = {
 		days_mission_timeout = 15
 		timeout_effect = {
 			#Высчитываем, сколько место осталось у Вагнера на складах
-			set_temp_variable = { ammo_needed = ammunition_free_space }
+			set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 
 			#Ограничиваем максимумом в 40к
 			clamp_temp_variable = {
@@ -304,9 +306,9 @@ WGN_budget_category = {
 			}
 			
 			#Передаём боеприпасы
-			add_to_variable = { ammunition_variable = ammo_needed }
+			add_to_variable = { ammunition_value_k = ammo_needed }
 			RUS = {
-				subtract_from_variable = { ammunition_variable = ammo_needed }
+				subtract_from_variable = { ammunition_value_k = ammo_needed }
 			}
 			
 			custom_effect_tooltip = WGN_ammunition_supply_every_month
@@ -321,7 +323,7 @@ WGN_budget_category = {
 			}
 			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у Вагнера
 				#Высчитываем, сколько место осталось у Вагнера на складах
-				set_temp_variable = { ammo_needed = ammunition_free_space }
+				set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 				
 				#Ограничиваем максимумом в 5к
 				clamp_temp_variable = {
@@ -337,22 +339,24 @@ WGN_budget_category = {
 				}
 				
 				RUS = {
-					check_variable = { ammunition_variable > ammo_needed }
+					check_variable = { ammunition_value_k > ammo_needed }
 				}
 			}
 		}
 			
 		available = {
-			NOT = {
-				OR = {
-					custom_trigger_tooltip = {
-						tooltip = WGN_end_of_shell_hunger_tt
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = WGN_end_of_shell_hunger_tt
+					NOT = {
 						has_global_flag = WGN_shell_hunger_flag
 					}
-					custom_trigger_tooltip = {
-						tooltip = WGN_russia_have_ammo
+				}
+				custom_trigger_tooltip = {
+					tooltip = WGN_russia_have_ammo
+					NOT = {
 						#Высчитываем, сколько место осталось у Вагнера на складах
-						set_temp_variable = { ammo_needed = ammunition_free_space }
+						set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 						
 						#Ограничиваем максимумом в 5к
 						clamp_temp_variable = {
@@ -360,15 +364,15 @@ WGN_budget_category = {
 							min = 0
 							max = 5
 						}
-						
+
 						#У РФ должно быть в 10 раз больше боеприпасов, чем у Вагнера свободно
 						multiply_temp_variable = {
 							var = ammo_needed
 							value = 10
 						}
-						
+
 						RUS = {
-							check_variable = { ammunition_variable > ammo_needed }
+							check_variable = { ammunition_value_k > ammo_needed }
 						}
 					}
 				}
@@ -379,7 +383,7 @@ WGN_budget_category = {
 		days_mission_timeout = 15
 		timeout_effect = {
 			#Высчитываем, сколько место осталось у Вагнера на складах
-			set_temp_variable = { ammo_needed = ammunition_free_space }
+			set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 
 			#Ограничиваем максимумом в 5к
 			clamp_temp_variable = {
@@ -400,9 +404,9 @@ WGN_budget_category = {
 			}
 			
 			#Передаём боеприпасы
-			add_to_variable = { ammunition_variable = ammo_needed }
+			add_to_variable = { ammunition_value_k = ammo_needed }
 			RUS = {
-				subtract_from_variable = { ammunition_variable = ammo_needed }
+				subtract_from_variable = { ammunition_value_k = ammo_needed }
 			}
 			
 			custom_effect_tooltip = WGN_ammunition_supply_every_month
@@ -417,22 +421,24 @@ WGN_budget_category = {
 			}
 			hidden_trigger = {
 				RUS = {
-					check_variable = { ammunition_variable > 3 }
+					check_variable = { ammunition_value_k > 3 }
 				}
 			}
 		}
 			
 		available = {
-			NOT = {
-				OR = {
-					custom_trigger_tooltip = {
-						tooltip = WGN_end_of_shell_hunger_tt
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = WGN_end_of_shell_hunger_tt
+					NOT = {
 						has_global_flag = WGN_shell_hunger_flag
 					}
-					custom_trigger_tooltip = {
-						tooltip = WGN_russia_have_ammo
+				}
+				custom_trigger_tooltip = {
+					tooltip = WGN_russia_have_ammo
+					NOT = {
 						RUS = {
-							check_variable = { ammunition_variable > 3 }
+							check_variable = { ammunition_value_k > 3 }
 						}
 					}
 				}
@@ -443,9 +449,9 @@ WGN_budget_category = {
 		days_mission_timeout = 30
 		timeout_effect = {
 			#Передаём боеприпасы
-			add_to_variable = { ammunition_variable = 3 }
+			add_to_variable = { ammunition_value_k = 3 }
 			RUS = {
-				subtract_from_variable = { ammunition_variable = 3 }
+				subtract_from_variable = { ammunition_value_k = 3 }
 			}
 			
 			custom_effect_tooltip = WGN_ammunition_supply_every_month_syrovikin
@@ -457,7 +463,7 @@ WGN_budget_category = {
 			has_global_flag = WGN_go_to_belarus
 			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у Вагнера
 				#Высчитываем, сколько место осталось у Вагнера на складах
-				set_temp_variable = { ammo_needed = ammunition_free_space }
+				set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 				
 				#Ограничиваем максимумом в 50к
 				clamp_temp_variable = {
@@ -473,7 +479,7 @@ WGN_budget_category = {
 				}
 				
 				BLR = {
-					check_variable = { ammunition_variable > ammo_needed }
+					check_variable = { ammunition_value_k > ammo_needed }
 				}
 			}
 		}
@@ -485,7 +491,7 @@ WGN_budget_category = {
 					custom_trigger_tooltip = {
 						tooltip = WGN_belarus_have_ammo
 						#Высчитываем, сколько место осталось у Вагнера на складах
-						set_temp_variable = { ammo_needed = ammunition_free_space }
+						set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 						
 						#Ограничиваем максимумом в 30к
 						clamp_temp_variable = {
@@ -501,7 +507,7 @@ WGN_budget_category = {
 						}
 						
 						BLR = {
-							check_variable = { ammunition_variable > ammo_needed }
+							check_variable = { ammunition_value_k > ammo_needed }
 						}
 					}
 				}
@@ -512,7 +518,7 @@ WGN_budget_category = {
 		days_mission_timeout = 30
 		timeout_effect = {
 			#Высчитываем, сколько место осталось у Вагнера на складах
-			set_temp_variable = { ammo_needed = ammunition_free_space }
+			set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
 
 			#Ограничиваем максимумом в 50к
 			clamp_temp_variable = {
@@ -522,9 +528,9 @@ WGN_budget_category = {
 			}
 			
 			#Передаём боеприпасы
-			add_to_variable = { ammunition_variable = ammo_needed }
+			add_to_variable = { ammunition_value_k = ammo_needed }
 			BLR = {
-				subtract_from_variable = { ammunition_variable = ammo_needed }
+				subtract_from_variable = { ammunition_value_k = ammo_needed }
 			}
 			
 			custom_effect_tooltip = WGN_ammunition_supply_every_month_belarus
@@ -993,7 +999,7 @@ WGN_budget_category = {
 			}
 		}
 	}
-	WGN_buy_bmp = {
+	WGN_buy_bmp2m = {
 		icon = generic_formable_nations
 
         cost = 10
@@ -1021,9 +1027,9 @@ WGN_budget_category = {
 		remove_effect = {
 			add_equipment_to_stockpile = {
 				type = ifv_sov_bmp2_equipment
-				variant_name = "БМП-2"
-				amount = 10
+				variant_name = "БМП-2М \"Бережок\""
 				producer = RUS
+				amount = 10
 			}
 		}
 	}
@@ -1654,7 +1660,7 @@ WGN_budget_category = {
 		}
 		remove_effect = {
 		    custom_effect_tooltip = WGN_ammo_add_2
-			add_to_variable = { ammunition_variable = 10 }
+			add_to_variable = { ammunition_value_k = 10 }
 		}
 	}
 

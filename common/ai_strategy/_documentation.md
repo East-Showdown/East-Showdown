@@ -322,7 +322,7 @@ ai_strategy = {
 	tag = GER							# Target a specific country. Can specify multiple.
 	state = 42							# Target a state. Can specify multiple.
 	strategic_region = 65				# Target a strategic region. Can specify multiple.
-	area = europe						# Target a specific ai area. Can specify multiple.
+	area = europe = europe						# Target a specific ai area. Can specify multiple.
 	country_trigger = { always = no }	# Trigger to check against a specific country. Scope is enemy country, FROM scope is our country.
 	state_trigger = { always = no }		# Trigger to check against a state. Scope is state. FROM scope is enemy country FROM.FROM scope is our country.
 
