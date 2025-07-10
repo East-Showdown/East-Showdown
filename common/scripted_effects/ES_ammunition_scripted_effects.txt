@@ -32,8 +32,20 @@
 
 
 ammunition_on_daily = {
-    ammunition_tick_country = yes
-	ammunition_tick_country_units_leaders = yes
+    if = {
+        limit = { # Оптимизация. Нет смысла считать повторно потребление, если ИИ не в войне
+            OR = {
+                check_variable = { ammunition_on_daily_ticks_passed = 0 }
+                NOT = { is_ai = yes }
+                AND = {
+                    is_ai = yes
+                    has_war = yes
+                }
+            }
+        }
+        ammunition_tick_country = yes
+        ammunition_tick_country_units_leaders = yes
+    }
 
     ammunition_supply_factor_clamp = yes
     ammunition_change_offensive_defensive_supply_factors_clamp = yes
@@ -48,6 +60,8 @@ ammunition_on_daily = {
         limit = { NOT = { has_country_flag = ammunition_supply_factor_ai_disable } }
         ammunition_calculate_tick_ai = yes
     }
+    
+    add_to_variable = { ammunition_on_daily_ticks_passed = 1 }
 }
 
 
@@ -56,13 +70,23 @@ ammunition_tick_country = {
         limit = { # Оптимизация
             OR = { # Перерасчёт максимального потребления боеприпасов, если изменилось число юнитов или прошло больше N дней
                 NOT = { check_variable = { num_battalions_prev = num_battalions } } 
-                check_variable = { ammunition_next_update_num_days < global.num_days }
+                check_variable = { ammunition_next_update_num_days < global.num_days }                
+            }
+            OR = {            
+                NOT = { is_ai = yes }
+                AND = { # Оптимизация. Проверка на ИИ и мин кол-во дней 
+                    is_ai = yes
+                    check_variable = { ammunition_ai_min_next_update_num_days < global.num_days }
+                }
             }
         }
         
         set_variable = { num_battalions_prev = num_battalions }
         set_variable = { ammunition_next_update_num_days = global.num_days }
         add_to_variable = { ammunition_next_update_num_days = global.ammunition_next_update_num_days_max_delay_country }
+
+        set_variable = { ammunition_ai_min_next_update_num_days = global.num_days }
+        add_to_variable = { ammunition_ai_min_next_update_num_days = global.ammunition_next_update_num_days_ai_min_delay_country }
 
         ammunition_update_max_usage = yes
     }
@@ -92,11 +116,21 @@ ammunition_tick_country_units_leaders = {
                     NOT = { check_variable = { num_battalions_prev = num_battalions } } 
                     check_variable = { ammunition_next_update_num_days < global.num_days }
                 }
+                OR = {            
+                    NOT = { is_ai = yes }
+                    AND = { # Оптимизация. Проверка на ИИ и мин кол-во дней 
+                        is_ai = yes
+                        check_variable = { ammunition_ai_min_next_update_num_days < global.num_days }
+                    }
+                }
             }
             
             set_variable = { num_battalions_prev = num_battalions }
             set_variable = { ammunition_next_update_num_days = global.num_days }
-            add_to_variable = { ammunition_next_update_num_days = global.ammunition_next_update_num_days_max_delay_army_leader }
+            add_to_variable = { ammunition_next_update_num_days = global.ammunition_next_update_num_days_max_delay_army_leader }            
+
+            set_variable = { ammunition_ai_min_next_update_num_days = global.num_days }
+            add_to_variable = { ammunition_ai_min_next_update_num_days = global.ammunition_next_update_num_days_ai_min_delay_army_leader }
 
             ammunition_update_max_usage = yes
 
@@ -994,6 +1028,15 @@ ammunition_change_supply_factor = {
 }
 
 ammunition_supply_factor_clamp = {
+	if = {
+        limit = { 
+			original_tag = RUS 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation 
+			check_variable = { ammunition_consumption_supply_factor_var > 0.75 }
+		}
+        set_variable = { ammunition_consumption_supply_factor_var = 0.75 }
+    }
+	
     if = {
         limit = { check_variable = { ammunition_consumption_supply_factor_var > 2 } }
         set_variable = { ammunition_consumption_supply_factor_var = 2 }
@@ -1017,6 +1060,19 @@ ammunition_change_offensive_defensive_supply_factors_clamp = {
         limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var > 0.5 } }
 
         set_temp_variable = { temp = 0.5 }
+        subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
+
+        add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }
+        subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
+    } 
+	if = {
+        limit = { 
+			original_tag = RUS 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation 
+			check_variable = { ammunition_consumption_offensive_supply_factor_var > -0.25 } 
+		}
+
+        set_temp_variable = { temp = -0.25 }
         subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
 
         add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }

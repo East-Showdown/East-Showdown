@@ -1933,9 +1933,6 @@ country_event = {
 		add_war_support = 0.035
 		add_command_power = 25
 		custom_effect_tooltip = RUS_event_80_tt
-		remove_ideas = {
-			RUS_Ammunition_restrictions_idea
-		}
 		custom_effect_tooltip = IW_5_var_add_tt
 		hidden_effect = {
 			add_to_variable = {	
@@ -7170,6 +7167,7 @@ country_event = {
 		set_country_flag = CIS_Dvornikov
 		custom_effect_tooltip = CIS_Dvornikov_cet
 		custom_effect_tooltip = CIS_Dvornikov_traits
+		custom_effect_tooltip = RUS_event_215_a_cef
 		hidden_effect = {
 			clr_country_flag = CIS_general_staff
 			set_country_flag = RUS_front_saving_units_cf
@@ -7181,6 +7179,7 @@ country_event = {
 		set_country_flag = CIS_Dvornikov
 		custom_effect_tooltip = CIS_Dvornikov_cet
 		custom_effect_tooltip = CIS_Dvornikov_traits
+		custom_effect_tooltip = RUS_event_215_b_cef
 		hidden_effect = {
 			clr_country_flag = CIS_general_staff
 			set_country_flag = RUS_stabilize_the_front_cf
@@ -7637,7 +7636,7 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 		    UKR = {
-				country_event = { id = ukr.106 days = 0 }
+				country_event = { id = ukr.108 days = 0 }
 			}
 		}
 	}
@@ -7718,7 +7717,7 @@ country_event = {
 			country_event = { id = rus.236 days = 5 }
 			WGN = {
 				add_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 2 }
 				country_event = { id = WGN.2 days = 5 }
 				add_power_balance_value = {
 					id = WGN_power_balance
@@ -7726,13 +7725,13 @@ country_event = {
 				}
 			}
 			CHE = {
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 3 }
 			}
 			DPR = {
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 4 }
 			}
 			LPR = {
-				country_event = { id = rus.235 days = 1 }
+				country_event = { id = rus.235 days = 4 }
 			}
 			add_power_balance_value = {
 				id = RUS_power_balance
@@ -7785,6 +7784,15 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: rus.235.a executed"
 		custom_effect_tooltip = RUS_EVENT_rus_235_cet
 		if = {
+			limit = { tag = RUS }
+			custom_effect_tooltip = RUS_EVENT_rus_tag_235_cet
+			hidden_effect = {
+				set_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation
+				ammunition_supply_factor_clamp = yes
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+		}
+		if = {
 			limit = { tag = WGN }
 			custom_effect_tooltip = WGN_EVENT_rus_235_cet
 		}
@@ -7801,10 +7809,7 @@ country_event = {
 	option = {
 		name = rus.236.a
 		log = "[GetDateText]: [This.GetName]: rus.236.a executed"
-		add_timed_idea = {
-			idea = RUS_Ammunition_restrictions_idea
-			days = 270
-		}
+		activate_mission = RUS_stop_offensive_mission
 	}
 }
 
@@ -7830,13 +7835,6 @@ country_event = {
 		add_power_balance_value = {
 			id = RUS_power_balance
 			value = 0.1
-		}
-		hidden_effect = {
-		    remove_ideas = RUS_Ammunition_restrictions_idea
-			add_timed_idea = {
-				idea = RUS_Ammunition_restrictions_idea
-				days = 300
-			}
 		}
 	}
 }
@@ -8628,8 +8626,18 @@ country_event = {
 	option = {
 		name = rus.267.a
 		log = "[GetDateText]: [This.GetName]: rus.267.a executed"
-		add_command_power = -20
-		recruit_character = ivan_popov
+		add_command_power = -10
+		add_corps_commander_role = {
+			Character = ivan_popov
+			traits={ steel_fortitude infantry_officer }
+			skill= 2
+			attack_skill=2
+			defense_skill=4
+			planning_skill=4
+			logistics_skill=2
+		}
+		army_experience = 5
+		set_country_flag = ivan_popov_promoted
 	}
 }
 
@@ -8646,6 +8654,23 @@ country_event = {
 		name = rus.268.a
 		log = "[GetDateText]: [This.GetName]: rus.268.a executed"
 		retire_character = mikhail_gudkov
+	}
+}
+
+#Арест Ивана Попова
+country_event = {
+	id = rus.269
+	title = rus.269.t
+	desc = rus.269.desc
+	fire_only_once = yes
+    is_triggered_only = yes
+	picture = GFX_country_event_228
+
+	option = {
+		name = rus.269.a
+		log = "[GetDateText]: [This.GetName]: rus.269.a executed"
+		retire_character = ivan_popov
+		set_country_flag = ivan_popov_arrested
 	}
 }
 

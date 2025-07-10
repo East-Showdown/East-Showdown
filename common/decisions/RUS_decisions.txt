@@ -9631,6 +9631,35 @@ RUS_SMO_deccat = {
 			highlight_state_targets = { state = 233 }
 		}
 	}
+	RUS_stop_offensive_mission = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 270
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			UKR = {
+				surrender_progress > 0.75
+			}
+		}
+
+		timeout_effect = {
+			clr_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation
+			custom_effect_tooltip = RUS_genstab_ammunition_supply_factor_75_limitation_off_cet
+		}
+		complete_effect = {
+			clr_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation
+			custom_effect_tooltip = RUS_genstab_ammunition_supply_factor_75_limitation_off_cet
+		}
+		highlight_states = { 
+			highlight_provinces = { 15111 }
+		}
+	}
 
 }
 
@@ -10716,7 +10745,13 @@ RUS_Storm_Z_categories = {
 			has_completed_focus = RUS_recruitment_combat_veterans
 			custom_trigger_tooltip = {
 				tooltip = RUS_shtorm_Z_experemental_podz_Popov_cet
-				always = yes
+				NOT = {
+					has_country_flag = ivan_popov_arrested
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_shtorm_Z_experemental_podz_Popov_promoted_cet
+				has_country_flag = ivan_popov_promoted
 			}
 		}
 		
@@ -10730,8 +10765,7 @@ RUS_Storm_Z_categories = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_shtorm_Z_gladiators"
 			custom_effect_tooltip = RUS_shtorm_Z_gladiators_custom_cet
 			ivan_popov = {
-			    add_unit_leader_trait = career_officer
-				add_unit_leader_trait = infantry_leader
+				add_unit_leader_trait = last_gladiator
 			}
 			custom_effect_tooltip = RUS_no_add_eq
 			hidden_effect = {
@@ -13353,7 +13387,7 @@ RUS_deconservation_cat = {
 			}
 			add_equipment_to_stockpile = {  
 			    type = grenade_launcher_rpg22_netto_equipment
-				amount = 1000
+				amount = 500
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
@@ -13363,7 +13397,7 @@ RUS_deconservation_cat = {
 			}
 			add_equipment_to_stockpile = {  
 			    type = aa_9k34_strela_3_equipment
-				amount = 800
+				amount = 200
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
@@ -13411,37 +13445,37 @@ RUS_deconservation_cat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_deconservation_support"
 		    add_equipment_to_stockpile = {  
 			    type = support_equipment
-				amount = 4500
+				amount = 3000
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
 			    type = atgm_9k11_malutka_equipment
-				amount = 1500
+				amount = 1400
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
 			    type = mortar_2b9_vasilyok_equipment
-				amount = 1500
+				amount = 1400
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
 			    type = engineering_equipment_0
-				amount = 1000
+				amount = 850
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
 			    type = arv_equipment_0
-				amount = 1000
+				amount = 850
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
 			    type = amv_equipment_0
-				amount = 2000
+				amount = 1500
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {
                 type = communication_equipment
-                amount = 1000
+                amount = 850
                 producer = RUS
             }
 			hidden_effect = {
@@ -13475,13 +13509,13 @@ RUS_deconservation_cat = {
 			add_equipment_to_stockpile = {
 				type = imv_light_1_equipment
 				variant_name = "Урал-4350"
-				amount = 1500
+				amount = 800
 				producer = RUS
 			}
 		    add_equipment_to_stockpile = {
 				type = imv_medium_1_equipment
 				variant_name = "\"Тигр\""
-				amount = 500
+				amount = 250
 				producer = RUS
 			} 
 			hidden_effect = {
@@ -13514,7 +13548,7 @@ RUS_deconservation_cat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_deconservation_artillery"
 		    add_equipment_to_stockpile = {  
 			    type = sov_artillery_m46_equipment
-				amount = 250
+				amount = 50
 				producer = RUS 
 			}
 			add_equipment_to_stockpile = {  
@@ -13570,40 +13604,6 @@ RUS_deconservation_cat = {
 			} 
 			hidden_effect = {
 				add_to_variable = { var = RUS_deconservation_SPA_num value = 1 }
-			}
-		}
-	}
-	RUS_deconservation_BTR70 = {
-		icon = GFX_RUS_deconservation_decisions
-		
-		cost = 80
-		fire_only_once = no
-		days_remove = 20
-		days_re_enable = 50
-		
-		ai_will_do = {
-	    	factor = 30
-        }
-
-		visible = {
-	        NOT = {
-				check_variable = { RUS_deconservation_BTR70_num = 3 }
-			}
-	    }
-
-		available = {
-			original_tag = RUS
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_deconservation_BTR70"
-		    add_equipment_to_stockpile = {
-				type = apc_sov_btr70_equipment
-				variant_name = "БТР-70"
-				amount = 800
-				producer = RUS
-			}
-			hidden_effect = {
-				add_to_variable = { var = RUS_deconservation_BTR70_num value = 1 }
 			}
 		}
 	}
@@ -13760,7 +13760,7 @@ RUS_deconservation_cat = {
 		    add_equipment_to_stockpile = {
 				type = ifv_sov_bmp1_equipment
 				variant_name = "БМП-1"
-				amount = 1000
+				amount = 550
 				producer = RUS
 			} 
 			hidden_effect = {

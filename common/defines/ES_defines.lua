@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 16								-- 0.4.1.0
+NDefines.NGame.SAVE_VERSION = 17								-- 0.6.0.0
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -138,7 +138,7 @@ NDefines.NMilitary.LAND_SPEED_MODIFIER = 0.45                    -- vanila 0.5 b
 NDefines.NMilitary.BASE_FORT_PENALTY = -0.15 					   -- vanilla -0.15 fort penalty
 NDefines.NMilitary.MULTIPLE_COMBATS_PENALTY = -0.5               -- defender penalty if attacked from multiple directions
 NDefines.NMilitary.DIG_IN_FACTOR = 0.03						   --vanila 0.02 bonus factor for each dug-in level
-NDefines.NMilitary.ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.25 -- #was 0.1 XP gain per unit in combat
+NDefines.NMilitary.ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.1 -- #was 0.1 XP gain per unit in combat
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_IMPACT = -0.6          -- #was -0.35 effect on defense due to enemy air superiorty
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE = 0.20	       -- more AA attack will approach this amount of help (diminishing returns)
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112 -- how quickly defense approaches the max impact diminishing returns curve
@@ -188,9 +188,9 @@ NDefines.NAir.NAVAL_RECON_DETECTION_BALANCE_FACTOR = 0.7			-- Value used to scal
 NDefines.NAir.AIR_MORE_GROUND_CREWS_COST = 5.0					-- CP cost to maintain more ground crews
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain when running training exercise mission
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
-2.5, -- AIR_SUPERIORITY
-2.0, -- CAS
-1.5, -- INTERCEPTION
+1.5, -- AIR_SUPERIORITY
+1.5, -- CAS
+1.0, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
@@ -202,7 +202,7 @@ NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane t
 0.0, -- TRAINING
 0.0, -- NAVAL_MINES_PLANTING
 0.0, -- NAVAL_MINES_SWEEPING
-0.0, -- RECON
+0.1, -- RECON
 0.0 -- NAVAL_PATROL
 }
 NDefines.NAir.THRUST_WEIGHT_SPEED_FACTOR = 3								-- For plane designs additive Km/h max speed bonus per point of thrust exceeding weight
