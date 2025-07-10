@@ -26,11 +26,6 @@ on_actions = {
 			set_variable = {
 				SMO_SELECTED_BRIDGE_VARIABLE = -1
 			}
-			
-			news_event = {
-				id = news.372
-				days = 46
-			}
 			news_event = {
 				id = news.208
 				days = 924
@@ -190,6 +185,11 @@ on_actions = {
 			293 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			172 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			173 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			715 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			213 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			221 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			716 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
+			717 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 
 			NTO = { add_dynamic_modifier = { modifier = NTO_Civilized_World } }
 
@@ -214,10 +214,13 @@ on_actions = {
 			RUS = {
 				country_event = { id = rus.8 days = 0 }
 				country_event = { id = rus.214 days = 37 hours = 8 }
+				country_event = { id = rus.33 days = 76 hours = 20 }
 				country_event = { id = rus.2 days = 95 }
 				country_event = { id = rus.221 days = 15 }
 				country_event = { id = rus.222 days = 18 }
 				country_event = { id = rus.267 days = 425 }
+				country_event = { id = rus.269 days = 867 }
+				country_event = { id = rus.268 days = 1279 }
 				mikhail_mizintsev = {
 					unit_leader_event = { id = rus_unit_leader_event.4 days = 266 }
 				}
@@ -402,10 +405,6 @@ on_actions = {
 				add_ideas = West_economy_issue
 			}
 
-			CHE = {
-				add_ideas = West_economy_issue
-			}
-
 			HUN = {
 				add_ideas = West_economy_issue
 			}
@@ -475,6 +474,11 @@ on_actions = {
                 set_variable = { RUS_Vpk_dynamic_mod_production_speed_arms_factory_factor = -0.075 }
                 set_variable = { RUS_Vpk_dynamic_mod_equipment_conversion_speed = -0.15 }
                 set_variable = { RUS_Vpk_dynamic_mod_ammunition_plants_efficiency_factor = 0.2 }
+				news_event = {
+					id = news.372
+					days = 46
+					hours = 20
+				}
             }
 			if = {
 				limit = {
@@ -1015,6 +1019,30 @@ on_actions = {
 			}
 			if = {
 				limit = {
+					UKR = {
+						has_completed_focus = UKR_million_ammo_per_year
+					}
+				}
+				ser_variable = {
+					UKR_million_ammo_per_year_var = 0
+				}
+				add_to_variable = {
+					UKR_million_ammo_per_year_var = ammunition_delta_value_k
+				}
+			}
+		}
+	}
+	on_daily_WGN = {
+		effect = {
+			set_variable = { map_africa_manpower_pool_free = WGN.manpower }
+			
+			
+		}
+	}
+	on_daily_RUS = {
+		effect = {
+			if = {
+				limit = {
 				    date > 2023.05.20
 					has_global_flag = WGN_shell_hunger_flag_worse
 					has_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
@@ -1026,172 +1054,374 @@ on_actions = {
 			if = {
 				limit = {
 					UKR = {
-						has_completed_focus = UKR_million_ammo_per_year
+					   	has_war_with = RUS
+					}
+					date = 2022.4.14
+					date < 2022.4.15
+				}
+				RUS = {
+					country_event = {
+						  	id = rus.113
+						days = 0
 					}
 				}
-				add_to_variable = {
-					UKR_million_ammo_per_year = ammunition_daily
+			}
+			if = {
+				limit = {
+					has_war_with = UKR
+					controls_province = 10145
+				}
+				RUS = {
+					country_event = {
+						id = rus.118
+						days = 0
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_war_with = UKR
+					has_country_leader = {
+						character = vladimir_putin
+						ruling_only = yes
+					}
+					surrender_progress < 0.15
+					date = 2024.2.28
+				}
+				RUS = {
+					country_event = {
+						id = rus.142
+						days = 0
+					}
+					country_event = {
+						id = rus.141
+						days = 20
+					}
 				}
 			}
 		}
 	}
-	on_daily_WGN = {
-		effect = {
-			set_variable = { map_africa_manpower_pool_free = WGN.manpower }
-		}
-	}
-
 
 	on_weekly = {
 		effect = {
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 237
-						has_war_with = UKR
+					237 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
 					}
 					DPR = {
 						exists = yes
 					}
 				}
 				DPR = {
-					set_state_owner	= 237
-					set_state_controller = 237
+					transfer_state = 237
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 213
-						has_war_with = UKR
+					708 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
 					}
 					DPR = {
 						exists = yes
 					}
 				}
 				DPR = {
-					set_state_owner	= 213
-					set_state_controller = 213
+					transfer_state = 708
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 182
-						has_war_with = UKR
+					710 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
 					}
 					DPR = {
 						exists = yes
 					}
 				}
 				DPR = {
-					set_state_owner	= 182
-					set_state_controller = 182
+					transfer_state = 710
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 149
-						has_war_with = UKR
+					712 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
 					}
 					DPR = {
 						exists = yes
 					}
 				}
 				DPR = {
-					set_state_owner	= 149
-					set_state_controller = 149
+					transfer_state = 712
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 165
-						has_war_with = UKR
+					709 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
 					}
 					DPR = {
 						exists = yes
 					}
 				}
 				DPR = {
-					set_state_owner	= 165
-					set_state_controller = 165
+					transfer_state = 709
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 145
-						has_war_with = UKR
+					714 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 714
+				}
+			}
+			if = {
+				limit = {
+					715 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 715
+				}
+			}
+			if = {
+				limit = {
+					716 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 716
+				}
+			}
+			if = {
+				limit = {
+					717 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 717
+				}
+			}
+			if = {
+				limit = {
+					713 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 713
+				}
+			}
+			if = {
+				limit = {
+					711 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 711
+				}
+			}
+			if = {
+				limit = {
+					213 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 213
+				}
+			}
+			if = {
+				limit = {
+					182 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 182
+				}
+			}
+			if = {
+				limit = {
+					149 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 149
+				}
+			}
+			if = {
+				limit = {
+					165 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = LPR
+						}
+					}
+					DPR = {
+						exists = yes
+					}
+				}
+				DPR = {
+					transfer_state = 165
+				}
+			}
+			if = {
+				limit = {
+					145 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = DPR
+						}
 					}
 					LPR = {
 						exists = yes
 					}
 				}
 				LPR = {
-					set_state_owner	= 145
-					set_state_controller = 145
+					transfer_state = 145
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 116
-						has_war_with = UKR
+					116 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = DPR
+						}
 					}
 					LPR = {
 						exists = yes
 					}
 				}
 				LPR = {
-					set_state_owner	= 116
-					set_state_controller = 116
+					transfer_state = 116
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 125
-						has_war_with = UKR
+					125 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = DPR
+						}
 					}
 					LPR = {
 						exists = yes
 					}
 				}
 				LPR = {
-					set_state_owner	= 125
-					set_state_controller = 125
+					transfer_state = 125
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 154
-						has_war_with = UKR
+					154 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = DPR
+						}
 					}
 					LPR = {
 						exists = yes
 					}
 				}
 				LPR = {
-					set_state_owner	= 154
-					set_state_controller = 154
+					transfer_state = 154
 				}
 			}
 			if = {
 				limit = {
-					RUS = {
-						has_full_control_of_state = 176
-						has_war_with = UKR
+					176 = {
+						OR = {
+							is_fully_controlled_by = RUS
+							is_fully_controlled_by = DPR
+						}
 					}
 					LPR = {
 						exists = yes
 					}
 				}
 				LPR = {
-					set_state_owner	= 176
-					set_state_controller = 176
+					transfer_state = 176
 				}
 			}
 			if = {
@@ -1441,8 +1671,11 @@ on_actions = {
 			if = {
 				limit = {
 					FROM = {
-						original_tag = ABK
-						has_cosmetic_tag = ABK_meme
+						OR = {
+							original_tag = ABK
+							tag = ABK
+							has_cosmetic_tag = ABK_meme
+						}				
 					}
 				}
 				ROOT = {

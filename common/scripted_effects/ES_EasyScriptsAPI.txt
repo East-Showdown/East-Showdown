@@ -275,3 +275,52 @@ ESAPI_generate_western_ukraine_state_candidates = {
 	add_to_temp_array = { api_state_candidates = 110 }
 	add_to_temp_array = { api_state_candidates = 76 }
 }
+
+# ===========================================================
+# PUBLIC:  ESAPI_calculate_linear
+# ADDED IN: 0.6.0.0
+# Используется для вычилсение промежуточного значения в диапазоне по формуле линейной интерполяции
+#
+# Перед вызовом установи temp переменные:
+#   api_x1 – нижняя граница диапазона
+#   api_y1 – значение на нижней границе диапазона
+#   api_x2 - высшая граница диапазона
+#   api_y2 - значение на высшей границе диапазона
+#   api_target_x - точка в диапазоне для вычисления значения
+#   api_target_y - переменная для записи найденного значения 
+#   api_precision_multiplier - [опционально] число для повышения точности при работе с малыми значениями 
+# ===========================================================
+ESAPI_calculate_linear = {
+	# Formula: api_target_y = (api_target_x - api_x1) * (api_y2 - api_y1) / (api_x2 - api_x1) + api_y1
+
+	# api_target_x - api_x1
+	set_temp_variable = { temp_1 = api_target_x }
+	subtract_from_temp_variable = { temp_1 = api_x1 }
+
+	# api_y2 - api_y1
+	set_temp_variable = { temp_2 = api_y2 }
+	subtract_from_temp_variable = { temp_2 = api_y1 }
+
+	# api_x2 - api_x1
+	set_temp_variable = { temp_3 = api_x2 }
+	subtract_from_temp_variable = { temp_3 = api_x1 }
+
+	# result
+	if = {
+		limit = { check_variable = { api_precision_multiplier = 0 } }
+		
+		add_to_temp_variable = { api_target_y = temp_1 }
+		multiply_temp_variable = { api_target_y = temp_2 }
+		divide_temp_variable = { api_target_y = temp_3 }
+		add_to_temp_variable = { api_target_y = api_y1 }
+	}
+	else = {
+		add_to_temp_variable = { api_target_y = temp_1 }
+		multiply_temp_variable = { api_target_y = api_precision_multiplier }
+		multiply_temp_variable = { api_target_y = temp_2 }
+		divide_temp_variable = { api_target_y = temp_3 }
+		divide_temp_variable = { api_target_y = api_precision_multiplier }
+		add_to_temp_variable = { api_target_y = api_y1 }
+	}
+
+}
