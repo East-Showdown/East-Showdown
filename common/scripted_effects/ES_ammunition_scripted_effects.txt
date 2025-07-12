@@ -483,17 +483,20 @@ ammunition_calculate_tick_result_value = {
 
     # Высчитываем недостаточка боеприпасов
     if = {
+        # Если на складе нет боеприпасов
         limit = { check_variable = { ammunition_value_k < 0 } }
         
-        set_variable = { ammunition_deficite_factor = 0 }
-        divide_variable = { ammunition_deficite_factor = ammunition_delta_value_k }
-        clamp_variable = {
-            var = ammunition_deficite_factor
-            min = 0
-            max = 1
-        }
+        # Считаем % дефицита боеприпасов
+        set_variable = { ammunition_deficite_factor = ammunition_delta_value_k }
+        divide_variable = { ammunition_deficite_factor = ammunition_consumption_k }
+        multiply_variable = { ammunition_deficite_factor = -1 }
+        clamp_variable = { var = ammunition_deficite_factor min = 0 max = 1 }
     }
-    else = {
+    else_if = {
+        # Если на складе есть боеприпасы
+        limit = { check_variable = { ammunition_value_k > 0 } }
+
+        # Убираем дефицит боеприпасов
         set_variable = { ammunition_deficite_factor = 0 }
     }
     
@@ -573,16 +576,13 @@ ammunition_calculate_tick_army_effects = {
     ammunition_calculate_tick_army_defensive_effects_factor = yes
     ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor = yes
 
-    # Атака от снабжения наступления
-    set_variable = { ammunition_effect_army_attack_factor = ammunition_army_offense_effect_factor }
+    # Атака от дефицита
+    set_variable = { ammunition_effect_army_attack_factor = ammunition_effect_deficite_factor }
     multiply_variable = { ammunition_effect_army_attack_factor = global.ammunition_effect_army_attack_factor_coef }
 
-    # Атака от снабжения обороны
-    set_temp_variable = { ammunition_effect_army_attack_factor_temp = ammunition_army_defense_effect_factor }
-    multiply_temp_variable = { ammunition_effect_army_attack_factor_temp = global.ammunition_effect_army_attack_factor_coef }
-
-    # Сумма атак
-    add_to_variable = { ammunition_effect_army_attack_factor = ammunition_effect_army_attack_factor_temp }
+    # Защита от дефицита
+    set_variable = { ammunition_effect_army_defence_factor = ammunition_effect_deficite_factor }
+    multiply_variable = { ammunition_effect_army_defence_factor = global.ammunition_effect_army_defence_factor_coef }
 
     # Прорыв
     set_variable = { ammunition_effect_breakthrough_factor = ammunition_army_offense_effect_factor }
@@ -592,14 +592,14 @@ ammunition_calculate_tick_army_effects = {
     set_variable = { ammunition_effect_max_dig_in_factor = ammunition_army_defense_effect_factor }
     multiply_variable = { ammunition_effect_max_dig_in_factor = global.ammunition_effect_max_dig_in_factor_coef }
 
-    set_variable = { ammunition_effect_army_morale_factor = ammunition_army_defense_effect_factor }
-    multiply_variable = { ammunition_effect_army_morale_factor = global.ammunition_effect_army_morale_factor_coef }
+    set_variable = { ammunition_effect_dig_in_speed_factor = ammunition_army_defense_effect_factor }
+    multiply_variable = { ammunition_effect_dig_in_speed_factor = global.ammunition_effect_dig_in_speed_factor_coef }
     
 }
 
 ammunition_calculate_tick_army_effects_deficite = {
     # Сбрасываем прошлое итоговое значение
-    set_variable = { ammunition_effect_army_deficite_factor = 0 }
+    set_variable = { ammunition_effect_deficite_factor = 0 }
     
     # Вычисляем индекс последнего референсного значения в массиве
     set_temp_variable = { temp_last_index = global.ammunition_deficite_factor_effects_target^num }
@@ -607,7 +607,7 @@ ammunition_calculate_tick_army_effects_deficite = {
 
     if = { # Если не заданы референсные значения
         limit = { check_variable = { global.ammunition_deficite_factor_effects_target^num = 0 }}
-        add_to_variable = { ammunition_effect_army_attack_factor = 1 }
+        add_to_variable = { ammunition_effect_deficite_factor = 1 }
     }
     else_if = { # Если лежит до или на первом референсном значении
         limit = { check_variable = { 
@@ -617,7 +617,7 @@ ammunition_calculate_tick_army_effects_deficite = {
         } }
 
         add_to_variable = { 
-            var = ammunition_effect_army_attack_factor
+            var = ammunition_effect_deficite_factor
             value = global.ammunition_deficite_factor_effects_value^0 
         }
     }
@@ -629,7 +629,7 @@ ammunition_calculate_tick_army_effects_deficite = {
         } }
         
         add_to_variable = { 
-            var = ammunition_effect_army_attack_factor
+            var = ammunition_effect_deficite_factor
             value = global.ammunition_deficite_factor_effects_value^temp_last_index 
         }
     }
@@ -669,7 +669,7 @@ ammunition_calculate_tick_army_effects_deficite = {
                 # Вычисляем через линейную интерполяцию нужное значение
                 ESAPI_calculate_linear = yes
 
-                add_to_variable = { ammunition_effect_army_attack_factor = api_target_y }
+                add_to_variable = { ammunition_effect_deficite_factor = api_target_y }
                 add_to_temp_variable = { temp_break_flag = 1 }    
             }
         }
@@ -839,6 +839,7 @@ ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor = {
 
     ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_supply = yes
     ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_supply = yes
+    subtract_from_variable = { ammunition_effect_ai_focus_aggressive_factor = ammunition_deficite_factor }
 }
 
 ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_supply = {  
@@ -1139,7 +1140,7 @@ ammunition_supply_factor_clamp = {
 	if = {
         limit = { 
 			original_tag = RUS 
-			has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_limitation 
 		}
         set_variable = { ammunition_supply_max = 0.5 }
     }
@@ -1171,7 +1172,7 @@ ammunition_change_offensive_defensive_supply_factors_clamp = {
     if = {
         limit = { 
 			original_tag = RUS 
-			has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_limitation 
 		}
         add_to_variable = { ammunition_consumption_relative_max = -1 }
     }

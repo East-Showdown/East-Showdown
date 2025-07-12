@@ -1,4 +1,4 @@
-@DATA_VERSION = 8
+@DATA_VERSION = 1
 
 ammunition_init_country_values = {	
     set_variable = { ammunition_produce_factor = 0.7 }
@@ -178,8 +178,8 @@ ammunition_init_constants = {
 	set_variable = { global.ammunition_consumption_relative_min = -1 }
 
 
-	set_variable = { global.ammunition_consumption_offensive_factor_var = 1.8 }
-	set_variable = { global.ammunition_consumption_defensive_factor_var = 0.7 }
+	set_variable = { global.ammunition_consumption_offensive_factor_var = 2 }
+	set_variable = { global.ammunition_consumption_defensive_factor_var = 1 }
 	
 	multiply_variable = { global.ammunition_consumption_offensive_factor_var = global.ammunition_consumption_factor_rule }
 	multiply_variable = { global.ammunition_consumption_defensive_factor_var = global.ammunition_consumption_factor_rule }
@@ -191,6 +191,14 @@ ammunition_init_constants = {
 
 	set_variable = { global.ammunition_next_update_num_days_ai_min_delay_army_leader = 7 }
 	set_variable = { global.ammunition_next_update_num_days_max_delay_army_leader = 28 }
+}
+
+old_version_data_transfer_tick = {
+	if = {
+		limit = { has_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation }
+		clr_country_flag = RUS_genstab_ammunition_supply_factor_75_limitation
+		set_country_flag = RUS_genstab_ammunition_supply_factor_limitation
+	}
 }
 
 init_ammunition_effects_linear_effects = {
@@ -271,7 +279,6 @@ init_ammunition_effects_linear_effects = {
 	clear_array = global.ammunition_consumption_offensive_supply_factor_effects_target
 	clear_array = global.ammunition_consumption_offensive_supply_factor_effects_value
 
-	set_variable = { global.ammunition_effect_army_attack_factor_coef = 1 }
 	set_variable = { global.ammunition_effect_breakthrough_factor_coef = 1 }
 
 	add_to_array = { global.ammunition_consumption_offensive_supply_factor_effects_target = 0 }
@@ -309,10 +316,13 @@ init_ammunition_effects_linear_effects = {
 	clear_array = global.ammunition_result_defensive_supply_factor_effects_value
 
 	set_variable = { global.ammunition_effect_max_dig_in_factor_coef = 1 }
-	set_variable = { global.ammunition_effect_army_morale_factor_coef = 0.5 }
+	set_variable = { global.ammunition_effect_dig_in_speed_factor_coef = 0.5 }
+
+	# Отключено
+	#set_variable = { global.ammunition_effect_army_morale_factor_coef = 0 }
 
 	add_to_array = { global.ammunition_result_defensive_supply_factor_effects_target = 0 }
-	add_to_array = { global.ammunition_result_defensive_supply_factor_effects_value = -0.8 }
+	add_to_array = { global.ammunition_result_defensive_supply_factor_effects_value = -0.7 }
 
 	add_to_array = { global.ammunition_result_defensive_supply_factor_effects_target = 0.45 }
 	add_to_array = { global.ammunition_result_defensive_supply_factor_effects_value = -0.35 }	
@@ -337,6 +347,34 @@ init_ammunition_effects_linear_effects = {
 	set_variable = {
 		var = global.ammunition_result_defensive_supply_factor_effects_target_max
 		value = global.ammunition_result_defensive_supply_factor_effects_target^temp_max_index
+	}
+
+	# Ammunition deficite factor
+	# Range: [0; 1]
+	# Определяет дебафы на атаку и защиту (value) в зависимости от дефицита боеприпасов (target)
+	clear_array = global.ammunition_deficite_factor_effects_target
+	clear_array = global.ammunition_deficite_factor_effects_value
+
+	set_variable = { global.ammunition_effect_army_attack_factor_coef = 1 }
+	set_variable = { global.ammunition_effect_army_defence_factor_coef = 1 }
+
+	add_to_array = { global.ammunition_deficite_factor_effects_target = 0 }
+	add_to_array = { global.ammunition_deficite_factor_effects_value = 0 }
+
+	add_to_array = { global.ammunition_deficite_factor_effects_target = 1 }
+	add_to_array = { global.ammunition_deficite_factor_effects_value = -0.75 }
+	
+	set_variable = {
+		var = global.ammunition_deficite_factor_effects_target_min
+		value = global.ammunition_deficite_factor_effects_target^0
+	}
+
+	set_temp_variable = { temp_max_index = global.ammunition_deficite_factor_effects_target^num}
+	subtract_from_temp_variable = { temp_max_index = 1 }
+	
+	set_variable = {
+		var = global.ammunition_deficite_factor_effects_target_max
+		value = global.ammunition_deficite_factor_effects_target^temp_max_index
 	}
 }
 
