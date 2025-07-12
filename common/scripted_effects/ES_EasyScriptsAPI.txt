@@ -288,7 +288,6 @@ ESAPI_generate_western_ukraine_state_candidates = {
 #   api_y2 - значение на высшей границе диапазона
 #   api_target_x - точка в диапазоне для вычисления значения
 #   api_target_y - переменная для записи найденного значения 
-#   api_precision_multiplier - [опционально] число для повышения точности при работе с малыми значениями 
 # ===========================================================
 ESAPI_calculate_linear = {
 	# Formula: api_target_y = (api_target_x - api_x1) * (api_y2 - api_y1) / (api_x2 - api_x1) + api_y1
@@ -305,22 +304,10 @@ ESAPI_calculate_linear = {
 	set_temp_variable = { temp_3 = api_x2 }
 	subtract_from_temp_variable = { temp_3 = api_x1 }
 
-	# result
-	if = {
-		limit = { check_variable = { api_precision_multiplier = 0 } }
 		
-		add_to_temp_variable = { api_target_y = temp_1 }
-		multiply_temp_variable = { api_target_y = temp_2 }
-		divide_temp_variable = { api_target_y = temp_3 }
-		add_to_temp_variable = { api_target_y = api_y1 }
-	}
-	else = {
-		add_to_temp_variable = { api_target_y = temp_1 }
-		multiply_temp_variable = { api_target_y = api_precision_multiplier }
-		multiply_temp_variable = { api_target_y = temp_2 }
-		divide_temp_variable = { api_target_y = temp_3 }
-		divide_temp_variable = { api_target_y = api_precision_multiplier }
-		add_to_temp_variable = { api_target_y = api_y1 }
-	}
+	add_to_temp_variable = { api_target_y = temp_1 }
+	divide_temp_variable = { api_target_y = temp_3 }
+	multiply_temp_variable = { api_target_y = temp_2 }
+	add_to_temp_variable = { api_target_y = api_y1 }
 
 }
