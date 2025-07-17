@@ -53,12 +53,18 @@ bz_remove_update_tick = {
 		# Если разрешено создавать погранзоны
 		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag ABK = { has_cosmetic_tag = ABK_meme } } }
 
+		set_variable = { global.bz_russian_border_is_breached = 0 }
 		for_each_scope_loop = { # Цикл по пограничным зонам
 			array = global.bz_states_ids
 
 			if = {
 				limit = { owner = { has_country_flag = is_bz_country }}
 				bz_remove_if_needed = yes
+			}
+
+			if = {
+				limit = { owner = { has_war_with = RUS } }
+				set_variable = { global.bz_russian_border_is_breached = 1 }				
 			}
 		}
 	}
