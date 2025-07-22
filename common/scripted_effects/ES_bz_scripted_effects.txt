@@ -64,6 +64,21 @@ bz_remove_update_tick = {
 	}
 }
 
+bz_global_update_tick = {
+	set_variable = { global.bz_russian_border_is_breached = 0 }
+	for_each_scope_loop = { # Цикл по пограничным зонам
+		array = global.bz_states_ids
+		break = global.bz_russian_border_is_breached
+
+		if = { # Если владелец не контролирует погранзону полностью
+			limit = { owner = { NOT = { has_full_control_of_state = PREV } } }
+
+			# Значит её прорвали
+			set_variable = { global.bz_russian_border_is_breached = 1 }				
+		}
+	}
+}
+
 # THIS scope is BZ STATE
 bz_remove_if_needed = {
 	set_temp_variable = { temp_different_control = 0 }

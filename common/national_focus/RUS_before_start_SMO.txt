@@ -498,10 +498,6 @@ focus_tree = {
 				custom_effect_tooltip = RUS_put_aside
 			}
 			hidden_effect = {
-			    add_to_variable = {	
-					var = RUS_VCRF_army_defence_factor
-					value = 0.05
-				}
 				add_to_variable = {	
 					var = RUS_VCRF_planning_speed
 					value = 0.1
@@ -1713,7 +1709,7 @@ focus_tree = {
 					}
 					country_event = {
 			    		id = ukr.54
-						hours = 2
+						hours = 7
 					}
 					country_event = {
 			    		id = ukr.57
@@ -1824,7 +1820,7 @@ focus_tree = {
 			RUS = { add_to_faction = LPR }
 			if = {
 				limit = { has_country_flag = UKR_VZLOM_ANUSA }
-				UKR = { country_event = {  id = ukr.103 hours = 1 } }
+				UKR = { country_event = {  id = ukr_rus_branch.2 hours = 1 } }
 			}
 			bz_on_SMO_start = yes
 		}
@@ -2506,7 +2502,7 @@ focus_tree = {
 			add_command_power = 45
 			army_experience = 10
 			custom_effect_tooltip = RUS_front_saving_units_cet
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = land_doctrine
 				bonus = 0.5
 				uses = 2
@@ -2568,6 +2564,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_stabilize_the_front"
 			hidden_effect = {
 				remove_ideas = armored_columns_spirit
+				add_to_variable = { var = RUS_VCRF_max_dig_in_factor value = 0.08 }
 			}
 			add_command_power = 25
 			army_experience = 25
@@ -2582,14 +2579,12 @@ focus_tree = {
 			}
 			add_ideas = static_warfare_spirit
 			
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = land_doctrine
 				bonus = 0.75
 				uses = 2
 				category = infantry_doctrine_category
 			}
-			add_to_variable = { RUS_VCRF_army_morale_factor = 0.05 }
-			add_to_variable = { RUS_VCRF_army_defence_factor = 0.05 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -8271,8 +8266,9 @@ focus_tree = {
 				category = land_doctrine
 			}
 			hidden_effect = {
-			    add_to_variable = { var = RUS_VCRF_experience_loss_factor value = 0.05 }
+			    add_to_variable = { var = RUS_VCRF_experience_loss_factor value = 0.10 }
 				add_to_variable = { var = RUS_VCRF_planning_speed value = 0.1 }
+				add_to_variable = { var = RUS_VCRF_max_planning value = 0.05 }
 			}
 		}
 	}
@@ -8860,7 +8856,7 @@ focus_tree = {
 		x = 6
 		y = 2
 		ai_will_do = {
-			factor = 1
+			factor = 50
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Start_covert_mobilization"
@@ -8881,7 +8877,7 @@ focus_tree = {
 		x = 10
 		y = 1
 		ai_will_do = {
-			factor = 1
+			factor = 100
 		}
 		available = {
 			custom_trigger_tooltip = {
@@ -8897,7 +8893,7 @@ focus_tree = {
 				has_civil_war = yes
 				custom_trigger_tooltip = {
 					tooltip = RUS_forced_measures_trigger_tt
-					has_manpower < 250
+					has_manpower < 1000
 				}
 			}
 		}
@@ -8918,7 +8914,11 @@ focus_tree = {
 		x = 9
 		y = 2
 		ai_will_do = {
-			factor = 1
+			base = 1
+			modifier = {
+				add = 150
+				date > 2022.07.01
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_amendments_to_the_Law_on_Mobilization"
@@ -8966,7 +8966,7 @@ focus_tree = {
 		x = 9
 		y = 3
 		ai_will_do = {
-			factor = 1
+			base = 200
 		}
 		available = {
 			custom_trigger_tooltip = {
@@ -8978,24 +8978,17 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_begin_partial_mobilization"
 		    add_stability = -0.15
 			add_war_support = -0.2
-			add_manpower = 15000
 			remove_ideas = RUS_covert_mobilization
-			hidden_effect = {
-				if = {
-					limit = {
-						RUS = {
-							is_ai = yes
-						}
+			if = {
+				limit = {
+					RUS = {
+						is_ai = yes
 					}
-					remove_ideas = RUS_disruption_of_the_operation
-					remove_ideas = RUS_disruption_of_the_operation_1
-					remove_ideas = RUS_disruption_of_the_operation_singleplayer
-					remove_ideas = RUS_disruption_of_the_operation_1_singleplayer
-					remove_ideas = RUS_disruption_of_the_operation_2_singleplayer
-					add_timed_idea = {
-						idea = RUS_disruption_of_the_operation_3_singleplayer
-						days = 60
-					}
+				}
+				remove_ideas = RUS_disruption_of_the_operation_2_singleplayer
+				add_timed_idea = {
+					idea = RUS_disruption_of_the_operation_3_singleplayer
+					days = 60
 				}
 			}
 			if = {
