@@ -64,8 +64,8 @@ NDefines.NAI.DIVISION_DESIGN_MANPOWER_WEIGHT = 0 --0.005
 NDefines.NAI.DIVISION_DESIGN_STOCKPILE_WEIGHT = 0 --0.01
 NDefines.NAI.DIVISION_DESIGN_COMBAT_WIDTH_TARGET_WEIGHT = -10000 -- -200	        -- This score is reduced the farther the width is from the target width (if set)
 
-NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.25 --0.1
-NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 365 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
+NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.03 --0.1
+NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 21 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
 NDefines.NAI.DIVISION_MATCH_ROLE_BOOST_FACTOR = 1.0 --1.2                 -- When finding closest matching existing template to a target template, boost the score by this much if the template also has the correct role
 
 --------------------------------------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ NDefines.NAI.LENDLEASE_FRACTION_OF_PRODUCTION = 0.1		-- Base fraction AI would s
 
 --- AI Defines
 NDefines.NAI.MICRO_POCKET_SIZE = 1						-- Pockets with a size equal to or lower than this will be mocroed by the AI, for efficiency.
-NDefines.NAI.UPGRADE_DIVISION_RELUCTANCE = .0042 -- aggressively trying to get the AI to upgrade divisions to newer templates, may work, may not, but it doesn't break anything. vanilla is 14, .0042 is just over 1 hour, where I believe the vanilla value at 14 = 14 days. So it should be checking to upgrade ONE division every single hour. 
+NDefines.NAI.UPGRADE_DIVISION_RELUCTANCE = 21 -- aggressively trying to get the AI to upgrade divisions to newer templates, may work, may not, but it doesn't break anything. vanilla is 14, .0042 is just over 1 hour, where I believe the vanilla value at 14 = 14 days. So it should be checking to upgrade ONE division every single hour. 
 ---NDefines.NAI.RESEARCH_BONUS_FACTOR = 4.5 				-- To which extent AI should care about bonuses to research
 ---NDefines.NAI.RESEARCH_AHEAD_OF_TIME_FACTOR = 7.0 		-- To which extent AI should care about ahead of time penalties to research
 
