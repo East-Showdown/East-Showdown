@@ -13,11 +13,13 @@
 # ДНР
 ###########################
 
-# 1) Подготовка к войне (при желании)
+# 1) Подготовка к войне 
 DPR_prepare_war_UKR = {
 	allowed = { original_tag = DPR }
 	enable = { always = yes }
-	abort = { always = no }
+	abort = {
+		has_war_with = UKR
+	}	
 	ai_strategy = {
 		type = prepare_for_war
 		id = UKR
@@ -92,86 +94,3 @@ DPR_SMO_FRONT_CONTROL = {
 	}
 }
 
-
-DPR_WAR_FRONT_CONTROL = {
-	allowed = {
-		original_tag = DPR
-	}
-	enable = {
-		has_war_with = UKR
-		RUS = { 
-			has_country_flag = RUS_failure_of_SMO
-		}	
-		AND = {
-			has_war_with = UKR
-			has_manpower < -1000
-			OR = { 
-				has_equipment = { infantry_equipment < @DPR_EQUIP_TIER_S }
-				has_equipment = { uniform_equipment  < @DPR_EQUIP_TIER_S }
-				has_equipment = { body_armor_equipment  < @DPR_EQUIP_TIER_S }
-				has_equipment = { grenade_launcher_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { atgm_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { aa_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { mortar_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { motorized_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { artillery_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { arv_equipment < @DPR_EQUIP_TIER_B }
-				has_equipment = { engineering_equipment < @DPR_EQUIP_TIER_B }
-				has_equipment = { amv_equipment < @DPR_EQUIP_TIER_B }
-				has_equipment = { arv_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { apc_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { afv_sov_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { ifv_sov_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { tank_sov_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { imv_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { sp_artillery_chassis < @DPR_EQUIP_TIER_C }
-				}
-				check_variable = { ammunition_value_k < 20 }
-	
-		}		
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			has_manpower > 2000
-			check_variable = { ammunition_value_k > 50 }
-		}
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = balanced
-		execute_order = yes
-		manual_attack = no
-		priority = 9999
-	}
-}
-
-DPR_back_to_aggressive = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower > 2000
-			check_variable = { ammunition_value_k > 50 }
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			has_manpower < -1000
-			check_variable = { ammunition_value_k < 50 }
-
-		}
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 1000
-	}
-}
