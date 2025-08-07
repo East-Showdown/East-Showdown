@@ -391,7 +391,15 @@ ammunition_calculate_consumption = {
     
     set_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_supply_factor_var}
     add_to_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_defensive_supply_factor_var } 
-	clamp_variable = { var = ammunition_consumption_supply_defensive_result_factor_var min = 0 }   
+	clamp_variable = { var = ammunition_consumption_supply_defensive_result_factor_var min = 0 }  
+    
+    set_variable = { ammunition_consumption_offensive_factor_var_result = ammunition_consumption_offensive_factor_var }
+    add_to_variable = { ammunition_consumption_offensive_factor_var_result = modifier@ammunition_consumption_offensive_factor }
+    clamp_variable = { var = ammunition_consumption_offensive_factor_var_result min = 0 }
+
+    set_variable = { ammunition_consumption_defensive_factor_var_result = ammunition_consumption_defensive_factor_var }
+    add_to_variable = { ammunition_consumption_defensive_factor_var_result = modifier@ammunition_consumption_defensive_factor }
+    clamp_variable = { var = ammunition_consumption_defensive_factor_var_result min = 0 }
 	
     # Обнуляем переменную-счётчик расхода боеприпасов
 	set_variable = { ammunition_consumption_k = 0 }
@@ -401,7 +409,7 @@ ammunition_calculate_consumption = {
 
         # Высчитываем расход боеприпасов от атакующих юнитов
 		set_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_base_k }
-		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_factor_var } 
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_factor_var_result } 
 		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_supply_offensive_result_factor_var }  
         
 
@@ -410,7 +418,7 @@ ammunition_calculate_consumption = {
 		
         # Высчитываем расход боеприпасов от обороняющихся юнитов
 		set_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_base_k }
-		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_factor_var }  
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_factor_var_result }  
 		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_supply_defensive_result_factor_var }  
 
         # Суммируем в расход боеприпасов расход от обороняющихся юнитов
