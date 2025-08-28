@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-tools/reencode_ogg_192.py
+reencode_ogg_192.py
 
 Рекурсивно ищет *.ogg в соседней папке 'music' и перекодирует аудио в 192 kbps,
 если текущий битрейт выше 192 kbps.
