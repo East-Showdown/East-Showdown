@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 17								-- 0.6.0.0
+NDefines.NGame.SAVE_VERSION = 18								-- 0.6.1.0
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -49,7 +49,7 @@ NDefines.NCountry.CONVOY_RANGE_FACTOR = 1                        -- how much ran
 NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for every country
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
-NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.05 -- 0.01
+NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.17 -- 0.01
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.04					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
 NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
 NDefines.NResistance.GARRISON_MANPOWER_LOST_BY_ATTACK = 0.016 	-- Ratio of manpower lost by garrison at each attack on garrison (this number will be reduced by the hardness of garrison template)
