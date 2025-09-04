@@ -21,7 +21,7 @@
 # -----------------------------------------------------------
 
 ESAPI_transfer_state_building = {
-	set_temp_variable = { method_version = 0603 }
+	set_temp_variable = { method_version = 0611 }
 	ESAPI_int_check_version = yes
 
 	set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
@@ -66,7 +66,7 @@ ESAPI_transfer_state_building = {
 
 
 ESAPI_transfer_area_building = {
-	set_temp_variable = { method_version = 0603 }
+	set_temp_variable = { method_version = 0611 }
 	ESAPI_int_check_version = yes
 
 	set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
@@ -135,7 +135,7 @@ ESAPI_transfer_area_building = {
 # 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
 # -----------------------------------------------------------
 ESAPI_transfer_random_state_building = {
-	set_temp_variable = { method_version = 0603 }
+	set_temp_variable = { method_version = 0611 }
     ESAPI_int_check_version = yes
 
     set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
@@ -184,7 +184,7 @@ ESAPI_transfer_random_state_building = {
 # ===========================================================
 
 ESAPI_add_state_building = {
-	set_temp_variable = { method_version = 0603 }
+	set_temp_variable = { method_version = 0611 }
 	ESAPI_int_check_version = yes
 
 	set_temp_variable = { loc_sugar_api_state_id = api_state_id }
@@ -225,7 +225,7 @@ ESAPI_add_state_building = {
 # ===========================================================
 
 ESAPI_add_random_state_building = {
-	set_temp_variable = { method_version = 0603 }
+	set_temp_variable = { method_version = 0611 }
 	ESAPI_int_check_version = yes
 
 	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
@@ -310,4 +310,79 @@ ESAPI_calculate_linear = {
 	multiply_temp_variable = { api_target_y = temp_2 }
 	add_to_temp_variable = { api_target_y = api_y1 }
 
+}
+
+
+# Эффект передачи стейтов внутри географической области определённой стране, если стейт полностью контролируется её союзником
+# Must contain temp vars:
+# 1. temp_country_tag
+# 2. temp_selected_region_index
+ESAPI_selected_region_transfer_states_to_country_if_controlled_by_ally = {
+	if = {
+		limit = { var:temp_country_tag = { exists = yes } }
+
+		for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+			start = global.selected_region_to_regions_ids_start_index^global.temp_selected_region_index
+			end = global.selected_region_to_regions_ids_end_index^global.temp_selected_region_index
+			value = temp_region_index
+
+			set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+			for_loop_effect = { # Цикл по стейтам
+				start = global.regions_to_states_ids_start_index^temp_region_id
+				end = global.regions_to_states_ids_end_index^temp_region_id
+				value = temp_state_index
+
+				set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+				var:temp_state_id = { 
+					if = {
+						limit = { 
+							controller = { 
+								NOT = { original_tag = var:temp_country_tag }
+								is_ally_with = var:temp_country_tag
+							}
+							is_fully_controlled_by = controller
+						}
+
+						var:temp_country_tag = { transfer_state = var:temp_state_id }
+						log = "[GetDateText]: Transfered State [THIS.GetID] to [?temp_country_tag.GetTag]"
+					}
+				}
+			}
+		}
+	}
+}
+
+# Эффект передачи стейтов внутри стратегиеческого региона определённой стране, если стейт полностью контролируется её союзником
+# Must contain temp vars:
+# 1. temp_country_tag
+# 2. temp_region_id
+ESAPI_strategic_region_transfer_states_to_country_if_controlled_by_ally = {
+	if = {
+		limit = { var:temp_country_tag = { exists = yes } }
+		
+		for_loop_effect = { # Цикл по стейтам
+			start = global.regions_to_states_ids_start_index^temp_region_id
+			end = global.regions_to_states_ids_end_index^temp_region_id
+			value = temp_state_index
+
+			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+			var:temp_state_id = { 
+				if = {
+					limit = { 
+						controller = { 
+							NOT = { original_tag = var:temp_country_tag }
+							is_ally_with = var:temp_country_tag
+						}
+						is_fully_controlled_by = controller
+					}
+
+					var:temp_country_tag = { transfer_state = var:temp_state_id }
+					log = "[GetDateText]: Transfered State [THIS.GetID] to [?temp_country_tag.GetTag]"
+				}
+			}
+		}
+	}
 }
