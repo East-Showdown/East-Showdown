@@ -96,14 +96,7 @@ country_event = {
 			id = WGN.7
 			days = 1
 			hours = 15
-		}
-				
-				
-		country_event = {
-			id = super.2
-			hours = 23
-		}
-				
+		}	
 				
 		RUS = {
 			country_event = {
@@ -235,7 +228,7 @@ unit_leader_event = {
 			RUS = {
 				Andrey_Troshev = {
 				    set_portraits = {
-						army = { large ="GFX_Andrey_Troshev_redoubt" }
+						army = { small ="GFX_Andrey_Troshev_redoubt" }
 					}
 				}
 			}
@@ -317,6 +310,7 @@ country_event = {
 			random_army_leader = {
 				retire = yes
 			}
+			clr_country_flag = head_of_gov_enabled_flag
 		}
 		WGN = {
 			every_army_leader = {
@@ -526,14 +520,38 @@ country_event = {
 			has_country_flag = WGN_Prigoshin_ready_to_down
 		}
 		ai_chance = {
-			base = 1
+			base = 0
 			modifier = {
 				add = 100
-				is_historical_focus_on = yes
+				OR = {
+					is_historical_focus_on = yes
+					has_game_rule = {
+						rule = es_march_of_justuse_rule
+						option = ES_MARCH_OF_JUSTICE_HISTORY
+					}
+				}
+				NOT = {
+					AND = {
+						is_historical_focus_on = yes
+						OR = {
+							has_game_rule = {
+								rule = es_march_of_justuse_rule
+								option = ES_MARCH_OF_JUSTICE_BAD_END
+							}
+							has_game_rule = {
+								rule = es_march_of_justuse_rule
+								option = ES_MARCH_OF_JUSTICE_WAGNER_WON
+							}
+						}
+					}
+				}
 			}
 		}
 		custom_effect_tooltip = consequences
 		hidden_effect = {
+			Andrey_Troshev = {
+				unit_leader_event = { id = WGN_mission.4 days = 3 }
+			}
 		    country_event = {
 				id = wgn.14
 				days = 60
@@ -559,10 +577,59 @@ country_event = {
 	option = {
 		name = WGN.7.s
 		ai_chance = {
-			base = 1
+			base = 0
+			modifier = {
+				add = 100
+				OR = {
+					has_game_rule = {
+						rule = es_march_of_justuse_rule
+						option = ES_MARCH_OF_JUSTICE_BAD_END
+					}
+					has_game_rule = {
+						rule = es_march_of_justuse_rule
+						option = ES_MARCH_OF_JUSTICE_WAGNER_WON
+					}
+				}
+			}
 		}
 		custom_effect_tooltip = consequences
 		hidden_effect = {
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = es_march_of_justuse_rule
+						option = ES_MARCH_OF_JUSTICE_BAD_END
+					}
+				}
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 2
+				}
+				RUS = {
+					add_power_balance_value = {
+						id = RUS_power_balance
+						value = 2
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = es_march_of_justuse_rule
+						option = ES_MARCH_OF_JUSTICE_WAGNER_WON
+					}
+				}
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -2
+				}
+				RUS = {
+					add_power_balance_value = {
+						id = RUS_power_balance
+						value = -2
+					}
+				}
+			}
 			RASHET_OF_SUCCES_MARCH_JUSTACHE = yes
 			news_event = {
 				id = news.366
@@ -836,6 +903,7 @@ country_event = {
 		custom_effect_tooltip = WGN_Prigoshin_F
 		hidden_effect = {
 		    set_country_flag = WGN_death_prigozhin_utkin
+			clr_country_flag = head_of_gov_enabled_flag			
 		    country_event = {
 				id = super.5
 				hours = 3
@@ -951,42 +1019,6 @@ country_event = {
 				add_trait = {
 					trait = wgn_leader
 				}
-			}
-		}
-		add_stability = 0.1
-	}
-	option = {
-		name = WGN.16.b
-		ai_chance = { base = 45 }
-		trigger = {
-			Andrey_Troshev = {
-				is_advisor = yes
-			}
-		}
-		custom_effect_tooltip = WGN_Andrey_Troshev_power
-		hidden_effect = {
-		    anton_elizarov = {
-				promote_leader = yes
-			}
-		    set_politics = {
-				ruling_party = neutrality
-			}
-			set_popularities = {  democratic = 0  neutrality = 50  fascism = 50  communism = 0 }
-			add_country_leader_role = {
-				character = Andrey_Troshev
-				promote_leader = yes
-				country_leader = {
-					ideology = wgn_n
-				}
-			}
-			add_field_marshal_role = {
-			    Character = Andrey_Troshev
-				traits = { wgn_leader old_guard war_hero }
-				skill = 3
-				attack_skill = 4
-				defense_skill = 2
-				planning_skill = 3
-				logistics_skill = 3
 			}
 		}
 		add_stability = 0.1
@@ -1946,10 +1978,31 @@ country_event = {
 	option = {
 		name = WGN.62.a
 		ai_chance = {
-			base = 1
+			base = 0
 			modifier = {
 				add = 100
-				is_historical_focus_on = yes
+				OR = {
+					is_historical_focus_on = yes
+					has_game_rule = {
+						rule = es_march_of_justuse_rule
+						option = ES_MARCH_OF_JUSTICE_HISTORY
+					}
+				}
+				NOT = {
+					AND = {
+						is_historical_focus_on = yes
+						OR = {
+							has_game_rule = {
+								rule = es_march_of_justuse_rule
+								option = ES_MARCH_OF_JUSTICE_BAD_END
+							}
+							has_game_rule = {
+								rule = es_march_of_justuse_rule
+								option = ES_MARCH_OF_JUSTICE_WAGNER_WON
+							}
+						}
+					}
+				}
 			}
 		}
 		custom_effect_tooltip = consequences
@@ -1964,7 +2017,7 @@ country_event = {
 	option = {
 		name = WGN.62.b
 		ai_chance = {
-			base = 1
+			base = 0
 		}
 		custom_effect_tooltip = consequences
     }

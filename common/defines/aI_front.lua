@@ -11,7 +11,7 @@ NDefines.NAI.UNIT_ASSIGNMENT_TERRAIN_IMPORTANCE = 20.0	--- diminshed by 4x becau
 NDefines.NAI.SEND_VOLUNTEER_EVAL_BASE_DISTANCE = 175.0  -- How far away it will evaluate sending volunteers if not a major power
 NDefines.NAI.SEND_VOLUNTEER_EVAL_MAJOER_POWER = 1.0 	-- How willing major powers are to send volunteers.
 NDefines.NAI.SEND_VOLUNTEER_EVAL_CONTAINMENT_FACTOR = 0.9 -- How much AI containment factors into its evaluation of sending volunteers.
-
+NDefines.NAI.FRONT_EVAL_UNIT_ACCURACY = 1.0 
 ---NDefines.NAI.PLAN_ACTIVATION_SUPERIORITY_AGGRO = 10 --default 1.0		-- How aggressive a country is in activating a plan based on how superiour their force is.
 	--planning
 
@@ -34,8 +34,8 @@ NDefines.NAI.MIN_UNITS_FACTOR_INVASION_ORDER = 1.0	--default ^^			-- Factor for 
 NDefines.NAI.FRONT_UNITS_CAP_FACTOR = 10.0 ----15.0 mad test here too 		--default 15.0				-- A factor applied to total front size and supply use. Primarily effects small fronts
 NDefines.NAI.MAX_DIST_PORT_RUSH = 25.0	--default 20.0			-- If a unit is in enemy territory with no supply it will consider nearby ports within this distance.
 	
-NDefines.NAI.MIN_FIELD_STRENGTH_TO_BUILD_UNITS = 0.7	--default 0.7		-- Cancel unit production if below this to get resources out to units in the field
-NDefines.NAI.MIN_MANPOWER_TO_BUILD_UNITS = 0.7	--default 0.7				-- Cancel unit production if below this to get resources out to units in the field
+NDefines.NAI.MIN_FIELD_STRENGTH_TO_BUILD_UNITS = 0.9	--default 0.7		-- Cancel unit production if below this to get resources out to units in the field
+NDefines.NAI.MIN_MANPOWER_TO_BUILD_UNITS = 0.9	--default 0.7				-- Cancel unit production if below this to get resources out to units in the field
 
 NDefines.NMilitary.PLAN_SPREAD_ATTACK_WEIGHT = 300 -- 1.0 -- (was 12.0)	-- The higher the value, the less it should crowd provinces with multiple attacks.		#WICHTIG
 NDefines.NMilitary.PLAN_MIN_AUTOMATED_EMPTY_POCKET_SIZE = 20		-- (was 2) -- The battle plan system will only automatically attack provinces in pockets that has no resistance and are no bigger than these many provinces
@@ -64,8 +64,8 @@ NDefines.NAI.DIVISION_DESIGN_MANPOWER_WEIGHT = 0 --0.005
 NDefines.NAI.DIVISION_DESIGN_STOCKPILE_WEIGHT = 0 --0.01
 NDefines.NAI.DIVISION_DESIGN_COMBAT_WIDTH_TARGET_WEIGHT = -10000 -- -200	        -- This score is reduced the farther the width is from the target width (if set)
 
-NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.25 --0.1
-NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 365 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
+NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.03 --0.1
+NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 21 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
 NDefines.NAI.DIVISION_MATCH_ROLE_BOOST_FACTOR = 1.0 --1.2                 -- When finding closest matching existing template to a target template, boost the score by this much if the template also has the correct role
 
 --------------------------------------------------------------------------------------------------------------
@@ -156,8 +156,8 @@ NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_HIGH = 0.5
 NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_HIGH = 0.5	
 
 NDefines.NAI.PLAN_FACTION_STRONG_TO_EXECUTE = 0.65 --0.80	0.60		        -- % or more of units in an order to consider ececuting the plan
-NDefines.NAI.ORG_UNIT_STRONG = 0.75												-- Organization % for unit to be considered strong
-NDefines.NAI.STR_UNIT_STRONG = 0.75												-- Strength (equipment) % for unit to be considered strong
+NDefines.NAI.ORG_UNIT_STRONG = 0.85												-- Organization % for unit to be considered strong
+NDefines.NAI.STR_UNIT_STRONG = 0.85												-- Strength (equipment) % for unit to be considered strong
 
 NDefines.NAI.PLAN_FACTION_NORMAL_TO_EXECUTE = 0.65
 NDefines.NAI.ORG_UNIT_NORMAL = 0.6 --6												-- Organization % for unit to be considered normal
@@ -169,28 +169,21 @@ NDefines.NAI.STR_UNIT_WEAK = 0.4 --0.45												-- Strength (equipment) % for
 
 NDefines.NAI.PLAN_AVG_PREPARATION_TO_EXECUTE = 0.4				            -- % or more average plan preparation before executing
 
+NDefines.NAI.LOW_PRIO_TEMPLATE_PENALTY_FOR_FRONTS = 1000
+
 
 NDefines.NAI.PLAN_ACTIVATION_MAJOR_WEIGHT_FACTOR = 1		                    -- AI countries will hold on activating plans if stronger countries have plans in the same location. Majors count extra (value of 1 will negate this)
 NDefines.NAI.PLAN_ACTIVATION_PLAYER_WEIGHT_FACTOR = 1 		                -- AI countries will hold on activating plans if player controlled countries have plans in the same location. Majors count extra (value of 1 will negate this)
 
 NDefines.NAI.PLAN_MIN_SIZE_FOR_FALLBACK = 5000					                -- A country with less provinces than this will not draw fallback plans  but rather station their troops along the front
 
-
 -- these are all 3 numbers for min, desired, max unit need weights for area defense
-NDefines.NAI.AREA_DEFENSE_CAPITAL_PEACE_VP_WEIGHT = { 1.0, 1.0, 1.0 }
-NDefines.NAI.AREA_DEFENSE_CAPITAL_VP_WEIGHT = { 0.0, 0.0, 0.0 }
-NDefines.NAI.AREA_DEFENSE_HOME_VP_WEIGHT = { 0.0, 0.0, 0.0 }
-NDefines.NAI.AREA_DEFENSE_OTHER_VP_WEIGHT = { 0.0, 0.0, 0.0 }
 
 NDefines.NAI.AREA_DEFENSE_CAPITAL_PEACE_COAST_WEIGHT = { 0.0, 0.0, 0.0 }
 NDefines.NAI.AREA_DEFENSE_CAPITAL_COAST_WEIGHT = { 0.0, 0.0, 0.0 }
 NDefines.NAI.AREA_DEFENSE_HOME_COAST_WEIGHT = { 0.0, 0.0, 0.0 }
 NDefines.NAI.AREA_DEFENSE_OTHER_COAST_WEIGHT = { 0.0, 0.0, 0.0 }
 
-NDefines.NAI.AREA_DEFENSE_CAPITAL_PEACE_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
-NDefines.NAI.AREA_DEFENSE_CAPITAL_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
-NDefines.NAI.AREA_DEFENSE_HOME_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
-NDefines.NAI.AREA_DEFENSE_OTHER_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
 	
 --------------------------------------------------------------------------------------------------------------
 -- NAVY AI
@@ -347,7 +340,7 @@ NDefines.NMilitary.PLAN_PORVINCE_PORT_BASE_IMPORTANCE = 0		-- Added importance f
 NDefines.NMilitary.PLAN_PORVINCE_PORT_LEVEL_FACTOR = 0			-- Bonus factor for port level
 NDefines.NAI.AREA_DEFENSE_CIVIL_WAR_IMPORTANCE = 5.0				-- Area defense order importance value when a country is in a civil war as target or revolter. vanilla 10000 lolwut?? am I missing something here :
 NDefines.NMilitary.PLAN_PORVINCE_RESISTANCE_BASE_IMPORTANCE = 150.0 -- Used when calculating the calue of defense area provinces for the battle plan system (factored by resistance level) vanilla 10.0
-NDefines.NMilitary.PLAN_PROVINCE_LOW_VP_IMPORTANCE_FRONT = 1.0    -- Used when calculating the calue of fronts in the battle plan system vanilla 2.0
+NDefines.NMilitary.PLAN_PROVINCE_LOW_VP_IMPORTANCE_FRONT = 1.5    -- Used when calculating the calue of fronts in the battle plan system vanilla 2.0
 
 
 --- Navy Defines
@@ -370,8 +363,8 @@ NDefines.NDiplomacy.NOT_READY_FOR_WAR_BASE = -100 -- AI should be unwilling to e
 NDefines.NAI.LENDLEASE_FRACTION_OF_PRODUCTION = 0.1		-- Base fraction AI would send as lendlease 0.5 vanilla less base production used, perhaps will promote AI to send more?
 
 --- AI Defines
-NDefines.NAI.MICRO_POCKET_SIZE = 3						-- Pockets with a size equal to or lower than this will be mocroed by the AI, for efficiency.
-NDefines.NAI.UPGRADE_DIVISION_RELUCTANCE = .0042 -- aggressively trying to get the AI to upgrade divisions to newer templates, may work, may not, but it doesn't break anything. vanilla is 14, .0042 is just over 1 hour, where I believe the vanilla value at 14 = 14 days. So it should be checking to upgrade ONE division every single hour. 
+NDefines.NAI.MICRO_POCKET_SIZE = 1						-- Pockets with a size equal to or lower than this will be mocroed by the AI, for efficiency.
+NDefines.NAI.UPGRADE_DIVISION_RELUCTANCE = 21 -- aggressively trying to get the AI to upgrade divisions to newer templates, may work, may not, but it doesn't break anything. vanilla is 14, .0042 is just over 1 hour, where I believe the vanilla value at 14 = 14 days. So it should be checking to upgrade ONE division every single hour. 
 ---NDefines.NAI.RESEARCH_BONUS_FACTOR = 4.5 				-- To which extent AI should care about bonuses to research
 ---NDefines.NAI.RESEARCH_AHEAD_OF_TIME_FACTOR = 7.0 		-- To which extent AI should care about ahead of time penalties to research
 
@@ -436,7 +429,7 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 
 -- BATTLEPLAN ACTIVATION
 	
-	NDefines.NAI.MAX_MICRO_ATTACKS_PER_ORDER = 4					-- affects performance; AI goes through its orders and checks if there are situations to take advantage of
+	NDefines.NAI.MAX_MICRO_ATTACKS_PER_ORDER = 8					-- affects performance; AI goes through its orders and checks if there are situations to take advantage of
 
 	NDefines.NAI.FRONT_EVAL_UNIT_SUPPLY_AND_ORG_LACK_IMPACT = 0.2			-- scale how painful the AI thinks a combined lack of supply and organization is for units
 
@@ -447,14 +440,22 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	NDefines.NAI.AGGRESSIVENESS_CHECK_PARTLY_FORTIFIED_WEAK_POINTS = 1.5	-- if front strength balance is at or above this value versus a party fortified enemy, we rush attack weak points; below this value, we are careful
 	
 	NDefines.NAI.ATTACK_HEAVILY_DEFENDED_LIMIT = 1				-- AI will not launch attacks against heavily defended fronts unless they consider to have this level of advantage (1.0 = 100%)
-	
-	NDefines.NAI.FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.45 -- ai will consider a front fortified if this ratio of provinces has fort
+	NDefines.NAI.DIVISION_SUPPLY_RATIO_TO_MOTORIZE = 0.90
+	NDefines.NAI.FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.7 -- ai will consider a front fortified if this ratio of provinces has fort
 	NDefines.NAI.HEAVILY_FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.6 -- ai will consider a front super fortified if this ratio of provinces has lots of forts
 	NDefines.NAI.ENEMY_FORTIFICATION_FACTOR_FOR_FRONT_REQUESTS = 0.0		-- front unit request factor at max enemy fortification
 	NDefines.NAI.ENEMY_FORTIFICATION_FACTOR_FOR_FRONT_REQUESTS_MAX = 0.0 	-- max factor that can be added by enemy fortification
-	
-	NDefines.NAI.HOURS_BETWEEN_ENCIRCLEMENT_DISCOVERY = 360			  -- Per army, interval in hours between refresh of which provinces it considers make up potential encirclement points
-	
+	NDefines.NAI.WANTED_UNITS_THREAT_BASE = 0.5                            -- If no threat multiply min wanted units by this
+	NDefines.NAI.WANTED_UNITS_THREAT_MAX = 25.0                             -- Normalized threat is clamped to this
+	NDefines.NAI.WANTED_UNITS_WAR_THREAT_FACTOR = 1.9                       -- Factor threat with this if country is at war. this value is overriden by the value in ideology database if that value exceedes this.
+	NDefines.NAI.WANTED_UNITS_DANGEROUS_NEIGHBOR_FACTOR = 1.25              -- Factor if has dangerous neighbor
+	NDefines.NAI.WANTED_UNITS_MANPOWER_DIVISOR = 1900                      -- Normalizing divisor for AI manpower. (for each x max available manpower they want one division)
+	NDefines.NAI.WANTED_UNITS_MAX_WANTED_CAP = 1488
+	NDefines.NAI.HOURS_BETWEEN_ENCIRCLEMENT_DISCOVERY = 7			  -- Per army, interval in hours between refresh of which provinces it considers make up potential encirclement points
+	NDefines.NAI.FRONT_BULGE_RATIO_LOWER_CUTOFF = 0.85
+	NDefines.NAI.FRONT_BULGE_RATIO_UPPER_CUTOFF = 1.7
+	NDefines.NAI.AI_UPDATE_ROLES_FREQUENCY_HOURS = 6
+
 	NDefines.NAI.DESPERATE_AI_MIN_UNIT_ASSIGN_TO_ESCAPE = 0			-- AI will assign at least this amount of units to break from desperate situations
 	NDefines.NAI.DESPERATE_AI_WEAK_UNIT_STR_LIMIT = 0.8					-- ai will increase number of units assigned to break from desperate situations when units are start falling lower than this str limit
 	NDefines.NAI.DESPERATE_AI_MIN_ORG_BEFORE_ATTACK = 0.5					-- ai will wait for this much org to attack an enemy prov in desperate situations
