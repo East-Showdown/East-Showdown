@@ -23,3 +23,15 @@ reencode_ogg_192.py
   python reencode_ogg_192.py
   python reencode_ogg_192.py --dry-run        # только показать, что будет сделано
   python reencode_ogg_192.py --verbose        # подробный вывод
+  
+=======
+
+reencode_ogg_128.py
+
+Рекурсивно ищет *.ogg в соседней папке 'music' и перекодирует аудио в 128 kbps,
+если текущий битрейт выше 128 kbps.
+
+Использование:
+  python reencode_ogg_128.py
+  python reencode_ogg_128.py --dry-run        # только показать, что будет сделано
+  python reencode_ogg_128.py --verbose        # подробный вывод
