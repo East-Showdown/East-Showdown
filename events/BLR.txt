@@ -68,6 +68,49 @@ country_event = {
 	}
 }
 
+country_event = {
+	id = BLR_russia.3
+	title = BLR_russia.3.t
+    desc = BLR_russia.3.d
+	is_triggered_only = yes
+    fire_only_once = yes
+	picture = GFX_country_event_267
+	option = {
+		name = BLR_russia.3.a
+		add_political_power = -40
+		custom_effect_tooltip = BLR_russia.3.a_tt
+		BLR = {
+			activate_mission = BLR_payment_of_RUS_dividends
+			set_country_flag = BLR_russia.3.a_flag
+		}
+	}
+	option = {
+		name = BLR_russia.3.b
+		add_political_power = -60
+		custom_effect_tooltip = BLR_russia.3.b_tt
+		BLR = {
+			activate_mission = BLR_payment_of_RUS_dividends
+			set_country_flag = BLR_russia.3.d_flag
+		}
+	}
+	option = {
+		name = BLR_russia.3.c
+		add_political_power = -20
+		set_country_flag = BLR_russia.3.c_flag
+		custom_effect_tooltip = BLR_russia.3.c_tt
+		BLR = {
+			activate_mission = BLR_payment_of_RUS_dividends
+		}
+	}
+	option = {
+		name = BLR_russia.3.e
+		add_days_remove  = {
+    		decision = BLR_ask_for_investments_from_RUS
+    		days = -120
+		}
+	}
+}
+
 #Third Referendum
 country_event = {
 	id = blrref.0
@@ -587,26 +630,21 @@ country_event = {
 		custom_effect_tooltip = blr.16.a_tt
 
 		hidden_effect = {
-			add_offsite_building = { type = industrial_complex level = 3 }
-			30 = {
-				add_building_construction = {
-					type = bunker
-					level = 1
-					instant_build = yes
-					province = {
-						all_provinces = yes
-						limit_to_border = yes
-					}
+			BLR = {
+				every_core_state = {
+					add_core_of = BPR	
 				}
-			}
-			49 = {
-				add_building_construction = {
-					type = bunker
-					level = 1
-					instant_build = yes
-					province = {
-						all_provinces = yes
-						limit_to_border = yes
+				if = {
+					limit = {
+						divisions_in_state = {
+							size > 0
+							state = 49
+						} 
+						has_country_flag = BPR_Brest_Slot
+					}
+					delete_unit = {
+						state = 49
+						disband = yes
 					}
 				}
 			}
@@ -692,6 +730,7 @@ news_event = {
 		trigger = {
 			tag = RUS
 		}
+		add_political_power = 20
 	}
 	option = {
 		name = blr_news.2.c
@@ -704,5 +743,18 @@ news_event = {
 		trigger = {
 			tag = BLR
 		}
+		set_temp_variable_to_random = {
+			var = s
+			max = 0.05
+			min = 0.01
+		}
+		set_temp_variable_to_random = {
+			var = p
+			max = 100
+			min = 10
+			integer = yes
+		}
+		add_stability = s
+		add_political_power = p
 	}
 }
