@@ -2195,4 +2195,467 @@ WGN_information_war = {
 			}
 		}
 	}
+
+}
+
+
+WGN_missions_category = {
+	WGN_soledar_decision = { 
+		icon = WGN_soledar_conquest_icon
+		fire_only_once = yes
+		cost = 30
+		days_remove = 7
+		ai_will_do = {
+			base = -999
+		}
+
+		highlight_states = {
+			highlight_provinces = {
+				18702 18315	18294 18609
+			}
+		}
+
+		available = {
+			original_tag = WGN
+			UKR = {
+				controls_province = 18294
+				controls_province = 18609
+				OR = {
+					controls_province = 18702
+					controls_province = 18315	
+				}
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		 	has_completed_focus = WGN_planningofmilitaryoperations
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_decision"
+			anton_elizarov = {
+				unit_leader_event = WGN_mission.1
+			}
+			911 = {
+				add_dynamic_modifier = {
+					modifier = WGN_offensive_modifier
+					days = 15
+				}
+			}
+		}
+	}
+
+	WGN_severodonetsk_decision = { 
+		icon = WGN_severodonetsk_conquest_icon
+		fire_only_once = yes
+		cost = 30
+		days_remove = 3
+		ai_will_do = {
+			base = -999
+		}
+
+		highlight_states = {
+			highlight_provinces = {
+				17656 18667 17629
+			}
+		}
+
+		available = {
+			original_tag = WGN
+			UKR = {
+				controls_province = 18667
+				controls_province = 17629
+			}
+			hidden_trigger = {
+				UKR = {
+					controls_province = 17656
+				}
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		 	has_completed_focus = WGN_planningofmilitaryoperations
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_severodonetsk_decision"
+			145 = {
+				add_dynamic_modifier = {
+					modifier = WGN_offensive_modifier
+					days = 10
+				}
+			}
+			activate_mission = WGN_severodonetsk_conquest
+		}
+	}
+
+	WGN_popasna_decision = { 
+		icon = WGN_popasna_conquest_icon
+		fire_only_once = yes
+		cost = 30
+		days_remove = 3
+		ai_will_do = {
+			base = -999
+		}
+
+		highlight_states = {
+			highlight_provinces = {
+				13647 18605
+			}
+		}
+
+		available = {
+			original_tag = WGN
+			UKR = {
+				controls_province = 13647
+				controls_province = 18605
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		 	has_completed_focus = WGN_planningofmilitaryoperations
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_popasna_decision"
+			145 = {
+				add_dynamic_modifier = {
+					modifier = WGN_offensive_modifier
+					days = 10
+				}
+			}
+			activate_mission = WGN_popasna_conquest
+		}
+	}
+
+	WGN_bakhmut_decision = { 
+		icon = WGN_bakhmut_conquest_icon
+		fire_only_once = yes
+		cost = 50
+		days_remove = 7
+		ai_will_do = {
+			base = -999
+		}
+
+		highlight_states = {
+			highlight_provinces = {
+				15750 15685 6711 18617 18619 18616 18614 18615
+			}
+		}
+
+		available = {
+			original_tag = WGN
+			UKR = {
+				controls_province = 15750
+				controls_province = 15685
+				controls_province = 6711
+				controls_province = 18617
+				controls_province = 18619
+				controls_province = 18616
+				controls_province = 18614
+				controls_province = 18615
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		 	has_completed_focus = WGN_planningofmilitaryoperations
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_decision"
+			165 = {
+				add_dynamic_modifier = {
+					modifier = WGN_offensive_modifier
+					days = 70
+				}
+			}
+			evgeniy_prigozhin = {
+				unit_leader_event = WGN_mission.2
+			}
+		}
+	}
+
+	WGN_severodonetsk_conquest = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+
+		highlight_states = {
+			highlight_provinces = {
+				17656 18667 17629
+			}
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 17656
+					controls_province = 18667
+					controls_province = 17629
+				}
+			}
+			WGN = {
+				divisions_in_state = {
+					size > 4
+					state = 145
+				}
+			}
+		}
+		days_mission_timeout = 7
+		is_good = no
+		icon = WGN_severodonetsk_conquest_icon
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_severodonetsk_conquest: complete_effect"
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.035
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.035
+				}
+			}	
+			add_political_power = 75
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_severodonetsk_conquest: timeout_effect"
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.035
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.035
+				}
+			}
+		}
+	}
+
+	WGN_popasna_conquest = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		highlight_states = {
+			highlight_provinces = {
+				13647 18605
+			}
+		}
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 13647
+					controls_province = 18605
+				}
+			}
+			WGN = {
+				divisions_in_state = {
+					size > 4
+					state = 981
+				}
+			}
+		}
+		days_mission_timeout = 7
+		is_good = no
+		icon = WGN_popasna_conquest_icon
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_popasna_conquest: complete_effect"
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.035
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.035
+				}
+			}	
+			add_political_power = 75
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_popasna_conquest: timeout_effect"
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.035
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.035
+				}
+			}
+		}
+	}
+
+	WGN_soledar_conquest = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+
+		highlight_states = {
+			highlight_provinces = {
+				18702 18315	18294 18609
+			}
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 18294
+					controls_province = 18609
+					controls_province = 18702
+					controls_province = 18315
+				}
+			}
+			WGN = {
+				divisions_in_state = {
+					size > 4
+					state = 911
+				}
+			}
+		}
+		days_mission_timeout = 15
+		is_good = no
+		icon = WGN_soledar_conquest_icon
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_conquest: complete_effect"
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.035
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.035
+				}
+			}	
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_conquest: timeout_effect"
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.035
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.035
+				}
+			}
+		}
+	}
+
+
+    WGN_bakhmut_conquest = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		highlight_states = {
+			highlight_provinces = {
+				15750 15685 6711 18617 18619 18616 18614 18615
+			}
+		}
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 15750
+					controls_province = 15685
+					controls_province = 6711
+					controls_province = 18617
+					controls_province = 18619
+					controls_province = 18616
+					controls_province = 18614
+					controls_province = 18615
+				}
+			}
+			WGN = {
+				divisions_in_state = {
+					size > 4
+					state = 165
+				}
+			}
+		}
+		days_mission_timeout = 70
+		is_good = no
+		icon = WGN_bakhmut_conquest_icon
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_conquest: complete_effect"
+			add_to_variable = {
+				var = WGN_successful_stormings
+				value = 1
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.1
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.1
+				}
+			}	
+			add_political_power = 75
+		}
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_conquest: timeout_effect"
+			add_to_variable = {
+				var = WGN_failed_stormings
+				value = 1
+			}
+			evgeniy_prigozhin = {
+				unit_leader_event = WGN_mission.3
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.1
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = 0.1
+				}
+			}
+		}
+	}
 }
