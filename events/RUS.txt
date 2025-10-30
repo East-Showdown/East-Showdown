@@ -4601,20 +4601,100 @@ country_event = {
         }
     }
 }
-#ЧВК Редут
+#Крах власти РФ
 country_event = {
 	id = rus.134
 	title = rus.134.t
 	desc = rus.134.desc
-	picture = GFX_country_event_089
+	picture = GFX_country_event_006
     fire_only_once = yes
 	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			country_event = {
+				id = rus_wagner_path.10
+				hours = 9
+			}
+		}
+	}
 	option = {
 		name = rus.134.a
 		log = "[GetDateText]: [This.GetName]: rus.134.a executed"
-        hidden_effect = {
-			load_oob = RUS_redut_first
-        }
+        custom_effect_tooltip = MARCH_JUSTICE_prigoshin_victory_cet
+		hidden_effect = {
+			clr_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
+			WGN = {
+				every_army_leader = {
+					remove_trait = {
+						trait = wgn_commander
+					}
+					remove_trait = {
+						trait = wgn_leader
+					}
+					promote_leader = yes
+				}
+				every_unit_leader = {
+					limit = { NOT = { is_character = evgeniy_prigozhin} }
+					set_nationality = RUS
+				}
+				remove_power_balance = {
+					id = WGN_power_balance
+				}
+			}
+			RUS = {
+				if = {
+					limit = {
+						has_global_flag = strelkov_rus_hire
+					}
+					retire_character = igor_girkin
+				}
+				retire_character = vladimir_putin
+				retire_character = sergei_shoigy
+				retire_character = sergei_shoigy
+				retire_character = oleg_salyukov
+				retire_character = genadiy_shidko
+				retire_character = sergey_rudskoy
+				retire_character = valery_gerasimov
+				add_country_leader_role = {
+					character = No_one_after_putin
+					promote_leader = yes
+					country_leader = {
+						ideology = authoritarian_democracy_rus_postwar
+						traits = {  }
+						desc = NO_AFTER_VLADIMIR_PUTIN_DESCRIPTION
+					}
+				}
+				clr_country_flag = head_of_gov_enabled_flag
+				remove_power_balance = {
+					id = RUS_power_balance
+				}
+				set_party_name = {  
+					ideology = neutrality
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				set_party_name = {  
+					ideology = communism
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				set_party_name = {  
+					ideology = democratic
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				set_party_name = {  
+					ideology = fascism
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				change_tag_from = WGN
+			}
+			BOR = {
+				country_event = bor_hidden.1
+			}
+			set_global_flag = RUS_Wagner_victory_shoigy_die
+		}
     }
 }
 #ЧВК Конвой
@@ -9559,6 +9639,47 @@ country_event = {
 				change_tag_from = ROOT
 			}
 			KALMYK_REBELION_RUS = yes
+		}
+	}
+}
+
+#Захват здания минобороны
+country_event = {
+	id = rus_wagner_path.10
+	title = rus_wagner_path.10.t
+	desc = rus_wagner_path.10.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_071
+	immediate = {
+		hidden_effect = {
+			set_variable = { RUS_destroyed_vertical_idea_army_strength_factor = -0.3 }
+			set_variable = { RUS_destroyed_vertical_idea_army_morale_factor = -0.3 }
+			set_variable = { RUS_destroyed_vertical_idea_army_attack_factor = -0.3 }
+			set_variable = { RUS_destroyed_vertical_idea_max_dig_in_factor = -0.5 }
+			set_variable = { RUS_destroyed_vertical_idea_max_planning = -0.5 }
+			set_variable = { RUS_destroyed_vertical_idea_breakthrough_factor = -0.4 }
+			set_variable = { RUS_destroyed_vertical_idea_army_org_factor = -0.2 }
+		}
+	}
+	option = {
+		name = rus_wagner_path.10.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.10.a executed"
+		add_command_power = -100
+		add_dynamic_modifier = { modifier = RUS_destroyed_vertical_idea }
+		hidden_effect = {
+			every_unit_leader = { 
+				limit = { 
+					NOT = { 
+						is_field_marshal = yes
+						is_character = sergei_syrovikin
+						is_character = aleksey_kondratiev
+						is_character = vladimir_alekseev
+						is_character = vitaly_kuznetsov
+					}
+				}
+				retire = yes
+			}
 		}
 	}
 }
