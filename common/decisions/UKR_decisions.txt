@@ -22225,43 +22225,81 @@ UKR_nto_help_new_brigades_category = {
 	UKR_Form_47_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_47TH
 		available = {
-			date > 2023.01.01
-			has_completed_focus = Creation_of_new_brigades
+			if = {
+				limit = {
+					UKR = {
+						has_country_flag = UKR_Form_47_mekhanizovana_executed_flag
+					}
+				}
+				date = 2023.12.30
+			}
+			else = {
+				date > 2023.01.01
+				has_completed_focus = Creation_of_new_brigades
+			}
 		}
 		ai_will_do = {
 			factor = 2000
 		}
 		visible = {
 			tag = UKR
+			NOT = {
+				has_country_flag = UKR_Form_47_mekhanizovana_hide_flag
+			}
 		}
-		days_remove = 100
-		cost = 100
+		days_remove = UKR_Form_47_mekhanizovana_days_remove_var
+		cost = UKR_Form_47_mekhanizovana_cost_var
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_47_mekhanizovana"
-			custom_effect_tooltip = New_brigades_tt
-			add_equipment_to_stockpile = {
-				type = tank_ger_leopard2_equipment
-				amount = 5
-				producer = "NTO"
-				version_name = "Leopard 2A6"
+			if = {
+				limit = { 
+					UKR = {
+						has_country_flag = UKR_Form_47_mekhanizovana_executed_flag
+					}
+				}
+				custom_effect_tooltip = UKR_tankovyy_batalyon_osnashchenyy_abramsamy_47_yi_okremoyi_mekhanizovanoyi_bryhady_Mahura_tt
+				hidden_effect = {
+					load_oob = UKR_tankovyy_batalyon_osnashchenyy_abramsamy_47_yi_okremoyi_mekhanizovanoyi_bryhady_Mahura
+					set_country_flag = UKR_Form_47_mekhanizovana_hide_flag
+					delete_unit_template_and_units = {
+    					division_template = "Tankovyy batal'yon 47-yi okremoyi mekhanizovanoyi bryhady «Mahura»"
+					}
+				}		
 			}
-			add_equipment_to_stockpile = {
-				type = ifv_usa_bradley_equipment
-				amount = 20
-				producer = "NTO"
-				version_name = "M2A2 Bradley"
-			}
-			add_equipment_to_stockpile = {
-				type = imv_medium_1_equipment
-				amount = 30
-				producer = "NTO"
-				version_name = "International MaxxPro"
-			}
-			hidden_effect = {
-				load_oob = UKR_47mekhanizovana
+			else = {
+				custom_effect_tooltip = New_brigades_tt
+				UKR = {
+					set_country_flag = UKR_Form_47_mekhanizovana_executed_flag
+				}
+				set_variable = {
+					UKR_Form_47_mekhanizovana_days_remove_var = 30
+				}
+				set_variable = {
+					UKR_Form_47_mekhanizovana_cost_var = 30
+				}
+				add_equipment_to_stockpile = {
+					type = tank_ger_leopard2_equipment
+					amount = 5
+					producer = "NTO"
+					version_name = "Leopard 2A6"
+				}
+				add_equipment_to_stockpile = {
+					type = ifv_usa_bradley_equipment
+					amount = 20
+					producer = "NTO"
+					version_name = "M2A2 Bradley"
+				}
+				add_equipment_to_stockpile = {
+					type = imv_medium_1_equipment
+					amount = 30
+					producer = "NTO"
+					version_name = "International MaxxPro"
+				}
+				hidden_effect = {
+					load_oob = UKR_47mekhanizovana
+				}				
 			}
 		}
-		fire_only_once = yes
 	}
 	UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada = {
 		icon = GFX_decision_UKR_Form_82TH
