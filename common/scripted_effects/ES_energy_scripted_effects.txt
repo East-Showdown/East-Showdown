@@ -82,7 +82,8 @@ recalculate_country_energy_data = {
 	# Вместо множителя потребления меняем делитель потребления.
 	# Это позволит вычислять значения с меньшими потерями точности
 	set_variable = { energy_population_k_consumption_divider = global.energy_population_k_consumption_divider }
-	set_variable = { energy_population_k_consumption_factor = global.energy_population_k_consumption_factor }
+       set_variable = { energy_population_k_consumption_factor = global.energy_population_k_consumption_factor }
+       multiply_variable = { energy_population_k_consumption_factor = global.energy_season_consumption_factor }
 
 	set_temp_variable = { energy_population_consumption_factor_modifier = modifier@energy_population_consumption_factor }
 	clamp_temp_variable = { var = energy_population_consumption_factor_modifier min = 0.1 }
@@ -874,5 +875,51 @@ recalculate_state_hydro_power_plant = {
 	}
 
 	set_variable = { energy_hydro_power_plant_unit_medium_generation_power = gen_sum_power_temp }
-	divide_variable = { energy_hydro_power_plant_unit_medium_generation_power = gen_count_temp }
+divide_variable = { energy_hydro_power_plant_unit_medium_generation_power = gen_count_temp }
+}
+
+# === Seasonal energy mechanics ===
+update_energy_month = {
+       add_to_variable = { global.energy_current_month = 1 }
+       if = {
+               limit = { check_variable = { var = global.energy_current_month value = 13 compare = greater_than_or_equals } }
+               set_variable = { global.energy_current_month = 1 }
+       }
+       update_energy_season_consumption = yes
+}
+
+update_energy_season_consumption = {
+       if = {
+               limit = {
+                       OR = {
+                               check_variable = { var = global.energy_current_month value = 12 }
+                               check_variable = { var = global.energy_current_month value = 1 }
+                               check_variable = { var = global.energy_current_month value = 2 }
+                       }
+               }
+               set_variable = { global.energy_season_consumption_factor = global.energy_season_winter_consumption_factor }
+       }
+       else_if = {
+               limit = {
+                       OR = {
+                               check_variable = { var = global.energy_current_month value = 3 }
+                               check_variable = { var = global.energy_current_month value = 4 }
+                               check_variable = { var = global.energy_current_month value = 5 }
+                       }
+               }
+               set_variable = { global.energy_season_consumption_factor = global.energy_season_spring_consumption_factor }
+       }
+       else_if = {
+               limit = {
+                       OR = {
+                               check_variable = { var = global.energy_current_month value = 6 }
+                               check_variable = { var = global.energy_current_month value = 7 }
+                               check_variable = { var = global.energy_current_month value = 8 }
+                       }
+               }
+               set_variable = { global.energy_season_consumption_factor = global.energy_season_summer_consumption_factor }
+       }
+       else = {
+               set_variable = { global.energy_season_consumption_factor = global.energy_season_autumn_consumption_factor }
+       }
 }
