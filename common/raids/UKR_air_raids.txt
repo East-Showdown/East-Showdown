@@ -602,17 +602,17 @@ types = {
 	
 		unit_requirements = {
 			equipment = {
-				type = { cas }
-				amount = { min = 2 }
+				type = { ukr_light_guided_missile_equipment }
+				amount = { min = 8 }
 			}
 		}
 	
 		additional_equipment = {
-			ukr_light_guided_missile_equipment = 12
+			ukr_light_guided_missile_equipment = 4
 		}
 	
 		starting_point = {
-			types = { air_base }
+			types = { rocket_site }
 		}
 	
 		success_factors = {
@@ -1150,17 +1150,17 @@ types = {
 	
 		unit_requirements = {
 			equipment = {
-				type = { cas }
-				amount = { min = 2 }
+				type = { ukr_light_guided_missile_equipment }
+				amount = { min = 8 }
 			}
 		}
 	
 		additional_equipment = {
-			ukr_light_guided_missile_equipment = 12
+			ukr_light_guided_missile_equipment = 4
 		}
 	
 		starting_point = {
-			types = { air_base }
+			types = { rocket_site }
 		}
 	
 		success_factors = {
@@ -1699,17 +1699,17 @@ types = {
 	
 		unit_requirements = {
 			equipment = {
-				type = { cas }
-				amount = { min = 2 }
+				type = { ukr_light_guided_missile_equipment }
+				amount = { min = 8 }
 			}
 		}
 	
 		additional_equipment = {
-			ukr_light_guided_missile_equipment = 12
+			ukr_light_guided_missile_equipment = 4
 		}
 	
 		starting_point = {
-			types = { air_base }
+			types = { rocket_site }
 		}
 	
 		success_factors = {
@@ -1757,62 +1757,101 @@ types = {
 	
 			limited_success = {
 				victim_effects = {
-					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
-						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
-					}
-	
-					add_to_temp_variable = { ammunitionSilo = 0.5 }
-	
-					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable = { building_damage_by_missile = 1.25 }
 					set_temp_variable_to_random = {
 						var = missile_luck_mod
 						min = 0.4
 						max = 0.6
 					}
-
-					set_temp_variable_to_random = {
-						var = ammunition_destroyed_rnd
-						min = 38.5
-						max = 153.84
-					}
-
 					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-	
-					if = {
-						limit = { check_variable = { ammunitionSilo > 0 } }
-						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
-					}
-	
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-	
-					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
-					if = {
-						limit = { check_variable = { max_clamp = 0 } }
-						add_to_temp_variable = { max_clamp = 0.1 }
-					}
-	
+					multiply_temp_variable = { building_damage_by_missile = 1 }
 					clamp_temp_variable = {
 						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
+						max = 1
 					}
-	
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
 					var:target_state = {
-						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
-							meta_effect = {
-								text = {
-									damage_building = {
-										#type = ammunition_silo
-										#damage = [DAM] # levels of damage
-										#ammunition_value_k = -AMMO
-									}
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
 								}
-								#DAM = "[?building_damage_by_missile]"
-								#AMM0 = ammunition_destroyed_rnd
 							}
+							DAM = "[?building_damage_by_missile]"
 						}
-						ammunition_value_k = -ammunition_destroyed_rnd
+						raid_reduce_project_progress_ratio = 0.05
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.1
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.15
 					}
 				}
 				visual_effect = {
@@ -2807,17 +2846,17 @@ types = {
 	
 		unit_requirements = {
 			equipment = {
-				type = { cas }
-				amount = { min = 2 }
+				type = { ukr_light_guided_missile_equipment }
+				amount = { min = 8 }
 			}
 		}
 	
 		additional_equipment = {
-			ukr_light_guided_missile_equipment = 12
+			ukr_light_guided_missile_equipment = 4
 		}
 	
 		starting_point = {
-			types = { air_base }
+			types = { rocket_site }
 		}
 	
 		success_factors = {
