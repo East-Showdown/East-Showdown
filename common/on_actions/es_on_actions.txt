@@ -146,6 +146,8 @@ on_actions = {
 			set_variable = { NTO.nato_country_resource_oil_var = 300}
 			set_variable = { var = global.var_RUS_murder_Zelensky_success value = 20 }
 			set_variable = { var = global.var_RUS_murder_Zelensky_fall value = 80 }
+			set_variable = { UKR_dynamic_reinforcement_days = 0 }
+			set_variable = { RUS_dynamic_reinforcement_days = 0 }
 
 			RUS = {
 				add_offsite_building = {
@@ -1128,6 +1130,107 @@ on_actions = {
 			set_variable = { map_africa_manpower_pool_free = WGN.manpower }
 			
 			
+		}
+	}
+	#динамическое подкрепление
+	on_daily = {
+		effect = {
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = es_dynamic_reinforcement_ai_rule
+						option = ES_DYNAMIC_REINFORCEMENT_AI_ON #правило включено
+					}
+				}
+				add_to_variable = { RUS_dynamic_reinforcement_days = 1 } #добавляет кол-во прошедших дней
+				add_to_variable = { UKR_dynamic_reinforcement_days = 1 }
+			}
+			if = { #РОССИЯ
+				limit = {
+					has_game_rule = {
+						rule = es_dynamic_reinforcement_ai_rule
+						option = ES_DYNAMIC_REINFORCEMENT_AI_ON 
+					}
+					check_variable = { 
+						var = RUS_dynamic_reinforcement_days
+						value = 180								#прошло 180 или больше дней
+						compare = greater_than_or_equals
+					}
+					RUS = {
+						is_ai = yes #ПОД КОНТРОЛЕМ ИИ
+						num_divisions > 199 #меньше 300, но больше 200 дивок
+						num_divisions < 300
+					}
+				}
+				RUS = {
+					load_oob = RUS_DR_100 # 100 дивок
+				}
+				set_variable = { RUS_dynamic_reinforcement_days = 0 } #сбрасывает счетчик дней
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = es_dynamic_reinforcement_ai_rule
+						option = ES_DYNAMIC_REINFORCEMENT_AI_ON 
+					}
+					check_variable = { 
+						var = RUS_dynamic_reinforcement_days
+						value = 180
+						compare = greater_than_or_equals
+					}
+					RUS = {
+						is_ai = yes
+						num_divisions < 200 #меньше 200 дивок
+					}
+				}
+				RUS = {
+					load_oob = RUS_DR_50 # 50 дивок
+				}
+				set_variable = { RUS_dynamic_reinforcement_days = 0 }
+			}
+			if = {  #УКРАИНА
+				limit = {
+					has_game_rule = {
+						rule = es_dynamic_reinforcement_ai_rule
+						option = ES_DYNAMIC_REINFORCEMENT_AI_ON 
+					}
+					check_variable = { 
+						var = UKR_dynamic_reinforcement_days
+						value = 180
+						compare = greater_than_or_equals
+					}
+					UKR = {
+						is_ai = yes
+						num_divisions > 199 
+						num_divisions < 300
+					}
+				}
+				UKR = {
+					load_oob = UKR_DR_100 
+				}
+				set_variable = { UKR_dynamic_reinforcement_days = 0 } 
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = es_dynamic_reinforcement_ai_rule
+						option = ES_DYNAMIC_REINFORCEMENT_AI_ON 
+					}
+					check_variable = { 
+						var = UKR_dynamic_reinforcement_days
+						value = 180
+						compare = greater_than_or_equals
+					}
+					UKR = {
+						is_ai = yes
+						num_divisions < 200 
+					}
+				}
+				UKR = {
+					load_oob = UKR_DR_50
+				}
+				set_variable = { UKR_dynamic_reinforcement_days = 0 }
+			}
 		}
 	}
 	on_daily_RUS = {
