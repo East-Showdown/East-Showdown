@@ -1148,24 +1148,55 @@ on_actions = {
 				add_to_variable = { global.RUS_dynamic_reinforcement_days = 1 } #добавляет кол-во прошедших дней
 				add_to_variable = { global.UKR_dynamic_reinforcement_days = 1 }
 				add_to_variable = { global.WGN_dynamic_reinforcement_days = 1 }
-				if = { #РОССИЯ
-					limit = {
+			}
+		}
+	}
+	
+	on_weekly_BOR = {
+		effect = {
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = es_dynamic_reinforcement_ai_rule
+						option = ES_DYNAMIC_REINFORCEMENT_AI_ON 
+					}
+					OR = {
 						check_variable = { 
 							var = global.RUS_dynamic_reinforcement_days
-							value = 180								#прошло 180 или больше дней
+							value = 180
 							compare = greater_than_or_equals
 						}
-						RUS = {
-							is_ai = yes #ПОД КОНТРОЛЕМ ИИ
-							num_divisions > 199 #меньше 300, но больше 200 дивок
-							num_divisions < 300
+						check_variable = { 
+							var = global.WGN_dynamic_reinforcement_days
+							value = 180
+							compare = greater_than_or_equals
+						}
+						check_variable = { 
+							var = global.UKR_dynamic_reinforcement_days
+							value = 180
+							compare = greater_than_or_equals
 						}
 					}
-					RUS = {
-						load_oob = RUS_DR_100 # 100 дивок
-					}
-					set_variable = { global.RUS_dynamic_reinforcement_days = 0 } #сбрасывает счетчик дней
 				}
+				if = { #РОССИЯ
+						limit = {
+							check_variable = { 
+								var = global.RUS_dynamic_reinforcement_days
+								value = 180								#прошло 180 или больше дней
+								compare = greater_than_or_equals
+							}
+							RUS = {
+								exists = yes
+								is_ai = yes #ПОД КОНТРОЛЕМ ИИ
+								num_divisions > 199 #меньше 300, но больше 200 дивок
+								num_divisions < 300
+							}
+						}
+						RUS = {
+							load_oob = RUS_DR_100 # 100 дивок
+						}
+						set_variable = { global.RUS_dynamic_reinforcement_days = 0 } #сбрасывает счетчик дней
+					}
 				if = {
 					limit = {
 						check_variable = { 
@@ -1174,6 +1205,7 @@ on_actions = {
 							compare = greater_than_or_equals
 						}
 						RUS = {
+							exists = yes
 							is_ai = yes
 							num_divisions < 200 #меньше 200 дивок
 						}
@@ -1191,7 +1223,9 @@ on_actions = {
 							compare = greater_than_or_equals
 						}
 						UKR = {
+							exists = yes
 							is_ai = yes
+							surrender_progress < 0.9
 							num_divisions > 199 
 							num_divisions < 300
 						}
@@ -1209,7 +1243,9 @@ on_actions = {
 							compare = greater_than_or_equals
 						}
 						UKR = {
+							exists = yes
 							is_ai = yes
+							surrender_progress < 0.9
 							num_divisions < 200 
 						}
 					}
@@ -1226,6 +1262,7 @@ on_actions = {
 							compare = greater_than_or_equals
 						}
 						WGN = {
+							exists = yes
 							is_ai = yes
 							num_divisions < 15
 						}
@@ -1238,6 +1275,7 @@ on_actions = {
 			}
 		}
 	}
+
 	on_daily_RUS = {
 		effect = {
 			if = {
