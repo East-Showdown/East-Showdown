@@ -155,6 +155,8 @@ on_actions = {
 			set_variable = { global.UKR_dynamic_reinforcement_days = 0 }
 			set_variable = { global.RUS_dynamic_reinforcement_days = 0 }
 			set_variable = { global.WGN_dynamic_reinforcement_days = 0 }
+			set_variable = { global.LPR_dynamic_reinforcement_days = 0 }
+			set_variable = { global.DPR_dynamic_reinforcement_days = 0 }
 
 			RUS = {
 				add_offsite_building = {
@@ -1153,6 +1155,8 @@ on_actions = {
 				add_to_variable = { global.RUS_dynamic_reinforcement_days = 1 } #добавляет кол-во прошедших дней
 				add_to_variable = { global.UKR_dynamic_reinforcement_days = 1 }
 				add_to_variable = { global.WGN_dynamic_reinforcement_days = 1 }
+				add_to_variable = { global.LPR_dynamic_reinforcement_days = 1 }
+				add_to_variable = { global.DPR_dynamic_reinforcement_days = 1 }
 			}
 		}
 	}
@@ -1178,6 +1182,16 @@ on_actions = {
 						}
 						check_variable = { 
 							var = global.UKR_dynamic_reinforcement_days
+							value = 180
+							compare = greater_than_or_equals
+						}
+						check_variable = { 
+							var = global.DPR_dynamic_reinforcement_days
+							value = 180
+							compare = greater_than_or_equals
+						}
+						check_variable = { 
+							var = global.LPR_dynamic_reinforcement_days
 							value = 180
 							compare = greater_than_or_equals
 						}
@@ -1276,6 +1290,44 @@ on_actions = {
 						load_oob = WGN_DR_15
 					}
 					set_variable = { global.WGN_dynamic_reinforcement_days = 0 }
+				}
+				if = { #ДНР
+					limit = {
+						check_variable = { 
+							var = global.DPR_dynamic_reinforcement_days
+							value = 180
+							compare = greater_than_or_equals
+						}
+						DPR = {
+							exists = yes
+							is_ai = yes
+							surrender_progress < 0.7
+							num_divisions < 100
+						}
+					}
+					DPR = {
+						load_oob = DPR_DR_40
+					}
+					set_variable = { global.DPR_dynamic_reinforcement_days = 0 }
+				}
+				if = { #ЛНР
+					limit = {
+						check_variable = { 
+							var = global.LPR_dynamic_reinforcement_days
+							value = 180
+							compare = greater_than_or_equals
+						}
+						LPR = {
+							exists = yes
+							is_ai = yes
+							surrender_progress < 0.7
+							num_divisions < 100
+						}
+					}
+					LPR = {
+						load_oob = LPR_DR_40
+					}
+					set_variable = { global.LPR_dynamic_reinforcement_days = 0 }
 				}
 			}
 		}
