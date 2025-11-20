@@ -74,5 +74,4 @@ tags={
 }
 picture="showdown.jpg"
 supported_version="1.16.*"
-path="C:\Users\fshub\OneDrive\Документы\GitHub\East-Showdown"
 remote_file_id="2948642461"
