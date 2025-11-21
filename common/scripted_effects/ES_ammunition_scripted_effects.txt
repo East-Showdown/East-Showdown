@@ -117,9 +117,9 @@ ammunition_tick_country_units_leaders = {
                     check_variable = { ammunition_next_update_num_days < global.num_days }
                 }
                 OR = {            
-                    NOT = { is_ai = yes }
+                    NOT = { PREV = { is_ai = yes } }
                     AND = { # Оптимизация. Проверка на ИИ и мин кол-во дней 
-                        is_ai = yes
+                        PREV = { is_ai = yes }
                         check_variable = { ammunition_ai_min_next_update_num_days < global.num_days }
                     }
                 }
@@ -595,6 +595,18 @@ ammunition_calculate_tick_army_effects = {
     # Прорыв
     set_variable = { ammunition_effect_breakthrough_factor = ammunition_army_offense_effect_factor }
     multiply_variable = { ammunition_effect_breakthrough_factor = global.ammunition_effect_breakthrough_factor_coef }
+
+    if = { # Срезает силу дебафа на наступление у РФ при ограничении боеприпасов от МО РФ, если на Украине есть игрок
+        limit = { 
+            AND = { 
+                check_variable = { ammunition_effect_breakthrough_factor < 0 } 
+                original_tag = RUS
+                has_country_flag = RUS_genstab_ammunition_supply_factor_limitation
+                UKR = { NOT = { is_ai = yes } }
+            }
+        }
+        multiply_variable = { ammunition_effect_breakthrough_factor = global.ammunition_effect_breakthrough_factor_MP_negative_factor }
+    }
 
     # Окапываемость
     set_variable = { ammunition_effect_max_dig_in_factor = ammunition_army_defense_effect_factor }
