@@ -175,7 +175,7 @@ unit_leader_event = {
 	is_triggered_only = yes
 	option = {
 		name = WGN_mission.1.a
-		activate_mission = WGN_soledar_conquest
+		activate_mission = WGN_soledar_conquest_mission
 	}
 }
 
@@ -187,7 +187,7 @@ unit_leader_event = {
 	is_triggered_only = yes
 	option = {
 		name = WGN_mission.2.a
-		activate_mission = WGN_bakhmut_conquest
+		activate_mission = WGN_bakhmut_conquest_mission
 	}
 }
 
@@ -271,179 +271,6 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = WGN.3.a
-	}
-}
-
-country_event = {
-	id = WGN.4
-	title = WGN.4.t
-	desc = WGN.4.d
-	fire_only_once = yes
-	is_triggered_only = yes
-	picture = GFX_country_event_271
-	option = {
-		name = WGN.4.a
-		clr_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
-		RUS = {
-			if = {
-				limit = {
-					has_global_flag = strelkov_rus_hire
-				}
-				retire_character = igor_girkin
-			}
-			retire_character = sergei_shoigy
-			valery_gerasimov = {
-				retire = yes
-			}
-			random_army_leader = {
-				retire = yes
-			}
-			random_army_leader = {
-				retire = yes
-			}
-			random_army_leader = {
-				retire = yes
-			}
-			random_army_leader = {
-				retire = yes
-			}
-			random_army_leader = {
-				retire = yes
-			}
-			clr_country_flag = head_of_gov_enabled_flag
-		}
-		WGN = {
-			every_army_leader = {
-				remove_trait = {
-					trait = wgn_commander
-				}
-				remove_trait = {
-					trait = wgn_leader
-				}
-				promote_leader = yes
-			}
-			every_unit_leader = {
-				limit = { NOT = { is_character = evgeniy_prigozhin} }
-				set_nationality = RUS
-			}
-			remove_power_balance = {
-				id = WGN_power_balance
-			}
-		}
-		RUS = {
-			retire_ideology_leader = fascism
-			add_country_leader_role = {
-				character = RUS_evgeniy_prigozhin
-				promote_leader = yes
-				country_leader = {
-					ideology = prigozhin_war_junta
-					traits = { oligarch_winner }
-				}
-			}
-			set_politics = {
-				ruling_party = fascism
-				elections_allowed = no
-			}
-			add_popularity = { ideology = fascism popularity = 0.6 }
-			set_party_name = {  
-				ideology = fascism
-				long_name = prigozhin_war_junta_long 
-				name = prigozhin_war_junta
-			}
-			set_party_name = {  
-				ideology = neutrality
-				long_name = not_functioning_long  
-				name = not_functioning
-			}
-			set_party_name = {  
-				ideology = communism
-				long_name = not_functioning_long  
-				name = not_functioning
-			}
-			set_party_name = {  
-				ideology = democratic
-				long_name = not_functioning_long  
-				name = not_functioning
-			}
-			remove_power_balance = {
-				id = RUS_power_balance
-			}
-			remove_ideas = weak_ideology
-			remove_ideas = state_of_stability
-			set_cosmetic_tag = RUS_first_wagner_win
-			change_tag_from = WGN
-		}
-		BOR = {
-			country_event = bor_hidden.1
-		}
-		set_global_flag = RUS_branch_operational_tactical_blocked
-		set_global_flag = RUS_Wagner_victory
-		mark_focus_tree_layout_dirty = yes
-		hidden_effect = {
-		    RUS = {
-				country_event = {
-				    id = rus_wagner_path.1
-				    days = 1
-			    }
-				if = {
-					limit = { DPR = { exists = yes } LPR = { exists = yes } }
-					country_event = {
-						id = rus_wagner_path.3
-						days = 3
-					}
-				}
-				country_event = {
-				    id = super.6
-				    days = 1
-			    }
-				country_event = {
-				    id = rus_wagner_path.2
-				    days = 7
-			    }
-				remove_advisor_role = {
-					slot = high_command
-					character = dmitry_utkin
-				}
-				add_advisor_role = {
-					character = RUS_evgeniy_prigozhin
-					advisor={
-						cost = 150
-						slot = high_command
-						idea_token = WGN_evgeniy_prigozhin
-						ledger = army
-						allowed = {
-							original_tag = RUS
-						}
-						traits = {
-							army_chief_morale_2
-						}
-					}
-				}
-				add_advisor_role = {
-					character = dmitry_utkin
-					advisor={
-						cost = 100
-						slot = army_chief
-						idea_token = WGN_dmitry_utkin
-						ledger = army
-						allowed = {
-							original_tag = RUS
-						}
-						traits = {
-							army_chief_offensive_1
-						}
-					}
-				}
-				activate_advisor = WGN_evgeniy_prigozhin
-				activate_advisor = WGN_dmitry_utkin
-			}
-			set_variable = {	
-				var = global.loyalty_of_the_military_elite
-				value = 100
-			}
-			set_stability = 0.05
-			set_war_support = 0.65
-		}
 	}
 }
 
@@ -553,7 +380,7 @@ country_event = {
 				unit_leader_event = { id = WGN_mission.4 days = 3 }
 			}
 		    country_event = {
-				id = wgn.14
+				id = WGN.14
 				days = 60
 			}
 			news_event = {
@@ -666,7 +493,13 @@ country_event = {
 					}
 					country_event = {
 						id = WGN.4
-						hours = 15
+						days = 2
+					}
+					RUS = {
+						country_event = {
+							id = rus.134
+							hours = 15
+						}
 					}
 				}
 				WGN_March_power_balance_FALL_var = {
@@ -920,6 +753,11 @@ country_event = {
 			}
 			promote_character = {  character = council_commanders_PMC  ideology = wgn }
 			activate_advisor = WGN_commanders_PMC
+			RUS = {
+				remove_dynamic_modifier = {
+					modifier = WGN_information_war_BOP_modifier
+				}
+			}
 		}
 	}
 }

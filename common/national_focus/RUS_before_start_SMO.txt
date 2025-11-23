@@ -384,12 +384,12 @@ focus_tree = {
 				LPR = {
 				    add_corps_commander_role = {
                         Character = esedulla_abachev
-                        traits={ armor_officer war_hero panzer_leader urban_assault_specialist }
-						skill=5
-						attack_skill=5
+                        traits={ armor_officer war_hero commando }
+						skill=2
+						attack_skill=3
 						defense_skill=2
-						planning_skill=3
-						logistics_skill=4
+						planning_skill=4
+						logistics_skill=3
                     }
 					add_advisor_role = {
 						character = esedulla_abachev
@@ -413,6 +413,26 @@ focus_tree = {
 						planning_skill=2
 						logistics_skill=1
                     }
+					add_corps_commander_role = {
+						Character = sergey_milchakov
+						traits={ engineer_officer promising_leader }
+						skill= 1
+						attack_skill=2
+						defense_skill=2
+						planning_skill=3
+						logistics_skill=2
+					}
+					add_corps_commander_role = {
+						Character = pavel_klimenko
+						traits = {
+							marine_commander harsh_leader
+						}
+						skill = 2
+						attack_skill = 2
+						defense_skill = 1
+						planning_skill = 3
+						logistics_skill = 3
+					}
 				}
 				news_event = { id = news.165 days = 3 }
 			}
@@ -1909,8 +1929,6 @@ focus_tree = {
 					100 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
 					154 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
 				}
-
-				CHE = { country_event = { id = che.8 days = 0 } }
 				
 				UKR = {
 					country_event = {
@@ -2057,14 +2075,24 @@ focus_tree = {
 				complete_national_focus = RUS_Putins_course
 				POL = { complete_national_focus = POL_War_in_a_neighboring_country }
         	}
+			vladimir_putin = {
+				add_country_leader_role = {
+                   	promote_leader = yes
+                   	country_leader = {
+                       	ideology = authoritarian_democracy_rus_postwar
+                       	expire = "1965.1.1.1"
+                       	traits = { popular_figurehead regent_of_russian_democracy }
+                   	}
+               	}
+			}
 			country_event = { id = smo.9 hours = 4 }
 			country_event = { id = rus.218 hours = 1 }
 			country_event = { id = rus.219 hours = 3 }
 			UKR = { country_event = {  id = ukr.55 hours = 2 } country_event = { id = rus.219 hours = 3 } }
 			DPR = { country_event = {  id = rus.217 hours = 1 } country_event = { id = rus.219 hours = 3 } }
 			LPR = { country_event = {  id = rus.217 hours = 1 } country_event = { id = rus.219 hours = 3 } }
-			RUS = { add_to_faction = DPR }
-			RUS = { add_to_faction = LPR }
+			RUS = { add_to_faction = DPR add_to_faction = LPR }
+			CHE = { country_event = { id = rus.219 hours = 3 } country_event = { id = che.2 days = 2 hours = 15 } }
 			if = {
 				limit = { has_country_flag = UKR_VZLOM_ANUSA }
 				UKR = { country_event = {  id = ukr_rus_branch.2 hours = 1 } }
@@ -2852,7 +2880,8 @@ focus_tree = {
 			custom_effect_tooltip = RUS_prepare_for_new_campaing_cet
 			add_to_variable = { RUS_VCRF_training_time_army_factor = -0.025 }
 			add_to_variable = { RUS_VCRF_planning_speed = 0.035 }
-			add_to_variable = { RUS_VCRF_max_planning = 0.015 }			
+			add_to_variable = { RUS_VCRF_max_planning = 0.015 }	
+			add_to_variable = { RUS_VCRF_army_morale = 0.5 }		
 		}
 		ai_will_do = {
 			factor = 1
@@ -3062,23 +3091,6 @@ focus_tree = {
 		y = 1
 		ai_will_do = {
 			factor = 1
-		}
-	}
-	focus = {
-		id = RUS_Destabilization_of_the_Ukrainian_rear
-		icon = GFX_RUS_Destabilization_of_the_Ukrainian_rear
-		relative_position_id = RUS_development_of_cyber_warfare
-		prerequisite = { focus = RUS_development_of_cyber_warfare  }
-		prerequisite = { focus = RUS_Modernization_of_assault_units  }
-		cost = 0.143
-		x = -1
-		y = 1
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-			
 		}
 	}
 	focus = {
@@ -5623,6 +5635,11 @@ focus_tree = {
 		prerequisite = { focus = RUS_Rally_society_around_the_president }
 		prerequisite = { focus = RUS_3_ways_One_country }
 		prerequisite = { focus = RUS_ideological_question }
+		available = {
+			has_dynamic_modifier = {
+				modifier = crisis_developed_Putinism
+			}
+		}
 		cost = 2
 		x = -1
 		y = 7
@@ -5633,7 +5650,21 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_No_one_except_Putin"
 			add_political_power = 75
 		    custom_effect_tooltip = RUS_No_one_except_Putin_cet
-			custom_effect_tooltip = in_development
+			remove_dynamic_modifier = {
+				modifier = crisis_developed_Putinism
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = state_of_stability
+						}
+					}
+				}
+				add_dynamic_modifier = {
+					modifier = state_of_stability
+				}
+			}
 		}
 	}
 	focus = {
@@ -6361,40 +6392,11 @@ focus_tree = {
 		cost = 1.5
 		x = -10
 		y = 3
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Modernization_of_military_aviation"
-		    custom_effect_tooltip = in_development
-			hidden_effect = {
-				random_controlled_state = {
-			        add_extra_state_shared_building_slots = 1
-			        add_building_construction = {
-			            type = arms_factory
-				        level = 1
-				        instant_build = yes
-			        }
-			    }
-				random_controlled_state = {
-			        add_extra_state_shared_building_slots = 1
-			        add_building_construction = {
-			            type = arms_factory
-				        level = 1
-				        instant_build = yes
-			        }
-			    }
-				random_controlled_state = {
-			        add_extra_state_shared_building_slots = 1
-			        add_building_construction = {
-			            type = arms_factory
-				        level = 1
-				        instant_build = yes
-			        }
-			    }
+			swap_ideas = {
+				remove_idea = RUS_VKSRF
+				add_idea = RUS_VKSRF_1
 			}
 		}
 		ai_will_do = {
@@ -6406,18 +6408,17 @@ focus_tree = {
 		icon = GFX_RUS_sponsor_private_production
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_Reorganise_the_MIC_Commission }
-		cost = 0.143
+		cost = 1.5
 		x = -14
 		y = 3
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_sponsor_private_production"
-		    custom_effect_tooltip = in_development
+		    add_tech_bonus = {
+				bonus = 0.3
+				uses = 1
+				technology = tech_fpv
+			}
+			add_ideas = { RUS_drones_production_1 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -6428,18 +6429,15 @@ focus_tree = {
 		icon = GFX_RUS_Finance_ZALA
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_sponsor_private_production }
-		cost = 0.143
+		cost = 1.5
 		x = -14
 		y = 4
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Finance_ZALA"
-		    custom_effect_tooltip = in_development
+		    swap_ideas = {
+				remove_idea = RUS_drones_production_1
+				add_idea = RUS_drones_production_2
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -6450,44 +6448,22 @@ focus_tree = {
 		icon = GFX_RUS_contract_with_Kamov
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_Modernization_of_military_aviation }
-		cost = 0.143
+		cost = 1.5
 		x = -10
 		y = 4
 		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
+			has_completed_focus = RUS_streaming_assembly_of_the_Su_57
 		}
 		completion_reward = {
-			custom_effect_tooltip = in_development
 			hidden_effect = {
 				log = "[GetDateText]: [Root.GetName]: Focus RUS_Contracts_with_Kayumov"
-				random_controlled_state = {
-			        add_extra_state_shared_building_slots = 1
-			        add_building_construction = {
-			            type = arms_factory
-				        level = 1
-				        instant_build = yes
-			        }
-			    }
-				random_controlled_state = {
-			        add_extra_state_shared_building_slots = 1
-			        add_building_construction = {
-			            type = arms_factory
-				        level = 1
-				        instant_build = yes
-			        }
-			    }
-				random_controlled_state = {
-			        add_extra_state_shared_building_slots = 1
-			        add_building_construction = {
-			            type = arms_factory
-				        level = 1
-				        instant_build = yes
-			        }
-			    }
 			}
+			custom_effect_tooltip = WGN_decisionetc_tooltip
+			swap_ideas = {
+				remove_idea = RUS_VKSRF_1
+				add_idea = RUS_VKSRF_2
+			}
+
 		}
 		ai_will_do = {
 			factor = 1
@@ -6498,18 +6474,12 @@ focus_tree = {
 		icon = GFX_RUS_streaming_assembly_of_the_Su_57
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_Modernization_of_military_aviation }
-		cost = 0.143
+		cost = 1.5
 		x = -12
 		y = 4
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_streaming_assembly_of_the_Su_57"
-		    custom_effect_tooltip = in_development
+			custom_effect_tooltip = WGN_decisionetc_tooltip
 		}
 		ai_will_do = {
 			factor = 1
@@ -7734,6 +7704,10 @@ focus_tree = {
 					min = 0
 					max = 100
 				}
+				country_event = {
+					id = rus.5
+					days = 30
+				}
 			}
 		}
 	}
@@ -7929,6 +7903,10 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Fighting_the_Liberal_Media"
 			add_political_power = 30
+			swap_ideas = {
+				remove_idea = mixed_media
+				add_idea = pro_government_media
+            }
 			add_to_variable = {	
 				var = global.rus_information_war_var_sum
 				value = 3
@@ -8710,29 +8688,22 @@ focus_tree = {
 			
 		}
 		completion_reward={
+			UKR = {
+				add_ideas = UKR_destabilized_rear_idea
+			}
 			add_to_variable = {	
 				var = global.rus_information_war_var_sum
-				value = 4
-				tooltip = IW_4_var_add_tt
-			}
-			UKR = {
-				add_stability = -0.001
-				add_war_support = -0.002
-				add_political_power = -100
-				add_equipment_to_stockpile = {
-					type = imv_civil_0_equipment
-					amount = -50
-				}
+				value = 5
+				tooltip = IW_5_var_add_tt
 			}
 			hidden_effect = {
 				add_to_variable = {	
 					var = global.ukr_information_war_var_sum
-					value = -4
+					value = -5
 				}
-				clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
-				clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
 			}
-			
 		}
 	}
 	focus = {
@@ -9298,7 +9269,7 @@ focus_tree = {
 			}
 			add_to_variable = { war_fatigue = 150 }
 			hidden_effect = {
-				
+				add_manpower = 100000
 				load_oob = RUS_first_mobiks #To keep the front from collapsing xD
 				set_country_flag = Russian_partial_mobilization
 				country_event = super.7 #superevent
@@ -9375,7 +9346,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_general_mobilization"
 		    add_stability = -0.2
 			add_war_support = -0.3
-			add_manpower = 25000
+			add_manpower = 250000
 			increase_escalation_by_20 = yes
 			custom_effect_tooltip = first_mobiks_tt_1
 			swap_ideas = {
