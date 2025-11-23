@@ -471,3 +471,6 @@ NDefines.NAI.MIN_FACTORIES_TO_WANT_TO_IMPORT = { -- minimum number of civilian f
     0, --chromium
     0, --electronic
 }
+NDefines.NMapIcons.SUPPLY_AREAS_PRIORITY_ADJACENCY_RULE = 3
+NDefines.NGraphics.RAILWAY_CAMERA_CUTOFF = 200.0
+NDefines.NGraphics.TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.75 }
