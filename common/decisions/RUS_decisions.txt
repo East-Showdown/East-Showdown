@@ -6740,7 +6740,6 @@ RUS_SMO_deccat = {
         }
         custom_cost_text = decision_cost_CP_75
 		fire_only_once = yes
-		days_remove = 7
 		
 		ai_will_do = {
 	    	factor = 0
@@ -6769,18 +6768,18 @@ RUS_SMO_deccat = {
 		visible = {
 	        original_tag = RUS
 			NOT = {
-			    OR = {
-					has_country_flag = SMO_offensive_on_the_dnieper
-				    has_country_flag = SMO_send_troops_to_the_republic_of_donbass
-				    has_country_flag = SMO_offensive_towards_novorossia
-				    has_country_flag = SMO_from_border_to_border
-				    has_country_flag = SMO_concentrated_attack_on_kyiv
-				    has_country_flag = SMO_offensive_on_kyiv
-				    has_country_flag = SMO_full_scale_invasion
-					has_country_flag = RUS_failure_SMO
-				}
-			}
-			has_completed_focus = RUS_general_staf
+				OR = {
+			 		has_country_flag = SMO_offensive_on_the_dnieper
+			 	    has_country_flag = SMO_send_troops_to_the_republic_of_donbass
+			 	    has_country_flag = SMO_offensive_towards_novorossia
+			 	    has_country_flag = SMO_from_border_to_border
+			 	    has_country_flag = SMO_concentrated_attack_on_kyiv
+			 	    has_country_flag = SMO_offensive_on_kyiv
+			 	    has_country_flag = SMO_full_scale_invasion
+			 		has_country_flag = RUS_failure_SMO
+			 	}
+			 }
+			 has_completed_focus = RUS_general_staf
 	    }
 
 		available = {
@@ -6805,6 +6804,8 @@ RUS_SMO_deccat = {
 			set_country_flag = SMO_offensive_on_the_dnieper
 			hidden_effect = {
 				add_command_power = -75
+				
+				set_variable = { SMO_landing_berdyansk_ce_tt = 3 }
 			}
 		}
 		remove_effect = {
@@ -6812,14 +6813,51 @@ RUS_SMO_deccat = {
 			effect_tooltip = {
 				add_ideas = RUS_tactical_planning_2
 			}
+			custom_effect_tooltip = RUS_gp_SMO_offensive_on_the_dnieper_tt
+		}
+	}
+
+	RUS_rightbank_Dnieper = {
+		icon = GFX_RUS_general_staff
+		fire_only_once = yes
+		days_remove = 7
+		
+		ai_will_do = {
+	    	factor = 0
+			modifier = {  add = 1000  is_historical_focus_on = no }
+        }
+
+		visible = {
+			original_tag = RUS
+			NOT = {
+			     OR = {
+			 		has_completed_focus = RUS_SMO
+					has_country_flag = SMO_leftbank_Dnieper_c
+			 	}
+			 }
+			has_country_flag = SMO_offensive_on_the_dnieper
+		}
+		available = {
+			original_tag = RUS		
+	}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_rightbank_Dnieper: complete_effect"
 			hidden_effect = {
+				add_command_power = -35
+				set_country_flag = SMO_rightbank_Dnieper_c
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_rightbank_Dnieper: remove_effect"
+			hidden_effect = {
+				set_variable = { SMO_desant = 0 }
+				set_variable = { var = SMO_priority_direction_variable value = 6 }
+				set_variable = { var = SMO_military_objectives_variable value = 7 }
 				add_ideas = RUS_tactical_planning_2
 				country_event = { 
 					id = rus.122
 					days = 0
 				}
-				set_variable = { var = SMO_priority_direction_variable value = 6 }
-				set_variable = { var = SMO_military_objectives_variable value = 7 }
 				RBZ = {
 					add_state_core = 302
 					add_state_core = 634
@@ -6868,63 +6906,18 @@ RUS_SMO_deccat = {
 					transfer_state = 377
 				}
 			}
-			custom_effect_tooltip = RUS_gp_SMO_offensive_on_the_dnieper_tt
-		}
-	}
-
-	RUS_rightbank_Dnieper = {
-		icon = GFX_RUS_general_staff
-		custom_cost_trigger = {
-            command_power > 34
-        }
-      	custom_cost_text = decision_cost_CP_35
-		fire_only_once = yes
-		days_remove = 7
-		
-		ai_will_do = {
-	    	factor = 0 #потом изменить
-        }
-
-		visible = {
-			original_tag = RUS
-			NOT = {
-			     OR = {
-			 		has_completed_focus = RUS_SMO
-					has_country_flag = SMO_leftbank_Dnieper_c
-			 	}
-			 }
-			has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7 }
-		}
-		available = {
-			original_tag = RUS		
-	}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_rightbank_Dnieper: complete_effect"
-			hidden_effect = {
-				add_command_power = -35
-				set_country_flag = SMO_rightbank_Dnieper_c
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_rightbank_Dnieper: remove_effect"
-			hidden_effect = {
-				#пока ничего
-			}
-			custom_effect_tooltip = RUS_gp_SMO_offensive_on_the_dnieper_tt
+			custom_effect_tooltip = RUS_gp_SMO_rightbankdnepr_tt
 		}
 	}
 
 	RUS_leftbank_Dnieper = {
 		icon = GFX_RUS_general_staff
-		custom_cost_trigger = {
-            command_power > 34
-        }
-      	custom_cost_text = decision_cost_CP_35
 		fire_only_once = yes
 		days_remove = 7
 		
 		ai_will_do = {
-	    	factor = 0 #потом изменить
+	    	factor = 0
+			modifier = {  add = 1000  is_historical_focus_on = no }
         }
 
 		visible = {
@@ -6935,11 +6928,11 @@ RUS_SMO_deccat = {
 					has_country_flag = SMO_rightbank_Dnieper_c
 			 	}
 			 }
-			has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7 }
+			has_country_flag = SMO_offensive_on_the_dnieper
 		}
 		available = {
 			original_tag = RUS	
-	}
+		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_leftbank_Dnieper: complete_effect"
 			hidden_effect = {
@@ -6950,9 +6943,63 @@ RUS_SMO_deccat = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_lefttbank_Dnieper: remove_effect"
 			hidden_effect = {
-				#Пока ничего
+				set_variable = { SMO_desant = 0 }
+				set_variable = { var = SMO_priority_direction_variable value = 7 }
+				set_variable = { var = SMO_military_objectives_variable value = 8 }
+				add_ideas = RUS_tactical_planning_2
+				country_event = { 
+					id = rus.122
+					days = 0
+				}
+				RBZ = {
+					add_state_core = 302
+					add_state_core = 634
+					add_state_core = 633
+					add_state_core = 632
+					add_state_core = 272
+					add_state_core = 631
+					add_state_core = 630
+					add_state_core = 306
+					add_state_core = 120
+					add_state_core = 621
+					add_state_core = 620
+					add_state_core = 619
+					add_state_core = 618
+					add_state_core = 122
+					add_state_core = 635
+					add_state_core = 636
+					add_state_core = 638
+					add_state_core = 637
+					add_state_core = 117	
+					add_state_core = 126
+					add_state_core = 629
+					add_state_core = 377
+
+					transfer_state = 302
+					transfer_state = 634
+					transfer_state = 633
+					transfer_state = 632
+					transfer_state = 272
+					transfer_state = 631
+					transfer_state = 630
+					transfer_state = 306
+					transfer_state = 120
+					transfer_state = 621
+					transfer_state = 620
+					transfer_state = 619
+					transfer_state = 618
+					transfer_state = 122
+					transfer_state = 635
+					transfer_state = 636
+					transfer_state = 638
+					transfer_state = 637
+					transfer_state = 117	
+					transfer_state = 126	
+					transfer_state = 629
+					transfer_state = 377
+				}
 			}
-			custom_effect_tooltip = RUS_gp_SMO_offensive_on_the_dnieper_tt
+			custom_effect_tooltip = RUS_gp_SMO_leftbankdnepr_tt
 		}
 	}
 
@@ -7122,7 +7169,7 @@ RUS_SMO_deccat = {
 			hidden_effect = {
 				set_country_flag = RUS_assault_Mariupol_cf
 			}
-			custom_effect_tooltip = RUS_assault_plan_tt
+			custom_effect_tooltip = RUS_assault_plan_nv_tt
 		}
 	}
 	RUS_assault_Sumi = {
@@ -7165,7 +7212,7 @@ RUS_SMO_deccat = {
 			hidden_effect = {
 				set_country_flag = RUS_assault_Sumi_cf
 			}
-			custom_effect_tooltip = RUS_assault_plan_tt
+			custom_effect_tooltip = RUS_assault_plan_nv_tt
 		}
 	}
 
@@ -7279,9 +7326,9 @@ RUS_SMO_deccat = {
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
-	    }
-
+		}
 		available = {
 			original_tag = RUS
 		}
@@ -7289,12 +7336,14 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Herson: complete_effect"
 			hidden_effect = {
 				add_command_power = -15
+				if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } add_to_variable = { SMO_desant = 1} }
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Herson: remove_effect"
 			set_country_flag = SMO_landing_Herson
-			custom_effect_tooltip = SMO_landing_Herson_ce_tt
+			if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } custom_effect_tooltip = SMO_landing_Herson_ce_d_tt }
+			else = { custom_effect_tooltip = SMO_landing_Herson_ce_tt }
 		}
 	}
 	RUS_do_SMO_landing_Kharkov = {
@@ -7320,9 +7369,9 @@ RUS_SMO_deccat = {
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
-	    }
-
+			}
 		available = {
 			original_tag = RUS
 		}
@@ -7330,12 +7379,14 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Kharkov: complete_effect"
 			hidden_effect = {
 				add_command_power = -20
+				if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } add_to_variable = { SMO_desant = 1} }
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Kharkov: remove_effect"
 			set_country_flag = SMO_landing_Kharkov
-			custom_effect_tooltip = SMO_landing_Kharkov_ce_tt
+			if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } custom_effect_tooltip = SMO_landing_Kharkov_ce_d_tt }
+			else = { custom_effect_tooltip = SMO_landing_Kharkov_ce_tt }
 		}
 	}
 	RUS_do_SMO_landing_Poltava = {
@@ -7361,6 +7412,7 @@ RUS_SMO_deccat = {
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
 	    }
 
@@ -7371,12 +7423,147 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Poltava: complete_effect"
 			hidden_effect = {
 				add_command_power = -20
+				add_to_variable = { SMO_desant = 1}
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Poltava: remove_effect"
 			set_country_flag = SMO_landing_Poltava
 			custom_effect_tooltip = SMO_landing_Poltava_ce_tt
+		}
+	}
+
+	RUS_do_SMO_landing_kremenchug = {
+		icon = GFX_RUS_VDV
+		
+		custom_cost_trigger = {
+            command_power > 19
+        }
+        custom_cost_text = decision_cost_CP_20
+		fire_only_once = yes
+		days_remove = 10
+		
+		ai_will_do = {
+	    	factor = 100
+        }
+
+		visible = {
+	        original_tag = RUS
+			has_completed_focus = RUS_expand_the_preparation_of_amphibious_operations
+			OR = {
+				has_country_flag = { flag = SMO_rightbank_Dnieper_c  days > 7 }
+				has_country_flag = { flag = SMO_leftbank_Dnieper_c  days > 7 }
+			}
+			NOT = {
+				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
+			}
+	    }
+
+		available = {
+			original_tag = RUS
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_kremenchug: complete_effect"
+			hidden_effect = {
+				add_command_power = -20
+				add_to_variable = { SMO_desant = 1}
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_kremenchug: remove_effect"
+			set_country_flag = SMO_landing_kremechug
+			custom_effect_tooltip = SMO_landing_kremenchug_ce_tt
+		}
+	}
+
+	RUS_do_SMO_landing_dnepr = {
+		icon = GFX_RUS_VDV
+		
+		custom_cost_trigger = {
+            command_power > 19
+        }
+        custom_cost_text = decision_cost_CP_20
+		fire_only_once = yes
+		days_remove = 10
+		
+		ai_will_do = {
+	    	factor = 100
+        }
+
+		visible = {
+	        original_tag = RUS
+			has_completed_focus = RUS_expand_the_preparation_of_amphibious_operations
+			OR = {
+				has_country_flag = { flag = SMO_rightbank_Dnieper_c  days > 7 }
+				has_country_flag = { flag = SMO_leftbank_Dnieper_c  days > 7 }
+			}
+			NOT = {
+				has_country_flag = SMO_landing_bigdnepr
+				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
+			}
+	    }
+
+		available = {
+			original_tag = RUS
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_dnepr: complete_effect"
+			hidden_effect = {
+				add_command_power = -20
+				add_to_variable = { SMO_desant = 1}
+				set_country_flag = SMO_landing_dnepr
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_dnepr: remove_effect"
+			custom_effect_tooltip = SMO_landing_dnepr_ce_tt
+		}
+	}
+
+	RUS_do_SMO_landing_bigdnepr = {
+		icon = GFX_RUS_VDV
+		
+		custom_cost_trigger = {
+            command_power > 29
+        }
+        custom_cost_text = decision_cost_CP_30
+		fire_only_once = yes
+		days_remove = 15
+		
+		ai_will_do = {
+	    	factor = 100
+        }
+
+		visible = {
+	        original_tag = RUS
+			has_completed_focus = RUS_expand_the_preparation_of_amphibious_operations
+			OR = {
+				has_country_flag = { flag = SMO_rightbank_Dnieper_c  days > 7 }
+				has_country_flag = { flag = SMO_leftbank_Dnieper_c  days > 7 }
+			}
+			NOT = {
+				has_country_flag = SMO_landing_dnepr
+				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
+			}
+	    }
+
+		available = {
+			original_tag = RUS
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_bigdnepr: complete_effect"
+			hidden_effect = {
+				set_country_flag = SMO_landing_bigdnepr
+				add_command_power = -30
+				add_to_variable = { SMO_desant = 2}
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_bigdnepr: remove_effect"
+			custom_effect_tooltip = SMO_landing_bigdnepr_ce_tt
 		}
 	}
 
@@ -7445,6 +7632,7 @@ RUS_SMO_deccat = {
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
 	    }
 
@@ -7459,12 +7647,14 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Nikolaev: complete_effect"
 			hidden_effect = {
 				add_command_power = -20
+				if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } add_to_variable = { SMO_desant = 1} }
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Nikolaev: remove_effect"
 			set_country_flag = SMO_landing_Nikolaev
-			custom_effect_tooltip = SMO_landing_Nikolaev_ce_tt
+			if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } custom_effect_tooltip = SMO_landing_Nikolaev_ce_d_tt }
+			else = { custom_effect_tooltip = SMO_landing_Nikolaev_ce_tt }
 		}
 	}
 	RUS_do_SMO_landing_Zaporozhye = {
@@ -7486,6 +7676,7 @@ RUS_SMO_deccat = {
 			has_completed_focus = RUS_expand_the_preparation_of_amphibious_operations
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
 	    }
 
@@ -7496,12 +7687,14 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Zaporozhye: complete_effect"
 			hidden_effect = {
 				add_command_power = -20
+				if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } add_to_variable = { SMO_desant = 1} }
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_Zaporozhye: remove_effect"
 			set_country_flag = SMO_landing_Zaporozhye
-			custom_effect_tooltip = SMO_landing_Zaporozhye_ce_tt
+			if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } custom_effect_tooltip = SMO_landing_Zaporozhye_ce_d_tt }
+			else = { custom_effect_tooltip = SMO_landing_Zaporozhye_ce_tt }
 		}
 	}
 	RUS_do_SMO_landing_zmiiniy = {
@@ -7532,6 +7725,7 @@ RUS_SMO_deccat = {
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
 	    }
 
@@ -7542,12 +7736,14 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_zmiiniy: complete_effect"
 			hidden_effect = {
 				add_command_power = -15
+				if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } add_to_variable = { SMO_desant = 1} }
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_zmiiniy: remove_effect"
 			set_country_flag = SMO_landing_zmiiniy
-			custom_effect_tooltip = SMO_landing_zmiiniy_ce_tt
+			if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } custom_effect_tooltip = SMO_landing_zmiiniy_ce_d_tt }
+			else = { custom_effect_tooltip = SMO_landing_zmiiniy_ce_tt }
 		}
 	}
 	RUS_do_SMO_landing_berdyansk = {
@@ -7578,6 +7774,7 @@ RUS_SMO_deccat = {
 			}
 			NOT = {
 				has_completed_focus = RUS_SMO
+				check_variable = { SMO_desant = SMO_landing_berdyansk_ce_tt }
 			}
 	    }
 
@@ -7588,12 +7785,14 @@ RUS_SMO_deccat = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_berdyansk: complete_effect"
 			hidden_effect = {
 				add_command_power = -15
+				if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } add_to_variable = { SMO_desant = 1} }
 			}
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_do_SMO_landing_berdyansk: remove_effect"
 			set_country_flag = SMO_landing_berdyansk
-			custom_effect_tooltip = SMO_landing_berdyansk_ce_tt
+			if = { limit = { has_country_flag = SMO_offensive_on_the_dnieper } custom_effect_tooltip = SMO_landing_berdyansk_ce_d_tt }
+			else = { custom_effect_tooltip = SMO_landing_berdyansk_ce_tt }
 		}
 	}
 	RUS_operational_center_of_airborne_operations = {
@@ -9079,40 +9278,197 @@ RUS_SMO_deccat = {
 		selectable_mission = no
 
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = SMO_Kherson_captured
-				controls_state = 264
-				controls_state = 262
-				controls_state = 240
-				controls_state = 251
-				controls_state = 231
-				controls_state = 253
-			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_Dnepr_captured
-				controls_province = 18753
-				controls_province = 18762
-				controls_province = 4493
-				controls_province = 18765
-				controls_province = 18754
-			}
-			custom_trigger_tooltip = {
-				tooltip = SMO_LDPR_captured
-				UKR = {
-				    NOT = {
-						controls_state = 237
-						controls_state = 213
-						controls_state = 182
-						controls_state = 149
-						controls_state = 165
-						controls_state = 116
-						controls_state = 145
-						controls_state = 125
-						controls_state = 154
+			if = {
+				limit = {
+					OR = {
+						has_country_flag = SMO_leftbank_Dnieper_c
+						AND = {
+							has_country_flag = SMO_offensive_on_the_dnieper
+							NOT={ has_country_flag = SMO_leftbank_Dnieper_c }
+							NOT={ has_country_flag = SMO_rightbank_Dnieper_c }
+						}
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = RUS_assault_zaporozie
+					controls_state = 667
+					controls_state = 208
+					controls_state = 669
+					controls_state = 670
+					controls_state = 657
+					controls_state = 223
+					controls_state = 664
+					controls_state = 662
+					controls_state = 659
+					controls_state = 226
+					controls_state = 658
+					controls_state = 661
+					controls_state = 246
+					controls_state = 655
+					controls_state = 658
+				}
+				custom_trigger_tooltip = {
+					tooltip = RUS_assault_dnepr_most
+					controls_state = 642
+					controls_state = 262
+					controls_state = 644
+					controls_state = 208
+					controls_state = 186
+					controls_state = 156
+					controls_province = 13503
+					controls_province = 13471
+					controls_province = 3681
+				}
+				OR = {
+					custom_trigger_tooltip = {
+						tooltip = RUS_okruzenie_k
+						controls_state = 944
+						controls_state = 72
+						controls_state = 939
+						controls_state = 105
+						OR = { controls_state = 943 controls_state = 939 }
+						OR = { controls_state = 940 controls_state = 937 }
+						OR = { controls_state = 96 controls_state = 89 }
+						controls_province = 15515
+						controls_province = 13941
+						controls_province = 11303
+						controls_province = 11272
+						controls_province = 2331
+						controls_province = 2112
+					}
+					custom_trigger_tooltip = {
+						tooltip = RUS_okruzenie_d
+						controls_state = 926
+						controls_state = 928
+						controls_state = 103
+						controls_state = 927
+						controls_state = 930
+						controls_state = 994
+						controls_state = 996
+						controls_state = 151
+						controls_state = 995
+						controls_state = 993
+						OR = { controls_state = 921 controls_state = 929 }
+						OR = { controls_state = 130 controls_state = 925 }
+						OR = { controls_state = 931 controls_state = 932 }
 					}
 				}
 			}
-		}
+
+			if = {
+					limit = {
+						has_country_flag = SMO_rightbank_Dnieper_c
+					}
+					custom_trigger_tooltip = {
+						tooltip = SMO_Kherson_captured
+						controls_state = 643
+						controls_state = 289
+						controls_state = 251
+						controls_state = 646
+						controls_state = 240
+						controls_state = 264
+						controls_state = 642
+						controls_state = 266
+						controls_state = 253
+						controls_state = 413
+						controls_state = 644
+						controls_state = 262
+						controls_state = 651
+						controls_state = 253
+						controls_state = 231
+					}
+					custom_trigger_tooltip = {
+						tooltip = RUS_krivoyrog_controls
+						controls_state = 197
+						controls_state = 1010
+						OR = { AND = { controls_state = 652 controls_state = 653 } AND = { controls_state = 654 controls_state = 1008 } }
+					}
+					OR = {
+						custom_trigger_tooltip = {
+							tooltip = RUS_okruzenie_kr
+							controls_state = 944
+							controls_state = 72
+							controls_state = 105
+							controls_state = 160
+							controls_state = 158
+							controls_state = 1006
+							controls_province = 15515
+							controls_province = 13941
+							controls_province = 11303
+							controls_province = 11272
+							controls_province = 2331
+							controls_province = 2112
+							OR = { controls_state = 943 controls_state = 939 }
+							OR = { controls_state = 940 controls_state = 937 }
+							OR = { controls_state = 96 controls_state = 89 }
+							controls_province = 15515
+							controls_province = 13941
+							controls_province = 11303
+							controls_province = 11272
+							controls_province = 2331
+							controls_province = 2112
+						}
+						custom_trigger_tooltip = {
+							tooltip = RUS_okruzenie_dn
+							controls_state = 926
+							controls_state = 928
+							controls_state = 103
+							controls_state = 927
+							controls_state = 930
+							controls_state = 994
+							controls_state = 996
+							controls_state = 151
+							controls_state = 995
+							controls_state = 993
+							controls_state = 991
+							controls_state = 169
+							controls_state = 187
+							controls_state = 997
+							controls_state = 1007
+							controls_state = 1009
+							controls_state = 998
+							controls_state = 1000
+							controls_state = 186
+							controls_state = 156
+							OR = { controls_state = 921 controls_state = 929 }
+							OR = { controls_state = 130 controls_state = 925 }
+							OR = { controls_state = 931 controls_state = 932 }
+						}
+						custom_trigger_tooltip = {
+							tooltip = RUS_okruzenie_z
+							controls_state = 926
+							controls_state = 928
+							controls_state = 103
+							controls_state = 927
+							controls_state = 930
+							controls_state = 994
+							controls_state = 996
+							controls_state = 151
+							controls_state = 995
+							controls_state = 993
+							controls_state = 156
+							controls_state = 186
+							controls_state = 180
+							controls_state = 667
+							controls_state = 208
+							controls_state = 222
+							controls_state = 671
+							controls_state = 210
+							controls_state = 1005
+							controls_state = 1004
+							controls_state = 216
+							controls_state = 1002
+							controls_state = 1003
+							controls_state = 1008
+							controls_state = 1007
+							controls_state = 1009
+							OR = { controls_state = 921 controls_state = 929 }
+							OR = { controls_state = 130 controls_state = 925 }
+							OR = { controls_state = 931 controls_state = 932 }
+						}
+					}
+				}
+			}
 
 		activation = {
 			always = no
@@ -9944,6 +10300,8 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_offensive_towards_novorossia
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
 			}
 		}
 
@@ -10008,7 +10366,10 @@ RUS_SMO_deccat = {
 			if = {
 				limit = {
 					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
+						OR ={
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
 					}
 				}
 				add_days_mission_timeout = {
@@ -10026,7 +10387,339 @@ RUS_SMO_deccat = {
 		}
 	}
 
+	RUS_SMO_dnepr_goal = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 150
+		selectable_mission = no
+		fire_only_once = yes
 
+		activation = {
+			has_completed_focus = RUS_SMO
+			OR = {
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
+			}
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_state = 156
+					controls_state = 187
+					controls_state = 186
+					controls_province = 3766
+				}
+			}
+		}
+
+		cancel_trigger = {
+			has_idea = RUS_disruption_of_the_operation
+		}
+
+		complete_effect = {
+			if = {
+				limit = {
+					RUS = {
+						OR ={
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
+					}
+				}
+				add_days_mission_timeout = {
+					mission = SMO_offensive_on_the_dnieper_timeout
+					days = 10
+				}
+			}
+		}
+		highlight_states = {
+			highlight_state_targets = {
+				state = 156
+				state = 187
+				state = 186
+			}
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+	}
+
+	RUS_SMO_kremenchug_goal = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 150
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			has_completed_focus = RUS_SMO
+			OR = {
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
+			}
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 15515
+					controls_province = 11949
+				}
+			}
+		}
+
+		cancel_trigger = {
+			has_idea = RUS_disruption_of_the_operation
+		}
+		complete_effect = {
+			if = {
+				limit = {
+					RUS = {
+						OR = {
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
+					}
+				}
+				add_days_mission_timeout = {
+					mission = SMO_offensive_on_the_dnieper_timeout
+					days = 7
+				}
+			}
+		}
+		highlight_states = {
+			highlight_provinces = {
+				15515
+				11949
+				1818
+				8699
+				12616
+				6968
+				3749
+				13900
+				13874
+				8741
+				6193
+			} 
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+	}
+
+	RUS_SMO_Poltava_goal = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 150
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			has_completed_focus = RUS_SMO
+			OR = {
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
+			}
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 6560
+					controls_province = 16209
+					controls_province = 16071
+					controls_province = 627
+					controls_province = 6383
+					controls_province = 9491
+					controls_province = 348
+					controls_province = 8876
+					controls_province = 11757
+				}
+			}
+		}
+
+		cancel_trigger = {
+			has_idea = RUS_disruption_of_the_operation
+		}
+		complete_effect = {
+			if = {
+				limit = {
+					RUS = {
+						OR = {
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
+					}
+				}
+				add_days_mission_timeout = {
+					mission = SMO_offensive_on_the_dnieper_timeout
+					days = 10
+				}
+			}
+		}
+		highlight_states = {
+			highlight_provinces = {
+				6560
+				16209
+				16071
+				627
+				6383
+				9491
+				348
+				8876
+				11757
+			} 
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+	}
+
+	RUS_SMO_krivoyrog_goal = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 150
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			has_completed_focus = RUS_SMO
+			has_country_flag = SMO_rightbank_Dnieper_c
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_state = 197
+				}
+			}
+		}
+
+		cancel_trigger = {
+			has_idea = RUS_disruption_of_the_operation
+		}
+		complete_effect = {
+			if = {
+				limit = {
+					RUS = {
+						has_country_flag = SMO_rightbank_Dnieper_c
+					}
+				}
+				add_days_mission_timeout = {
+					mission = SMO_offensive_on_the_dnieper_timeout
+					days = 7
+				}
+			}
+		}
+		highlight_states = {
+			highlight_state_targets = {
+				state = 197
+			} 
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+	}
+
+	RUS_SMO_zaporozie_goal = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 150
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			has_completed_focus = RUS_SMO
+			OR = {
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
+			}
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 4291
+					controls_province = 17170
+					controls_province = 16619
+					controls_province = 3467
+					controls_state = 208
+					controls_state = 671
+				}
+			}
+		}
+
+		cancel_trigger = {
+			has_idea = RUS_disruption_of_the_operation
+		}
+		complete_effect = {
+			if = {
+				limit = {
+					RUS = {
+						OR = {
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
+					}
+				}
+				add_days_mission_timeout = {
+					mission = SMO_offensive_on_the_dnieper_timeout
+					days = 10
+				}
+			}
+		}
+		highlight_states = {
+			highlight_state_targets = {
+				state = 208
+				state = 671
+			} 
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+	}
+
+	RUS_SMO_Nikolaev_goal = {
+		icon = GFX_RUS_general_staff
+		is_good = no
+		days_mission_timeout = 150
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			has_completed_focus = RUS_SMO
+			has_country_flag = SMO_rightbank_Dnieper_c
+		}
+
+		available = {
+			UKR = {
+				NOT = {
+					controls_province = 18781
+					controls_state = 233
+				}
+			}
+		}
+
+		cancel_trigger = {
+			has_idea = RUS_disruption_of_the_operation
+		}
+		complete_effect = {
+			if = {
+				limit = {
+					RUS = {
+						has_country_flag = SMO_rightbank_Dnieper_c
+					}
+				}
+				add_days_mission_timeout = {
+					mission = SMO_offensive_on_the_dnieper_timeout
+					days = 7
+				}
+			}
+		}
+		highlight_states = {
+			highlight_state_targets = {
+				state = 233
+			} 
+			highlight_color_while_active = 3
+			highlight_color_before_active = 2
+		}
+	}
 
 	RUS_SMO_mariupol_goal = {
 		icon = GFX_RUS_general_staff
@@ -10043,7 +10736,8 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
 				has_country_flag = SMO_send_troops_to_the_republic_of_donbass
-				has_country_flag = SMO_offensive_on_the_dnieper
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
 			}
 		}
 
@@ -10119,7 +10813,10 @@ RUS_SMO_deccat = {
 			if = {
 				limit = {
 					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
+						OR = {
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
 					}
 				}
 				add_days_mission_timeout = {
@@ -10152,7 +10849,6 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
 				has_country_flag = SMO_concentrated_attack_on_kyiv
-				has_country_flag = SMO_offensive_on_the_dnieper
 			}
 		}
 
@@ -10214,17 +10910,6 @@ RUS_SMO_deccat = {
 					days = 7
 				}
 			}
-			if = {
-				limit = {
-					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
-					}
-				}
-				add_days_mission_timeout = {
-					mission = SMO_offensive_on_the_dnieper_timeout
-					days = 7
-				}
-			}
 		}
 		highlight_states = {
 			highlight_state_targets = {
@@ -10248,7 +10933,8 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_offensive_on_kyiv
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
-				has_country_flag = SMO_offensive_on_the_dnieper
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
 			}
 		}
 
@@ -10312,7 +10998,10 @@ RUS_SMO_deccat = {
 			if = {
 				limit = {
 					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
+						OR = {
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
 					}
 				}
 				add_days_mission_timeout = {
@@ -10346,7 +11035,8 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_concentrated_attack_on_kyiv
 				has_country_flag = SMO_offensive_towards_novorossia
 				has_country_flag = SMO_send_troops_to_the_republic_of_donbass
-				has_country_flag = SMO_offensive_on_the_dnieper
+				has_country_flag = SMO_rightbank_Dnieper_c
+				has_country_flag = SMO_leftbank_Dnieper_c
 			}
 		}
 
@@ -10433,7 +11123,10 @@ RUS_SMO_deccat = {
 			if = {
 				limit = {
 					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
+						OR ={
+							has_country_flag = SMO_rightbank_Dnieper_c
+							has_country_flag = SMO_leftbank_Dnieper_c
+						}
 					}
 				}
 				add_days_mission_timeout = {
@@ -10466,7 +11159,6 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
 				has_country_flag = SMO_send_troops_to_the_republic_of_donbass
-				has_country_flag = SMO_offensive_on_the_dnieper
 			}
 		}
 
@@ -10539,17 +11231,6 @@ RUS_SMO_deccat = {
 					days = 7
 				}
 			}
-			if = {
-				limit = {
-					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
-					}
-				}
-				add_days_mission_timeout = {
-					mission = SMO_offensive_on_the_dnieper_timeout
-					days = 7
-				}
-			}
 		}
 		highlight_states = {
 			highlight_state_targets = {
@@ -10576,7 +11257,6 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
 				has_country_flag = SMO_send_troops_to_the_republic_of_donbass
-				has_country_flag = SMO_offensive_on_the_dnieper
 			}
 		}
 
@@ -10648,17 +11328,6 @@ RUS_SMO_deccat = {
 					days = 10
 				}
 			}
-			if = {
-				limit = {
-					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
-					}
-				}
-				add_days_mission_timeout = {
-					mission = SMO_offensive_on_the_dnieper_timeout
-					days = 10
-				}
-			}
 		}
 		highlight_states = {
 			highlight_state_targets = {
@@ -10684,7 +11353,6 @@ RUS_SMO_deccat = {
 				has_country_flag = SMO_full_scale_invasion
 				has_country_flag = SMO_from_border_to_border
 				has_country_flag = SMO_send_troops_to_the_republic_of_donbass
-				has_country_flag = SMO_offensive_on_the_dnieper
 			}
 		}
 
@@ -10753,17 +11421,6 @@ RUS_SMO_deccat = {
 				}
 				add_days_mission_timeout = {
 					mission = SMO_send_troops_to_the_republic_of_donbass_timeout
-					days = 10
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						has_country_flag = SMO_offensive_on_the_dnieper
-					}
-				}
-				add_days_mission_timeout = {
-					mission = SMO_offensive_on_the_dnieper_timeout
 					days = 10
 				}
 			}
@@ -10913,6 +11570,62 @@ RUS_SMO_deccat = {
 		}
 		highlight_states = { 
 			highlight_provinces = { 11757 }
+		}
+	}
+
+	RUS_hold_kremenchug_desant = {
+		icon = GFX_RUS_VDV
+		is_good = yes
+		days_mission_timeout = 12
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			UKR = {
+				controls_province = 15515
+			}
+		}
+
+		timeout_effect = {
+			128 = {
+				add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 }
+			}
+		}
+		highlight_states = { 
+			highlight_provinces = { 15515 }
+		}
+	}
+
+	RUS_hold_dnepr_desant = {
+		icon = GFX_RUS_VDV
+		is_good = yes
+		days_mission_timeout = 12
+		selectable_mission = no
+		fire_only_once = yes
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			UKR = {
+				controls_province = 18754
+				controls_province = 6308
+			}
+		}
+
+		timeout_effect = {
+			186 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 } }
+			187 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 } }
+			156 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier scope = RUS days = 20 } }
+		}
+		highlight_states = { 
+			highlight_provinces = { 18754 }
+			highlight_provinces = { 6308 }
 		}
 	}
 
@@ -12784,7 +13497,7 @@ RUS_real_man_business_categories = {
 		}
 	}
 	RUS_153_Tank_Regiment = {
-
+		icon = GFX_RUS_153_Tank_Regiment
 		fire_only_once = yes 
 		days_remove = 40
 		custom_cost_trigger = {
@@ -15349,7 +16062,7 @@ RUS_deconservation_cat = {
 				}
 				add_to_variable = { var = RUS_deconservation_SPA_cost value = 70 }
 			}
-			if = { limit = { check_variable = { RUS_deconservation_SPA_num = 3 } }
+			if = { limit = { check_variable = { RUS_deconservation_SPA_num = 2 } }
 				add_equipment_to_stockpile = {
 					type = sp_artillery_apc_sov_mtlb_equipment
 					variant_name = "2С1 Гвоздика"
@@ -15429,7 +16142,7 @@ RUS_deconservation_cat = {
 			add_to_variable = { var = RUS_deconservation_BTR50_cost value = 10 }
 		}
 
-		if = { limit = { check_variable = { RUS_deconservation_BTR50_num = 1 } }
+		if = { limit = { check_variable = { RUS_deconservation_BTR50_num = 2 } }
 			add_equipment_to_stockpile = {
 				type = apc_sov_btr50_equipment
 				variant_name = "БТР-50"
@@ -15723,7 +16436,7 @@ RUS_deconservation_cat = {
 				producer = RUS
 			}
 		}
-		if = { limit = { check_variable = { RUS_deconservation_MTLB_num = 1 } }			
+		if = { limit = { check_variable = { RUS_deconservation_MTLB_num = 2 } }			
 			add_equipment_to_stockpile = {
 				type = apc_sov_mtlb_equipment
 				variant_name = "МТ-ЛБ"
@@ -19124,7 +19837,7 @@ RUS_rosconservation_category = {
 }
 
 RUS_Genshtab_redoubt = {
-	RUS_precision_guided_ammunition= {
+	RUS_precision_guided_ammunition = {
 		icon = GFX_WIP
 		fire_only_once = yes
 		cost = 0
@@ -19141,6 +19854,7 @@ RUS_Genshtab_redoubt = {
 		}
 
 		complete_effect = {
+			custom_effect_tooltip = RUS_precision_guided_ammunition_tt
 			hidden_effect = {
 				set_country_flag = RUS_green_light_given
 			}
@@ -19227,7 +19941,7 @@ RUS_Genshtab_redoubt = {
 				add_equipment_to_stockpile = { type = engineering_equipment_0 amount = 2 producer = RUS }
 				add_equipment_to_stockpile = { type = amv_equipment_0 amount = 5 producer = RUS }
 				add_equipment_to_stockpile = { type = arv_equipment_0 amount = 2 producer = RUS }
-				add_equipment_to_stockpile = { type = RUS_artillery_equipment_1 amount = 2 producer = RUS }
+				add_equipment_to_stockpile = { type = sov_artillery_d30_equipment amount = 2 producer = RUS }
 				add_equipment_to_stockpile = { type = support_equipment amount = 100 producer = RUS }
 				13 = {
 			        create_unit = {
@@ -19704,9 +20418,8 @@ RUS_Genshtab_redoubt = {
 			    add_equipment_to_stockpile = { type = aa_9k38_igla_equipment amount = 20 producer = RUS }
 				add_equipment_to_stockpile = { type = atgm_9k115_metis_equipment amount = 4 producer = RUS }
 				add_equipment_to_stockpile = { type = body_armor_6b23_equipment amount = 200 producer = RUS }
-				add_equipment_to_stockpile = { type = sov_brdm2_equipment variant_name = "БРДМ-2" amount = 2 producer = RUS }
-				add_equipment_to_stockpile = { type = apc_sov_btr70_equipment variant_name = "БТР-70В" amount = 8 producer = RUS }
-				add_equipment_to_stockpile = { type = imv_medium_1_equipment variant_name = "\"Тигр\"" amount = 13 producer = RUS }
+				add_equipment_to_stockpile = { type = apc_sov_btr80_equipment variant_name = "БТР-82А" amount = 20 producer = RUS }
+				add_equipment_to_stockpile = { type = imv_medium_1_equipment variant_name = "\"Тигр\"" amount = 30 producer = RUS }
 				add_equipment_to_stockpile = { type = grenade_launcher_rpg26_aglen_equipment amount = 40 producer = RUS }
 				add_equipment_to_stockpile = { type = imv_light_1_equipment variant_name = "Урал-4350" amount = 14 producer = RUS }
 				add_equipment_to_stockpile = { type = infantry_ak74_equipment amount = 320 producer = RUS }
@@ -19715,11 +20428,11 @@ RUS_Genshtab_redoubt = {
 				add_equipment_to_stockpile = { type = engineering_equipment_0 amount = 2 producer = RUS }
 				add_equipment_to_stockpile = { type = amv_equipment_0 amount = 5 producer = RUS }
 				add_equipment_to_stockpile = { type = arv_equipment_0 amount = 2 producer = RUS }
-				add_equipment_to_stockpile = { type = RUS_artillery_equipment_1 amount = 2 producer = RUS }
+				add_equipment_to_stockpile = { type = sov_artillery_2a65_equipment amount = 6 producer = RUS }
 				add_equipment_to_stockpile = { type = support_equipment amount = 100 producer = RUS }
 				13 = {
 			        create_unit = {
-					    division = "name = \"Podrazdelenie «Shchit» 45-y brigady rossiyskogo spetsnaza VDV\" division_template = \"Spetsnaz\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
+					    division = "name = \"Podrazdelenie «Shchit» 45-y brigady rossiyskogo spetsnaza VDV\" division_template = \"45ya brigada spetsnaza VDV\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
 					    owner = RUS
 					    prioritize_location = 13132
 					    count = 1
@@ -19968,6 +20681,11 @@ RUS_Genshtab_redoubt = {
 		    army_experience = 10
 		    custom_effect_tooltip = RUS_yastreb_CHVK_donbass_cet
 		    hidden_effect = {
+				country_event = {
+					id = rus_hidden.15
+					days = 30
+					random_days = 970
+				}
 			    RUS_Redut_Specpodrazdelenie_Genshtaba_equipment_1 = yes
 				RUS_Redut_motorizovannoe_podrazdelenie_Genshtaba_equipment_1 = yes
 				ensure_unit_template_RUS_mot_Specpodrazdelenie_Genshtaba_Redut = yes
@@ -19982,12 +20700,14 @@ RUS_Genshtab_redoubt = {
 					    	owner = RUS
 					    	prioritize_location = 1466
 					    	count = 1
+							id = 8814
 				    	}
 						create_unit = {
 					    	division = "name = \"1-y motostrelkoviy otryad ChVK «Yastreb»\" division_template = \"Special'noe motorizovannoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.6 start_equipment_factor = 0.01"
 					    	owner = RUS
 					    	prioritize_location = 1466
 					    	count = 1
+							id = 1487
 				    	}
 					}
 				}	
@@ -19998,12 +20718,14 @@ RUS_Genshtab_redoubt = {
 					    	owner = RUS
 					    	prioritize_location = 1466
 					    	count = 1
+							id = 8814
 				    	}
 						create_unit = {
 					    	division = "name = \"1-y motostrelkoviy otryad ChVK «Yastreb»\" division_template = \"Special'noe motorizovannoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
 					    	owner = RUS
 					    	prioritize_location = 1466
 					    	count = 1
+							id = 1487
 				    	}
 					}
 				}	
@@ -23513,7 +24235,7 @@ RUS_Genshtab_redoubt = {
 				add_equipment_to_stockpile = { type = uniform_vsr98_flora_equipment amount = 11910 producer = RUS }
 				add_equipment_to_stockpile = { type = engineering_equipment_0 amount = 150 producer = RUS }
 				add_equipment_to_stockpile = { type = amv_equipment_0 amount = 450 producer = RUS }
-				add_equipment_to_stockpile = { type = RUS_artillery_equipment_1 amount = 108 producer = RUS }
+				add_equipment_to_stockpile = { type = sov_artillery_d30_equipment amount = 108 producer = RUS }
 				add_equipment_to_stockpile = { type = support_equipment amount = 1350 producer = RUS }
 				add_equipment_to_stockpile = { type = ifv_sov_bmp1_equipment variant_name = "БМП-1" amount = 10 producer = RUS }
 				add_equipment_to_stockpile = { type = tank_sov_t72_equipment variant_name = "Т-72" amount = 40 producer = RUS }
@@ -23645,7 +24367,7 @@ RUS_Genshtab_redoubt = {
 				add_equipment_to_stockpile = { type = uniform_vsr98_flora_equipment amount = 6000 producer = RUS }
 				add_equipment_to_stockpile = { type = engineering_equipment_0 amount = 90 producer = RUS }
 				add_equipment_to_stockpile = { type = amv_equipment_0 amount = 270 producer = RUS }
-				add_equipment_to_stockpile = { type = RUS_artillery_equipment_1 amount = 12 producer = RUS }
+				add_equipment_to_stockpile = { type = sov_artillery_d30_equipment amount = 12 producer = RUS }
 				add_equipment_to_stockpile = { type = support_equipment amount = 810 producer = RUS }
 				add_equipment_to_stockpile = { type = ifv_sov_bmp1_equipment variant_name = "БМП-1" amount = 80 producer = RUS }
 				add_equipment_to_stockpile = { type = tank_sov_t72_equipment variant_name = "Т-72" amount = 10 producer = RUS }
@@ -23783,7 +24505,7 @@ RUS_Genshtab_redoubt = {
 				add_equipment_to_stockpile = { type = uniform_vsr98_flora_equipment amount = 6000 producer = RUS }
 				add_equipment_to_stockpile = { type = engineering_equipment_0 amount = 80 producer = RUS }
 				add_equipment_to_stockpile = { type = amv_equipment_0 amount = 240 producer = RUS }
-				add_equipment_to_stockpile = { type = RUS_artillery_equipment_1 amount = 24 producer = RUS }
+				add_equipment_to_stockpile = { type = sov_artillery_d30_equipment amount = 24 producer = RUS }
 				add_equipment_to_stockpile = { type = support_equipment amount = 720 producer = RUS }
 				add_equipment_to_stockpile = { type = ifv_sov_bmp1_equipment variant_name = "БМП-1" amount = 20 producer = RUS }
 				13 = {

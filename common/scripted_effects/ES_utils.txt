@@ -5,16 +5,11 @@
 
 transfer_manpower_between_states = {
 	set_temp_variable = { temp_state_manpower_k = PREV.state_population_k }
-	set_temp_variable = { temp_state_manpower_k_modulo = temp_state_manpower_k }
-	modulo_temp_variable = { temp_state_manpower_k_modulo = @POSITIVE_OVERFLOW_THRESHOLD_K }
-	
-	set_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k }
-	subtract_from_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k_modulo }
-	divide_temp_variable = { temp_state_manpower_k_ceil_divide = @POSITIVE_OVERFLOW_THRESHOLD_K }
 
 	# Обработка части населения больше 2147.483 тыс (защита от переполнения, @POSITIVE_OVERFLOW_THRESHOLD)
-	for_loop_effect = {
-		end = temp_state_manpower_k_ceil_divide
+	while_loop_effect = {
+		limit = { check_variable = { temp_state_manpower_k > @POSITIVE_OVERFLOW_THRESHOLD_K } }
+
 		add_manpower = @POSITIVE_OVERFLOW_THRESHOLD
 		PREV = { add_manpower = @NEGATIVE_OVERFLOW_THRESHOLD }
 		subtract_from_temp_variable = { temp_state_manpower_k = @POSITIVE_OVERFLOW_THRESHOLD_K }
@@ -28,22 +23,17 @@ transfer_manpower_between_states = {
 
 remove_manpower_from_state = {
 	set_temp_variable = { temp_state_manpower_k = state_population_k }
-	set_temp_variable = { temp_state_manpower_k_modulo = temp_state_manpower_k }
-	modulo_temp_variable = { temp_state_manpower_k_modulo = @POSITIVE_OVERFLOW_THRESHOLD_K }
-	
-	set_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k }
-	subtract_from_temp_variable = { temp_state_manpower_k_ceil_divide = temp_state_manpower_k_modulo }
-	divide_temp_variable = { temp_state_manpower_k_ceil_divide = @POSITIVE_OVERFLOW_THRESHOLD_K }
 
 	# Обработка части населения больше 2147.483 тыс (защита от переполнения, @POSITIVE_OVERFLOW_THRESHOLD)
-	for_loop_effect = {
-		end = temp_state_manpower_k_ceil_divide
+	while_loop_effect = {
+		limit = { check_variable = { temp_state_manpower_k > @POSITIVE_OVERFLOW_THRESHOLD_K } }
+
 		add_manpower = @NEGATIVE_OVERFLOW_THRESHOLD
 		subtract_from_temp_variable = { temp_state_manpower_k = @POSITIVE_OVERFLOW_THRESHOLD_K }
 	}
 
 	multiply_temp_variable = { temp_state_manpower_k = -1000 }
-	PREV = { add_manpower = temp_state_manpower_k }
+	add_manpower = temp_state_manpower_k
 }
 
 transfer_buildings_from_state_between_countries = {
