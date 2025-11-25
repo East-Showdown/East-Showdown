@@ -241,18 +241,57 @@ country_event = {
 }
 
 #С новым годом Россия
+
+
+#Поддержка блогеров
 country_event = {
-	id = rus.4
-	title = rus.4.t
-	desc = rus.4.desc
-	picture = GFX_country_event_282
+	id = rus.5
+	title = rus.5.t
+	desc = rus.5.desc
+	picture = GFX_country_event_286
 	is_triggered_only = yes
 	fire_only_once = yes
-	timeout_days = 1
 	option = {
-		name = rus.4.a
-		log = "[GetDateText]: [This.GetName]: rus.4.a executed"
-		country_event = { id = rus.8 days = 0 }
+		name = rus.5.a
+		log = "[GetDateText]: [This.GetName]: rus.5.a executed"
+		add_political_power = 30
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+	}
+	option = {
+		name = rus.5.b
+		log = "[GetDateText]: [This.GetName]: rus.5.a executed"
+		add_political_power = -50
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 10
+			tooltip = IW_10_var_add_tt
+		}
+		add_to_variable = {	
+			var = RUS_monthly_increase_var_add
+			value = 1
+			tooltip = 1_weekly_information_war_var
+		}
+		custom_effect_tooltip = WGN_trollfactoryexpansion_tooltip
+		hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -10
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 	}
 }
 
@@ -1240,6 +1279,15 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: rus.62.a executed"
 		add_war_support = 0.02
 		army_experience = 5
+		add_corps_commander_role = {
+			Character = alexandr_kornev
+			traits={ paratrooper }
+			skill= 1
+			attack_skill=2
+			defense_skill=2
+			planning_skill=1
+			logistics_skill=1
+		}
 		hidden_effect = {
 			load_oob = RUS_herson_desant
 			UKR = {
@@ -2336,54 +2384,6 @@ country_event = {
 			load_oob = gazprom
 		}
 	}
-}
-
-country_event = {
-	id = rus.93
-	title = rus.93.t
-	desc = rus.93.desc
-	picture = GFX_country_event_085
-    fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.93.a
-		log = "[GetDateText]: [This.GetName]: rus.93.a executed"
-        hidden_effect = {
-			load_oob = RUS_dobrobatieu
-        }
-    }
-}
-
-country_event = {
-	id = rus.94
-	title = rus.94.t
-	desc = rus.94.desc
-	picture = GFX_country_event_086
-    fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.94.a
-		log = "[GetDateText]: [This.GetName]: rus.94.a executed"
-        hidden_effect = {
-			load_oob = RUS_dobrobatiur
-        }
-    }
-}
-
-country_event = {
-	id = rus.95
-	title = rus.95.t
-	desc = rus.95.desc
-	picture = GFX_country_event_087
-    fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.95.a
-		log = "[GetDateText]: [This.GetName]: rus.95.a executed"
-        hidden_effect = {
-		    load_oob = RUS_dobrobatisi
-        }
-    }
 }
 #арест стрелкова
 country_event = { 
@@ -4540,20 +4540,104 @@ country_event = {
         }
     }
 }
-#ЧВК Редут
+#Крах власти РФ
 country_event = {
 	id = rus.134
 	title = rus.134.t
 	desc = rus.134.desc
-	picture = GFX_country_event_089
+	picture = GFX_country_event_006
     fire_only_once = yes
 	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			country_event = {
+				id = rus_wagner_path.11
+				hours = 9
+			}
+			country_event = {
+				id = rus_wagner_path.10
+				hours = 5
+			}
+		}
+	}
 	option = {
 		name = rus.134.a
 		log = "[GetDateText]: [This.GetName]: rus.134.a executed"
-        hidden_effect = {
-			load_oob = RUS_redut_first
-        }
+        custom_effect_tooltip = MARCH_JUSTICE_prigoshin_victory_cet
+		hidden_effect = {
+			clr_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
+			WGN = {
+				every_army_leader = {
+					remove_trait = {
+						trait = wgn_commander
+					}
+					remove_trait = {
+						trait = wgn_leader
+					}
+					promote_leader = yes
+				}
+				every_unit_leader = {
+					limit = { NOT = { is_character = evgeniy_prigozhin} }
+					set_nationality = RUS
+				}
+				remove_power_balance = {
+					id = WGN_power_balance
+				}
+			}
+			RUS = {
+				if = {
+					limit = {
+						has_global_flag = strelkov_rus_hire
+					}
+					retire_character = igor_girkin
+				}
+				retire_character = vladimir_putin
+				retire_character = sergei_shoigy
+				retire_character = sergei_shoigy
+				retire_character = oleg_salyukov
+				retire_character = genadiy_shidko
+				retire_character = sergey_rudskoy
+				retire_character = valery_gerasimov
+				add_country_leader_role = {
+					character = No_one_after_putin
+					promote_leader = yes
+					country_leader = {
+						ideology = authoritarian_democracy_rus_postwar
+						traits = {  }
+						desc = NO_AFTER_VLADIMIR_PUTIN_DESCRIPTION
+					}
+				}
+				clr_country_flag = head_of_gov_enabled_flag
+				remove_power_balance = {
+					id = RUS_power_balance
+				}
+				set_party_name = {  
+					ideology = neutrality
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				set_party_name = {  
+					ideology = communism
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				set_party_name = {  
+					ideology = democratic
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				set_party_name = {  
+					ideology = fascism
+					long_name = not_functioning_long  
+					name = not_functioning
+				}
+				change_tag_from = WGN
+			}
+			BOR = {
+				country_event = bor_hidden.1
+			}
+			set_global_flag = RUS_Wagner_victory_shoigy_die
+		}
     }
 }
 #ЧВК Конвой
@@ -4604,19 +4688,81 @@ country_event = {
         }
     }
 }
-#ЧВК РСБ-Групп
+country_event = {
+	id = rus_hidden.15
+	title = rus_hidden.15.t
+	desc = rus_hidden.15.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = {
+				RUS = {
+					has_war_with = UKR
+				}
+			}
+			random = {
+				chance = 45
+				country_event = rus.138
+			}
+		}
+	}
+	option = {
+		name = rus_hidden.15.a
+		log = "[GetDateText]: [This.GetName]: rus_hidden.15.a executed"
+	}
+}
+#ЧВК Ястреб...
 country_event = {
 	id = rus.138
 	title = rus.138.t
 	desc = rus.138.desc
-	picture = GFX_country_event_093
+	picture = GFX_country_event_094
     fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = rus.138.a
 		log = "[GetDateText]: [This.GetName]: rus.138.a executed"
+		add_political_power = -30
+		add_command_power = -10
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = -10
+			tooltip = IW_10_minus_var_add_tt
+		}
+		custom_effect_tooltip = CHVK_Yastreb_ne_VSE
         hidden_effect = {
-			load_oob = RUS_CHVK_RSB_group
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = 10
+			}
+			add_to_variable = { var = RUS_GRU_modifer_command_power_gain_mult value = 0.05 }
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+        }
+    }
+	option = {
+		name = rus.138.b
+		log = "[GetDateText]: [This.GetName]: rus.138.b executed"
+		add_command_power = 30
+		army_experience = -15
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = -10
+			tooltip = IW_10_minus_var_add_tt
+		}
+		custom_effect_tooltip = CHVK_Yastreb_VSE
+        hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = 10
+			}
+			add_to_variable = { var = RUS_GRU_modifer_special_forces_cap value = 0.05 }
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			delete_unit = { id = 8814 disband = yes }
+			delete_unit = { id = 1487 disband = yes }
         }
     }
 }
@@ -5312,7 +5458,7 @@ country_event = {
 					days = 6
 				}
 			}
-
+				set_country_flag = Fail_Invasion #пробка, не удалять
 			RUS = { 
 				country_event = {
 					id = ai_technical.1
@@ -5321,7 +5467,11 @@ country_event = {
 				country_event = {
 					id = ai_technical.2
 					days = 80
-				}			
+				}
+				country_event = {
+					id = rus.270
+					days = 3
+				}		
 			}
 
 		}
@@ -5352,10 +5502,10 @@ country_event = {
 					is_ai = no
 				}
 			}
-		add_timed_idea = {
-			idea = RUS_disruption_of_the_operation
-			days = 30
-		}
+			add_timed_idea = {
+				idea = RUS_disruption_of_the_operation
+				days = 30
+			}
 		}
 		if = { 
 			limit = { 
@@ -5363,10 +5513,10 @@ country_event = {
 					is_ai = yes
 				}
 			}
-		add_timed_idea = {
-			idea = RUS_disruption_of_the_operation_singleplayer
-			days = 30
-		}
+			add_timed_idea = {
+				idea = RUS_disruption_of_the_operation_singleplayer
+				days = 30
+			}
 		}		
 
 		hidden_effect = {
@@ -5818,7 +5968,7 @@ country_event = {
 	id = rus_dnepr.3
 	title = rus_dnepr.3.t
 	desc = rus_dnepr.3.d
-	picture = GFX_none
+	picture = GFX_country_event_dnepr_3
 	fire_only_once = yes
 	is_triggered_only = yes
 	option = {
@@ -5844,12 +5994,177 @@ country_event = {
 	id = rus_dnepr.4
 	title = rus_dnepr.4.t
 	desc = rus_dnepr.4.desc
-	picture = GFX_none
+	picture = GFX_country_event_138
     fire_only_once = yes
 	is_triggered_only = yes
 	option = {
 		name = rus_dnepr.4.a
 		log = "[GetDateText]: [This.GetName]: rus_dnepr.4.a executed"
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+    }
+}
+
+#Десант под Кременчуг
+country_event = {
+	id = rus_dnepr.5
+	title = rus_dnepr.5.t
+	desc = rus_dnepr.5.d
+	picture = GFX_country_event_dnepr_5
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus_dnepr.5.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.5.a executed"
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			activate_mission = RUS_hold_kremenchug_desant
+			load_oob = RUS_Kremenchug_desant
+			UKR = {
+				country_event = {
+					id = ukr.30
+					hours = 1
+				}
+			}
+		}
+	}
+}
+
+#Провал десанта под Кременчуг
+country_event = {
+	id = rus_dnepr.6
+	title = rus_dnepr.6.t
+	desc = rus_dnepr.6.d
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus_dnepr.6.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.6.a executed"
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+    }
+}
+
+#Десант под Днепропетровск
+country_event = {
+	id = rus_dnepr.7
+	title = rus_dnepr.7.t
+	desc = rus_dnepr.7.d
+	picture = GFX_country_event_dnepr_7
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus_dnepr.7.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.7.a executed"
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			activate_mission = RUS_hold_dnepr_desant
+			load_oob = RUS_dnepr_desant
+			UKR = {
+				country_event = {
+					id = ukr.31
+					hours = 1
+				}
+			}
+		}
+	}
+}
+
+#Провал десанта под Екатеринослав
+country_event = {
+	id = rus_dnepr.8
+	title = rus_dnepr.8.t
+	desc = rus_dnepr.8.d
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus_dnepr.8.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.8.a executed"
+		add_command_power = -15
+		army_experience = -5
+		add_to_variable = {
+			var = global.rus_information_war_var_sum
+			value = -2.5
+			tooltip = IW_2_5_minus_var_add_tt
+		}
+		hidden_effect = {
+		    add_to_variable = {
+				var = global.ukr_information_war_var_sum
+				value = 2.5
+			}
+			clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+    }
+}
+
+#Десант под Днепропетровск
+country_event = {
+	id = rus_dnepr.9
+	title = rus_dnepr.9.t
+	desc = rus_dnepr.9.d
+	picture = GFX_country_event_dnepr_9
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus_dnepr.9.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.9.a executed"
+		add_war_support = 0.02
+		army_experience = 5
+		hidden_effect = {
+			activate_mission = RUS_hold_dnepr_desant
+			load_oob = RUS_full_dnepr_desant
+			UKR = {
+				country_event = {
+					id = ukr.31
+					hours = 1
+				}
+			}
+		}
+	}
+}
+
+#Провал десанта под Екатеринослав
+country_event = {
+	id = rus_dnepr.10
+	title = rus_dnepr.10.t
+	desc = rus_dnepr.10.d
+	picture = GFX_country_event_138
+    fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		name = rus_dnepr.10.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.10.a executed"
 		add_command_power = -15
 		army_experience = -5
 		add_to_variable = {
@@ -6546,7 +6861,6 @@ country_event = {
 			900 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			901 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			906 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
-			907 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			908 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			910 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
 			911 = { add_dynamic_modifier = { modifier = unplanned_offensive } }
@@ -7201,6 +7515,9 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: rus.202.a executed"
 		hidden_effect = {
 			country_event = { id = rus.212 hours = 2 }
+			CHE = {
+				country_event = { id = rus.212 hours = 2 }
+			}
 		}
 	}
 	
@@ -7363,6 +7680,15 @@ country_event = {
 		log = "[GetDateText]: [This.GetName]: rus.211.a executed"
 		hidden_effect = {
 			country_event = { id = rus.212 hours = 2 }
+			CHE = {
+				country_event = { id = rus.212 hours = 2 }
+			}
+			DPR = {
+				country_event = { id = rus.212 hours = 2 }
+			}
+			LPR = {
+				country_event = { id = rus.212 hours = 2 }
+			}
 		}
 	}
 }
@@ -7372,7 +7698,7 @@ country_event = {
 	title = rus.212.t
 	desc = rus.212.desc
 	picture = GFX_country_event_211
-    fire_only_once = yes
+    fire_only_once = no
 	is_triggered_only = yes
 	
 	option = {
@@ -7389,7 +7715,7 @@ country_event = {
 	title = rus.213.t
 	desc = rus.213.desc
 	picture = GFX_country_event_211
-    fire_only_once = yes
+    fire_only_once = no
 	is_triggered_only = yes
 	
 	option = {
@@ -7580,7 +7906,7 @@ country_event = {
 	title = rus.219.t
 	desc = rus.219.desc
 	picture = GFX_country_event_214
-    fire_only_once = yes
+    fire_only_once = no
 	is_triggered_only = yes
 	
 	option = {
@@ -7597,7 +7923,7 @@ country_event = {
 	title = rus.220.t
 	desc = rus.220.desc
 	picture = GFX_country_event_214
-    fire_only_once = yes
+    fire_only_once = no
 	is_triggered_only = yes
 	
 	option = {
@@ -9035,6 +9361,21 @@ country_event = {
 	}
 }
 
+country_event = {
+	id = rus.270
+	title = rus.270.t
+	desc = rus.270.desc
+	fire_only_once = yes
+    is_triggered_only = yes
+	picture = GFX_country_event_rus_270
+	option = {
+		name = rus.270.a
+		log = "[GetDateText]: [This.GetName]: rus.270.a executed"
+		custom_effect_tooltip = RUS_sp_unlocked_after_smo_failed_tt
+		set_country_flag = RUS_unlock_sp_after_smo_fail_flag
+	}
+}
+
 unit_leader_event = {
 	id = rus_unit_leader_event.1
 	title = rus_unit_leader_event.1.t
@@ -9195,6 +9536,15 @@ country_event = {
 	is_triggered_only = yes
 	fire_only_once = yes
 	picture = GFX_country_event_255
+	immediate = {
+		hidden_effect = {
+			country_event = {
+				id = rus_wagner_path.9
+				days = 7
+				hours = 20
+			}
+		}
+	}
 	option = {
 		name = rus_wagner_path.2.a
 		log = "[GetDateText]: [This.GetName]: rus_wagner_path.2.a executed"
@@ -9282,6 +9632,454 @@ country_event = {
 	}
 }
 
+#Колво нападений на полицию растет
+country_event = {
+	id = rus_wagner_path.4
+	title = rus_wagner_path.4.t
+	desc = rus_wagner_path.4.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_288
+	option = {
+		name = rus_wagner_path.4.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.4.a executed"
+		add_command_power = -15
+		add_manpower = -20
+		add_dynamic_modifier = { modifier = RUS_islamic_terrorism_idea }
+	}
+}
+
+#Бунты в тюрьмах
+country_event = {
+	id = rus_wagner_path.5
+	title = rus_wagner_path.5.t
+	desc = rus_wagner_path.5.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_287
+	option = {
+		name = rus_wagner_path.5.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.5.a executed"
+		add_stability = -0.05
+		add_manpower = -30
+		add_to_variable = { RUS_islamic_terrorism_idea_stability_factor = -0.05  }
+		add_to_variable = { RUS_islamic_terrorism_idea_weekly_manpower = -15  }
+		add_to_variable = { RUS_islamic_terrorism_idea_compliance_growth = -0.05  }
+		add_to_variable = { RUS_islamic_terrorism_idea_required_garrison_factor = 0.05  }
+		add_to_variable = { RUS_islamic_terrorism_idea_command_power_gain_mult = -0.07  }
+		custom_effect_tooltip = RUS_event_wagner_path_5
+	}
+}
+
+#Теракт в крокус сити
+country_event = {
+	id = rus_wagner_path.6
+	title = rus_wagner_path.6.t
+	desc = rus_wagner_path.6.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_289
+	option = {
+		name = rus_wagner_path.6.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.6.a executed"
+		
+	}
+	option = {
+		name = rus_wagner_path.6.b
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.6.b executed"
+		
+	}
+	option = {
+		name = rus_wagner_path.6.c
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.6.c executed"
+		
+	}
+}
+
+#Кавказ отмежевался
+country_event = {
+	id = rus_wagner_path.7
+	title = rus_wagner_path.7.t
+	desc = rus_wagner_path.7.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_290
+	immediate = {
+		hidden_effect = {
+			FULL_OTMESHEVANIE_REBELION_RUS = yes
+		}
+	}
+	option = {
+		name = rus_wagner_path.7.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.7.a executed"
+		custom_effect_tooltip = RUS_wagner_event_7_cet
+	}
+}
+
+#Насилие в калмыкии
+country_event = {
+	id = rus_wagner_path.8
+	title = rus_wagner_path.8.t
+	desc = rus_wagner_path.8.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_016
+	immediate = {
+		hidden_effect = {
+			KALMYK_OTMESHEVANIE_RUS = yes
+		}
+	}
+	option = {
+		name = rus_wagner_path.8.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.8.a executed"
+		custom_effect_tooltip = RUS_wagner_event_8_cet
+	}
+}
+
+#Калмыкия - Усе
+country_event = {
+	id = rus_wagner_path.9
+	title = rus_wagner_path.9.t
+	desc = rus_wagner_path.9.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_027
+	option = {
+		name = rus_wagner_path.9.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.9.a executed"
+		hidden_effect = {
+			KALMYK_REBELION_RUS = yes
+		}
+	}
+	option = {
+		name = rus_wagner_path.9.b
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.9.a executed"
+		trigger = {
+			is_ai = no
+			CHE = {
+				is_ai = yes
+			}
+		}
+		hidden_effect = {
+			SKL = {
+				change_tag_from = ROOT
+			}
+			KALMYK_REBELION_RUS = yes
+		}
+	}
+}
+
+#Захват здания минобороны
+country_event = {
+	id = rus_wagner_path.10
+	title = rus_wagner_path.10.t
+	desc = rus_wagner_path.10.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_071
+	immediate = {
+		hidden_effect = {
+			set_variable = { RUS_destroyed_vertical_idea_army_strength_factor = -0.3 }
+			set_variable = { RUS_destroyed_vertical_idea_army_morale_factor = -0.3 }
+			set_variable = { RUS_destroyed_vertical_idea_army_attack_factor = -0.3 }
+			set_variable = { RUS_destroyed_vertical_idea_max_dig_in_factor = -0.5 }
+			set_variable = { RUS_destroyed_vertical_idea_max_planning = -0.5 }
+			set_variable = { RUS_destroyed_vertical_idea_breakthrough_factor = -0.4 }
+			set_variable = { RUS_destroyed_vertical_idea_army_org_factor = -0.2 }
+		}
+	}
+	option = {
+		name = rus_wagner_path.10.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.10.a executed"
+		add_command_power = -100
+		add_dynamic_modifier = { modifier = RUS_destroyed_vertical_idea }
+		hidden_effect = {
+			every_unit_leader = { 
+				limit = { 
+					NOT = { 
+						is_field_marshal = yes
+						is_character = sergei_syrovikin
+						is_character = aleksey_kondratiev
+						is_character = vladimir_alekseev
+						is_character = vitaly_kuznetsov
+					}
+				}
+				retire = yes
+			}
+		}
+	}
+}
+
+#Захват кремля и усе
+country_event = {
+	id = rus_wagner_path.11
+	title = rus_wagner_path.11.t
+	desc = rus_wagner_path.11.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	picture = GFX_country_event_095
+	option = {
+		name = rus_wagner_path.11.a
+		log = "[GetDateText]: [This.GetName]: rus_wagner_path.11.a executed"
+		custom_effect_tooltip = MARCH_JUSTICE_prigoshin_victor_1_cet
+		hidden_effect = {
+			set_global_flag = RUS_branch_operational_tactical_blocked
+			set_global_flag = RUS_Wagner_victory
+			mark_focus_tree_layout_dirty = yes
+		
+			set_variable = { RUS_islamic_terrorism_idea_stability_factor = -0.1  }
+			set_variable = { RUS_islamic_terrorism_idea_weekly_manpower = -10  }
+			set_variable = { RUS_islamic_terrorism_idea_political_power_gain = -0.5  }
+			set_variable = { RUS_islamic_terrorism_idea_required_garrison_factor = 0.05 }
+			set_variable = { RUS_islamic_terrorism_idea_resistance_growth = 0.2  }
+			set_variable = { RUS_islamic_terrorism_idea_resistance_target = 0.15 }
+		
+			add_dynamic_modifier = { modifier = RUS_wgn_army_modifier }
+			remove_dynamic_modifier = { modifier = RUS_VCRF_modifier }
+			remove_dynamic_modifier = { modifier = state_of_stability }
+			retire_ideology_leader = fascism
+			add_country_leader_role = {
+				character = RUS_evgeniy_prigozhin
+				promote_leader = yes
+				country_leader = {
+					ideology = prigozhin_war_junta
+					traits = { oligarch_winner }
+				}
+			}
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+			}
+			add_popularity = { ideology = fascism popularity = 0.1 }
+			set_party_name = {  
+				ideology = fascism
+				long_name = prigozhin_war_junta_long 
+				name = prigozhin_war_junta
+			}
+			remove_ideas = weak_ideology
+			remove_ideas = state_of_stability
+			set_cosmetic_tag = RUS_first_wagner_win
+			
+			dmitry_utkin = {
+				set_portraits = {
+					army = {
+						large = "/gfx/leaders/WGN/dmitry_utkin_rus.dds"
+					}
+				}
+				add_unit_leader_trait = wagner_veteran
+			}
+			sergei_syrovikin = {
+				set_portraits = {
+					army = {
+						large = "/gfx/leaders/WGN/sergey_surovikin_rus_wagner.dds"
+					}
+				}
+			}
+			mikhail_mizintsev = {
+				set_portraits = {
+					army = {
+						large = "/gfx/leaders/WGN/mikhail_mizintsev_rus_wagner.dds"
+					}
+				}
+			}
+			alexander_kuznetsov = {
+				set_portraits = {
+					army = {
+						large = "/gfx/leaders/WGN/alexander_kuznetsov_rus.dds"
+					}
+				}
+				add_unit_leader_trait = wagner_veteran
+			}
+			anton_elizarov = {
+				set_portraits = {
+					army = {
+						large = "/gfx/leaders/WGN/anton_elizarov_rus.dds"
+					}
+				}
+				add_unit_leader_trait = wagner_veteran
+			}
+			boris_nizhevenok = {
+				set_portraits = {
+					army = {
+						large = "/gfx/leaders/WGN/boris_nizhevenok_rus.dds"
+					}
+				}
+				add_unit_leader_trait = wagner_veteran
+			}
+			RUS_Ruslan_Chlalyan = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran adaptive_genius inspirational_leader }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 2
+					planning_skill = 3
+					logistics_skill = 4
+				}
+			}
+			RUS_Andrey_Ivanov = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran trait_engineer fortress_buster }
+					skill = 3
+					attack_skill = 3
+					defense_skill = 2
+					planning_skill = 1
+					logistics_skill = 1
+				}
+			}
+	
+			RUS_Ruslan_Zaprudsky = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran urban_assault_specialist logistics_wizard }
+					skill = 3
+					attack_skill = 3
+					defense_skill = 2
+					planning_skill = 1
+					logistics_skill = 2
+				}
+			}
+			RUS_Artem_Chumarov = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran urban_assault_specialist old_guard offensive_doctrine }
+					skill = 3
+					attack_skill = 4
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 2
+				}
+			}
+			
+			RUS_Vladimir_Titov = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran commando prisoners_commander }
+					skill = 3
+					attack_skill = 2
+					defense_skill = 3
+					planning_skill = 1
+					logistics_skill = 1
+				}
+			}
+			RUS_Vladimir_Kitaev = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran prisoners_commander }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 2
+					planning_skill = 1
+					logistics_skill = 1
+				}
+			}
+	
+			RUS_Ildar_Akbulatov = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran promising_leader }
+					skill = 1
+					attack_skill = 1
+					defense_skill = 2
+					planning_skill = 1
+					logistics_skill = 1
+				}
+			}
+	
+			RUS_Mikhail_Prikhodko = {
+				add_corps_commander_role = {
+					traits = { wagner_veteran promising_leader artillery_commander }
+					skill = 1
+					attack_skill = 1
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
+				}
+			}
+		    RUS = {
+				country_event = {
+				    id = rus_wagner_path.4
+				    days = 6
+					random_hours = 24
+			    }
+				country_event = {
+				    id = rus_wagner_path.7
+				    days = 14
+					random_hours = 24
+			    }
+				country_event = {
+					id = rus_wagner_path.8
+					days = 24
+					hours = 20
+				}
+				country_event = {
+				    id = rus_wagner_path.5
+				    days = 11
+					random_hours = 24
+			    }
+				country_event = {
+				    id = rus_wagner_path.6
+				    days = 29
+					hours = 20
+			    }
+				country_event = {
+				    id = rus_wagner_path.2
+				    days = 36
+					hours = 20
+			    }
+				if = {
+					limit = { DPR = { exists = yes } LPR = { exists = yes } }
+					country_event = {
+						id = rus_wagner_path.3
+						days = 3
+					}
+				}
+				country_event = {
+					id = rus_wagner_path.1
+					days = 10
+				}
+				news_event = { id = news.143 hours = 10 }
+				remove_advisor_role = {
+					slot = high_command
+					character = dmitry_utkin
+				}
+				add_advisor_role = {
+					character = RUS_evgeniy_prigozhin
+					advisor={
+						cost = 150
+						slot = high_command
+						idea_token = WGN_evgeniy_prigozhin
+						ledger = army
+						allowed = {
+							original_tag = RUS
+						}
+						traits = {
+							army_chief_morale_2
+						}
+					}
+				}
+				add_advisor_role = {
+					character = dmitry_utkin
+					advisor={
+						cost = 100
+						slot = army_chief
+						idea_token = WGN_dmitry_utkin
+						ledger = army
+						allowed = {
+							original_tag = RUS
+						}
+						traits = {
+							army_chief_offensive_1
+						}
+					}
+				}
+				activate_advisor = WGN_evgeniy_prigozhin
+				activate_advisor = WGN_dmitry_utkin
+			}
+			set_variable = {	
+				var = global.loyalty_of_the_military_elite
+				value = 100
+			}
+			set_stability = 0
+			set_war_support = 0.15
+		}
+	}
+}
+
 #наступления рф
 #запорожье
 country_event = {
@@ -9361,3 +10159,105 @@ country_event = {
 	}
 }
 
+country_event = {
+	id = rus_dnepr.11
+	title = rus_dnepr.11.t
+	desc = rus_dnepr.11.d
+	picture = GFX_none
+	fire_only_once = yes
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = SMO_rightbank_Dnieper_c
+	}
+	option = {
+		name = rus_dnepr.11.k
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.11.k executed"
+		hidden_effect = {
+			1006 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1001 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			158 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			160 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+
+			160 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 15 } }
+			158 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 15 } }
+		}
+		custom_effect_tooltip = RUS_event_dnepr_kremen_tt
+	}
+	option = {
+		name = rus_dnepr.11.e
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.11.e executed"
+		hidden_effect = {
+			1007 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1009 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1001 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			997 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			998 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			999 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1000 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			167 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			187 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			169 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+
+			169 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 15 } }
+			187 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 15 } }
+		}
+		custom_effect_tooltip = RUS_event_dnepr_ekaterinislav_tt
+	}
+	option = {
+		name = rus_dnepr.11.z
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.11.z executed"
+		hidden_effect = {
+			1007 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1003 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1002 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1008 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			216 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1004 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1005 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			1009 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			998 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			210 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+			671 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 15 }}
+
+			671 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 15 } }
+			222 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 15 } }
+		}
+		custom_effect_tooltip = RUS_event_dnepr_zaporozie_tt
+	}
+	option = {
+		name = rus_dnepr.11.a
+		log = "[GetDateText]: [This.GetName]: rus_dnepr.11.a executed"
+		hidden_effect = {
+			set_country_flag = krivo_obz
+			1003 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1002 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1008 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			216 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1004 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1005 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			210 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			671 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1007 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1009 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1001 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			997 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			998 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			999 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1000 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			167 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			187 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			1006 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			158 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			160 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+			169 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 7 }}
+
+			169 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 7 } }
+			187 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 7 } }
+			671 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 7 } }
+			222 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 7 } }
+			160 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 7 } }
+			158 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 7 } }
+		}
+		custom_effect_tooltip = RUS_event_dnepr_obz_tt
+	}
+}
