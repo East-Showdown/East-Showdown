@@ -463,13 +463,13 @@ NDefines.NProject.BREAKTHROUGH_DAILY_SCIENTIST_SKILL_GAIN = 25
 NDefines.NGame.ENERGY_RESOURCE = ""
 NDefines.NAI.MIN_FACTORIES_TO_WANT_TO_IMPORT = { -- minimum number of civilian factories the AI must have to consider importing a resource - per strategic resource. Default 0, array -should- be updated with new resources, or if the order changes
     0, --oil
-    10, --gas
+    0, --electronic
     0, --aluminium
     0, --rubber
     0, --tungsten
     0, --steel
     0, --chromium
-    0, --electronic
+    0, --gas
 }
 NDefines.NMapIcons.SUPPLY_AREAS_PRIORITY_ADJACENCY_RULE = 3
 NDefines.NGraphics.RAILWAY_CAMERA_CUTOFF = 200.0
