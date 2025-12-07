@@ -16093,7 +16093,78 @@ RUS_deconservation_cat = {
 			}
 		}
 	}
+	RUS_deconservation_SAM = {
+		icon = GFX_RUS_deconservation_decisions
+		
+		cost = RUS_deconservation_SAM_cost
+		fire_only_once = no
+		days_remove = 20
+		days_re_enable = 50
+		
+		ai_will_do = {
+	    	factor = 30
+        }
 
+		visible = {
+	        NOT = {
+				check_variable = { RUS_deconservation_SAM_num = 3 }
+			}
+	    }
+
+		available = {
+			original_tag = RUS
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_deconservation_SAM"
+			if = { limit = { check_variable = {RUS_deconservation_SAM_num = 0 } }
+				add_equipment_to_stockpile = {
+					type = sp_aa_mrv_wheeled_0_equipment
+					variant_name = "Оса"
+					amount = 90
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = sp_aa_apc_sov_mtlb_equipment
+					variant_name = "Стрела-10"
+					amount = 110
+					producer = RUS
+				}
+				add_to_variable = { var = RUS_deconservation_SAM_cost value = 30 }
+			}
+			if = { limit = { check_variable = { RUS_deconservation_SAM_num = 1 } }
+				add_equipment_to_stockpile = {
+					type = sp_aa_mrv_wheeled_0_equipment
+					variant_name = "Оса"
+					amount = 100
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = sp_aa_apc_sov_mtlb_equipment
+					variant_name = "Стрела-10"
+					amount = 150
+					producer = RUS
+				}
+				add_to_variable = { var = RUS_deconservation_SAM_cost value = 70 }
+			}
+			if = { limit = { check_variable = {RUS_deconservation_SAM_num = 2 } }
+				add_equipment_to_stockpile = {
+					type = sp_aa_mrv_wheeled_0_equipment
+					variant_name = "Оса"
+					amount = 120
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {
+					type = sp_aa_apc_sov_mtlb_equipment
+					variant_name = "Стрела-10"
+					amount = 180
+					producer = RUS
+				}
+			}
+			hidden_effect = {
+				add_to_variable = { var = RUS_deconservation_SAM_num value = 1 }
+			}
+		}
+	}
 	RUS_deconservation_BTR50 = {
 		icon = GFX_RUS_deconservation_decisions
 		
@@ -16739,8 +16810,14 @@ RUS_deconservation_cat = {
 				limit = { check_variable = { RUS_deconservation_tank_t55_num = 0 } }
 				add_equipment_to_stockpile = {	
 					type = tank_sov_t55_equipment
+					variant_name = "Т-55"
+					amount = 240
+					producer = RUS
+				}
+				add_equipment_to_stockpile = {	
+					type = tank_sov_t55_equipment
 					variant_name = "Т-55А"
-					amount = 10
+					amount = 60
 					producer = RUS
 				}
 				add_to_variable = { var = RUS_deconservation_tank_t55_cost value = 10 }
@@ -16750,13 +16827,13 @@ RUS_deconservation_cat = {
 				add_equipment_to_stockpile = {	
 					type = tank_sov_t55_equipment
 					variant_name = "Т-55"
-					amount = 100
+					amount = 320
 					producer = RUS
 				}
 				add_equipment_to_stockpile = {	
 					type = tank_sov_t55_equipment
 					variant_name = "Т-55А"
-					amount = 20
+					amount = 80
 					producer = RUS
 				}
 				add_to_variable = { var = RUS_deconservation_tank_t55_cost value = 20 }
@@ -16766,13 +16843,13 @@ RUS_deconservation_cat = {
 				add_equipment_to_stockpile = {	
 					type = tank_sov_t55_equipment
 					variant_name = "Т-55"
-					amount = 200
+					amount = 400
 					producer = RUS
 				}
 				add_equipment_to_stockpile = {	
 					type = tank_sov_t55_equipment
 					variant_name = "Т-55А"
-					amount = 70
+					amount = 100
 					producer = RUS
 				}
 			}
@@ -17935,6 +18012,53 @@ RUS_VPK_categories = {
 		        set_country_flag = RUS_VPK_strong_needed_decision3
 			}
 	    }
+	}
+	RUS_status_of_military_equipment_production_standards = {
+		icon = GFX_RUS_status_of_military_equipment_production_standards
+		visible = {
+			has_completed_focus = RUS_requirements_production_military_equipment
+		}
+		modifier = {
+			industrial_capacity_factory = -0.05
+			production_factory_max_efficiency_factor = -0.05
+			line_change_production_efficiency_factor = -0.05
+			production_factory_efficiency_gain_factor = -0.05
+		}
+		days_remove = 30
+		remove_effect = {
+			if = {
+				limit = {
+					has_idea = RUS_requirements_production
+				}
+				remove_ideas = RUS_requirements_production
+			}
+			else = {
+				add_ideas = RUS_requirements_production
+			}
+		}
+	}
+	RUS_precision_guided_ammunition = {
+		icon = GFX_WIP
+		fire_only_once = yes
+		cost = 0
+		ai_will_do = {
+			factor = 0
+		}
+
+		visible = {
+			has_completed_focus = RUS_SMO
+		}
+
+		available = {
+			has_completed_focus = RUS_strong_and_powerful
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = RUS_precision_guided_ammunition_tt
+			hidden_effect = {
+				set_country_flag = RUS_green_light_given
+			}
+		}
 	}
 	RUS_VPK_Armata_production_reboot = {
 		icon = generic_formable_nations
@@ -19837,29 +19961,6 @@ RUS_rosconservation_category = {
 }
 
 RUS_Genshtab_redoubt = {
-	RUS_precision_guided_ammunition = {
-		icon = GFX_WIP
-		fire_only_once = yes
-		cost = 0
-		ai_will_do = {
-			factor = 0
-		}
-
-		visible = {
-			has_completed_focus = RUS_SMO
-		}
-
-		available = {
-			has_completed_focus = RUS_strong_and_powerful
-		}
-
-		complete_effect = {
-			custom_effect_tooltip = RUS_precision_guided_ammunition_tt
-			hidden_effect = {
-				set_country_flag = RUS_green_light_given
-			}
-		}
-	}
     RUS_allow_dobr_podz = {
 		icon = GFX_RUS_allow_dobr_podz
 		fire_only_once = yes
@@ -20432,7 +20533,7 @@ RUS_Genshtab_redoubt = {
 				add_equipment_to_stockpile = { type = support_equipment amount = 100 producer = RUS }
 				13 = {
 			        create_unit = {
-					    division = "name = \"Podrazdelenie «Shchit» 45-y brigady rossiyskogo spetsnaza VDV\" division_template = \"45ya brigada spetsnaza VDV\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
+					    division = "name = \"Podrazdelenie «Shchit» 45-y brigady spetsnaza VDV\" division_template = \"45ya brigada spetsnaza VDV\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
 					    owner = RUS
 					    prioritize_location = 13132
 					    count = 1
