@@ -454,7 +454,7 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	NDefines.NAI.HOURS_BETWEEN_ENCIRCLEMENT_DISCOVERY = 7			  -- Per army, interval in hours between refresh of which provinces it considers make up potential encirclement points
 	NDefines.NAI.FRONT_BULGE_RATIO_LOWER_CUTOFF = 0.85
 	NDefines.NAI.FRONT_BULGE_RATIO_UPPER_CUTOFF = 1.7
-	NDefines.NAI.AI_UPDATE_ROLES_FREQUENCY_HOURS = 32
+	NDefines.NAI.AI_UPDATE_ROLES_FREQUENCY_HOURS = 48
 
 	NDefines.NAI.DESPERATE_AI_MIN_UNIT_ASSIGN_TO_ESCAPE = 0			-- AI will assign at least this amount of units to break from desperate situations
 	NDefines.NAI.DESPERATE_AI_WEAK_UNIT_STR_LIMIT = 0.8					-- ai will increase number of units assigned to break from desperate situations when units are start falling lower than this str limit
