@@ -122,6 +122,7 @@ init_map_africa_country_data = {
 	resize_array = { map_africa_enabled_region_indexes = global.map_africa_region_indexes_count }
 
 	resize_array = { map_africa_political_strategists_pool_indexes = global.map_africa_region_indexes_count }
+	resize_array = { map_africa_political_strategists_used_effective_pool_indexes = global.map_africa_region_indexes_count }
 	resize_array = { map_africa_military_instructors_pool_indexes = global.map_africa_region_indexes_count }
 	resize_array = { map_africa_military_personnel_pool_indexes = global.map_africa_region_indexes_count }
 
@@ -265,27 +266,38 @@ map_africa_calculate_recommended_base_pool_value_from_current_pool_value = {
 # Must contain "temp_this_influence"
 # Must contain "temp_other_influence"
 map_africa_calculate_recommended_pool_value_from_recommended_base_pool_value = {
-	log = "###### [?THIS.GetTag]"
-	log = "temp_region_index [?temp_region_index]"
-	log = "temp_this_influence [?temp_this_influence]"
-	log = "temp_other_influence [?temp_other_influence]"
+	#log = "###### [?THIS.GetTag]"
+	#log = "temp_region_index [?temp_region_index]"
+	#log = "temp_this_influence [?temp_this_influence]"
+	#log = "temp_other_influence [?temp_other_influence]"
 
 	set_temp_variable = { temp_multiplier = temp_this_influence }
 	subtract_from_temp_variable = { temp_multiplier = temp_other_influence }
 	multiply_temp_variable = { temp_multiplier = 0.1 }
 	
-	log = "temp_multiplier [?temp_multiplier]"
+	#log = "temp_multiplier [?temp_multiplier]"
 
 	set_variable = { 
 		var = map_africa_political_strategists_recommended_pool_indexes^temp_region_index 
 		value = map_africa_political_strategists_recommended_base_pool_indexes^temp_region_index 
 	}
 	
-	log = "map_africa_political_strategists_recommended_pool_indexes^temp_region_index [?map_africa_political_strategists_recommended_pool_indexes^temp_region_index]"
-	log = "map_africa_political_strategists_recommended_base_pool_indexes^temp_region_index [?map_africa_political_strategists_recommended_base_pool_indexes^temp_region_index]"
+	#log = "map_africa_political_strategists_recommended_pool_indexes^temp_region_index [?map_africa_political_strategists_recommended_pool_indexes^temp_region_index]"
+	#log = "map_africa_political_strategists_recommended_base_pool_indexes^temp_region_index [?map_africa_political_strategists_recommended_base_pool_indexes^temp_region_index]"
 	multiply_variable = { map_africa_political_strategists_recommended_pool_indexes^temp_region_index = temp_multiplier }
 	round_variable = map_africa_political_strategists_recommended_pool_indexes^temp_region_index
-	log = "map_africa_political_strategists_recommended_pool_indexes^temp_region_index [?map_africa_political_strategists_recommended_pool_indexes^temp_region_index]"
+
+	# Запрещаем получать прибыль с политтехнологов, выделенных сверх рекомендуемого значения
+	if = {
+		limit = { check_variable = { map_africa_political_strategists_recommended_pool_indexes^temp_region_index < map_africa_political_strategists_pool_indexes^temp_region_index } }
+
+		set_variable = { map_africa_political_strategists_used_effective_pool_indexes^temp_region_index = map_africa_political_strategists_recommended_pool_indexes^temp_region_index }
+	}
+	else = {
+		set_variable = { map_africa_political_strategists_used_effective_pool_indexes^temp_region_index = map_africa_political_strategists_pool_indexes^temp_region_index }
+	}
+
+	#log = "map_africa_political_strategists_recommended_pool_indexes^temp_region_index [?map_africa_political_strategists_recommended_pool_indexes^temp_region_index]"
 	
 	set_variable = { 
 		var = map_africa_military_instructors_recommended_pool_indexes^temp_region_index
@@ -306,6 +318,7 @@ map_africa_calculate_recommended_pool_value_from_recommended_base_pool_value = {
 # Calculates sum used count of each variant of manpower
 map_africa_calculate_sum_used_manpower = {
 	set_variable = { map_africa_political_strategists_used = 0 }
+	set_variable = { map_africa_political_strategists_used_effective = 0 }
 	set_variable = { map_africa_military_instructors_used = 0 }
 	set_variable = { map_africa_military_personnel_used = 0 }
 
@@ -314,6 +327,7 @@ map_africa_calculate_sum_used_manpower = {
 		value = pointer
 
 		add_to_variable = { map_africa_political_strategists_used = map_africa_political_strategists_pool_indexes^pointer }
+		add_to_variable = { map_africa_political_strategists_used_effective = map_africa_political_strategists_used_effective_pool_indexes^pointer }
 		add_to_variable = { map_africa_military_instructors_used = map_africa_military_instructors_pool_indexes^pointer }
 		add_to_variable = { map_africa_military_personnel_used = map_africa_military_personnel_pool_indexes^pointer }
 	}
@@ -347,10 +361,12 @@ map_africa_calculate_region_used_manpower = {
 		value = pointer
 
 		set_variable = { map_africa_political_strategists_used^pointer = 0 }
+		set_variable = { map_africa_political_strategists_used_effective^pointer = 0 }
 		set_variable = { map_africa_military_instructors_used^pointer = 0 }
 		set_variable = { map_africa_military_personnel_used^pointer = 0 }
 
 		add_to_variable = { map_africa_political_strategists_used^pointer = map_africa_political_strategists_pool_indexes^pointer }
+		add_to_variable = { map_africa_political_strategists_used_effective^pointer = map_africa_political_strategists_used_effective_pool_indexes^pointer }
 		add_to_variable = { map_africa_military_instructors_used^pointer = map_africa_military_instructors_pool_indexes^pointer }
 		add_to_variable = { map_africa_military_personnel_used^pointer = map_africa_military_personnel_pool_indexes^pointer }
 	}

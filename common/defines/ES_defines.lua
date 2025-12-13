@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 18								-- 0.6.1.0
+NDefines.NGame.SAVE_VERSION = 19								-- 0.6.2.0
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -114,8 +114,7 @@ NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
 NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
 NDefines.NMilitary.LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 1 -- vanial 3 how many CAS/TAC can enter a combat depending on enemy width there
 NDefines.NMilitary.ATTRITION_DAMAGE_ORG = 0.08					   -- vanila 0.08 ущерб от истощения Организации
-NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.025		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
-NDefines.NMilitary.ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.025 -- #0.1  Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
+NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.002   -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 NDefines.NMilitary.COMBAT_MOVEMENT_SPEED = 0.33	               -- vanila 0.33 speed reduction base modifier in combat
 NDefines.NMilitary.SUPPLY_USE_FACTOR_MOVING = 1.5                -- Deprecated/Unused
 NDefines.NMilitary.SUPPLY_USE_FACTOR_INACTIVE = 0.95			   -- Deprecated/Unused
@@ -457,7 +456,31 @@ NDefines.NMilitary.BASE_DIVISION_BRIGADE_GROUP_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_CHANGE_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_SUPPORT_SLOT_COST = 1 -- 10
 NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.040 -- 0.060
+NDefines.NMilitary.COHESION_IMMOBILE_PLANNING_SPEED_MULTIPLIER = 1 -- 0.5
 NDefines.NRaids.RAID_DEFAULT_TARGET_COOLDOWN_DAYS = 1
 NDefines.NProject.BREAKTHROUGH_DAILY_TECHNOLOGY_GAIN = 35
 NDefines.NProject.BREAKTHROUGH_DAILY_SCIENTIST_SKILL_GAIN = 25
-NDefines.NGame.ENERGY_RESOURCE = "gas"
+NDefines.NGame.ENERGY_RESOURCE = ""
+NDefines.NAI.MIN_FACTORIES_TO_WANT_TO_IMPORT = { -- minimum number of civilian factories the AI must have to consider importing a resource - per strategic resource. Default 0, array -should- be updated with new resources, or if the order changes
+    0, --oil
+    0, --electronic
+    0, --aluminium
+    0, --rubber
+    0, --tungsten
+    0, --steel
+    0, --chromium
+    0, --gas
+}
+NDefines.NMapIcons.SUPPLY_AREAS_PRIORITY_ADJACENCY_RULE = 3
+NDefines.NGraphics.RAILWAY_CAMERA_CUTOFF = 200.0
+NDefines.NGraphics.TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.75 }
+NDefines.NProduction.BASE_ENERGY_COST = 0.001
+NDefines.NProduction.ENERGY_SCALING_COST_BY_FACTORY_COUNT = 0
+NDefines.NProduction.RESOURCE_TO_ENERGY_COEFFICIENT = 0.001
+NDefines.NProduction.BASE_COUNTRY_ENERGY_PRODUCTION = 99999999
+NDefines.NProduction.POWERED_FACTORY_SPEED = 3.5
+NDefines.NProduction.POWERED_FACTORY_SPEED_MIL = 3.5
+NDefines.NProduction.POWERED_FACTORY_SPEED_NAV = 3.5
+
+NDefines.NDoctrines.MASTERY_BANK_MAX = 0 --200
+NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 999 --50
