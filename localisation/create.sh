@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Скрипт для створення файлів з відсутніми ключами для перекладу
-# Створює файли в ./wip/ з російськими значеннями для подальшого перекладу
+# Скрипт для создания файлов с отсутствующими ключами для перевода
+# Создает файлы в ./wip/ с русскими значениями для последующего перевода
 
 RUSSIAN_DIR="./russian"
 TEMP_DIR="./temp"
 WIP_DIR="./wip"
 
-# Кольори
+# Цвета
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,68 +15,68 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo "=========================================="
-echo "Створення файлів для перекладу"
+echo "Создание файлов для перевода"
 echo "=========================================="
 echo ""
 
-# Перевірка наявності результатів попереднього скрипту
+# Проверка наличия результатов предыдущего скрипта
 if [ ! -f "$TEMP_DIR/missing_keys.txt" ]; then
-    echo -e "${RED}Помилка: Спочатку запустіть скрипт перевірки локалізації!${NC}"
-    echo "Файл $TEMP_DIR/missing_keys.txt не знайдено"
+    echo -e "${RED}Ошибка: сначала запустите скрипт проверки локализации!${NC}"
+    echo "Файл $TEMP_DIR/missing_keys.txt не найден"
     exit 1
 fi
 
 if [ ! -f "$TEMP_DIR/russian_keys_with_files.txt" ]; then
-    echo -e "${RED}Помилка: Файл $TEMP_DIR/russian_keys_with_files.txt не знайдено${NC}"
+    echo -e "${RED}Ошибка: файл $TEMP_DIR/russian_keys_with_files.txt не найден${NC}"
     exit 1
 fi
 
-# Створення директорії WIP
+# Создание директории WIP
 if [ -d "$WIP_DIR" ]; then
-    echo "Очищення існуючої директорії $WIP_DIR..."
+    echo "Очистка существующей директории $WIP_DIR..."
     rm -rf "$WIP_DIR"
 fi
 mkdir -p "$WIP_DIR"
 
-echo -e "${BLUE}Створення файлів з відсутніми ключами...${NC}"
+echo -e "${BLUE}Создание файлов с отсутствующими ключами...${NC}"
 echo ""
 
-# Читаємо всі відсутні ключі
+# Читаем все отсутствующие ключи
 total_keys=0
 files_created=0
 
-# Створюємо асоціації ключ->файл
+# Создаем ассоциации ключ->файл
 declare -a file_keys
 
 while IFS= read -r missing_key; do
-    # Знайти, в якому російському файлі знаходиться цей ключ
+    # Найти, в каком русском файле находится этот ключ
     source_line=$(grep "^${missing_key}|" "$TEMP_DIR/russian_keys_with_files.txt" | head -n1)
     
     if [ -n "$source_line" ]; then
         russian_file=$(echo "$source_line" | cut -d'|' -f2)
         russian_path="$RUSSIAN_DIR/$russian_file"
         
-        # Конвертувати в англійське ім'я
+        # Преобразовать в английское имя
         english_file=$(echo "$russian_file" | sed 's/_l_russian\.yml/_l_english.yml/')
         wip_file="$WIP_DIR/$english_file"
         
-        # Якщо це перший ключ для цього файлу, створити заголовок
+        # Если это первый ключ для этого файла, создать заголовок
         if [ ! -f "$wip_file" ]; then
             echo "l_english:" > "$wip_file"
             files_created=$((files_created + 1))
-            echo -e "${GREEN}Створено: $english_file${NC}"
+            echo -e "${GREEN}Создан: $english_file${NC}"
         fi
         
-        # Знайти повний рядок з ключем у російському файлі
+        # Найти полную строку с ключом в русском файле
         full_line=$(grep "^[[:space:]]*${missing_key}:" "$russian_path" | head -n1)
         
         if [ -n "$full_line" ]; then
-            # Видалити початкові пробіли і додати один пробіл
+            # Удалить начальные пробелы и добавить один пробел
             cleaned_line=$(echo "$full_line" | sed 's/^[[:space:]]*//')
             echo " $cleaned_line" >> "$wip_file"
             total_keys=$((total_keys + 1))
         else
-            # Якщо не знайшли повний рядок, додати тільки ключ
+            # Если не нашли полную строку, добавить только ключ
             echo " $missing_key: \"[TRANSLATION NEEDED]\"" >> "$wip_file"
             total_keys=$((total_keys + 1))
         fi
@@ -85,15 +85,15 @@ done < "$TEMP_DIR/missing_keys.txt"
 
 echo ""
 echo "=========================================="
-echo "Підсумок"
+echo "Итоги"
 echo "=========================================="
-echo -e "${GREEN}Створено файлів: $files_created${NC}"
-echo -e "${GREEN}Всього ключів для перекладу: $total_keys${NC}"
+echo -e "${GREEN}Создано файлов: $files_created${NC}"
+echo -e "${GREEN}Всего ключей для перевода: $total_keys${NC}"
 echo ""
-echo -e "${YELLOW}Файли знаходяться в директорії: $WIP_DIR${NC}"
+echo -e "${YELLOW}Файлы находятся в директории: $WIP_DIR${NC}"
 echo ""
-echo -e "${BLUE}Інструкція:${NC}"
-echo "1. Відкрийте файли в $WIP_DIR"
-echo "2. Перекладіть російські значення на англійську"
-echo "3. Скопіюйте вміст у відповідні файли в ./english/"
+echo -e "${BLUE}Инструкция:${NC}"
+echo "1. Откройте файлы в $WIP_DIR"
+echo "2. Переведите русские значения на английский"
+echo "3. Скопируйте содержимое в соответствующие файлы в ./english/"
 echo ""

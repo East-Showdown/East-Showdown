@@ -1,43 +1,43 @@
 #!/bin/bash
 
-# Скрипт порівняння локалізації
-# Об'єднує всі ключі з кожної локалі та порівнює їх
+# Скрипт сравнения локализации
+# Объединяет все ключи из каждой локали и сравнивает их
 
 RUSSIAN_DIR="./russian"
 ENGLISH_DIR="./english"
 TEMP_DIR="./temp"
 REPORT_FILE="localization_report.txt"
 
-# Кольори для виводу в терміналі
+# Цвета для вывода в терминале
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # Без кольору
+NC='\033[0m' # Без цвета
 
 echo "=========================================="
-echo "Перевірка повноти локалізації"
+echo "Проверка полноты локализации"
 echo "=========================================="
 echo ""
 
-# Перевірка наявності директорій
+# Проверка наличия директорий
 if [ ! -d "$RUSSIAN_DIR" ]; then
-    echo -e "${RED}Помилка: Російська директорія не знайдена за адресою $RUSSIAN_DIR${NC}"
+    echo -e "${RED}Ошибка: русская директория не найдена по пути $RUSSIAN_DIR${NC}"
     exit 1
 fi
 
 if [ ! -d "$ENGLISH_DIR" ]; then
-    echo -e "${RED}Помилка: Англійська директорія не знайдена за адресою $ENGLISH_DIR${NC}"
+    echo -e "${RED}Ошибка: английская директория не найдена по пути $ENGLISH_DIR${NC}"
     exit 1
 fi
 
-# Створення/очищення тимчасової директорії
+# Создание/очистка временной директории
 if [ -d "$TEMP_DIR" ]; then
     rm -rf "$TEMP_DIR"
 fi
 mkdir -p "$TEMP_DIR"
 
-echo -e "${BLUE}[1] Об'єднання всіх ключів з кожної локалі в окремі файли...${NC}"
+echo -e "${BLUE}[1] Объединение всех ключей из каждой локали в отдельные файлы...${NC}"
 echo ""
 
 RUSSIAN_ALL_KEYS="$TEMP_DIR/russian_all_keys.txt"
@@ -45,7 +45,7 @@ ENGLISH_ALL_KEYS="$TEMP_DIR/english_all_keys.txt"
 RUSSIAN_KEYS_WITH_FILES="$TEMP_DIR/russian_keys_with_files.txt"
 ENGLISH_KEYS_WITH_FILES="$TEMP_DIR/english_keys_with_files.txt"
 
-# Очищення файлів
+# Очистка файлов
 > "$RUSSIAN_ALL_KEYS"
 > "$ENGLISH_ALL_KEYS"
 > "$RUSSIAN_KEYS_WITH_FILES"
@@ -54,15 +54,15 @@ ENGLISH_KEYS_WITH_FILES="$TEMP_DIR/english_keys_with_files.txt"
 russian_files_count=0
 russian_keys_count=0
 
-# Обробка російських файлів
-echo "Обробка російських файлів..."
+# Обработка русских файлов
+echo "Обработка русских файлов..."
 for russian_file in "$RUSSIAN_DIR"/*.yml; do
     [ -e "$russian_file" ] || continue
     
     filename=$(basename "$russian_file")
     russian_files_count=$((russian_files_count + 1))
     
-    # Витяг ключів: всі рядки з двокрапкою, крім коментарів і оголошення мови
+    # Извлечение ключей: все строки с двоеточием, кроме комментариев и объявления языка
     grep ':' "$russian_file" | grep -v '^#' | grep -v 'l_russian:' | sed 's/^[[:space:]]*//' | sed 's/:.*//' | grep -E '^[A-Za-z_]' | while IFS= read -r key; do
         if [ -n "$key" ]; then
             echo "$key" >> "$RUSSIAN_ALL_KEYS"
@@ -72,21 +72,21 @@ for russian_file in "$RUSSIAN_DIR"/*.yml; do
     done
 done
 
-echo -e "${GREEN}  ✓ Оброблено російських файлів: $russian_files_count${NC}"
+echo -e "${GREEN}  ✓ Обработано русских файлов: $russian_files_count${NC}"
 echo ""
 
 english_files_count=0
 english_keys_count=0
 
-# Обробка англійських файлів
-echo "Обробка англійських файлів..."
+# Обработка английских файлов
+echo "Обработка английских файлов..."
 for english_file in "$ENGLISH_DIR"/*.yml; do
     [ -e "$english_file" ] || continue
     
     filename=$(basename "$english_file")
     english_files_count=$((english_files_count + 1))
     
-    # Витяг ключів: всі рядки з двокрапкою, крім коментарів і оголошення мови
+    # Извлечение ключей: все строки с двоеточием, кроме комментариев и объявления языка
     grep ':' "$english_file" | grep -v '^#' | grep -v 'l_english:' | sed 's/^[[:space:]]*//' | sed 's/:.*//' | grep -E '^[A-Za-z_]' | while IFS= read -r key; do
         if [ -n "$key" ]; then
             echo "$key" >> "$ENGLISH_ALL_KEYS"
@@ -96,173 +96,173 @@ for english_file in "$ENGLISH_DIR"/*.yml; do
     done
 done
 
-echo -e "${GREEN}  ✓ Оброблено англійських файлів: $english_files_count${NC}"
+echo -e "${GREEN}  ✓ Обработано английских файлов: $english_files_count${NC}"
 echo ""
 
-# Сортування ключів
+# Сортировка ключей
 sort -u "$RUSSIAN_ALL_KEYS" -o "$RUSSIAN_ALL_KEYS"
 sort -u "$ENGLISH_ALL_KEYS" -o "$ENGLISH_ALL_KEYS"
 
 russian_unique=$(wc -l < "$RUSSIAN_ALL_KEYS" | tr -d ' ')
 english_unique=$(wc -l < "$ENGLISH_ALL_KEYS" | tr -d ' ')
 
-echo -e "${BLUE}[2] Порівняння ключів між локалями...${NC}"
+echo -e "${BLUE}[2] Сравнение ключей между локалями...${NC}"
 echo ""
-echo -e "${GREEN}  Унікальних російських ключів: $russian_unique${NC}"
-echo -e "${GREEN}  Унікальних англійських ключів: $english_unique${NC}"
+echo -e "${GREEN}  Уникальных русских ключей: $russian_unique${NC}"
+echo -e "${GREEN}  Уникальных английских ключей: $english_unique${NC}"
 echo ""
 
-# Знаходження відсутніх ключів
+# Поиск отсутствующих ключей
 MISSING_KEYS_FILE="$TEMP_DIR/missing_keys.txt"
 comm -23 "$RUSSIAN_ALL_KEYS" "$ENGLISH_ALL_KEYS" > "$MISSING_KEYS_FILE"
 
 missing_count=$(wc -l < "$MISSING_KEYS_FILE" | tr -d ' ')
 
 if [ $missing_count -eq 0 ]; then
-    echo -e "${GREEN}  ✓ Всі російські ключі присутні в англійській локалізації!${NC}"
+    echo -e "${GREEN}  ✓ Все русские ключи присутствуют в английской локализации!${NC}"
     echo ""
     echo "=========================================="
-    echo "Локалізація завершена на 100%!"
+    echo "Локализация завершена на 100%!"
     echo "=========================================="
     exit 0
 fi
 
-echo -e "${RED}  ✗ Знайдено відсутніх ключів в англійській локалізації: $missing_count${NC}"
+echo -e "${RED}  ✗ Найдены отсутствующие ключи в английской локализации: $missing_count${NC}"
 echo ""
 
-# Розрахунок відсотка завершеності
+# Расчет процента завершенности
 if [ $russian_unique -gt 0 ]; then
     percentage=$(( (russian_unique - missing_count) * 100 / russian_unique ))
-    echo -e "${YELLOW}Завершеність англійської локалізації: ${percentage}%${NC}"
+    echo -e "${YELLOW}Завершенность английской локализации: ${percentage}%${NC}"
     echo ""
 fi
 
-echo -e "${BLUE}[3] Пошук відсутніх ключів у файлах та створення звіту...${NC}"
+echo -e "${BLUE}[3] Поиск отсутствующих ключей по файлам и создание отчета...${NC}"
 echo ""
 
-# Створення звіту
-echo "Звіт про відсутні ключі локалізації" > "$REPORT_FILE"
-echo "Створено: $(date)" >> "$REPORT_FILE"
+# Создание отчета
+echo "Отчет об отсутствующих ключах локализации" > "$REPORT_FILE"
+echo "Создан: $(date)" >> "$REPORT_FILE"
 echo "========================================" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 echo "СТАТИСТИКА:" >> "$REPORT_FILE"
-echo "  Всього російських ключів: $russian_unique" >> "$REPORT_FILE"
-echo "  Всього англійських ключів: $english_unique" >> "$REPORT_FILE"
-echo "  Відсутніх ключів: $missing_count" >> "$REPORT_FILE"
-echo "  Завершеність: ${percentage}%" >> "$REPORT_FILE"
+echo "  Всего русских ключей: $russian_unique" >> "$REPORT_FILE"
+echo "  Всего английских ключей: $english_unique" >> "$REPORT_FILE"
+echo "  Отсутствующих ключей: $missing_count" >> "$REPORT_FILE"
+echo "  Завершенность: ${percentage}%" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 echo "========================================" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 
-# Створення тимчасового файлу для групування за файлами
+# Создание временного файла для группировки по файлам
 GROUPED_FILE="$TEMP_DIR/grouped_by_files.txt"
 > "$GROUPED_FILE"
 
-# Для кожного відсутнього ключа знайти його файл
+# Для каждого отсутствующего ключа найти его файл
 while IFS= read -r missing_key; do
-    # Знайти, в якому російському файлі знаходиться цей ключ
+    # Найти, в каком русском файле находится этот ключ
     source_file=$(grep "^${missing_key}|" "$RUSSIAN_KEYS_WITH_FILES" | cut -d'|' -f2 | head -n1)
     
     if [ -n "$source_file" ]; then
-        # Конвертувати ім'я файлу в англійський варіант
+        # Преобразовать имя файла в английский вариант
         english_file=$(echo "$source_file" | sed 's/_l_russian\.yml/_l_english.yml/')
         
-        # Додати до файлу у форматі: english_file|missing_key
+        # Добавить в файл в формате: english_file|missing_key
         echo "${english_file}|${missing_key}" >> "$GROUPED_FILE"
     fi
 done < "$MISSING_KEYS_FILE"
 
-# Сортування за файлами
+# Сортировка по файлам
 sort "$GROUPED_FILE" -o "$GROUPED_FILE"
 
-# Виведення результатів
-echo "ВІДСУТНІ КЛЮЧІ ЗА ФАЙЛАМИ:" >> "$REPORT_FILE"
+# Вывод результатов
+echo "ОТСУТСТВУЮЩИЕ КЛЮЧИ ПО ФАЙЛАМ:" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 
 current_file=""
 keys_in_file=""
 keys_count=0
 
-# Обробка згрупованих ключів
+# Обработка сгруппированных ключей
 while IFS='|' read -r file key; do
     if [ "$file" != "$current_file" ]; then
-        # Якщо це не перший файл, виведемо попередній
+        # Если это не первый файл, выводим предыдущий
         if [ -n "$current_file" ]; then
             russian_file=$(echo "$current_file" | sed 's/_l_english\.yml/_l_russian.yml/')
             
             echo -e "${YELLOW}Файл: $current_file${NC}"
-            echo -e "${RED}  Відсутніх ключів: $keys_count${NC}"
-            echo -e "${BLUE}  Шлях до оригіналу: $RUSSIAN_DIR/$russian_file${NC}"
-            echo -e "${BLUE}  Шлях до перекладу: $ENGLISH_DIR/$current_file${NC}"
+            echo -e "${RED}  Отсутствующих ключей: $keys_count${NC}"
+            echo -e "${BLUE}  Путь к оригиналу: $RUSSIAN_DIR/$russian_file${NC}"
+            echo -e "${BLUE}  Путь к переводу: $ENGLISH_DIR/$current_file${NC}"
             echo ""
             
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >> "$REPORT_FILE"
             echo "ФАЙЛ: $current_file" >> "$REPORT_FILE"
-            echo "Відсутніх ключів: $keys_count" >> "$REPORT_FILE"
+            echo "Отсутствующих ключей: $keys_count" >> "$REPORT_FILE"
             echo "" >> "$REPORT_FILE"
-            echo "Шлях до російського оригіналу:" >> "$REPORT_FILE"
+            echo "Путь к русскому оригиналу:" >> "$REPORT_FILE"
             echo "  $RUSSIAN_DIR/$russian_file" >> "$REPORT_FILE"
             echo "" >> "$REPORT_FILE"
-            echo "Шлях до англійського файлу (додайте ключі сюди):" >> "$REPORT_FILE"
+            echo "Путь к английскому файлу (добавьте ключи сюда):" >> "$REPORT_FILE"
             echo "  $ENGLISH_DIR/$current_file" >> "$REPORT_FILE"
             echo "" >> "$REPORT_FILE"
-            echo "Відсутні ключі:" >> "$REPORT_FILE"
+            echo "Отсутствующие ключи:" >> "$REPORT_FILE"
             echo "$keys_in_file" >> "$REPORT_FILE"
             echo "" >> "$REPORT_FILE"
         fi
         
-        # Початок нового файлу
+        # Начало нового файла
         current_file="$file"
         keys_in_file="  - $key"
         keys_count=1
     else
-        # Додати ключ до поточного файлу
+        # Добавить ключ к текущему файлу
         keys_in_file="${keys_in_file}
   - $key"
         keys_count=$((keys_count + 1))
     fi
 done < "$GROUPED_FILE"
 
-# Вивести останній файл
+# Вывод последнего файла
 if [ -n "$current_file" ]; then
     russian_file=$(echo "$current_file" | sed 's/_l_english\.yml/_l_russian.yml/')
     
     echo -e "${YELLOW}Файл: $current_file${NC}"
-    echo -e "${RED}  Відсутніх ключів: $keys_count${NC}"
-    echo -e "${BLUE}  Шлях до оригіналу: $RUSSIAN_DIR/$russian_file${NC}"
-    echo -e "${BLUE}  Шлях до перекладу: $ENGLISH_DIR/$current_file${NC}"
+    echo -e "${RED}  Отсутствующих ключей: $keys_count${NC}"
+    echo -e "${BLUE}  Путь к оригиналу: $RUSSIAN_DIR/$russian_file${NC}"
+    echo -e "${BLUE}  Путь к переводу: $ENGLISH_DIR/$current_file${NC}"
     echo ""
     
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >> "$REPORT_FILE"
     echo "ФАЙЛ: $current_file" >> "$REPORT_FILE"
-    echo "Відсутніх ключів: $keys_count" >> "$REPORT_FILE"
+    echo "Отсутствующих ключей: $keys_count" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
-    echo "Шлях до російського оригіналу:" >> "$REPORT_FILE"
+    echo "Путь к русскому оригиналу:" >> "$REPORT_FILE"
     echo "  $RUSSIAN_DIR/$russian_file" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
-    echo "Шлях до англійського файлу (додайте ключі сюди):" >> "$REPORT_FILE"
+    echo "Путь к английскому файлу (добавьте ключи сюда):" >> "$REPORT_FILE"
     echo "  $ENGLISH_DIR/$current_file" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
-    echo "Відсутні ключі:" >> "$REPORT_FILE"
+    echo "Отсутствующие ключи:" >> "$REPORT_FILE"
     echo "$keys_in_file" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
 fi
 
 echo "========================================" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
-echo "ПОВНИЙ СПИСОК ВІДСУТНІХ КЛЮЧІВ:" >> "$REPORT_FILE"
+echo "ПОЛНЫЙ СПИСОК ОТСУТСТВУЮЩИХ КЛЮЧЕЙ:" >> "$REPORT_FILE"
 cat "$MISSING_KEYS_FILE" | while IFS= read -r key; do
     echo "  - $key" >> "$REPORT_FILE"
 done
 
 echo "=========================================="
-echo "Підсумок"
+echo "Итоги"
 echo "=========================================="
-echo -e "Завершеність локалізації: ${YELLOW}${percentage}%${NC}"
-echo -e "Відсутніх ключів: ${RED}$missing_count${NC}"
+echo -e "Завершенность локализации: ${YELLOW}${percentage}%${NC}"
+echo -e "Отсутствующих ключей: ${RED}$missing_count${NC}"
 echo ""
-echo -e "${GREEN}Детальний звіт збережено в: $REPORT_FILE${NC}"
-echo -e "${GREEN}Тимчасові файли збережено в: $TEMP_DIR/${NC}"
+echo -e "${GREEN}Детальный отчет сохранен в: $REPORT_FILE${NC}"
+echo -e "${GREEN}Временные файлы сохранены в: $TEMP_DIR/${NC}"
 echo ""
 
 exit 1
