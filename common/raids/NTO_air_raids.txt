@@ -1,0 +1,4429 @@
+types = {
+
+	#удары ракетами по авиабазам
+	nto_strikes_on_airfield_rc = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = on_airfield_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				OR = { air_base > 0 }
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = air_base
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_medium_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+
+					add_to_temp_variable = { airBase = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	nto_strikes_on_airfield_bl = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = on_airfield_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				OR = { air_base > 0 }
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = air_base
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment }
+				amount = { min = 12 }
+			}
+		}
+	
+		additional_equipment = {
+			ballistic_missile_equipment = 4
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.80
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.01
+					start_weight = -0.01
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.1
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.10
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+	nto_strikes_on_airfield_drones = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = on_airfield_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				OR = { air_base > 0 }
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = air_base
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { nto_guided_uav_equipment }
+				amount = { min = 12 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_guided_uav_equipment = 24
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.40
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.30
+			}
+			critical = {
+				base = 0.1
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.airBase = THIS.non_damaged_building_level@air_base }
+						set_temp_variable = { ROOT.airBase_tgt = THIS.building_level@air_base }
+					}
+	
+					add_to_temp_variable = { airBase = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = airBase }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = airBase_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+					var:target_state = {
+						if = { limit = { check_variable = { airBase_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+
+
+
+	# #удары по подстанциям ракетами
+	# nto_strikes_on_elect_subs_rc = {
+	# 	days_to_prepare = 1 #2
+	# 	days_re_enable = 0
+	# 	category = on_energy_infrastructure_strikes
+	# 	command_power = 3 # command power allocation cost
+	# 	ai_will_do = {
+	# 		base = 1
+	# 	}
+	# 	allowed = {
+	# 		has_dlc = "Gotterdammerung"
+	# 		original_tag = NTO
+	# 	}
+	# 	visible = { }
+		
+	# 	show_target = {
+	# 		NOT = { is_in_faction_with = FROM }
+	# 		var:target_state = {
+	# 			OR = {
+	# 				electrical_substation_big > 0
+	# 				electrical_substation > 0
+	# 			}
+	# 		}
+	# 	}
+	
+	# 	available = {
+	# 		has_war_with = FROM
+	# 	}
+	
+	# 	target_type = {
+	# 		building = {
+	# 			type = electrical_substation
+	# 		}
+	# 		building = {
+	# 			type = electrical_substation_big
+	# 		}
+	# 	}
+	# 	target_icon = GFX_other_target_icon
+	# 	launch_sound = raid_launch_air
+	
+	# 	arrow = {
+	# 		type = air
+	# 	}
+		
+	# 	unit_model = {
+	# 	}
+	
+	# 	unit_requirements = {
+	# 		equipment = {
+	# 			type = { strategic_bomber }
+	# 			amount = { min = 2 }
+	# 		}
+	# 	}
+	
+	# 	additional_equipment = {
+	# 		nto_medium_guided_missile_equipment = 12
+	# 	}
+	
+	# 	starting_point = {
+	# 		types = { air_base }
+	# 	}
+	
+	# 	success_factors = {
+	# 		success = {
+	# 			base = 0.80
+	# 		}
+	# 		disaster = {
+	# 			base = 0.01
+	# 		}
+	# 		critical = {
+	# 			base = 0.10
+	# 		}
+	# 	}
+	
+	# 	success_levels = {
+	# 		failure = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "raid_failed_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		limited_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.4
+	# 					max = 0.6
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_limited_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.6
+	# 					max = 0.8
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	# 		critical_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.8
+	# 					max = 1
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	# 	}
+	# }
+	# nto_strikes_on_elect_subs_bl = {
+	# 	days_to_prepare = 1 #2
+	# 	days_re_enable = 0
+	# 	category = on_energy_infrastructure_strikes
+	# 	command_power = 3 # command power allocation cost
+	# 	ai_will_do = {
+	# 		base = 1
+	# 	}
+	# 	allowed = {
+	# 		has_dlc = "Gotterdammerung"
+	# 		original_tag = NTO
+	# 	}
+	# 	visible = { }
+		
+	# 	show_target = {
+	# 		NOT = { is_in_faction_with = FROM }
+	# 		var:target_state = {
+	# 			OR = {
+	# 				electrical_substation_big > 0
+	# 				electrical_substation > 0
+	# 			}
+	# 		}
+	# 	}
+	
+	# 	available = {
+	# 		has_war_with = FROM
+	# 	}
+	
+	# 	target_type = {
+	# 		building = {
+	# 			type = electrical_substation
+	# 		}
+	# 		building = {
+	# 			type = electrical_substation_big
+	# 		}
+	# 	}
+	# 	target_icon = GFX_other_target_icon
+	# 	launch_sound = raid_launch_air
+	
+	# 	arrow = {
+	# 		type = air
+	# 	}
+		
+	# 	unit_model = {
+	# 	}
+	
+	# 	unit_requirements = {
+	# 		equipment = {
+	# 			type = { ballistic_missile_equipment }
+	# 			amount = { min = 24 }
+	# 		}
+	# 	}
+	
+	# 	additional_equipment = {
+	# 		ballistic_missile_equipment = 8
+	# 	}
+	
+	# 	starting_point = {
+	# 		types = { air_base }
+	# 	}
+	
+	# 	success_factors = {
+	# 		success = {
+	# 			base = 0.80
+	# 		}
+	# 		disaster = {
+	# 			base = 0.01
+	# 		}
+	# 		critical = {
+	# 			base = 0.10
+	# 		}
+	# 	}
+	
+	# 	success_levels = {
+	# 		failure = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "raid_failed_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		limited_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.4
+	# 					max = 0.6
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_limited_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.6
+	# 					max = 0.8
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	# 		critical_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.8
+	# 					max = 1
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	# 	}
+	# }
+	# nto_strikes_on_elect_subs_drone = {
+	# 	days_to_prepare = 1 #2
+	# 	days_re_enable = 0
+	# 	category = on_energy_infrastructure_strikes
+	# 	command_power = 3 # command power allocation cost
+	# 	ai_will_do = {
+	# 		base = 1
+	# 	}
+	# 	allowed = {
+	# 		has_dlc = "Gotterdammerung"
+	# 		original_tag = NTO
+	# 	}
+	# 	visible = { }
+		
+	# 	show_target = {
+	# 		NOT = { is_in_faction_with = FROM }
+	# 		var:target_state = {
+	# 			OR = {
+	# 				electrical_substation_big > 0
+	# 				electrical_substation > 0
+	# 			}
+	# 		}
+	# 	}
+	
+	# 	available = {
+	# 		has_war_with = FROM
+	# 	}
+	
+	# 	target_type = {
+	# 		building = {
+	# 			type = electrical_substation
+	# 		}
+	# 		building = {
+	# 			type = electrical_substation_big
+	# 		}
+	# 	}
+	# 	target_icon = GFX_other_target_icon
+	# 	launch_sound = raid_launch_air
+	
+	# 	arrow = {
+	# 		type = air
+	# 	}
+		
+	# 	unit_model = {
+	# 	}
+	
+	# 	unit_requirements = {
+	# 		equipment = {
+	# 			type = { nto_guided_uav_equipment }
+	# 			amount = { min = 24 }
+	# 		}
+	# 	}
+	
+	# 	additional_equipment = {
+	# 		nto_guided_uav_equipment = 24
+	# 	}
+	
+	# 	starting_point = {
+	# 		types = { air_base }
+	# 	}
+	
+	# 	success_factors = {
+	# 		success = {
+	# 			base = 0.80
+	# 		}
+	# 		disaster = {
+	# 			base = 0.01
+	# 		}
+	# 		critical = {
+	# 			base = 0.10
+	# 		}
+	# 	}
+	
+	# 	success_levels = {
+	# 		failure = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "raid_failed_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		limited_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.4
+	# 					max = 0.6
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_limited_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.6
+	# 					max = 0.8
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	# 		critical_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.el_sub_big = THIS.non_damaged_building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub = THIS.non_damaged_building_level@electrical_substation }
+	# 					set_temp_variable = { ROOT.el_sub_big_tgt = THIS.building_level@electrical_substation_big }
+	# 					set_temp_variable = { ROOT.el_sub_tgt = THIS.building_level@electrical_substation }
+	# 				}
+	
+	# 				add_to_temp_variable = { el_sub = 0.5 }
+	# 				multiply_temp_variable = { el_sub_big = el_sub }
+	# 				if = {
+	# 					limit = {
+	# 						NOT = { check_variable = { el_sub_big = 0 } }
+	# 					}
+	# 					multiply_temp_variable = { el_sub_big = el_sub }
+	# 				}
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.8
+	# 					max = 1
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_big_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						check_variable = { el_sub_tgt > 0 }
+	# 					}
+	# 					add_to_temp_variable = { damage_split = 0.1 }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = el_sub_tgt }
+	# 				add_to_temp_variable = { max_clamp = el_sub_big_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { electrical_substation_big > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation_big
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 					if = { limit = { electrical_substation > 0 }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = electrical_substation
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	# 	}
+	# }
+
+
+
+	#удары по военной промышленности ракетами
+	nto_arms_industry_strike_rc = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = critical_military_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				OR = { arms_factory > 0 }
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = arms_factory
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_light_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.55
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+					}
+	
+					add_to_temp_variable = { armsFactory = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { armsFactory > 0 } }
+						divide_temp_variable = { building_damage_by_missile = armsFactory }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = armsFactory_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+					}
+	
+					add_to_temp_variable = { armsFactory = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { armsFactory > 0 } }
+						divide_temp_variable = { building_damage_by_missile = armsFactory }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = armsFactory_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+					}
+
+					add_to_temp_variable = { armsFactory = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = armsFactory }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = armsFactory_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	nto_arms_industry_strike_bl = {
+		days_to_prepare = 1 #2
+		days_re_enable = 00
+		category = critical_military_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO				
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				OR = { arms_factory > 0 }
+			}
+		}
+
+		available = {
+			has_war_with = FROM
+		}
+
+		target_type = {
+			building = {
+				type = arms_factory
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment }
+				amount = { min = 12 }
+			}
+		}
+
+		additional_equipment = {
+			nto_light_guided_missile_equipment = 8
+		}
+
+		starting_point = {
+			types = { rocket_site }
+		}
+
+		success_factors = {
+			success = {
+				base = 0.80
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+					}
+
+					add_to_temp_variable = { armsFactory = 0.5 }
+
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { armsFactory > 0 } }
+						divide_temp_variable = { building_damage_by_missile = armsFactory }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = armsFactory_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+					}
+
+					add_to_temp_variable = { armsFactory = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { armsFactory > 0 } }
+						divide_temp_variable = { building_damage_by_missile = armsFactory }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = armsFactory_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.armsFactory = THIS.non_damaged_building_level@arms_factory }
+						set_temp_variable = { ROOT.armsFactory_tgt = THIS.building_level@arms_factory }
+					}
+
+					add_to_temp_variable = { armsFactory = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { airBase > 0 } }
+						divide_temp_variable = { building_damage_by_missile = armsFactory }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = armsFactory_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { armsFactory_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
+	#удары по производству снарядов
+	nto_ammunition_plant_strike_rc = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = critical_military_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				ammunition_plant > 0
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = ammunition_plant
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_light_guided_missile_equipment = 6
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.50
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }
+					}
+	
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }
+					}
+	
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }
+					}
+
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	nto_ammunition_plant_strike_bl = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = critical_military_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				OR = { ammunition_plant > 0 }
+			}
+		}
+
+		available = {
+			has_war_with = FROM
+		}
+
+		target_type = {
+			building = {
+				type = ammunition_plant
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment }
+				amount = { min = 12 }
+			}
+		}
+
+		additional_equipment = {
+			nto_light_guided_missile_equipment = 8
+		}
+
+		starting_point = {
+			types = { rocket_site }
+		}
+
+		success_factors = {
+			success = {
+				base = 0.75
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.10
+			}
+		}
+
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }						
+					}
+
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
+
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }						
+					}
+
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { ammunitionPlant > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionPlant = THIS.non_damaged_building_level@ammunition_plant }
+						set_temp_variable = { ROOT.ammunitionPlant_tgt = THIS.building_level@ammunition_plant }						
+					}
+
+					add_to_temp_variable = { ammunitionPlant = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionPlant }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = ammunitionPlant_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionPlant_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	
+	#удары по складам 
+	nto_ammunition_silo_strike_rc = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = critical_military_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				ammunition_silo > 0
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = ammunition_silo
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { strategic_bomber }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_medium_guided_missile_equipment = 12
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.40
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.25
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
+					}
+	
+					add_to_temp_variable = { ammunitionSilo = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { ammunitionSilo > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
+					}
+	
+					add_to_temp_variable = { ammunitionSilo = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { ammunitionSilo > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
+					}
+
+					add_to_temp_variable = { ammunitionSilo = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { ammunitionSilo > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	nto_ammunition_silo_strike_bl = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = critical_military_infrastructure_strikes
+		command_power = 3 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+			}
+		}
+		visible = { }
+		
+		show_target = {
+			NOT = { is_in_faction_with = FROM }
+			var:target_state = {
+				ammunition_silo > 0
+			}
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = ammunition_silo
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment }
+				amount = { min = 12 }
+			}
+		}
+	
+		additional_equipment = {
+			ballistic_missile_equipment = 8
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.55
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.15
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
+					}
+	
+					add_to_temp_variable = { ammunitionSilo = 0.5 }
+	
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { ammunitionSilo > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
+					}
+	
+					add_to_temp_variable = { ammunitionSilo = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+					if = {
+						limit = { check_variable = { ammunitionSilo > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
+					}
+	
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+	
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+	
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.ammunitionSilo = THIS.non_damaged_building_level@ammunition_silo }
+						set_temp_variable = { ROOT.ammunitionSilo_tgt = THIS.building_level@ammunition_silo }
+					}
+
+					add_to_temp_variable = { ammunitionSilo = 0.5 }
+					set_temp_variable = { building_damage_by_missile = 0.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = { check_variable = { ammunitionSilo > 0 } }
+						divide_temp_variable = { building_damage_by_missile = ammunitionSilo }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { max_clamp = ammunitionSilo_tgt }
+					if = {
+						limit = { check_variable = { max_clamp = 0 } }
+						add_to_temp_variable = { max_clamp = 0.1 }
+					}
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					var:target_state = {
+						if = { limit = { check_variable = { ammunitionSilo_tgt > 0 } }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM] # levels of damage
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
+	# #удары по потом тэс та и все вроде
+	# nto_thermal_power_plant_strike_rc = {
+	# 	days_to_prepare = 1 #2
+	# 	days_re_enable = 0
+	# 	category = on_energy_infrastructure_strikes
+	# 	command_power = 3 # command power allocation cost
+	# 	ai_will_do = {
+	# 		base = 1
+	# 	}
+	# 	allowed = {
+	# 		has_dlc = "Gotterdammerung"
+	# 		original_tag = NTO
+	# 	}
+	# 	visible = { }
+		
+	# 	show_target = {
+	# 		NOT = { is_in_faction_with = FROM }
+	# 		var:target_state = {
+	# 			thermal_power_plant > 0
+	# 		}
+	# 	}
+	
+	# 	available = {
+	# 		has_war_with = FROM
+	# 	}
+	
+	# 	target_type = {
+	# 		building = {
+	# 			type = thermal_power_plant
+	# 		}
+	# 	}
+	# 	target_icon = GFX_other_target_icon
+	# 	launch_sound = raid_launch_air
+	
+	# 	arrow = {
+	# 		type = air
+	# 	}
+		
+	# 	unit_model = {
+	# 	}
+	
+	# 	unit_requirements = {
+	# 		equipment = {
+	# 			type = { strategic_bomber }
+	# 			amount = { min = 2 }
+	# 		}
+	# 	}
+	
+	# 	additional_equipment = {
+	# 		nto_medium_guided_missile_equipment = 10
+	# 	}
+	
+	# 	starting_point = {
+	# 		types = { air_base }
+	# 	}
+	
+	# 	success_factors = {
+	# 		success = {
+	# 			base = 0.80
+	# 		}
+	# 		disaster = {
+	# 			base = 0.01
+	# 		}
+	# 		critical = {
+	# 			base = 0.10
+	# 		}
+	# 	}
+	
+	# 	success_levels = {
+	# 		failure = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "raid_failed_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		limited_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 					set_temp_variable = { ROOT.thermal_pp_tgt = THIS.building_level@thermal_power_plant }
+	# 				}
+	
+	# 				add_to_temp_variable = { thermal_pp = 0.5 }
+	
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.4
+	# 					max = 0.6
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = { check_variable = { thermal_pp > 0 } }
+	# 					divide_temp_variable = { building_damage_by_missile = thermal_pp }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = thermal_pp_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { check_variable = { thermal_pp_tgt > 0 } }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = thermal_power_plant
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_limited_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 					set_temp_variable = { ROOT.thermal_pp_tgt = THIS.building_level@thermal_power_plant }
+	# 				}
+	
+	# 				add_to_temp_variable = { thermal_pp = 0.5 }
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.6
+	# 					max = 0.8
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = { check_variable = { thermal_pp > 0 } }
+	# 					divide_temp_variable = { building_damage_by_missile = thermal_pp }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = thermal_pp_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { check_variable = { thermal_pp_tgt > 0 } }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = thermal_power_plant
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+
+	# 		critical_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 					set_temp_variable = { ROOT.thermal_pp_tgt = THIS.building_level@thermal_power_plant }
+	# 				}
+
+	# 				add_to_temp_variable = { thermal_pp = 0.5 }
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.8
+	# 					max = 1
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+	# 				if = {
+	# 					limit = { check_variable = { thermal_pp > 0 } }
+	# 					divide_temp_variable = { building_damage_by_missile = thermal_pp }
+	# 				}
+
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+
+	# 				set_temp_variable = { max_clamp = thermal_pp_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+
+	# 				var:target_state = {
+	# 					if = { limit = { check_variable = { thermal_pp_tgt > 0 } }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = thermal_power_plant
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+	# 	}
+	# } 
+	# nto_thermal_power_plant_strike_bl = {
+	# 	days_to_prepare = 1 #2
+	# 	days_re_enable = 0
+	# 	category = on_energy_infrastructure_strikes
+	# 	command_power = 3 # command power allocation cost
+	# 	ai_will_do = {
+	# 		base = 1
+	# 	}
+	# 	allowed = {
+	# 		has_dlc = "Gotterdammerung"
+	# 		original_tag = NTO
+	# 	}
+	# 	visible = { }
+		
+	# 	show_target = {
+	# 		NOT = { is_in_faction_with = FROM }
+	# 		var:target_state = {
+	# 			thermal_power_plant > 0
+	# 		}
+	# 	}
+	
+	# 	available = {
+	# 		has_war_with = FROM
+	# 	}
+	
+	# 	target_type = {
+	# 		building = {
+	# 			type = thermal_power_plant
+	# 		}
+	# 	}
+	# 	target_icon = GFX_other_target_icon
+	# 	launch_sound = raid_launch_air
+	
+	# 	arrow = {
+	# 		type = air
+	# 	}
+		
+	# 	unit_model = {
+	# 	}
+	
+	# 	unit_requirements = {
+	# 		equipment = {
+	# 			type = { ballistic_missile_equipment }
+	# 			amount = { min = 12 }
+	# 		}
+	# 	}
+	
+	# 	additional_equipment = {
+	# 		ballistic_missile_equipment = 8
+	# 	}
+	
+	# 	starting_point = {
+	# 		types = { air_base }
+	# 	}
+	
+	# 	success_factors = {
+	# 		success = {
+	# 			base = 0.80
+	# 		}
+	# 		disaster = {
+	# 			base = 0.01
+	# 		}
+	# 		critical = {
+	# 			base = 0.10
+	# 		}
+	# 	}
+	
+	# 	success_levels = {
+	# 		failure = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "raid_failed_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		limited_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 					set_temp_variable = { ROOT.thermal_pp_tgt = THIS.building_level@thermal_power_plant }
+	# 				}
+	
+	# 				add_to_temp_variable = { thermal_pp = 0.5 }
+	
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.4
+	# 					max = 0.6
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = { check_variable = { thermal_pp > 0 } }
+	# 					divide_temp_variable = { building_damage_by_missile = thermal_pp }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = thermal_pp_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { check_variable = { thermal_pp_tgt > 0 } }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = thermal_power_plant
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_limited_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+	
+	# 		success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 					set_temp_variable = { ROOT.thermal_pp_tgt = THIS.building_level@thermal_power_plant }
+	# 				}
+	
+	# 				add_to_temp_variable = { thermal_pp = 0.5 }
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+	
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.6
+	# 					max = 0.8
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+	
+	# 				if = {
+	# 					limit = { check_variable = { thermal_pp > 0 } }
+	# 					divide_temp_variable = { building_damage_by_missile = thermal_pp }
+	# 				}
+	
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+	
+	# 				set_temp_variable = { max_clamp = thermal_pp_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+	
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+	
+	# 				var:target_state = {
+	# 					if = { limit = { check_variable = { thermal_pp_tgt > 0 } }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = thermal_power_plant
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 			visual_effect = {
+	# 				entity = "air_raids_2_success_entity"
+	# 				animation = "attack"
+	# 			}
+	# 		}
+
+	# 		critical_success = {
+	# 			victim_effects = {
+	# 				var:target_state = {
+	# 					set_temp_variable = { ROOT.thermal_pp = THIS.non_damaged_building_level@thermal_power_plant }
+	# 					set_temp_variable = { ROOT.thermal_pp_tgt = THIS.building_level@thermal_power_plant }
+	# 				}
+
+	# 				add_to_temp_variable = { thermal_pp = 0.5 }
+	# 				set_temp_variable = { building_damage_by_missile = 0.25 }
+
+	# 				set_temp_variable_to_random = {
+	# 					var = missile_luck_mod
+	# 					min = 0.8
+	# 					max = 1
+	# 				}
+	# 				multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+	# 				if = {
+	# 					limit = { check_variable = { thermal_pp > 0 } }
+	# 					divide_temp_variable = { building_damage_by_missile = thermal_pp }
+	# 				}
+
+	# 				multiply_temp_variable = { building_damage_by_missile = 5 }
+
+	# 				set_temp_variable = { max_clamp = thermal_pp_tgt }
+	# 				if = {
+	# 					limit = { check_variable = { max_clamp = 0 } }
+	# 					add_to_temp_variable = { max_clamp = 0.1 }
+	# 				}
+
+	# 				clamp_temp_variable = {
+	# 					var = building_damage_by_missile
+	# 					min = 0
+	# 					max = max_clamp
+	# 				}
+
+	# 				var:target_state = {
+	# 					if = { limit = { check_variable = { thermal_pp_tgt > 0 } }
+	# 						meta_effect = {
+	# 							text = {
+	# 								damage_building = {
+	# 									type = thermal_power_plant
+	# 									damage = [DAM] # levels of damage
+	# 								}
+	# 							}
+	# 							DAM = "[?building_damage_by_missile]"
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+	# 	}
+	# }
+
+	nto_strikes_on_institute_rc = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = on_institute_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.3.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2022.3.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+			}
+		}
+		visible = { }
+		
+		show_target = {
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				tags = facility
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { cas }
+				amount = { min = 2 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_light_guided_missile_equipment = 12
+		}
+	
+		starting_point = {
+			types = { air_base }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.80
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.facility = THIS.non_damaged_building_level@facility }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.05
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.1
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.15
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+
+	nto_institute_strike_drones = {
+		days_to_prepare = 1 #2
+		days_re_enable = 0
+		category = on_institute_strikes
+		command_power = 0 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2024.1.1
+			}
+			modifier = {
+				factor = 0.2
+				date < 2024.1.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+			}
+		}
+		visible = { }
+		
+		show_target = {
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				tags = facility
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { nto_guided_uav_equipment }
+				amount = { min = 12 }
+			}
+		}
+	
+		additional_equipment = {
+			nto_guided_uav_equipment = 8
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.60
+				experience = {
+					weight = 0.1
+					start_weight = -0.1
+					reference = 1.0
+				}
+				air_defence = {
+					reference = 100
+					weight = 0.06
+					start_weight = -0.06
+				}
+				interception = {
+					reference = 2
+					weight = -0.2
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.25
+				}
+			}
+			disaster = {
+				base = 0.20
+			}
+			critical = {
+				base = 0.05
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { ROOT.facility = THIS.non_damaged_building_level@facility }
+					}
+				}
+				visual_effect = {
+					entity = "raid_failed_entity"
+					animation = "attack"
+				}
+			}
+	
+			limited_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.05
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+	
+			success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.6
+						max = 0.8
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.1
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.8
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+					multiply_temp_variable = { building_damage_by_missile = 1 }
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						max = 1
+					}
+					multiply_temp_variable = { building_damage_by_missile = 0.5 }
+					var:target_state = {
+						meta_effect = {
+							text = {
+								damage_building = {
+									tags = facility
+									province = var:ROOT.target_province
+									damage = [DAM] # levels of damage
+								}
+							}
+							DAM = "[?building_damage_by_missile]"
+						}
+						raid_reduce_project_progress_ratio = 0.15
+					}
+				}
+				visual_effect = {
+					entity = "air_raids_2_limited_success_entity"
+					animation = "attack"
+				}
+			}
+		}
+	}
+}
