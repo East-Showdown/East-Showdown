@@ -530,7 +530,6 @@ DPR_main_gui = {
 		}
 		remove_effect = {
 			army_experience = -25
-			#add_manpower = 30000
 			add_equipment_to_stockpile = {
 				type = infantry_equipment_0
 				amount = 2500
@@ -543,6 +542,25 @@ DPR_main_gui = {
 			}
 			custom_effect_tooltip = DPR_mobilization_decision_tt
 			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = apc_sov_btr50_equipment
+					variant_name = "БТР-50"
+					amount = 820
+				}
+				add_equipment_to_stockpile = {
+					type = sov_artillery_d1_equipment 
+					amount = 310
+				}
+				add_equipment_to_stockpile = {
+					type = imv_light_0_equipment
+					variant_name = "ГАЗ-66 «Шишига»"
+					amount = 2050
+				}
+				add_equipment_to_stockpile = {
+					type = imv_heavy_0_equipment
+					variant_name = "УАЗ-4320"
+					amount = 620
+				}
 				random_controlled_state = {
 					create_unit = { division = "name = \"1.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
 					create_unit = { division = "name = \"2.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
@@ -1537,13 +1555,6 @@ DPR_main_gui = {
 						}
 					}
 				}
-				random_controlled_state = {
-					create_unit = { division = "name = \"1-y motostrelkoviy Batalion osobogo naznacheniya 1-y Slavyanskoy Brigady\" division_template = \"Motostrelkoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"2-y motostrelkoviy Batalion 1-y Slavyanskoy Brigady\" division_template = \"Motostrelkoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
-					}
-				}
 			}
 		}
 		ai_will_do = {
@@ -1559,19 +1570,19 @@ DPR_main_gui = {
 		visible = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
-
 		remove_effect = {
-			add_command_power = 35
+			add_command_power = 35 
 			army_experience = 20
 			custom_effect_tooltip = DPR_expand_gorlovka_brigade_decision_tt
 			add_equipment_to_stockpile = {
 				type = t72_chassis
+				version_name = "Т-72Б3"
 				amount = 50
 				producer = DPR
 			}
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"2-y Tankoviy Batalion 3-y otdelnoy gvardeyskoy Gorlovskiy motostrelkovoy ordena Respubliki brigady \"Berkut\" division_template = \"Tankoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
+				DPR = {
+					load_oob = DPR_expand_horlivka_brigade
 				}
 			}
 		}
@@ -1588,17 +1599,19 @@ DPR_main_gui = {
 		visible = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
-
 		remove_effect = {
 			add_command_power = 15
 			army_experience = 30
 			custom_effect_tooltip = DPR_expand_zaharchenko_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"3-y Motostrelkoviy Batalion 5-y Brigady imeni A. V. Zaharchenko\" division_template = \"Motostrelkoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"4-y Motostrelkoviy Batalion 5-y Brigady imeni A. V. Zaharchenko\" division_template = \"Motostrelkoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
+				DPR = {
+					load_oob = DPR_expand_zaharchenko_brigade_1
+				}
+				random_list = {
+					50 = {
+						DPR = {
+							load_oob = DPR_expand_zaharchenko_brigade_2
+						}
 					}
 				}
 			}
@@ -1616,14 +1629,13 @@ DPR_main_gui = {
 		visible = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
-
 		remove_effect = {
 			add_command_power = 15
 			army_experience = 10
 			custom_effect_tooltip = DPR_expand_100th_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"4-y Motostrelkoviy Batalion 100-y Brigady\" division_template = \"Motostrelkoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
+				DPR = {
+					load_oob = DPR_expand_100th_brigade
 				}
 			}
 		}
@@ -1645,16 +1657,14 @@ DPR_main_gui = {
 		}
 		complete_effect = {
 			division_template = {
-				name = "Motostrelkoviy Batalion Morskoy Pechoty"	# Tanki vrym vrym
+				name = "Motostrelkoviy Batalion Morskoy Pechoty"
 				is_locked = yes
 				division_names_group = DPR_MAR_01
-				#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
 				regiments = {
 					marine = {x = 0 y = 0}																				
-					apc = {x = 0 y = 1}																				
-					apc = {x = 0 y = 2}																				
-					apc = {x = 0 y = 3}																				
-					towed_art = {x = 1 y = 0}														
+					marine = {x = 0 y = 1}																				
+					apc = {x = 1 y = 0 }																				
+					apc = {x = 1 y = 1 }							
 				}
 				support = {
 					engineer = {x = 0 y = 0}																				
@@ -1663,9 +1673,9 @@ DPR_main_gui = {
 					recon = {x = 0 y = 3}																				
 					logistics_company = {x = 0 y = 4}																				
 					sp_aa = {x = 0 y = 5}																				
-					artillery = {x = 1 y = 0}#не баг																						
-					maintenance_company = {x = 1 y = 1}		#не баг																				
-					sniper = {x = 1 y = 2}		#не баг																				
+					artillery = {x = 1 y = 0}																						
+					maintenance_company = {x = 1 y = 1}																				
+					sniper = {x = 1 y = 2}																		
 					atgm = {x = 1 y = 3}														
 					mortar = {x = 1 y = 4}																		
 				}
@@ -1678,7 +1688,7 @@ DPR_main_gui = {
 				regiments = {
 					tank_sov = {x = 0 y = 0}																				
 					tank_sov = {x = 0 y = 1}																				
-					apc = {x = 1 y = 0}																				
+					marine = {x = 1 y = 0}																				
 					marine = {x = 1 y = 1}																																
 				}
 				support = {
@@ -1702,10 +1712,8 @@ DPR_main_gui = {
 			navy_experience = 15
 			custom_effect_tooltip = DPR_morpekhy_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"3-y Motostrelkoviy batalion «Semenovskiy» 9-oy Brigady Morskoy Pechoty\" division_template = \"Motostrelkoviy Batalion Morskoy Pechoty\" start_experience_factor = 0.8 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"4-y Motostrelkoviy batalion 9-oy Brigady Morskoy Pechoty\" division_template = \"Motostrelkoviy Batalion Morskoy Pechoty\" start_experience_factor = 0.8 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2-y Tankoviy batalion 9-oy Brigady Morskoy Pechoty\" division_template = \"Tankoviy Batalion Morskoy Pechoty\" start_experience_factor = 0.8 start_equipment_factor = 0.01"  owner = DPR }
+				DPR = {
+					load_oob = DPR_expand_marines
 				}
 				delete_units = {
 					division_template = "Marines batalion"
@@ -1733,11 +1741,9 @@ DPR_main_gui = {
 			army_experience = 30
 			custom_effect_tooltip = DPR_expand_kalmius_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"4-y Pushechniy Divizion Brigady «Kalmius»\" division_template = \"Artilleriyskiy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"5-y Pushechniy Divizion Brigady «Kalmius»\" division_template = \"Artilleriyskiy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
+				DPR = {
+					load_oob = DPR_expand_kalmius
 				}
-
 			}
 		}
 		ai_will_do = {
@@ -1760,10 +1766,9 @@ DPR_main_gui = {
 			army_experience = 20
 			custom_effect_tooltip = DPR_expand_vostok_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"3-y Motostrelkoviy Batalion Brigady «Vostok»\" division_template = \"Motostrelkoviy batalion\" start_experience_factor = 0.3 start_equipment_factor = 0.01"  owner = DPR }
+				DPR = {
+					load_oob = DPR_expand_vostok
 				}
-
 			}
 		}
 		ai_will_do = {
@@ -1787,12 +1792,9 @@ DPR_main_gui = {
 			army_experience = 45
 			custom_effect_tooltip = DPR_expand_khan_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"3-y batal'on SpN «Khan»\" division_template = \"Sili osobogo naznacheniya\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"4-y batal'on SpN «Sparta»\" division_template = \"Sili osobogo naznacheniya\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-				
+				DPR = {
+					load_oob = DPR_expand_khan
 				}
-
 			}
 		}
 		ai_will_do = {
@@ -1880,7 +1882,7 @@ DPR_main_gui = {
 					prisoners = { x = 0 y = 3 }
 					prisoners = { x = 0 y = 4 }
 					apc = { x = 1 y = 0 }
-					ifv_sov = { x = 1 y = 1 }
+					apc = { x = 1 y = 1 }
 				}
 				support = {
 					engineer = { x = 0 y = 0 }
@@ -1901,15 +1903,14 @@ DPR_main_gui = {
 			army_experience = 35
 			custom_effect_tooltip = DPR_wagner_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"1-y Batalion ChVK Wagner\" division_template = \"CHVK «Wagner»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"2-y Batalion ChVK Wagner\" division_template = \"CHVK «Wagner»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					}
-				
+				DPR = { 
+					load_oob = DPR_CHVK_Wagner_1
 				}
-
+				random_list = {
+					50 = {
+						load_oob = DPR_CHVK_Wagner_2
+					}
+				}
 			}
 		}
 		ai_will_do = {
@@ -1962,8 +1963,8 @@ DPR_main_gui = {
 			army_experience = 15
 			custom_effect_tooltip = DPR_redut_batalion_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"1. Batalion CHVK Redut\" division_template = \"CHVK «Redut»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }				
+				DPR = {
+					load_oob = DPR_CHVK_Redut
 				}
 			}
 		}
@@ -1995,8 +1996,8 @@ DPR_main_gui = {
 					spetsnaz = { x = 0 y = 0 }
 					spetsnaz = { x = 0 y = 1 }
 					spetsnaz = { x = 0 y = 2 }
-					spetsnaz = { x = 0 y = 2 }
 					apc = { x = 1 y = 0 }
+					apc = { x = 1 y = 1 }
 				}
 				support = {
 					engineer = { x = 0 y = 0 }
@@ -2017,13 +2018,16 @@ DPR_main_gui = {
 			army_experience = 10
 			custom_effect_tooltip = DPR_RSB_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"1. Batalion CHVK RSB-Group\" division_template = \"CHVK «RSB-Group»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"1. Batalion CHVK RSB-Group\" division_template = \"CHVK «RSB-Group»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					}				
+				DPR = {
+					load_oob = DPR_CHVK_RSB_1
 				}
+				random_list = {
+					50 = {
+						DPR = {
+							load_oob = DPR_CHVK_RSB_2
+						}
+					}
+				}				
 			}
 		}
 		ai_will_do = {
@@ -2074,15 +2078,14 @@ DPR_main_gui = {
 		remove_effect = {
 			add_command_power = 35
 			army_experience = 15
-			custom_effect_tooltip = DPR_patriot_brigade_decision_tt
+			custom_effect_tooltip = DPR_patriot_brigade_decision_tt 
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"1. Batalion CHVK Patriot\" division_template = \"CHVK «Patriot»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"1. Batalion CHVK Patriot\" division_template = \"CHVK «Patriot»\" start_experience_factor = 0.7 start_equipment_factor = 0.01"  owner = DPR }
-					}				
-				}
+				load_oob = DPR_CHVK_Patriot_1
+				random_list = {
+					50 = {
+						load_oob = DPR_CHVK_Patriot_2
+					}
+				}				
 			}
 		}
 		ai_will_do = {
@@ -2133,12 +2136,16 @@ DPR_main_gui = {
 			army_experience = 5
 			custom_effect_tooltip = DPR_cossacks_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"1. Dobrovolcheskiy Batalion Priazovskogo Kazachego Voiska DPR\" division_template = \"Dobrovolcheskiy Kozachiy Batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"2. Dobrovolcheskiy Batalion Priazovskogo Kazachego Voiska DPR\" division_template = \"Dobrovolcheskiy Kozachiy Batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					}				
+				DPR = {
+					load_oob = DPR_Cossacks_1
+				}
+				random_list = {
+					50 = {}
+					50 = {
+						DPR = {
+							load_oob = DPR_Cossacks_2
+						}
+					}			
 				}
 			}
 		}
@@ -2191,19 +2198,15 @@ DPR_main_gui = {
 			army_experience = 10
 			custom_effect_tooltip = DPR_bastion_brigade_decision_tt
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"1. Batalion SpN MVD DPR «Bastion»\" division_template = \"Batalion SpN MVD DPR «Bastion»\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2. Batalion SpN MVD DPR «Bastion»\" division_template = \"Batalion SpN MVD DPR «Bastion»\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3. Batalion SpN MVD DPR «Bastion»\" division_template = \"Batalion SpN MVD DPR «Bastion»\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"4. Batalion SpN MVD DPR «Bastion»\" division_template = \"Batalion SpN MVD DPR «Bastion»\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					}	
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"5. Batalion SpN MVD DPR «Bastion»\" division_template = \"Batalion SpN MVD DPR «Bastion»\" start_experience_factor = 0.4 start_equipment_factor = 0.01"  owner = DPR }
-					}			
+				load_oob = DPR_Bastion_1
+				random = {
+					chance = 50
+					load_oob = DPR_Bastion_2
 				}
+				random = {
+					chance = 50
+					load_oob = DPR_Bastion_3
+				}		
 			}
 		}
 		ai_will_do = {
