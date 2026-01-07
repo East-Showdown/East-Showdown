@@ -1,0 +1,388 @@
+# set_temp_variable = { SuppressWarnings = 1 } в параметрах вызова не приводит к выкидыванию предупреждения о несоответствии версий
+
+# SOFT_FAIL - Определенные передаваемые параметры (опциональные) могут сработать некорректно.	
+# 	Однако SOFT_FAIL гарантирует корректное исполнение инвариативной логики, даже если опциональные элементы не сработали.
+ 
+
+# -----------------------------------------------------------
+# PUBLIC: ESAPI_transfer_state_building	[SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+# 
+# 
+# Перед вызовом установи temp переменные:
+#  api_src_state_id – исходный стейт
+#  api_trg_state_id – целевой стейт
+#  api_building_type – токен здания (token:<building> )
+#  api_amount – сколько переносим
+#  api_consider_energy_opt  (0|1) – надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#  api_put_extra_slots_opt  (0|1) – нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#  		api_put_number_extra_slots_opt  – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# -----------------------------------------------------------
+
+ESAPI_transfer_state_building = {
+	set_temp_variable = { method_version = 062 }
+	ESAPI_int_check_version = yes
+
+	set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
+	set_temp_variable = { loc_sugar_api_trg_state_id = api_trg_state_id }
+	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
+	set_temp_variable = { loc_sugar_api_amount = api_amount }
+	set_temp_variable = { loc_sugar_api_consider_energy_opt = api_consider_energy_opt }
+
+	if = {
+		limit = { 
+			ROOT = {
+			check_variable = { api_src_state_id > 0 }
+            check_variable = { api_trg_state_id > 0 }
+            check_variable = { api_amount > 0 }
+            NOT = { check_variable = { api_building_type = 0 } }
+			}
+		} 
+		hidden_effect = {
+			ROOT = { ESAPI_int_transfer_state_building = yes }
+		}
+	} else = {
+		log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: : transfer_state_building – missing or invalid parameters."
+		log = "[EasyScriptsAPI] api_src_state_id=[?api_src_state_id] api_trg_state_id=[?api_trg_state_id] api_building_type=[?api_building_type] api_amount=[?api_amount]"
+	}
+}
+
+# -----------------------------------------------------------
+# PUBLIC: ESAPI_transfer_area_building	[SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+# 
+# 
+# Перед вызовом установи temp переменные:
+#  api_src_state_id – исходный стейт
+#  api_state_candidates - массив стейтов кандидатов
+#  api_building_type – токен здания (token:<building> )
+#  api_amount – сколько переносим
+#  api_consider_energy_opt  (0|1) – надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#  api_put_extra_slots_opt  (0|1) – нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#  		api_put_number_extra_slots_opt  – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# -----------------------------------------------------------
+
+
+ESAPI_transfer_area_building = {
+	set_temp_variable = { method_version = 062 }
+	ESAPI_int_check_version = yes
+
+	set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
+	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
+	set_temp_variable = { loc_sugar_api_amount = api_amount }
+	set_temp_variable = { loc_sugar_api_consider_energy_opt = api_consider_energy_opt }
+
+	if = {
+		limit = {
+			ROOT = {
+				check_variable = { api_src_state_id > 0 }
+				check_variable = { api_amount > 0 }
+				NOT = { check_variable = { api_building_type = 0 } }
+			}
+		}
+
+		for_each_loop = {
+			array = api_state_candidates
+			index = i
+			if = { 
+				limit = {
+					var:api_state_candidates^i = { 
+						is_fully_controlled_by = ROOT
+					} 
+					NOT = {
+						check_variable = {
+							api_state_candidates^i = api_src_state_id
+						}
+					}
+				}
+				add_to_temp_array = { array = esapi_valid_targets value = api_state_candidates^i }
+			}
+		}
+
+		if = { 
+			limit = { 
+				NOT = { check_variable = { esapi_valid_targets^0 < 1 } } 
+			}
+			set_temp_variable = { api_trg_state_id = global.esapi_valid_targets^0 }
+
+			hidden_effect = {
+				ROOT = { ESAPI_int_transfer_state_building = yes }
+			}
+		} 
+	}
+
+	else = {
+		log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: transfer_area_building – missing or invalid parameters."
+		log = "[EasyScriptsAPI] api_src_state_id=[?api_src_state_id] api_amount=[?api_amount] api_building_type=[?api_building_type]"
+	}
+}
+
+
+
+# ===========================================================
+# PUBLIC:  ESAPI_transfer_random_state_building  [SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+#
+# Перед вызовом установи temp переменные:
+#  api_src_state_id – исходный стейт
+#  api_building_type – токен здания (token:<building> )
+#  api_amount – сколько переносим
+#  api_consider_energy_opt  (0|1) – надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#  api_put_extra_slots_opt  (0|1) – нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#  		api_put_number_extra_slots_opt  – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# -----------------------------------------------------------
+ESAPI_transfer_random_state_building = {
+	set_temp_variable = { method_version = 062 }
+    ESAPI_int_check_version = yes
+
+    set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
+    set_temp_variable = { loc_sugar_api_building_type = api_building_type }
+    set_temp_variable = { loc_sugar_api_amount = api_amount }
+    set_temp_variable = { loc_sugar_api_consider_energy_opt = api_consider_energy_opt }
+
+    if = {
+        limit = {
+            ROOT = {
+                check_variable = { api_src_state_id > 0 }
+                check_variable = { api_amount > 0 }
+                NOT = { check_variable = { api_building_type = 0 } }
+            }
+        }
+        random_owned_controlled_state = {
+            ROOT = {
+                set_temp_variable = { api_trg_state_id = THIS }
+            }
+        }
+        hidden_effect = {
+            ROOT = { ESAPI_int_transfer_state_building = yes }
+        }
+	} else = {
+		log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: : transfer_state_building – missing or invalid parameters."
+		log = "[EasyScriptsAPI] api_src_state_id=[?api_src_state_id] api_trg_state_id=[?api_trg_state_id] api_building_type=[?api_building_type] api_amount=[?api_amount]"
+	}
+}
+
+
+
+
+# ===========================================================
+# PUBLIC:  ESAPI_add_state_building [SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+# 
+# 
+# Перед вызовом установи temp переменные:
+#   api_state_id – целевой стейт
+#   api_building_type – токен здания (token:<building> )
+#   api_amount – сколько строим
+#   api_consider_energy_opt – (0|1)  надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#   api_put_extra_slots_opt – (0|1)  нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#   api_put_number_extra_slots_opt – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# ===========================================================
+
+ESAPI_add_state_building = {
+	set_temp_variable = { method_version = 062 }
+	ESAPI_int_check_version = yes
+
+	set_temp_variable = { loc_sugar_api_state_id = api_state_id }
+	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
+	set_temp_variable = { loc_sugar_api_amount = api_amount }
+	set_temp_variable = { loc_sugar_api_consider_energy_opt = api_consider_energy_opt }
+
+	
+    if = {
+        limit = {
+            ROOT = {
+                check_variable = { api_state_id > 0 }
+                check_variable = { api_amount > 0 }
+                NOT = { check_variable = { api_building_type = 0 } }
+            }
+        }
+        ROOT = { ESAPI_int_add_state_building = yes }
+    }
+    else = {
+        log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: add_state_building – missing or invalid parameters."
+        log = "[EasyScriptsAPI] api_state_id=[?api_state_id] api_building_type=[?api_building_type] api_amount=[?api_amount]"
+    }	
+} 
+
+
+
+# ===========================================================
+# PUBLIC:  ESAPI_add_random_state_building  [SOFT_FAIL]
+# ADDED IN: 0.6.0.0
+#
+# Перед вызовом установи temp переменные:
+#   api_building_type – токен здания (token:<building> )
+#   api_amount – сколько строим
+#   api_consider_energy_opt – (0|1)  надо ли проверять энергопотребление | ОПЦИОНАЛЬНО 
+#   api_put_extra_slots_opt – (0|1)  нужно ли класть в стейт экстра-слоты, по умолчанию (если = 0) кладёт количество равное n-переносимым постройкам | ОПЦИОНАЛЬНО 
+#   api_put_number_extra_slots_opt – ЕСЛИ  api_put_extra_slots_opt = 1 ,
+# 		вы можете передать свое количество экстра-слотов. Если не хотите класть слоты - не декларируйте переменную | ОПЦИОНАЛЬНО 
+# ===========================================================
+
+ESAPI_add_random_state_building = {
+	set_temp_variable = { method_version = 062 }
+	ESAPI_int_check_version = yes
+
+	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
+	set_temp_variable = { loc_sugar_api_amount = api_amount }
+	set_temp_variable = { loc_sugar_api_consider_energy_opt = api_consider_energy_opt }
+
+	if = {
+		limit = {
+				ROOT = {
+				check_variable = { api_amount > 0 }
+				NOT = { check_variable = { api_building_type = 0 } }
+			}
+		}
+		random_owned_controlled_state = {
+			ROOT = { set_temp_variable = { api_state_id = THIS } }
+		}
+		ROOT = { ESAPI_int_add_state_building = yes }
+
+	else = {
+		log = "[EasyScriptsAPI] ESAPI_INVALID_ARGUMENT_ERROR: add_random_state_building – missing or invalid parameters."
+		log = "[EasyScriptsAPI] api_building_type=[?api_building_type] api_amount=[?api_amount]"
+	}
+	
+	}
+}
+
+
+#TODO ESAPI_add_random_area_building
+
+
+
+
+#TODO Добавляет в x-стейте меняет количество населения. Реализовать и связать с механикой населения.
+ESAPI_add_state_population = { } 
+
+
+ESAPI_generate_western_ukraine_state_candidates = { 
+	add_to_temp_array = { api_state_candidates = 88 }
+	add_to_temp_array = { api_state_candidates = 114 }
+	add_to_temp_array = { api_state_candidates = 124 }
+	add_to_temp_array = { api_state_candidates = 76 }
+	add_to_temp_array = { api_state_candidates = 119 }
+	add_to_temp_array = { api_state_candidates = 153 }
+	add_to_temp_array = { api_state_candidates = 142 }
+	add_to_temp_array = { api_state_candidates = 121 }
+	add_to_temp_array = { api_state_candidates = 93 }
+	add_to_temp_array = { api_state_candidates = 110 }
+	add_to_temp_array = { api_state_candidates = 76 }
+}
+
+# ===========================================================
+# PUBLIC:  ESAPI_calculate_linear
+# ADDED IN: 0.6.0.0
+# Используется для вычилсение промежуточного значения в диапазоне по формуле линейной интерполяции
+#
+# Перед вызовом установи temp переменные:
+#   api_x1 – нижняя граница диапазона
+#   api_y1 – значение на нижней границе диапазона
+#   api_x2 - высшая граница диапазона
+#   api_y2 - значение на высшей границе диапазона
+#   api_target_x - точка в диапазоне для вычисления значения
+#   api_target_y - переменная для записи найденного значения 
+# ===========================================================
+ESAPI_calculate_linear = {
+	# Formula: api_target_y = (api_target_x - api_x1) * (api_y2 - api_y1) / (api_x2 - api_x1) + api_y1
+
+	# api_target_x - api_x1
+	set_temp_variable = { temp_1 = api_target_x }
+	subtract_from_temp_variable = { temp_1 = api_x1 }
+
+	# api_y2 - api_y1
+	set_temp_variable = { temp_2 = api_y2 }
+	subtract_from_temp_variable = { temp_2 = api_y1 }
+
+	# api_x2 - api_x1
+	set_temp_variable = { temp_3 = api_x2 }
+	subtract_from_temp_variable = { temp_3 = api_x1 }
+
+		
+	add_to_temp_variable = { api_target_y = temp_1 }
+	divide_temp_variable = { api_target_y = temp_3 }
+	multiply_temp_variable = { api_target_y = temp_2 }
+	add_to_temp_variable = { api_target_y = api_y1 }
+
+}
+
+
+# Эффект передачи стейтов внутри географической области определённой стране, если стейт полностью контролируется её союзником
+# Must contain temp vars:
+# 1. temp_country_tag
+# 2. temp_selected_region_index
+ESAPI_selected_region_transfer_states_to_country_if_controlled_by_ally = {
+	if = {
+		limit = { var:temp_country_tag = { exists = yes } }
+
+		for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+			start = global.selected_region_to_regions_ids_start_index^global.temp_selected_region_index
+			end = global.selected_region_to_regions_ids_end_index^global.temp_selected_region_index
+			value = temp_region_index
+
+			set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+			for_loop_effect = { # Цикл по стейтам
+				start = global.regions_to_states_ids_start_index^temp_region_id
+				end = global.regions_to_states_ids_end_index^temp_region_id
+				value = temp_state_index
+
+				set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+				var:temp_state_id = { 
+					if = {
+						limit = { 
+							controller = { 
+								NOT = { original_tag = var:temp_country_tag }
+								is_ally_with = var:temp_country_tag
+							}
+							is_fully_controlled_by = controller
+						}
+
+						var:temp_country_tag = { transfer_state = var:temp_state_id }
+						log = "[GetDateText]: Transfered State [THIS.GetID] to [?temp_country_tag.GetTag]"
+					}
+				}
+			}
+		}
+	}
+}
+
+# Эффект передачи стейтов внутри стратегиеческого региона определённой стране, если стейт полностью контролируется её союзником
+# Must contain temp vars:
+# 1. temp_country_tag
+# 2. temp_region_id
+ESAPI_strategic_region_transfer_states_to_country_if_controlled_by_ally = {
+	if = {
+		limit = { var:temp_country_tag = { exists = yes } }
+		
+		for_loop_effect = { # Цикл по стейтам
+			start = global.regions_to_states_ids_start_index^temp_region_id
+			end = global.regions_to_states_ids_end_index^temp_region_id
+			value = temp_state_index
+
+			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+			var:temp_state_id = { 
+				if = {
+					limit = { 
+						controller = { 
+							NOT = { original_tag = var:temp_country_tag }
+							is_ally_with = var:temp_country_tag
+						}
+						is_fully_controlled_by = controller
+					}
+
+					var:temp_country_tag = { transfer_state = var:temp_state_id }
+					log = "[GetDateText]: Transfered State [THIS.GetID] to [?temp_country_tag.GetTag]"
+				}
+			}
+		}
+	}
+}

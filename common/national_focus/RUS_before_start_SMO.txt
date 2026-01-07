@@ -15,6 +15,11 @@ focus_tree = {
 		cost = 0.143
 		x = 18
 		y = 0
+		allow_branch = {
+			NOT = {
+				has_global_flag = RUS_branch_operational_tactical_blocked
+			}
+		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_nato_advance_threat"
 			country_event = {
@@ -58,10 +63,9 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Preparing_for_Preemptive_Strike"
-			add_command_power = 200
+			add_command_power = 300
 			custom_effect_tooltip = preparing_for_Preemptive_Strike_tt
 			add_timed_idea = {  idea = strategic_redeployment  days = 31 }
-	
 		}
 	}
 	focus = {
@@ -76,8 +80,11 @@ focus_tree = {
 			factor = 1
 		}
 		allow_branch = {
- 			has_country_flag = RUS_expand_the_preparation_of_amphibious_operations_cf
-        }
+			has_country_flag = RUS_expand_the_preparation_of_amphibious_operations_cf
+			NOT = {
+				has_global_flag = RUS_branch_operational_tactical_blocked
+			}
+		}
 		available = {
 		    custom_trigger_tooltip = {
 				tooltip = SMO_not_started_tt
@@ -94,7 +101,24 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_expand_the_preparation_of_amphibious_operations"
 			army_experience = 10
 			air_experience = 5
-			custom_effect_tooltip = RUS_expand_the_preparation_of_amphibious_operations_cet
+			if = {
+				limit = {
+					NOT = {
+						has_country_flag = SMO_rightbank_Dnieper_c
+						has_country_flag = SMO_leftbank_Dnieper_c
+					}
+				}
+				custom_effect_tooltip = RUS_expand_the_preparation_of_amphibious_operations_cet
+			}
+			if = {
+				limit = {
+					OR = {
+						has_country_flag = SMO_rightbank_Dnieper_c
+						has_country_flag = SMO_leftbank_Dnieper_c
+					}
+				}
+				custom_effect_tooltip = RUS_expand_the_preparation_of_amphibious_operations_cet_d
+			}
 			custom_effect_tooltip = RUS_put_aside
 			hidden_effect = {
 				add_to_variable = { global.var_SMO_landing_VDV_history = 20 }
@@ -105,6 +129,8 @@ focus_tree = {
 				clamp_variable = {  var = global.var_SMO_landing_VDV_history_fail  min = 0 max = 100 }
 				clamp_variable = {  var = global.var_SMO_landing_Vasilkov  min = 0 max = 100 }
 				clamp_variable = {  var = global.var_SMO_landing_Vasilkov_fail  min = 0 max = 100 }
+				
+				add_to_variable = { SMO_landing_berdyansk_ce_tt = 2 }
 			}
 		}
 	}
@@ -137,7 +163,7 @@ focus_tree = {
 				target = DPR
 			}
 			send_equipment = {
-				equipment = motorized_equipment_1
+				equipment = imv_light_4_equipment
 				amount = 500
 				target = DPR
 			}
@@ -157,7 +183,7 @@ focus_tree = {
 				target = LPR
 			}
 			send_equipment = {
-				equipment = motorized_equipment_1
+				equipment = imv_light_4_equipment
 				amount = 500
 				target = LPR
 			}
@@ -199,6 +225,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Anti_Ukrainian_media_campaign"
+			increase_escalation_by_2_5 = yes
 			add_political_power = 25
 			add_war_support = 0.025
 			set_global_flag = start_information_war
@@ -351,17 +378,18 @@ focus_tree = {
 				add_manpower = 250
 				custom_effect_tooltip = RUS_kutuzov_DPR_ce
 			}
-			increase_escalation_by_2_5 = yes
+			increase_escalation_by_5 = yes
 			hidden_effect = {
+			    country_event = { id = rus.201 days = 1 }
 				LPR = {
 				    add_corps_commander_role = {
                         Character = esedulla_abachev
-                        traits={ armor_officer war_hero panzer_leader urban_assault_specialist }
-						skill=5
-						attack_skill=5
+                        traits={ armor_officer war_hero commando }
+						skill=2
+						attack_skill=3
 						defense_skill=2
-						planning_skill=3
-						logistics_skill=4
+						planning_skill=4
+						logistics_skill=3
                     }
 					add_advisor_role = {
 						character = esedulla_abachev
@@ -385,6 +413,26 @@ focus_tree = {
 						planning_skill=2
 						logistics_skill=1
                     }
+					add_corps_commander_role = {
+						Character = sergey_milchakov
+						traits={ engineer_officer promising_leader }
+						skill= 1
+						attack_skill=2
+						defense_skill=2
+						planning_skill=3
+						logistics_skill=2
+					}
+					add_corps_commander_role = {
+						Character = pavel_klimenko
+						traits = {
+							marine_commander harsh_leader
+						}
+						skill = 2
+						attack_skill = 2
+						defense_skill = 1
+						planning_skill = 3
+						logistics_skill = 3
+					}
 				}
 				news_event = { id = news.165 days = 3 }
 			}
@@ -407,7 +455,7 @@ focus_tree = {
 			army_experience = 10
 			add_field_marshal_role = {
 				Character = valery_gerasimov
-				traits={ infantry_officer superior_tactician }
+				traits={ infantry_officer organizer war_theorist }
 				skill=4
 				attack_skill = 4
 				defense_skill = 2
@@ -420,9 +468,9 @@ focus_tree = {
 			hidden_effect = {
 				add_dynamic_modifier = { modifier = RUS_sic_SMO_traits }
 				set_variable = { RUS_sic_SMO_army_org_factor = 0.05 }
-				set_variable = { RUS_sic_SMO_max_planning_factor = 0.15 }
+				set_variable = { RUS_sic_SMO_max_planning_factor = -0.1 }
 				set_variable = { RUS_sic_SMO_experience_gain_army_unit_factor = 0.075 }
-				set_variable = { RUS_sic_SMO_command_power_gain_mult = 0.05 }
+				set_variable = { RUS_sic_SMO_command_power_gain_mult = -0.15 }
 				news_event = { id = news.16 days = 15 }
 			}
 		}
@@ -489,10 +537,6 @@ focus_tree = {
 				custom_effect_tooltip = RUS_put_aside
 			}
 			hidden_effect = {
-			    add_to_variable = {	
-					var = RUS_VCRF_army_defence_factor
-					value = 0.05
-				}
 				add_to_variable = {	
 					var = RUS_VCRF_planning_speed
 					value = 0.1
@@ -528,13 +572,16 @@ focus_tree = {
 		    custom_effect_tooltip = RUS_special_operations_forces_tt
 			swap_ideas = { remove_idea = RUS_FSB add_idea = RUS_FSB_1 }
 
-			add_doctrine_cost_reduction = {
-				name = sso_doctrine_rus
-				cost_reduction = 0.25
-				uses = 1
-				category = sso_doctrine_category
+			add_mastery = {
+				amount = 30
+				track = tier_1_sso
 			}
-			
+			hidden_effect = {
+				country_event = {
+					id = rus.264
+					hours = 2
+				}
+			}
 			if = {
 				limit  = {
 					has_completed_focus = RUS_experience_Russian_Spring
@@ -813,7 +860,8 @@ focus_tree = {
 					has_country_flag = { flag = SMO_concentrated_attack_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_offensive_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_full_scale_invasion  days > 7 }
-					has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7}
+					has_country_flag = { flag = SMO_rightbank_Dnieper_c days > 7 } 
+					has_country_flag = { flag = SMO_leftbank_Dnieper_c days > 7 } 
 				}
 			}
 		}
@@ -824,8 +872,8 @@ focus_tree = {
 			add_doctrine_cost_reduction = {
 				name = entrenchment_focus
 				cost_reduction = 0.5
-				uses = 1
-				technology = entrenchment_focus
+				uses = 2
+				category = land_doctrine
 			}
 			add_timed_idea = {
 				idea = RUS_military_exercises_with_belarus
@@ -849,6 +897,7 @@ focus_tree = {
 			}
 			news_event = { id = news.164 hours = 10 }
 			increase_escalation_by_5 = yes
+
 		}
 	}
 	focus = {
@@ -923,29 +972,29 @@ focus_tree = {
 			hidden_effect = {
 				13 = {
 					create_unit = {
-						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
 						owner = RUS
 						prioritize_location = 9320
-						count = 2
+						count = 1
 					}
 					create_unit = {
-						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
 						owner = RUS
 						prioritize_location = 2277
-						count = 2
+						count = 1
 					}
 					create_unit = {
-						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+						division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
 						owner = RUS
 						prioritize_location = 4158
-						count = 2
+						count = 1
 					}
 				}
 				random = {
 					chance = 50
 					13 = {
 						create_unit = {
-							division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+							division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
 							owner = RUS
 							prioritize_location = 10654
 							count = 1
@@ -956,7 +1005,7 @@ focus_tree = {
 					chance = 50
 					13 = {
 						create_unit = {
-							division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Batalion BARS\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
+							division = "name = \"Batal'on boevogo armeyskogo rezerva strany\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.2 start_equipment_factor = 0.01"
 							owner = RUS
 							prioritize_location = 10654
 							count = 1
@@ -992,7 +1041,8 @@ focus_tree = {
 					has_country_flag = { flag = SMO_concentrated_attack_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_offensive_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_full_scale_invasion  days > 7 }
-					has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7}
+					has_country_flag = { flag = SMO_rightbank_Dnieper_c days > 7 } 
+					has_country_flag = { flag = SMO_leftbank_Dnieper_c days > 7 } 
 				}
 			}
 			has_completed_focus = RUS_send_military_advisers_to_the_LDPR
@@ -1003,10 +1053,23 @@ focus_tree = {
 		completion_reward= {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_put_the_troops_on_alert"
 		    add_command_power = 25
-			add_timed_idea = {
-				idea = RUS_combat_readiness_idea
-				days = 7
+			if = { 
+				limit = {
+					RUS = { 
+						is_ai = yes
+					}
+				}
+				add_timed_idea = {
+					idea = RUS_combat_readiness_idea_ai
+					days = 30
+				}
+			} else = {
+				add_timed_idea = {
+					idea = RUS_combat_readiness_idea
+					days = 7
+				}
 			}
+
 			increase_escalation_by_5 = yes
 		}
 		ai_will_do = {
@@ -1027,6 +1090,10 @@ focus_tree = {
 		}
 		available = {
 		    custom_trigger_tooltip = {
+				tooltip = SMO_gosdum_58243_trigger_tt
+				has_country_flag = SMO_gosdum_58243
+			}
+		    custom_trigger_tooltip = {
 				tooltip = SMO_choosing_plan_1_trigger_tt
 				OR = {
 				    has_country_flag = { flag = SMO_send_troops_to_the_republic_of_donbass  days > 7 }
@@ -1035,7 +1102,8 @@ focus_tree = {
 					has_country_flag = { flag = SMO_concentrated_attack_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_offensive_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_full_scale_invasion  days > 7 }
-					has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7}
+					has_country_flag = { flag = SMO_rightbank_Dnieper_c days > 7 } 
+					has_country_flag = { flag = SMO_leftbank_Dnieper_c days > 7 } has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7}
 				}
 			}
 			custom_trigger_tooltip = {
@@ -1047,10 +1115,12 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Recognition_People_Republics"
 		    add_political_power = 65
 			add_war_support = 0.05
-		    country_event = {
-				id = rus.9
-				days = 0
-            }
+		    effect_tooltip = {
+		        country_event = {
+				    id = rus.9
+				    hours = 0
+                }
+			}
 			if = {
 				Limit = { 
 					RUS = {
@@ -1079,6 +1149,9 @@ focus_tree = {
 				}
 			}
 			increase_escalation_by_5 = yes
+			hidden_effect = {
+				country_event = { id = rus.202 hours = 16 }
+			}
 		}
 	}
 	focus = {
@@ -1102,7 +1175,8 @@ focus_tree = {
 					has_country_flag = { flag = SMO_concentrated_attack_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_offensive_on_kyiv  days > 7 }
 					has_country_flag = { flag = SMO_full_scale_invasion  days > 7 }
-					has_country_flag = { flag = SMO_offensive_on_the_dnieper days > 7}
+					has_country_flag = { flag = SMO_rightbank_Dnieper_c days > 7 } 
+					has_country_flag = { flag = SMO_leftbank_Dnieper_c days > 7 } 
 				}
 			}
 			custom_trigger_tooltip = {
@@ -1121,10 +1195,6 @@ focus_tree = {
 				has_completed_focus = RUS_Allied_Resolve
 			}
 		}
-		select_effect = { 
-			log = "[GetDateText]: [Root.GetName]: Focus select_effect RUS_SMO"
-			UKR = { country_event = {  id = ukr.55 days = 1 hours = 23 } }
-		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_SMO"
 			add_ideas = society_high
@@ -1133,6 +1203,42 @@ focus_tree = {
 				set_variable = { RUS_RUB_1_neutrality_drift = -0.02 }
 				set_variable = { RUS_RUB_1_stability_factor = -0.2 }
 				set_variable = { RUS_RUB_1_consumer_goods_factor = 0.3 }
+				RUS = {
+					create_equipment_variant_sp_atgm_mt_lb_s_modulem_mt_12_rapira = yes
+					add_equipment_to_stockpile = {
+						type = sp_atgm_apc_sov_mtlb_equipment
+						variant_name = "МТ-ЛБ с модулем МТ-12 «Рапира»"
+						amount = 5
+						producer = RUS
+					}
+				}
+				UKR = {
+					create_equipment_variant_sp_atgm_mt_lb_s_modulem_mt_12_rapira = yes
+					add_equipment_to_stockpile = {
+						type = sp_atgm_apc_sov_mtlb_equipment
+						variant_name = "МТ-ЛБ с модулем МТ-12 «Рапира»"
+						amount = 5
+						producer = RUS
+					}
+				}
+				DPR = {
+					create_equipment_variant_sp_atgm_mt_lb_s_modulem_mt_12_rapira = yes
+					add_equipment_to_stockpile = {
+						type = sp_atgm_apc_sov_mtlb_equipment
+						variant_name = "МТ-ЛБ с модулем МТ-12 «Рапира»"
+						amount = 5
+						producer = RUS
+					}
+				}
+				LPR = {
+					create_equipment_variant_sp_atgm_mt_lb_s_modulem_mt_12_rapira = yes
+					add_equipment_to_stockpile = {
+						type = sp_atgm_apc_sov_mtlb_equipment
+						variant_name = "МТ-ЛБ с модулем МТ-12 «Рапира»"
+						amount = 5
+						producer = RUS
+					}
+				}
 			}
 
        		KAZ = { add_ideas = { does_not_participate_in_smo_in_ukraine } }
@@ -1140,16 +1246,12 @@ focus_tree = {
 			PMR = { add_ideas = { does_not_participate_in_smo_in_ukraine } }
 			WGN = { add_ideas = { does_not_participate_in_smo_in_ukraine } }
 			DPR = {
-        		complete_national_focus =  DPR_snovavoyna
 				hidden_effect = {
 					country_event = { id = DPR.2 days = 9 }
 				}
         	}
-        	LPR = { complete_national_focus =  LPR_snovavoyna }
-
 			hidden_effect = {
 
-				
 
 				if = {
 					limit = { UKR = { has_country_flag = UKR_mazynyk_hello }  }
@@ -1385,50 +1487,95 @@ focus_tree = {
 					}
 					
 				}
+
+
+				if =  {
+					limit = { 
+						RUS = { 
+							is_ai = yes
+						}
+					}
+					UKR = { 
+						country_event = { 
+							id = ukr_SMO.1
+							hours = 5
+						}
+					}
+				}
+
+
 				IF = { LIMIT = { RUS = { is_ai = no}}
-				262 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 22 } }
-				253 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 22 } }
-				644 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS days = 22 } }
-				231 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 22 } }
+				if = { 
+					limit = { 
+						NOT = { RUS = { has_country_flag = SMO_leftbank_Dnieper_c } } 
+					}
+					253 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					651 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					231 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					240 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }					
+					264 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					262 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					233 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
 
-			
-				253 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
-				651 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
-				231 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
-				240 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }					
-				264 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
-				262 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					643 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					642 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					644 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }	
+					413 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					1012 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
+					1019 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
 
-				251 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
-				289 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
-				226 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
-				246 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
-				223 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
-				242 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
-				646 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 14 } }
+					262 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 22 } }
+					253 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 22 } }
+					644 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS days = 22 } }
+					231 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper scope = RUS 	days = 22 } }
+				}
+				if = { 
+					limit = { 
+						has_country_flag = SMO_rightbank_Dnieper_c
+					}
+					1019 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					652 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					1016 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					654 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					1017 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					653 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					1010 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					1006 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					1007 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					197 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					1008 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+				}
+				if = { 
+					limit = { 
+						NOT = { RUS = { has_country_flag = SMO_rightbank_Dnieper_c } } 
+					}
+					251 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }
+					289 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }
+					226 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }
+					246 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }
+					223 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }
+					242 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }
+					646 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 24 } }		
 
-				643 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
-				642 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }
-				644 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }	
-				413 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev scope = RUS days = 14 } }			
+					647 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }		
+					648 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }	
+					645 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }	
+					649 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					655 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }	
+					650 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }	
+					659 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }	
+					657 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }	
+					662 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					661 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					666 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					664 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					665 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					663 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					660 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					656 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
+					658 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 40 } }
 
-				647 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }		
-				648 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }	
-				645 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }	
-				649 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				655 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }	
-				650 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }	
-				659 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }	
-				657 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }	
-				662 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				661 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				666 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				664 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				665 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				663 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				660 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-				656 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk scope = RUS days = 20 } }
-
+				}
 				
 				if = { 
 					limit = { 
@@ -1443,7 +1590,7 @@ focus_tree = {
 					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
 					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
 					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-
+                    country_event = { id = rus.225 days = 3 }
 				}
 				if = { limit = { 
 						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
@@ -1451,27 +1598,145 @@ focus_tree = {
 						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
 						RUS = { has_country_flag = SMO_from_border_to_border }	
 					} 
-					57 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					56 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					66 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					60 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					954 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					955 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					965 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					963 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					956 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					60 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 10 }}
+				}
+				if = { limit = { 
+						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_towards_novorossia } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
+						NOT = { RUS = {has_country_flag = SMO_from_border_to_border } }
+						RUS = {has_country_flag = SMO_offensive_on_kyiv }
+					} 
+					57 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					56 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					66 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					98 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }} 
+					966 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					938 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					80 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					82 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					72 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					937 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					939 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					944 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					943 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					942 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					945 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					946 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					948 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					949 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					950 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					947 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					969 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					970 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					964 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					958 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					957 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					60 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					956 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					963 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					967 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					954 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					955 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					965 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					952 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					953 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 20 }}
+				}
+				if = { limit = { 
+						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_towards_novorossia } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
+						NOT = { RUS = {has_country_flag = SMO_from_border_to_border } }
+						NOT = { RUS = {has_country_flag = SMO_offensive_on_kyiv }}
+						RUS = { has_country_flag = SMO_full_scale_invasion}
+					} 
+					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					952 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					953 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					963 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					964 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					66 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					946 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					948 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					947 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					958 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					56 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					88 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					67 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					965 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					949 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					950 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					957 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					60 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					955 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
+					954 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 15 }}
 				}
 				if = { limit = {  
 						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
 						NOT = { RUS = { has_country_flag = SMO_offensive_towards_novorossia } } 
 						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
 						NOT = { RUS = { has_country_flag = SMO_from_border_to_border } } 
-
 						RUS = { has_country_flag = SMO_concentrated_attack_on_kyiv }	
 					} 
-					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
-					67 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 14 }}
+					953 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					952 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					26 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					88 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					67 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv scope = RUS days = 30 }}
 				}
 
 				if = { limit = {  
@@ -1481,8 +1746,79 @@ focus_tree = {
 					} 
 					100 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
 					107 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					915 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					914 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					916 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					917 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					971 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}					
 					116 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
 					125 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					972 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					973 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					974 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					975 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+					976 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk scope = RUS days = 14 }}
+
+				}
+				if = { 
+					limit = { 
+						OR = {
+							RUS = { has_country_flag = { flag = SMO_rightbank_Dnieper_c } }
+							RUS = {	has_country_flag = { flag = SMO_leftbank_Dnieper_c } }
+						} 
+					}
+					89 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					935 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					101 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					938 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					937 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					934 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					933 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					936 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					940 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+					939 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north scope = RUS days = 20 }}
+				}
+				if = { 
+					limit = { 
+						OR = {
+							RUS = { has_country_flag = { flag = SMO_rightbank_Dnieper_c } }
+							RUS = {	has_country_flag = { flag = SMO_leftbank_Dnieper_c } }
+						}
+					}
+					105 = { add_dynamic_modifier = { modifier = RUS_road_to_Poltava_south days = 20 scope = RUS } }
+				}
+				if = { 
+					limit = { 
+						OR = {
+							RUS = { has_country_flag = { flag = SMO_rightbank_Dnieper_c } }
+							RUS = {	has_country_flag = { flag = SMO_leftbank_Dnieper_c } }
+						}
+					}
+					156 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					151 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					186 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					931 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					932 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					130 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					927 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					929 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					921 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					930 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					925 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					128 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					96 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					942 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					941 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					943 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					111 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					102 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					82 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					994 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					995 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					996 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					992 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					993 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
+					991 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr scope = RUS days = 20 }}
 				}
 				} 
 
@@ -1490,52 +1826,63 @@ focus_tree = {
 				######AI BUFF 
 
 				IF = { LIMIT = { RUS = { is_ai = yes}}
-				262 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS 	days = 20 } }
-				253 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS 	days = 20 } }
-				644 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS days = 20 } }
-				231 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS 	days = 20 } }
+				if = { 
+					limit = { 
+						NOT = { RUS = { has_country_flag = SMO_leftbank_Dnieper_c } } 
+					}
+					262 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS days = 20 } }
+					253 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS days = 20 } }
+					644 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS days = 20 } }
+					231 = { add_dynamic_modifier = { modifier = RUS_across_the_dnieper_ai scope = RUS days = 20 } }
 
-			
-				253 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
-				651 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
-				231 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
-				240 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }					
-				264 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
-				262 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
+					253 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 17 } }
+					651 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 17 } }
+					231 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 17 } }
+					240 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 17 } }					
+					264 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 17 } }
+					262 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 17 } }
 
-				251 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
-				289 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
-				226 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
-				246 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
-				223 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
-				242 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
-				646 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 20 } }
+					643 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 19 } }
+					642 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 19 } }
+					644 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 19 } }	
+					413 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 19 } }	
+				}
+				if = { 
+					limit = { 
+						NOT = { RUS = { has_country_flag = SMO_rightbank_Dnieper_c } } 
+					}
+					251 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }
+					289 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }
+					226 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }
+					246 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }
+					223 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }
+					242 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }
+					646 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 32 } }		
 
-				643 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
-				642 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }
-				644 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }	
-				413 = { add_dynamic_modifier = { modifier = RUS_road_to_nikolaev_ai scope = RUS days = 16 } }			
-
-				647 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }		
-				648 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }	
-				645 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }	
-				649 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				655 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }	
-				650 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }	
-				659 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }	
-				657 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }	
-				662 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				661 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				666 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				664 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				665 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				663 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				660 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				656 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 30 } }
-				213 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 14 } }
-				237 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 14 } }
-				660 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 14 } }
-
+					647 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }		
+					648 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }	
+					645 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }	
+					649 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					655 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }	
+					650 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }	
+					659 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }	
+					657 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }	
+					662 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					661 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					666 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					664 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					658 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					665 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					663 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					660 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					656 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 50 } }
+					213 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 24 } }
+					237 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 24 } }
+					660 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 24 } }
+					712 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 18 } }
+					709 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 18 } }
+					708 = { add_dynamic_modifier = { modifier = RUS_road_to_berdyansk_ai scope = RUS days = 18 } }
+				}
 				
 				if = { 
 					limit = { 
@@ -1558,27 +1905,124 @@ focus_tree = {
 						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
 						RUS = { has_country_flag = SMO_from_border_to_border }	
 					} 
-					57 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					56 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					66 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					954 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					955 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					965 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					963 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					956 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					60 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 20 }}
+				}
+				if = { limit = { 
+						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_towards_novorossia } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
+						NOT = { RUS = {has_country_flag = SMO_from_border_to_border } }
+						RUS = {has_country_flag = SMO_offensive_on_kyiv }
+					} 
+					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					952 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					953 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					963 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					964 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					66 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					946 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					948 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					947 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					958 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					56 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+					965 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 40 }}
+				}
+				if = { limit = { 
+						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_towards_novorossia } } 
+						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
+						NOT = { RUS = {has_country_flag = SMO_from_border_to_border } }
+						NOT = { RUS = {has_country_flag = SMO_offensive_on_kyiv }}
+						RUS = { has_country_flag = SMO_full_scale_invasion}
+					} 
+					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					952 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					953 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
 					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					963 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					964 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					66 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					946 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					948 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					947 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					958 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					965 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					56 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					88 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					67 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					949 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					950 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					957 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
 					60 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					955 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					954 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
 				}
 				if = { limit = {  
 						NOT = { RUS = { has_country_flag = SMO_send_troops_to_the_republic_of_donbass } } 
 						NOT = { RUS = { has_country_flag = SMO_offensive_towards_novorossia } } 
 						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
 						NOT = { RUS = { has_country_flag = SMO_from_border_to_border } } 
-
 						RUS = { has_country_flag = SMO_concentrated_attack_on_kyiv }	
 					} 
-					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					69 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
-					67 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 30 }}
+					953 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					952 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					951 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					59 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					26 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					87 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					83 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					95 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					94 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					73 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					86 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					88 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					67 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					68 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					962 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					960 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					961 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
+					959 = {	add_dynamic_modifier = { modifier = RUS_road_to_kyiv_ai scope = RUS days = 50 }}
 				}
 
 				if = { limit = {  
@@ -1586,24 +2030,98 @@ focus_tree = {
 						NOT = { RUS = { has_country_flag = SMO_offensive_on_the_dnieper } } 
 						NOT = { RUS = { has_country_flag = SMO_concentrated_attack_on_kyiv } } 
 					} 
-					100 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 25 }}
-					107 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 25 }}
-					116 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 25 }}
-					125 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 25 }}
+					100 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					107 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					915 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					914 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					916 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					917 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					971 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}					
+					116 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					125 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					154 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					972 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					973 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					974 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					975 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+					976 = {	add_dynamic_modifier = { modifier = RUS_road_to_kupyansk_ai scope = RUS days = 31 }}
+
 				}
-				} 
+				if = { 
+					limit = { 
+						OR = {
+							RUS = { has_country_flag = { flag = SMO_rightbank_Dnieper_c } }
+							RUS = {	has_country_flag = { flag = SMO_leftbank_Dnieper_c } }
+						} 
+					}
+					89 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					935 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					101 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					938 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					937 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					934 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					933 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					936 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					940 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+					939 = {	add_dynamic_modifier = { modifier = RUS_road_to_Poltava_north_ai scope = RUS days = 20 }}
+				}
+				if = { 
+					limit = { 
+						OR = {
+							RUS = { has_country_flag = { flag = SMO_rightbank_Dnieper_c } }
+							RUS = {	has_country_flag = { flag = SMO_leftbank_Dnieper_c } }
+						}
+					}
+					105 = { add_dynamic_modifier = { modifier = RUS_road_to_Poltava_south_ai days = 30 scope = RUS } }
+				}
+				if = { 
+					limit = { 
+						OR = {
+							RUS = { has_country_flag = { flag = SMO_rightbank_Dnieper_c } }
+							RUS = {	has_country_flag = { flag = SMO_leftbank_Dnieper_c } }
+						}
+					}
+					156 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					151 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					186 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					931 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					932 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					130 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					927 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					929 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					921 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					925 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					930 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					128 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					96 = { add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					942 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					941 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					943 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					994 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					995 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					996 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					992 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					993 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+					991 = {	add_dynamic_modifier = { modifier = RUS_road_to_Dnepr_ai scope = RUS days = 20 }}
+				}
+				}
 					
 				country_event = { id = rus.150 days = 4 }
-				country_event = { id = rus.13 days = 7 }
-				country_event = { id = rus.107 days = 1 }
-				country_event = { id = super.1 hours = 4 }
+				country_event = { id = rus.13 days = 14 }
+				country_event = { id = rus.107 hours = 8 }
+				country_event = { id = rus_hidden.14 days = 12 }
 				if = {
 					limit = { NOT = { has_completed_focus = RUS_inspection_in_the_Ministry_of_Defense } }
-					country_event = { id = rus.67 days = 3 }
+					country_event = { id = rus.67 days = 9 hours = 10 }
 				}
-
+				
+				#оставил пока так, потом добавлю регионы
 				if = {
-					limit = { UKR = { has_country_flag = UKR_mine_field_flag } }
+					limit = { 
+						UKR = { 
+							has_country_flag = UKR_mine_field_flag
+						} 
+					}
 					56 = { add_dynamic_modifier = { modifier = ukr_mines_modifier scope = RUS days = 30 } }
 					57 = { add_dynamic_modifier = { modifier = ukr_mines_modifier scope = RUS days = 30 } }
 					59 = { add_dynamic_modifier = { modifier = ukr_mines_modifier scope = RUS days = 30 } }
@@ -1621,15 +2139,47 @@ focus_tree = {
 					100 = { add_dynamic_modifier = { modifier = ukr_mines_modifier scope = RUS days = 30 } }
 					154 = { add_dynamic_modifier = { modifier = ukr_mines_modifier scope = RUS days = 30 } }
 				}
+				if = {
+					limit = { has_country_flag = RUS_DRG_Harkov_Lugansk_cf }
+					101 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					103 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					100 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					107 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					116 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					125 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					154 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					145 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+					176 = { remove_dynamic_modifier = { modifier = ukr_mines_modifier } add_dynamic_modifier = { modifier = ukr_mines_modifier_1 scope = RUS days = 30 } }
+				}
+				country_event = { id = rus.133 days = 10 }
+				country_event = { id = rus.200 days = 24 }
+                country_event = { id = rus_hidden.7 days = 0 }
 
-				CHE = { country_event = { id = che.8 days = 0 } }
+				if = {
+					limit = { 
+						UKR = { 
+							has_country_flag = UKR_Blow_up_the_bridges
+						} 
+					}
+					56 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					57 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					59 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					60 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					66 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					72 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					89 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					103 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					145 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					182 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					101 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					107 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					116 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					125 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					100 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+					154 = { add_dynamic_modifier = { modifier = UKR_Blow_up_the_bridges_modifier scope = RUS days = 30 } }
+				}
 				
 				UKR = {
-					country_event = {
-			            id = re_event_u.2 
-				        days = 1
-						hours = 5
-			        }
 					country_event = {
 			    		id = re_event_u.1
 						days = 2
@@ -1637,20 +2187,21 @@ focus_tree = {
 					}
 					country_event = {
 			    		id = ukr.54
-						hours = 2
+						hours = 7
 					}
 					country_event = {
 			    		id = ukr.57
 						days = 1
 						hours = 20
 					}
+					set_country_flag = UKR_create_territorial_defence_category_unlocked_flag
 				}
 				set_country_flag = RUS_start_SMO
 				if = {
 				    limit = { has_country_flag = SMO_landing_Gostomel }
 					random_list = {
-						global.var_SMO_landing_VDV_history = { country_event = { id = rus.12 hours = 3 } }
-						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.37 hours = 6 } }
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus.12 hours = 10 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.37 hours = 12 } }
 					}
 				}
 				if = {
@@ -1663,15 +2214,15 @@ focus_tree = {
 				if = {
 				    limit = { has_country_flag = SMO_landing_Herson }
 					random_list = {
-						global.var_SMO_landing_VDV_history = { country_event = { id = rus.62 hours = 7 } }
-						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.39 hours = 14 } }
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus.62 hours = 15 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.39 hours = 18 } }
 					}
 				}
 				if = {
 				    limit = { has_country_flag = SMO_landing_zmiiniy }
 					country_event = {
 						id = rus.21
-						hours = 10
+						hours = 20
 					}
 				}
 				if = {
@@ -1684,8 +2235,36 @@ focus_tree = {
 				if = {
 				    limit = { has_country_flag = SMO_landing_Kharkov }
 					random_list = {
-						global.var_SMO_landing_VDV_history = { country_event = { id = rus.173 hours = 7 } }
-						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.174 hours = 12 } }
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus.173 hours = 11 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.174 hours = 13 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SMO_landing_Poltava }
+					random_list = {
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus_dnepr.3 days = 1 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus_dnepr.4 days = 2 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SMO_landing_kremechug }
+					random_list = {
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus_dnepr.5 days = 1 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus_dnepr.6 days = 2 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SMO_landing_dnepr }
+					random_list = {
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus_dnepr.7 days = 1 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus_dnepr.8 days = 2 } }
+					}
+				}
+				if = {
+				    limit = { has_country_flag = SMO_landing_bigdnepr }
+					random_list = {
+						global.var_SMO_landing_VDV_history = { country_event = { id = rus_dnepr.9 days = 2 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus_dnepr.10 days = 3 } }
 					}
 				}
 				if = {
@@ -1706,36 +2285,67 @@ focus_tree = {
 				    limit = { has_country_flag = SMO_landing_Zaporozhye }
 					random_list = {
 						global.var_SMO_landing_VDV_history = { country_event = { id = rus.179 hours = 15 } }
-						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.180 days = 17 } }
+						global.var_SMO_landing_VDV_history_fail = { country_event = { id = rus.180 hours = 17 } }
 					}
 				}
 				if = {
 				    limit = { has_country_flag = RUS_assault_Kiev_cf }
-					86 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
-					73 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
-					94 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
-					95 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
+					86 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					73 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					94 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					95 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
 				}
 				if = {
 				    limit = { has_country_flag = RUS_assault_Kharkov_cf }
-					103 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
+					926 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					928 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+					103 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
 				}
 				if = {
 				    limit = { has_country_flag = RUS_assault_Kherson_cf }
-					253 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
+					253 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
 				}
 				if = {
 				    limit = { has_country_flag = RUS_assault_Mariupol_cf }
-					237 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 25 scope = RUS } }
+					sergei_shoigy = {
+						unit_leader_event = {
+							id = rus_unit_leader_event.5
+							days = 4
+						}
+					}
+					237 = { add_dynamic_modifier = { modifier = RUS_offensive_modifier days = 15 scope = RUS } }
+				}
+				if = {
+				    limit = { has_country_flag = RUS_assault_Sumi_cf }
+					944 = { add_dynamic_modifier = { modifier = RUS_battle_of_sumi days = 15 scope = RUS } }
+					72 = { add_dynamic_modifier = { modifier = RUS_battle_of_sumi days = 15 scope = RUS } }
 				}
 				complete_national_focus = RUS_Lightning_strike
 				complete_national_focus = RUS_Putins_course
 				POL = { complete_national_focus = POL_War_in_a_neighboring_country }
         	}
-			country_event = { id = smo.9 days = 0 }
-			RUS = { add_to_faction = DPR }
-			RUS = { add_to_faction = LPR }
-
+			vladimir_putin = {
+				add_country_leader_role = {
+                   	promote_leader = yes
+                   	country_leader = {
+                       	ideology = authoritarian_democracy_rus_postwar
+                       	expire = "1965.1.1.1"
+                       	traits = { popular_figurehead regent_of_russian_democracy }
+                   	}
+               	}
+			}
+			country_event = { id = smo.9 hours = 4 }
+			country_event = { id = rus.218 hours = 1 }
+			country_event = { id = rus.219 hours = 3 }
+			UKR = { country_event = {  id = ukr.55 hours = 2 } country_event = { id = rus.219 hours = 3 } }
+			DPR = { country_event = {  id = rus.217 hours = 1 } country_event = { id = rus.219 hours = 3 } }
+			LPR = { country_event = {  id = rus.217 hours = 1 } country_event = { id = rus.219 hours = 3 } }
+			RUS = { add_to_faction = DPR add_to_faction = LPR }
+			CHE = { country_event = { id = rus.219 hours = 3 } country_event = { id = che.2 days = 2 hours = 15 } }
+			if = {
+				limit = { has_country_flag = UKR_VZLOM_ANUSA }
+				UKR = { country_event = {  id = ukr_rus_branch.2 hours = 1 } }
+			}
 			bz_on_SMO_start = yes
 		}
 	}
@@ -1751,9 +2361,19 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		offset = {
+			x = -2
+			trigger = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+		}
 		allow_branch = {
  			has_completed_focus = RUS_SMO
+			NOT = {
+				has_global_flag = RUS_branch_operational_tactical_blocked
+			}
         }
+		
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Lightning_strike"
 		    custom_effect_tooltip = RUS_missile_strikes
@@ -1767,7 +2387,7 @@ focus_tree = {
 				days = 35
 			}
 			hidden_effect = {
-			    news_event = { id = news.166 hours = 1 }
+			    news_event = { id = news.166 hours = 5 }
 				UKR = {
 					country_event = {
 				    	id = ukr.60
@@ -1938,6 +2558,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		allow_branch = {
+			has_completed_focus = RUS_Lightning_strike
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+        }
 		available = {
 		    custom_trigger_tooltip = {
 				tooltip = RUS_failure_of_SMO_trigger
@@ -1973,6 +2599,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		allow_branch = {
+			has_completed_focus = RUS_Lightning_strike
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+        }
 		bypass = {
 			has_country_flag = RUS_failure_of_SMO
 		}
@@ -2004,6 +2636,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		allow_branch = {
+			has_completed_focus = RUS_Lightning_strike
+			NOT = {
+				has_country_flag = RUS_failure_of_SMO
+			}
+        }
 		bypass = {
 			has_country_flag = RUS_failure_of_SMO
 		}
@@ -2020,9 +2658,11 @@ focus_tree = {
 			add_command_power = 30
 			custom_effect_tooltip = RUS_Daily_meetings_of_the_General_Staff_cet
 			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
 				add_unit_leader_trait = inflexible_strategist
 			}
 			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
 				add_unit_leader_trait = inflexible_strategist
 			}
 			hidden_effect = {
@@ -2074,6 +2714,7 @@ focus_tree = {
 				days = 15
 			}
 			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
 				add_unit_leader_trait = brilliant_strategist
 			}
 		}
@@ -2256,45 +2897,263 @@ focus_tree = {
 		id = RUS_Blitzkrieg_has_stalled
 		icon = GFX_RUS_Blitzkrieg_has_stalled
 		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_Army_maneuvers  }
+		prerequisite = { focus = RUS_SMO }
 		cost = 0.143
 		x = 0
-		y = 5
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
 		allow_branch = {
  			has_country_flag = RUS_failure_of_SMO
+			NOT = {
+				has_global_flag = RUS_branch_operational_tactical_blocked
+			}
         }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Blitzkrieg_has_stalled"
-		    custom_effect_tooltip = RUS_new_focus
-			custom_effect_tooltip = in_development
+		    custom_effect_tooltip = CEF_RUS_Blitzkrieg_has_stalled
 		}
 	}
 	focus = {
 		id = RUS_Review_the_operation
 		icon = GFX_RUS_Review_the_operation
-		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_Blitzkrieg_has_stalled  }
-		cost = 0.143
+		relative_position_id = RUS_Blitzkrieg_has_stalled
+		prerequisite = { focus = RUS_Blitzkrieg_has_stalled }
+		cost = 1.5
 		x = 0
-		y = 6
+		y = 1 
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Review_the_operation"
+			custom_effect_tooltip = RUS_Review_the_operation_cet
+			custom_effect_tooltip = Dvornikov_available_tt
+		    add_command_power = 30
+			army_experience = -25
+			air_experience = -25
+			navy_experience = -15
+			add_to_variable = { RUS_VCRF_planning_speed = 0.05 }
+			add_to_variable = { RUS_VCRF_max_planning = 0.025 }
+			hidden_effect = {
+				country_event = rus.215
+			}
+		}
 		ai_will_do = {
 			factor = 1
 		}
-		allow_branch = {
- 			always = no
-        }
+	}
+	#focus = {
+		#id = RUS_deny_wrong_tactics
+		#icon = GFX_RUS_deny_wrong_tactics
+		#relative_position_id = RUS_Review_the_operation
+		#prerequisite = { focus = RUS_Review_the_operation  }
+		#mutually_exclusive = { focus = RUS_stabilize_the_front }
+		#cost = 0.143
+		#x = -1
+		#y = 1
+		#completion_reward = {
+			#log = "[GetDateText]: [Root.GetName]: Focus RUS_deny_wrong_tactics"
+			#add_command_power = 15
+			#army_experience = 5
+			#random_army_leader = {
+			#	add_unit_leader_trait = inflexible_strategist
+			#}
+			#random_army_leader = {
+			#	add_unit_leader_trait = brilliant_strategist
+			#}
+			#custom_effect_tooltip = remove_armored_columns_tt
+			#custom_effect_tooltip = RUS_new_decisions
+			#hidden_effect = {
+				#remove_ideas = armored_columns_spirit
+			#}
+		#}
+		#ai_will_do = {
+			#factor = 1
+		#}
+	#}
+	focus = {
+		id = RUS_SMO_tactics_of_the_firing_shaft
+		icon = GFX_RUS_tactics_of_the_firing_shaft
+		relative_position_id = RUS_Review_the_operation
+		prerequisite = { focus = RUS_front_saving_units  }
+		cost = 2
+		x = -1
+		y = 2
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_tactics_of_the_firing_shaft"
+			hidden_effect = {
+				remove_ideas = armored_columns_spirit
+			}
+			add_command_power = 15
+			army_experience = 5
+			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
+				add_unit_leader_trait = inflexible_strategist
+			}
+			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
+				add_unit_leader_trait = brilliant_strategist
+			}
+			add_ideas = smoke_and_fire_spirit
+			custom_effect_tooltip = RUS_new_decisions
+			
+			add_mastery = {
+				amount = 120
+				track = tier_1_artillery
+			}
+			add_mastery = {
+				amount = 120
+				track = tier_2_artillery
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	focus = {
+		id = RUS_front_saving_units
+		icon = GFX_RUS_front_saving_units
+		relative_position_id = RUS_Review_the_operation
+		prerequisite = { focus = RUS_Review_the_operation  }
+		mutually_exclusive = { focus = RUS_stabilize_the_front }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_front_saving_units_trigger
+				has_country_flag = RUS_front_saving_units_cf
+			}
+		}
+		cost = 1.5
+		x = -1
+		y = 1
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_front_saving_units"
+			add_command_power = 45
+			army_experience = 10
+			custom_effect_tooltip = RUS_front_saving_units_cet
+			add_mastery = {
+				amount = 80
+				track = tier_1_sso
+			}
+			add_mastery = {
+				amount = 80
+				track = tier_2_sso
+			}
+			add_to_variable = { RUS_VCRF_army_strength_factor = 0.05 }
+			add_to_variable = { RUS_VCRF_special_forces_cap = 0.05 }
+			add_to_variable = { RUS_VCRF_breakthrough_factor = 0.075 }
+			add_to_variable = { RUS_VCRF_experience_loss_factor = 0.1 }
+			add_to_variable = { RUS_VCRF_modifier_command_power_gain_mult = -0.05 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	focus = {
+		id = RUS_stabilize_the_front
+		icon = GFX_RUS_stabilize_the_front
+		relative_position_id = RUS_Review_the_operation
+		prerequisite = { focus = RUS_Review_the_operation  }
+		mutually_exclusive = { focus = RUS_front_saving_units }
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_stabilize_the_front_trigger
+				has_country_flag = RUS_stabilize_the_front_cf
+			}
+		}
+		cost = 1.5
+		x = 1
+		y = 1
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_stabilize_the_front"
+			add_command_power = 35
+			army_experience = 30
+			aleksandr_dvornikov = {
+				add_unit_leader_trait = thorough_planner
+			}
+			valery_gerasimov = {
+				add_unit_leader_trait = master_of_organisation
+			}
+			custom_effect_tooltip = RUS_stabilize_the_front_cet
+			add_to_variable = { RUS_VCRF_army_org_factor = 0.1 }
+			add_to_variable = { RUS_VCRF_army_org_regain = 0.075 }
+			add_to_variable = { RUS_VCRF_modifier_command_power_gain_mult = 0.05 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	focus = {
+		id = RUS_go_to_defense
+		icon = GFX_RUS_go_to_defense
+		relative_position_id = RUS_stabilize_the_front
+		prerequisite = { focus = RUS_stabilize_the_front  }
+		cost = 2
+		x = 0
+		y = 1
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_stabilize_the_front"
+			hidden_effect = {
+				remove_ideas = armored_columns_spirit
+				add_to_variable = { var = RUS_VCRF_max_dig_in_factor value = 0.08 }
+			}
+			add_command_power = 25
+			army_experience = 25
+			custom_effect_tooltip = RUS_go_to_defense_cet
+			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
+				add_unit_leader_trait = unyielding_defender
+			}
+			random_army_leader = {
+				limit = { NOT = { has_trait = butcher } }
+				add_unit_leader_trait = defensive_doctrine
+			}
+			add_ideas = static_warfare_spirit
+			
+			add_mastery = {
+				amount = 200
+				track = tier_1_infantry
+			}
+			add_mastery = {
+				amount = 200
+				track = tier_2_infantry
+			}	
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	focus = {
+		id = RUS_prepare_for_new_campaing
+		icon = GFX_RUS_prepare_for_new_campaing
+		relative_position_id = RUS_go_to_defense
+		prerequisite = { focus = RUS_go_to_defense focus = RUS_SMO_tactics_of_the_firing_shaft  }
+		cost = 1.5
+		x = -1
+		y = 1
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_prepare_for_new_campaing"
+			add_political_power = 75
+			add_command_power = 55
+			army_experience = 20
+			custom_effect_tooltip = RUS_new_decisions
+			custom_effect_tooltip = RUS_prepare_for_new_campaing_cet
+			add_to_variable = { RUS_VCRF_training_time_army_factor = -0.025 }
+			add_to_variable = { RUS_VCRF_planning_speed = 0.035 }
+			add_to_variable = { RUS_VCRF_max_planning = 0.015 }	
+			add_to_variable = { RUS_VCRF_army_morale = 0.5 }		
+		}
+		ai_will_do = {
+			factor = 1
+		}
 	}
 	focus = {
 		id = RUS_Take_into_account_the_Ukrainian_experience
 		icon = GFX_RUS_Take_into_account_the_Ukrainian_experience
-		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_Review_the_operation  }
+		relative_position_id = RUS_go_to_defense
+		prerequisite = { focus = RUS_prepare_for_new_campaing  }
+		allow_branch = { always = no }
 		cost = 0.143
-		x = 0
-		y = 8
+		x = -1
+		y = 2
 		ai_will_do = {
 			factor = 1
 		}
@@ -2302,24 +3161,44 @@ focus_tree = {
 	focus = {
 		id = RUS_Personnel_changes
 		icon = GFX_RUS_Personnel_changes
-		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_Review_the_operation  }
+		relative_position_id = RUS_prepare_for_new_campaing
+		prerequisite = { focus = RUS_prepare_for_new_campaing  }
 		cost = 0.143
-		x = -4
-		y = 7
+		x = -6
+		y = 1
+		allow_branch = { always = no }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Personnel_changes"
+			add_political_power = 55
+			army_experience = -5
+			country_event = rus.216
+			add_timed_idea = { idea = RUS_personnel_changes_idea days = 10 }
+		}
 		ai_will_do = {
 			factor = 1
 		}
 	}
+	
+
+
+
 	focus = {
 		id = RUS_no_need_to_behead_the_army
 		icon = GFX_RUS_no_need_to_behead_the_army
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Personnel_changes
 		prerequisite = { focus = RUS_Personnel_changes  }
 		mutually_exclusive = { focus = RUS_Reform_of_MO }
 		cost = 0.143
-		x = -5
-		y = 8
+		x = -1
+		y = 1
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_no_need_to_behead_the_army"
+			add_political_power = 135
+			add_command_power = 35
+			army_experience = 15
+			add_stability = 0.025
+			add_ideas = state_serves_the_military_spirit
+		}
 		ai_will_do = {
 			factor = 1
 		}
@@ -2327,12 +3206,21 @@ focus_tree = {
 	focus = {
 		id = RUS_Reform_of_MO
 		icon = GFX_RUS_Reform_of_MO
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Personnel_changes
 		prerequisite = { focus = RUS_Personnel_changes  }
 		mutually_exclusive = { focus = RUS_no_need_to_behead_the_army }
 		cost = 0.143
-		x = -3
-		y = 8
+		x = 1
+		y = 1
+		completion_reward = {
+			add_political_power = -100
+			add_command_power = -40
+			army_experience = -20
+			add_stability = -0.025
+			retire_character = sergei_shoigy
+			activate_advisor = sergei_syrovikin
+			add_ideas = professional_officer_corps_spirit
+		}
 		ai_will_do = {
 			factor = 1
 		}
@@ -2340,11 +3228,12 @@ focus_tree = {
 	focus = {
 		id = RUS_New_Russian_officers
 		icon = GFX_RUS_New_Russian_officers
-		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_Review_the_operation  }
+		relative_position_id = RUS_prepare_for_new_campaing
+		prerequisite = { focus = RUS_prepare_for_new_campaing  }
+		allow_branch = { always = no }
 		cost = 0.143
-		x = 4
-		y = 7
+		x = 6
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2352,12 +3241,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Rejuvenation_of_the_officer_corps
 		icon = GFX_RUS_Rejuvenation_of_the_officer_corps
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_New_Russian_officers
 		prerequisite = { focus = RUS_New_Russian_officers  }
 		mutually_exclusive = { focus = RUS_Betting_on_army_veterans }
 		cost = 0.143
-		x = 3
-		y = 8
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2365,12 +3254,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Betting_on_army_veterans
 		icon = GFX_RUS_Betting_on_army_veterans
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_New_Russian_officers
 		prerequisite = { focus = RUS_New_Russian_officers  }
 		mutually_exclusive = { focus = RUS_Rejuvenation_of_the_officer_corps }
 		cost = 0.143
-		x = 5
-		y = 8
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2378,12 +3267,12 @@ focus_tree = {
 	focus = {
 		id = RUS_abandon_the_Gerasimov_Doctrine
 		icon = GFX_RUS_abandon_the_Gerasimov_Doctrine
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Take_into_account_the_Ukrainian_experience
 		prerequisite = { focus = RUS_Take_into_account_the_Ukrainian_experience  }
 		mutually_exclusive = { focus = RUS_Betting_on_a_hybrid_war }
 		cost = 0.143
 		x = -1
-		y = 9
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2391,11 +3280,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Open_discussions_at_the_General_Staff
 		icon = GFX_RUS_Open_discussions_at_the_General_Staff
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_abandon_the_Gerasimov_Doctrine
 		prerequisite = { focus = RUS_abandon_the_Gerasimov_Doctrine  }
 		cost = 0.143
-		x = -1
-		y = 10
+		x = 0
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2403,11 +3292,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Update_the_military_theory
 		icon = GFX_RUS_Update_the_military_theory
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_abandon_the_Gerasimov_Doctrine
 		prerequisite = { focus = RUS_abandon_the_Gerasimov_Doctrine  }
 		cost = 0.143
-		x = -3
-		y = 10
+		x = -2
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2415,12 +3304,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Unified_Military_Academy
 		icon = GFX_RUS_Unified_Military_Academy
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Update_the_military_theory
 		prerequisite = { focus = RUS_Update_the_military_theory  }
 		prerequisite = { focus = RUS_Open_discussions_at_the_General_Staff  }
 		cost = 0.143
-		x = -2
-		y = 11
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2428,12 +3317,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Betting_on_a_hybrid_war
 		icon = GFX_RUS_Betting_on_a_hybrid_war
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Take_into_account_the_Ukrainian_experience
 		prerequisite = { focus = RUS_Take_into_account_the_Ukrainian_experience  }
 		mutually_exclusive = { focus = RUS_abandon_the_Gerasimov_Doctrine }
 		cost = 0.143
 		x = 1
-		y = 9
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2441,11 +3330,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Modernization_of_assault_units
 		icon = GFX_RUS_Modernization_of_assault_units
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Betting_on_a_hybrid_war
 		prerequisite = { focus = RUS_Betting_on_a_hybrid_war  }
 		cost = 0.143
-		x = 1
-		y = 10
+		x = 0
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2453,24 +3342,11 @@ focus_tree = {
 	focus = {
 		id = RUS_development_of_cyber_warfare
 		icon = GFX_RUS_development_of_cyber_warfare
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Betting_on_a_hybrid_war
 		prerequisite = { focus = RUS_Betting_on_a_hybrid_war  }
 		cost = 0.143
-		x = 3
-		y = 10
-		ai_will_do = {
-			factor = 1
-		}
-	}
-	focus = {
-		id = RUS_Destabilization_of_the_Ukrainian_rear
-		icon = GFX_RUS_Destabilization_of_the_Ukrainian_rear
-		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_development_of_cyber_warfare  }
-		prerequisite = { focus = RUS_Modernization_of_assault_units  }
-		cost = 0.143
 		x = 2
-		y = 11
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2478,23 +3354,26 @@ focus_tree = {
 	focus = {
 		id = RUS_Lessons_of_war
 		icon = GFX_RUS_Lessons_of_war
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Destabilization_of_the_Ukrainian_rear
 		prerequisite = { focus = RUS_Destabilization_of_the_Ukrainian_rear focus = RUS_Unified_Military_Academy }
 		cost = 0.143
-		x = 0
-		y = 12
+		x = -2
+		y = 1
 		ai_will_do = {
 			factor = 1
+		}
+		allow_branch = {
+			has_country_flag = RUS_Lessons_of_war_tree_unlocked_flag
 		}
 	}
 	focus = {
 		id = RUS_Strikes_energy_infrastructure
 		icon = GFX_RUS_Strikes_energy_infrastructure
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = 0
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2502,11 +3381,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Improvement_of_air_defense_systems
 		icon = GFX_RUS_Improvement_of_air_defense_systems
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = 7
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2514,11 +3393,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Modifications_of_the_C_400
 		icon = GFX_RUS_Modifications_of_the_C_400
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Improvement_of_air_defense_systems
 		prerequisite = { focus = RUS_Improvement_of_air_defense_systems }
 		cost = 0.143
-		x = 6
-		y = 14
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2526,11 +3405,11 @@ focus_tree = {
 	focus = {
 		id = RUS_New_variants_of_Pantsir_SV
 		icon = GFX_RUS_New_variants_of_Pantsir
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Improvement_of_air_defense_systems
 		prerequisite = { focus = RUS_Improvement_of_air_defense_systems }
 		cost = 0.143
-		x = 8
-		y = 14
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2538,11 +3417,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Start_mass_use_of_drones
 		icon = GFX_RUS_Start_mass_use_of_drones
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = 12
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2550,11 +3429,11 @@ focus_tree = {
 	focus = {
 		id = RUS_ZALA_Lancet
 		icon = GFX_RUS_ZALA_Lancet
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Start_mass_use_of_drones
 		prerequisite = { focus = RUS_Start_mass_use_of_drones }
 		cost = 0.143
-		x = 11
-		y = 14
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2562,11 +3441,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Gerani_2
 		icon = GFX_RUS_Gerani_2
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Start_mass_use_of_drones
 		prerequisite = { focus = RUS_Start_mass_use_of_drones }
 		cost = 0.143
-		x = 13
-		y = 14
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2574,11 +3453,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Gerani_3
 		icon = GFX_RUS_Gerani_3
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Gerani_2
 		prerequisite = { focus = RUS_Gerani_2 }
 		cost = 0.143
-		x = 13
-		y = 15
+		x = 0
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2586,11 +3465,11 @@ focus_tree = {
 	focus = {
 		id = RUS_termit
 		icon = GFX_RUS_termit
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_ZALA_Lancet
 		prerequisite = { focus = RUS_ZALA_Lancet }
 		cost = 0.143
-		x = 11
-		y = 15
+		x = 0
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2598,11 +3477,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Measures_against_MLRS
 		icon = GFX_RUS_Measures_against_MLRS
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = -5
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2610,11 +3489,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Expand_cooperation_with_strategic_allies
 		icon = GFX_RUS_Expand_cooperation_with_strategic_allies
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = -9
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2622,11 +3501,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Joint_exercises
 		icon = GFX_RUS_Joint_exercises
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Expand_cooperation_with_strategic_allies
 		prerequisite = { focus = RUS_Expand_cooperation_with_strategic_allies }
 		cost = 0.143
-		x = -9
-		y = 14
+		x = 0
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2634,11 +3513,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Our_Asian_comrades
 		icon = GFX_RUS_Our_Asian_comrades
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Expand_cooperation_with_strategic_allies
 		prerequisite = { focus = RUS_Expand_cooperation_with_strategic_allies }
 		cost = 0.143
-		x = -12
-		y = 14
+		x = -3
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2646,11 +3525,11 @@ focus_tree = {
 	focus = {
 		id = RUS_arrange_the_supply_of_Korean_shells
 		icon = GFX_RUS_arrange_the_supply_of_Korean_shells
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Our_Asian_comrades
 		prerequisite = { focus = RUS_Our_Asian_comrades }
 		cost = 0.143
-		x = -11
-		y = 15
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2658,11 +3537,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Import_of_Chinese_military_equipment
 		icon = GFX_RUS_Import_of_Chinese_military_equipment
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Our_Asian_comrades
 		prerequisite = { focus = RUS_Our_Asian_comrades }
 		cost = 0.143
-		x = -13
-		y = 15
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2670,11 +3549,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Invite_military_specialists
 		icon = GFX_RUS_Invite_military_specialists
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Our_Asian_comrades
 		prerequisite = { focus = RUS_Our_Asian_comrades }
 		cost = 0.143
-		x = -12
-		y = 16
+		x = 0
+		y = 2
 		ai_will_do = {
 			factor = 1
 		}
@@ -2682,11 +3561,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Negotiations_with_Islamic_partners
 		icon = GFX_RUS_Negotiations_with_Islamic_partners
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Expand_cooperation_with_strategic_allies
 		prerequisite = { focus = RUS_Expand_cooperation_with_strategic_allies }
 		cost = 0.143
-		x = -6
-		y = 14
+		x = 3
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2694,11 +3573,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Joint_construction_of_military_enterprises
 		icon = GFX_RUS_Joint_construction_of_military_enterprises
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Negotiations_with_Islamic_partners
 		prerequisite = { focus = RUS_Negotiations_with_Islamic_partners }
 		cost = 0.143
-		x = -6
-		y = 16
+		x = 0
+		y = 2
 		ai_will_do = {
 			factor = 1
 		}
@@ -2706,11 +3585,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Iranian_drones
 		icon = GFX_RUS_Iranian_drones
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Negotiations_with_Islamic_partners
 		prerequisite = { focus = RUS_Negotiations_with_Islamic_partners }
 		cost = 0.143
-		x = -5
-		y = 15
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2718,11 +3597,11 @@ focus_tree = {
 	focus = {
 		id = RUS_import_of_ballistic_missiles
 		icon = GFX_RUS_import_of_ballistic_missiles
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Negotiations_with_Islamic_partners
 		prerequisite = { focus = RUS_Negotiations_with_Islamic_partners }
 		cost = 0.143
-		x = -7
-		y = 15
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2730,12 +3609,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Recruitment_of_international_volunteers
 		icon = GFX_RUS_Recruitment_of_international_volunteers
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Joint_construction_of_military_enterprises
 		prerequisite = { focus = RUS_Invite_military_specialists }
 		prerequisite = { focus = RUS_Joint_construction_of_military_enterprises }
 		cost = 0.143
-		x = -9
-		y = 17
+		x = -3
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2743,11 +3622,11 @@ focus_tree = {
 	focus = {
 		id = RUS_tactics_of_the_firing_shaft
 		icon = GFX_RUS_tactics_of_the_firing_shaft
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = 2
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2755,11 +3634,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Dig_trenches
 		icon = GFX_RUS_Dig_trenches
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_tactics_of_the_firing_shaft
 		prerequisite = { focus = RUS_tactics_of_the_firing_shaft }
 		cost = 0.143
-		x = 1
-		y = 14
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2767,11 +3646,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Positional_warfare
 		icon = GFX_RUS_Positional_warfare
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_tactics_of_the_firing_shaft
 		prerequisite = { focus = RUS_tactics_of_the_firing_shaft }
 		cost = 0.143
-		x = 3
-		y = 14
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2779,12 +3658,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Creation_of_fortified_areas
 		icon = GFX_RUS_Creation_of_fortified_areas
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Dig_trenches
 		prerequisite = { focus = RUS_Dig_trenches }
 		prerequisite = { focus = RUS_Surovikin_Line }
 		cost = 0.143
-		x = 0
-		y = 15
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2792,12 +3671,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Limited_offensive
 		icon = GFX_RUS_Limited_offensive
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Positional_warfare
 		prerequisite = { focus = RUS_Dig_trenches }
 		prerequisite = { focus = RUS_Positional_warfare }
 		cost = 0.143
-		x = 2
-		y = 15
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2805,12 +3684,12 @@ focus_tree = {
 	focus = {
 		id = RUS_Aviation_improvement
 		icon = GFX_RUS_Aviation_improvement
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Positional_warfare
 		prerequisite = { focus = RUS_Dig_trenches }
 		prerequisite = { focus = RUS_Positional_warfare }
 		cost = 0.143
-		x = 4
-		y = 15
+		x = 1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2818,14 +3697,14 @@ focus_tree = {
 	focus = {
 		id = RUS_second_attack_on_Kiev
 		icon = GFX_RUS_second_attack_on_Kiev
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Limited_offensive
 		prerequisite = { focus = RUS_Aviation_improvement }
 		prerequisite = { focus = RUS_Limited_offensive }
 		prerequisite = { focus = RUS_Creation_of_fortified_areas }
 		mutually_exclusive = { focus = RUS_War_of_Attrition }
 		cost = 0.143
-		x = 1
-		y = 16
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2833,38 +3712,157 @@ focus_tree = {
 	focus = {
 		id = RUS_War_of_Attrition
 		icon = GFX_RUS_War_of_Attrition
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Aviation_improvement
 		prerequisite = { focus = RUS_Aviation_improvement }
 		prerequisite = { focus = RUS_Limited_offensive }
 		prerequisite = { focus = RUS_Creation_of_fortified_areas }
 		mutually_exclusive = { focus = RUS_second_attack_on_Kiev }
 		cost = 0.143
-		x = 3
-		y = 16
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
 	}
+
+
+	focus = {
+		id = RUS_Fighting_in_manpower_environment
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_War_of_Attrition }
+		cost = 0.143
+		x = 4
+		y = 1
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	focus = {
+		id = RUS_Fighting_the_combatants
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_Fighting_in_manpower_environment }
+		cost = 0.143
+		x = 4
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	focus = {
+		id = RUS_Combat_Reconnaissance
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_Fighting_in_manpower_environment }
+		cost = 0.143
+		x = 8
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	focus = {
+		id = RUS_Pushing_the_enemy_out_of_cities
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_Fighting_the_combatants }
+		prerequisite = { focus = RUS_Combat_Reconnaissance }
+
+		cost = 0.143
+		x = 6
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+	}	
+
+	focus = {
+		id = RUS_Third_round_of_massive_missile_strikes
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_War_of_Attrition }
+		cost = 0.143
+		x = 11
+		y = 1
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+
+
+
+	focus = {
+		id = RUS_State_orders_for_cheap_gear
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_War_of_Attrition }
+		cost = 0.143
+		x = 0
+		y = 1
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+
+	focus = {
+		id = RUS_Fighting_the_secondary_equipment_market
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_State_orders_for_cheap_gear }
+		cost = 0.143
+		x = 0
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+
+	
+	focus = {
+		id = RUS_Largescale_mothballing
+		icon = GFX_UNDER
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_Fighting_the_secondary_equipment_market }
+		cost = 0.143
+		x = 0
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+
+
 	focus = {
 		id = RUS_last_days_of_the_Kiev_regime
 		icon = GFX_RUS_last_days_of_the_Kiev_regime
-		relative_position_id = RUS_SMO
-		prerequisite = { focus = RUS_War_of_Attrition focus = RUS_second_attack_on_Kiev }
+		relative_position_id = RUS_War_of_Attrition
+		prerequisite = { focus = RUS_Largescale_mothballing  }
+		prerequisite = { focus = RUS_Pushing_the_enemy_out_of_cities  }
+
 		cost = 0.143
-		x = 2
-		y = 17
+		x = -1
+		y = 5
 		ai_will_do = {
 			factor = 1
 		}
 	}
+
 	focus = {
 		id = RUS_Install_Dragon_Teeth
 		icon = GFX_RUS_Install_Dragon_Teeth
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Lessons_of_war
 		prerequisite = { focus = RUS_Lessons_of_war }
 		cost = 0.143
 		x = -2
-		y = 13
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -2872,11 +3870,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Surovikin_Line
 		icon = GFX_RUS_Surovikin_Line
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Install_Dragon_Teeth
 		prerequisite = { focus = RUS_Install_Dragon_Teeth }
 		cost = 0.143
-		x = -1
-		y = 14
+		x = 1
+		y = 1	
 		ai_will_do = {
 			factor = 1
 		}
@@ -2884,11 +3882,11 @@ focus_tree = {
 	focus = {
 		id = RUS_Zasechnaya_Line
 		icon = GFX_RUS_Zasechnaya_Line
-		relative_position_id = RUS_SMO
+		relative_position_id = RUS_Install_Dragon_Teeth
 		prerequisite = { focus = RUS_Install_Dragon_Teeth }
 		cost = 0.143
-		x = -3
-		y = 14
+		x = -1
+		y = 1
 		ai_will_do = {
 			factor = 1
 		}
@@ -4377,11 +5375,17 @@ focus_tree = {
 		}
 		allow_branch = {
  			has_completed_focus = RUS_SMO
+			NOT = {
+				has_global_flag = RUS_branch_operational_tactical_blocked
+			}
         }
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Putins_course"
-		    add_political_power = 45
-		    add_stability = 0.025
+			custom_effect_tooltip = RUS_Putins_course_cet
+			hidden_effect = {
+				add_political_power = 45
+				add_stability = 0.025
+			}
 		}
 	}
 	focus = {
@@ -4566,54 +5570,100 @@ focus_tree = {
 			add_war_support = 0.035
 			custom_effect_tooltip = RUS_Donbass_Russia_cet
 			hidden_effect={
-				add_state_claim = 221
-				add_state_claim = 205
-				add_state_claim = 189
-				add_state_claim = 293
-				add_state_claim = 172
-				add_state_claim = 173
-				add_state_claim = 194
-				add_state_claim = 193
-				add_state_claim = 183
+				add_state_core = 221
+				add_state_core = 205
+				add_state_core = 189
+				add_state_core = 293
+				add_state_core = 172
+				add_state_core = 173
+				add_state_core = 194
+				add_state_core = 193
+				add_state_core = 183
+				add_state_core = 716
+				add_state_core = 713
+				add_state_core = 711
+				add_state_core = 717
+				add_state_core = 898
+				add_state_core = 892
+				add_state_core = 899
+				add_state_core = 891
+				add_state_core = 901
+				add_state_core = 903
+				add_state_core = 902
+				add_state_core = 904
+				add_state_core = 895
+				add_state_core = 898
+				add_state_core = 897
+				add_state_core = 983
+				add_state_core = 984
+				add_state_core = 982
 				if = {
-					limit = { UKR = { NOT = { controls_state = 237 } } }
-					237 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 237 } } }
+					237 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 213 } } }
-					213 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 213 } } }
+					213 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 182 } } }
-					182 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 182 } } }
+					182 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 149 } } }
-					149 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 149 } } }
+					149 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 165 } } }
-					165 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 165 } } }
+					165 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 145 } } }
-					145 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 145 } } }
+					145 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 176 } } }
-					176 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 176 } } }
+					176 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 154 } } }
-					154 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 154 } } }
+					154 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 125 } } }
-					125 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 125 } } }
+					125 = { add_compliance = 20 }
 				}
 				if = {
-					limit = { UKR = { NOT = { controls_state = 116 } } }
-					116 = { add_compliance = 6.5 }
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					116 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					708 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					709 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					710 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					712 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					716 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					714 = { add_compliance = 20 }
+				}
+				if = {
+					limit = { UKR = { any_enemy_country = { controls_state = 116 } } }
+					715 = { add_compliance = 20 }
 				}
 			}
 		}
@@ -4651,7 +5701,7 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Strengthening_traditional_values"
 			add_stability = 0.04
-			add_trait = {  character = vladimir_putin  ideology = oligarchy  trait = defender_of_traditional_values }
+			add_trait = {  character = vladimir_putin  ideology = authoritarian_democracy_rus_postwar trait = defender_of_traditional_values }
 		}
 	}
 	focus = {
@@ -4668,12 +5718,24 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Humanitarian_aid_LDPR"
 		    LPR = {
-			    add_political_power = 35
-				add_stability = 0.05
+			    swap_ideas = {
+					remove_idea = medical_deficit
+					add_idea = DLPR_russian_gum_medical
+				}
+				swap_ideas = {
+					remove_idea = social_deficit
+					add_idea = DLPR_russian_gum
+				}
 			}
 			DPR = {
-			    add_political_power = 35
-				add_stability = 0.05
+			    swap_ideas = {
+					remove_idea = medical_deficit
+					add_idea = DLPR_russian_gum_medical
+				}
+				swap_ideas = {
+					remove_idea = social_deficit
+					add_idea = DLPR_russian_gum
+				}
 			}
 			custom_effect_tooltip = RUS_Humanitarian_aid_LDPR_cet
 			hidden_effect={
@@ -4777,6 +5839,9 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Orthodox"
+			set_variable = {
+				RUS_Military_clergy_limit_var = 3
+			}
 		    add_stability = 0.05
 		    add_war_support = -0.025
 			custom_effect_tooltip = RUS_Orthodox_cet
@@ -4797,10 +5862,7 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Rally_society_around_the_president"
 		    add_political_power = 65
-			add_trait = {  character = vladimir_putin  ideology = oligarchy  trait = last_hope }
-			remove_dynamic_modifier = {
-				modifier = crisis_developed_Putinism
-			}
+			add_trait = {  character = vladimir_putin  ideology = authoritarian_democracy_rus_postwar  trait = last_hope }
 		}
 	}
 	focus = {
@@ -4834,7 +5896,16 @@ focus_tree = {
 		prerequisite = { focus = RUS_Rally_society_around_the_president }
 		prerequisite = { focus = RUS_3_ways_One_country }
 		prerequisite = { focus = RUS_ideological_question }
-		cost = 0.143
+		available = {
+			has_dynamic_modifier = {
+				modifier = crisis_developed_Putinism
+			}
+			custom_trigger_tooltip = {
+				has_global_flag = WGN_death_prigozhin_utkin_global
+				tooltip = WGN_death_prigozhin_utkin_tooltip
+			}
+		}
+		cost = 2
 		x = -1
 		y = 7
 		ai_will_do = {
@@ -4842,8 +5913,23 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_No_one_except_Putin"
-		    custom_effect_tooltip = RUS_new_focus
-			custom_effect_tooltip = in_development
+			add_political_power = 75
+		    custom_effect_tooltip = RUS_No_one_except_Putin_cet
+			remove_dynamic_modifier = {
+				modifier = crisis_developed_Putinism
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = state_of_stability
+						}
+					}
+				}
+				add_dynamic_modifier = {
+					modifier = state_of_stability
+				}
+			}
 		}
 	}
 	focus = {
@@ -4995,13 +6081,465 @@ focus_tree = {
 			}
 		}
 	}
+	focus = {
+		id = RUS_heros_time
+		icon = GFX_RUS_heros_time
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_No_one_except_Putin }
+		cost = 2
+		x = 1
+		y = 8
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_heros_time"
+		    if = {
+				limit = {
+					has_idea = society_very_low
+				}
+				swap_ideas = {
+					remove_idea = society_very_low
+					add_idea = society_low
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_low
+				}
+				swap_ideas = {
+					remove_idea = society_low
+					add_idea = society_medium
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_medium
+				}
+				swap_ideas = {
+					remove_idea = society_medium
+					add_idea = society_high
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_high
+				}
+				swap_ideas = {
+					remove_idea = society_high
+					add_idea = society_very_high
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_very_high
+				}
+				add_war_support = 0.05
+				add_political_power = 50
+			}
+		}
+	}
+	focus = {
+		id = RUS_demographics
+		icon = GFX_RUS_demographics
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_No_one_except_Putin }
+		cost = 2
+		x = -2
+		y = 8
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_demographics"
+		    if = {
+				limit = {
+					has_idea = birth_rate1
+				}
+				swap_ideas = {
+					remove_idea = birth_rate1
+					add_idea = birth_rate2
+				}
+			}
+			if = {
+				limit = {
+					has_idea = birth_rate2
+				}
+				swap_ideas = {
+					remove_idea = birth_rate2
+					add_idea = birth_rate3
+				}
+			}
+			if = {
+				limit = {
+					has_idea = birth_rate3
+				}
+				swap_ideas = {
+					remove_idea = birth_rate3
+					add_idea = birth_rate4
+				}
+			}
+			if = {
+				limit = {
+					has_idea = birth_rate4
+				}
+				swap_ideas = {
+					remove_idea = birth_rate4
+					add_idea = birth_rate5
+				}
+			}
+			if = {
+				limit = {
+					has_idea = birth_rate5
+				}
+				swap_ideas = {
+					remove_idea = birth_rate5
+					add_idea = birth_rate6
+				}
+			}
+			if = {
+				limit = {
+					has_idea = birth_rate6
+				}
+				swap_ideas = {
+					remove_idea = birth_rate6
+					add_idea = birth_rate7
+				}
+			}
+			if = {
+				limit = {
+					has_idea = birth_rate7
+				}
+				add_political_power = 100
+			}
+		}
+	}
+	focus = {
+		id = RUS_MROT
+		icon = GFX_RUS_MROT
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_No_one_except_Putin }
+		cost = 2
+		x = -4
+		y = 8
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_MROT"
+		    if = {
+				limit = {
+					has_idea = social_deficit
+				}
+				swap_ideas = {
+					remove_idea = social_deficit
+					add_idea = social_shortened
+				}
+			}
+			if = {
+				limit = {
+					has_idea = social_shortened
+				}
+				swap_ideas = {
+					remove_idea = social_shortened
+					add_idea = social_basic
+				}
+			}
+			if = {
+				limit = {
+					has_idea = social_basic
+				}
+				swap_ideas = {
+					remove_idea = social_basic
+					add_idea = social_increased
+				}
+			}
+			if = {
+				limit = {
+					has_idea = social_increased
+				}
+				swap_ideas = {
+					remove_idea = social_increased
+					add_idea = social_extended
+				}
+			}
+			if = {
+				limit = {
+					has_idea = social_extended
+				}
+				add_political_power = 100
+			}
+		}
+	}
+	focus = {
+		id = RUS_Election_conservatism
+		icon = GFX_RUS_conservatism
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_MROT focus = RUS_demographics }
+		mutually_exclusive = { focus = RUS_Election_militarisation }
+		cost = 1
+		x = -3
+		y = 9
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_conservatism"
+		    custom_effect_tooltip = RUS_Election_conservatism_cet
+			add_stability = 0.05
+			add_political_power = 100
+		}
+	}
+	focus = {
+		id = RUS_Election_militarisation
+		icon = GFX_RUS_Election_militarisation
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_heros_time }
+		mutually_exclusive = { focus = RUS_Election_conservatism }
+		cost = 1
+		x = 1
+		y = 9
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_militarisation"
+			if = {
+				limit = {
+					has_idea = society_very_low
+				}
+				swap_ideas = {
+					remove_idea = society_very_low
+					add_idea = society_low
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_low
+				}
+				swap_ideas = {
+					remove_idea = society_low
+					add_idea = society_medium
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_medium
+				}
+				swap_ideas = {
+					remove_idea = society_medium
+					add_idea = society_high
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_high
+				}
+				swap_ideas = {
+					remove_idea = society_high
+					add_idea = society_very_high
+				}
+			}
+			if = {
+				limit = {
+					has_idea = society_very_high
+				}
+				add_war_support = 0.1
+				add_political_power = 50
+			}
+		    custom_effect_tooltip = RUS_Election_militarisation_cet
+		}
+	}
+	focus = {
+		id = RUS_Election_2024
+		icon = GFX_RUS_Election_2024
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
+		cost = 1
+		x = -1
+		y = 10
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			date > 2024.03.9
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_2024"
+		    custom_effect_tooltip = RUS_Election_2024_cet
+			hidden_effect = {
+				country_event = rus.271
+			}
+		}
+	}
+	focus = {
+		id = RUS_Wagner_betray
+		icon = GFX_RUS_Wagner_betray
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_No_one_except_Putin }
+		cost = 0.143
+		x = 3
+		y = 8
+		ai_will_do = {
+			factor = 1
+		}
+		allow_branch = { has_country_flag = Wagner_betray_after_march_cf }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Vagner_betray"
+		    
+		}
+	}
+	focus = {
+		id = RUS_purge_unloyal_patriots
+		icon = GFX_RUS_purge_unloyal_patriots
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_first_purge_MO }
+		cost = 0.143
+		x = 2
+		y = 10
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_purge_unloyal_patriots"
+		    
+		}
+	}
+	focus = {
+		id = RUS_first_purge_MO
+		icon = GFX_RUS_first_purge_MO
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_Wagner_betray }
+		cost = 0.143
+		x = 2
+		y = 9
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_first_purge_MO"
+		    
+		}
+	}
+	focus = {
+		id = RUS_delete_Wagner
+		icon = GFX_RUS_delete_Wagner
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_Wagner_betray }
+		cost = 0.143
+		x = 5
+		y = 9
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_delete_Wagner"
+		    
+		}
+	}
+	focus = {
+		id = RUS_african_corpus
+		icon = GFX_RUS_african_corpus
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_delete_Wagner }
+		cost = 0.143
+		x = 4
+		y = 10
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_african_corpus"
+		    
+		}
+	}
+	focus = {
+		id = RUS_military_centralisation
+		icon = GFX_RUS_military_centralisation
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_delete_Wagner }
+		cost = 0.143
+		x = 6
+		y = 10
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_military_centralisation"
+		    
+		}
+	}
+	focus = {
+		id = RUS_Special_unit_Wagner
+		icon = GFX_RUS_Special_unit_Wagner
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_african_corpus }
+		prerequisite = { focus = RUS_military_centralisation }
+		cost = 2
+		x = 5
+		y = 11
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+		    custom_trigger_tooltip = {
+				tooltip = Wagner_exists_tt
+				WGN = {
+					exists = yes
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = Wagner_prigoshin_die_tt
+				WGN = {
+					has_country_flag = WGN_death_prigozhin_utkin
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = Wagner_pavel_leader_tt
+				WGN = {
+					pavel_prigozhin = {
+						is_country_leader = yes
+					}
+				}
+			}
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Special_unit_Wagner"
+		    add_political_power = 50
+		    custom_effect_tooltip = RUS_Special_unit_Wagner_cet
+			remove_power_balance = {
+                id = RUS_power_balance
+            }
+			hidden_effect = {
+				remove_power_balance = {
+                    id = WGN_power_balance
+                }
+				country_event = {
+					id = rus.147
+					days = 0
+				}
+			}
+		}
+	}
 	###ЭКОНОМИКА
 	focus = {
 		id = RUS_call_Nabiullina
 		icon = GFX_RUS_Nabiulina_call
 		relative_position_id = RUS_Putins_course
 		cost = 0.5
-		x = 40
+		x = 50
 		y = 0
 		ai_will_do = {
 			factor = 1
@@ -5014,9 +6552,16 @@ focus_tree = {
 			    idea = RUS_forced_economic_measures
 				days = 10
 			}
+
+        set_variable = {
+            RUS.ai_production_efficiency_cf = 0.3
+        }			
 		}
 		allow_branch = {
  			has_completed_focus = RUS_SMO
+			NOT = {
+				has_global_flag = RUS_branch_operational_tactical_blocked
+			}
         }
 	}
 	focus = {
@@ -5030,6 +6575,29 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Mobilization_of_Industry"
 		    custom_effect_tooltip = RUS_arms_plants_opening
+			if = {
+				limit = {  
+					RUS = {
+						has_idea = civilian_economy
+					}
+					 
+				}
+				swap_ideas = {
+					remove_idea = civilian_economy
+					add_idea = partial_economic_mobilisation
+				}
+			}
+			if = {
+				limit = {
+					RUS = {
+						has_idea = low_economic_mobilisation
+					}
+				 }
+				 swap_ideas = {
+					remove_idea = low_economic_mobilisation
+					add_idea = partial_economic_mobilisation
+				}
+			}
 		    hidden_effect = {
 			    random_controlled_state = {
 					add_building_construction = {
@@ -5059,6 +6627,10 @@ focus_tree = {
 						instant_build = yes
 					}
 				}
+        set_variable = {
+            RUS.ai_production_efficiency_cf = 0.4
+        }
+
 		    }
 			add_political_power = 60
 			add_fuel = 10000
@@ -5260,15 +6832,12 @@ focus_tree = {
 		cost = 1.5
 		x = -10
 		y = 3
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Modernization_of_military_aviation"
-		    custom_effect_tooltip = in_development
+			swap_ideas = {
+				remove_idea = RUS_VKSRF
+				add_idea = RUS_VKSRF_1
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -5279,18 +6848,17 @@ focus_tree = {
 		icon = GFX_RUS_sponsor_private_production
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_Reorganise_the_MIC_Commission }
-		cost = 0.143
+		cost = 1.5
 		x = -14
 		y = 3
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_sponsor_private_production"
-		    custom_effect_tooltip = in_development
+		    add_tech_bonus = {
+				bonus = 0.3
+				uses = 1
+				technology = tech_fpv
+			}
+			add_ideas = { RUS_drones_production_1 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -5301,18 +6869,15 @@ focus_tree = {
 		icon = GFX_RUS_Finance_ZALA
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_sponsor_private_production }
-		cost = 0.143
+		cost = 1.5
 		x = -14
 		y = 4
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Finance_ZALA"
-		    custom_effect_tooltip = in_development
+		    swap_ideas = {
+				remove_idea = RUS_drones_production_1
+				add_idea = RUS_drones_production_2
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -5323,18 +6888,22 @@ focus_tree = {
 		icon = GFX_RUS_contract_with_Kamov
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_Modernization_of_military_aviation }
-		cost = 0.143
+		cost = 1.5
 		x = -10
 		y = 4
 		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
+			has_completed_focus = RUS_streaming_assembly_of_the_Su_57
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_Contracts_with_Kayumov"
-		    custom_effect_tooltip = in_development
+			hidden_effect = {
+				log = "[GetDateText]: [Root.GetName]: Focus RUS_Contracts_with_Kayumov"
+			}
+			custom_effect_tooltip = WGN_decisionetc_tooltip
+			swap_ideas = {
+				remove_idea = RUS_VKSRF_1
+				add_idea = RUS_VKSRF_2
+			}
+
 		}
 		ai_will_do = {
 			factor = 1
@@ -5345,18 +6914,12 @@ focus_tree = {
 		icon = GFX_RUS_streaming_assembly_of_the_Su_57
 		relative_position_id = RUS_call_Nabiullina
 		prerequisite = { focus = RUS_Modernization_of_military_aviation }
-		cost = 0.143
+		cost = 1.5
 		x = -12
 		y = 4
-		available = {
-		    custom_trigger_tooltip = {
-			    tooltip = in_development
-			    has_country_flag = in_development
-			}
-		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_streaming_assembly_of_the_Su_57"
-		    custom_effect_tooltip = in_development
+			custom_effect_tooltip = WGN_decisionetc_tooltip
 		}
 		ai_will_do = {
 			factor = 1
@@ -5878,14 +7441,150 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_strong_and_powerful"
-		    custom_effect_tooltip = RUS_VPK_final_reform_toltip
-			add_ideas = RUS_VPK_powerful
+
+			set_variable = {
+				RUS.ai_production_efficiency_cf = 0.7
+			}			
+		    custom_effect_tooltip = RUS_VPK_final_reform_tooltip
+			custom_effect_tooltip = RUS_Giatsint_K_2C43_Malva_variant_tooltip
+			increase_economy = yes
 			hidden_effect = {
-			    add_to_variable = { RUS_Vpk_dynamic_mod_production_speed_arms_factory_factor = 0.04 }
+				add_ideas = RUS_VPK_powerful
+
+				add_to_variable = { 
+					RUS_Vpk_dynamic_mod_production_speed_arms_factory_factor = 0.04 
+				}
+
+				create_equipment_variant = {
+					name = "Гиацинт-К"
+					type = sp_artillery_mrv_wheeled_4_equipment
+					parent_version = 0
+
+					modules = {
+						art_main_armament_slot = sov_art_main_gun_2a37
+						cyo_type_slot = art_fire_control_system_4p
+						electronic_type_slot = sov_tank_radio_4
+						automaticloader_type_slot = sov_art_hand_loader
+						turret_type_slot = sov_art_noturret
+						armor_type_slot = art_armor_1
+						engine_type_slot = sov_tank_double_engine_3
+						special_type_slot_1 = tank_special_slot_gearbox_auto
+						panorsight_type_slot = sov_tank_panorsight_4
+					}
+
+					upgrades = {
+						tank_nsb_engine_upgrade = 0
+						tank_nsb_armor_upgrade = 0
+					}
+
+					icon = "GFX_sp_artillery_mrv_wheeled_4_medium"
+				}
+
+				create_equipment_variant = {
+					name = "2С43 Мальва"
+					type = sp_artillery_mrv_wheeled_4_equipment
+					parent_version = 0
+
+					modules = {
+						art_main_armament_slot = sov_art_main_gun_2a64
+						cyo_type_slot = art_fire_control_system_2p
+						electronic_type_slot = sov_tank_radio_4
+						automaticloader_type_slot = sov_art_hand_loader
+						turret_type_slot = sov_art_noturret
+						armor_type_slot = art_armor_1
+						engine_type_slot = sov_tank_double_engine_3
+						special_type_slot_1 = tank_special_slot_gearbox_auto
+					}
+
+					upgrades = {
+						tank_nsb_engine_upgrade = 0
+						tank_nsb_armor_upgrade = 0
+					}
+
+					icon = "GFX_sp_artillery_mrv_wheeled_4_medium"
+				}
 			}
 		}
 		ai_will_do = {
 			factor = 1
+		}
+	}
+	focus = {
+		id = RUS_continue_the_transition_to_a_war_footing
+		icon = 404
+		prerequisite = { focus = RUS_strong_and_powerful }
+		relative_position_id = RUS_call_Nabiullina
+		cost = 2
+		x = -6
+		y = 7
+		allow_branch = { always = no }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_continue_the_transition_to_a_war_footing"
+			country_event = rus.247
+			set_variable = {
+				RUS.ai_production_efficiency_cf = 0.85
+			}			
+		}
+
+	}
+	focus = {
+		id = RUS_tour_of_military_factories
+		icon = 404
+		prerequisite = { focus = RUS_continue_the_transition_to_a_war_footing }
+		relative_position_id = RUS_call_Nabiullina
+		cost = 2
+		x = -6
+		y = 8
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_tour_of_military_factories"
+			add_tech_bonus = {
+				bonus = 0.4
+				uses = 2
+				category = industry
+			}
+		}
+	}
+	focus = {
+		id = RUS_defense_Export_Question
+		icon = 404
+		prerequisite = { focus = RUS_tour_of_military_factories }
+		relative_position_id = RUS_call_Nabiullina
+		cost = 2
+		x = -8
+		y = 9
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_defense_Export_Question"
+
+		}
+	}
+	focus = {
+		id = RUS_visit_to_novosibirsk
+		icon = 404
+		prerequisite = { focus = RUS_tour_of_military_factories }
+		relative_position_id = RUS_call_Nabiullina
+		cost = 2
+		x = -6
+		y = 9
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_visit_to_novosibirsk"
+
+		}
+	}
+	focus = {
+		id = RUS_visit_to_the_land_equipment_factory
+		icon = 404
+		prerequisite = { focus = RUS_tour_of_military_factories }
+		relative_position_id = RUS_call_Nabiullina
+		cost = 2
+		x = -4
+		y = 9
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_visit_to_the_land_equipment_factory"
+
 		}
 	}
 	focus = {
@@ -6352,6 +8051,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_car_factory_Muscovite"
+			add_ideas = RUS_car_factory_Muscovite_idea
 		    add_political_power = 50
 		    add_stability = 0.05
 			14 = {
@@ -6444,6 +8144,10 @@ focus_tree = {
 					min = 0
 					max = 100
 				}
+				country_event = {
+					id = rus.5
+					days = 30
+				}
 			}
 		}
 	}
@@ -6486,7 +8190,7 @@ focus_tree = {
 		    add_political_power = 30
 			custom_effect_tooltip = RUS_Forbidden_topics_cet
 			hidden_effect={
-				add_to_variable = { var = RUS_propaganda_political_power_cost value = 1.5 }
+				add_to_variable = { var = RUS_propaganda_political_power_cost value = 0.15 }
 				add_to_variable = { var = RUS_propaganda_neutrality_drift value = 0.25 }
 				add_to_variable = { var = RUS_propaganda_stability_factor value = 0.025 }
 				add_to_variable = { var = RUS_propaganda_war_support_factor value = 0.05 }
@@ -6639,6 +8343,10 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Fighting_the_Liberal_Media"
 			add_political_power = 30
+			swap_ideas = {
+				remove_idea = mixed_media
+				add_idea = pro_government_media
+            }
 			add_to_variable = {	
 				var = global.rus_information_war_var_sum
 				value = 3
@@ -6764,6 +8472,7 @@ focus_tree = {
 			custom_effect_tooltip = RUS_Expand_the_RF_Armed_Forces_PPCO_cet
 		}
 	}
+
 	focus = {
 		id = RUS_Use_Prigozhins_Troll_Factory
 		icon = GFX_RUS_Use_Prigozhins_Troll_Factory
@@ -6841,6 +8550,7 @@ focus_tree = {
 		    add_political_power = 30
 		    add_command_power = 15
 		    custom_effect_tooltip = RUS_real_man_business_cet
+			unlock_decision_tooltip = RUS_allow_dobr_podz
 		    hidden_effect = {
 				add_dynamic_modifier = { modifier = RUS_recruitment_of_volunteers }
 				if = {
@@ -6861,6 +8571,16 @@ focus_tree = {
 							50 = { activate_mission = RUS_fees_of_EDRO_support }
 						}
 					}
+				}
+				if = {
+					limit = { 
+						has_country_flag = RUS_Drugaya_Rossia_cf
+					}
+					random_list = {
+						50 = { activate_mission = RUS_fees_of_NBP_AK }
+						50 = { activate_mission = RUS_fees_of_NBP_support }
+					}
+					add_to_variable = { var = RUS_recruitment_of_volunteers_weekly_manpower value = 30 }
 				}
 			}
 		}
@@ -6913,6 +8633,29 @@ focus_tree = {
 			}
 		}
 	}
+	focus = {
+		id = RUS_Reorganize_BARS
+		icon = GFX_RUS_Reorganize_BARS
+		relative_position_id = RUS_real_man_business
+		prerequisite = { focus = RUS_Establish_flow_volunteers }
+		cost = 1.43
+		x = 4
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Reorganize_BARS"
+		    add_command_power = 25
+		    custom_effect_tooltip = RUS_Reorganize_BARS_cet
+		    hidden_effect = {
+				country_event = {
+					id = rus.91
+					days = 0
+				}
+			}
+		}
+	}
 	
 	focus = {
 		id = RUS_Expand_VS_RF
@@ -6931,6 +8674,11 @@ focus_tree = {
 				tooltip = RUS_failure_SMO_trigger_tt
 				has_country_flag = RUS_failure_SMO
 			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_Expand_VS_RF_trigger_tt
+				has_country_flag = RUS_allow_dobr_podz_cf
+			}
+			date > 2022.6.1 
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Expand_VS_RF"
@@ -6939,8 +8687,12 @@ focus_tree = {
 			hidden_effect = {
 			    add_to_variable = { RUS_VCRF_training_time_army_factor = -0.1 }
 				add_to_variable = { RUS_VCRF_mobilization_speed = 0.05 }
-
+                set_country_flag = RUS_allow_dobr_podz_2_cf
 				load_oob = RUS_Sturmovoy_Spetsnaz_s
+				country_event = {
+					id = rus.233
+					days = 20
+                }
 			}
 		}
 	}
@@ -6960,7 +8712,9 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_formation_volunteer_battalions"
 			custom_effect_tooltip = RUS_formation_volunteer_battalions_cet
 			hidden_effect = {
-				
+				activate_mission = RUS_form_volunteer_battalions_eu
+				activate_mission = RUS_form_volunteer_battalions_ur
+				activate_mission = RUS_form_volunteer_battalions_si
 			}
 		}
 	}
@@ -6980,7 +8734,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_attract_PMCs"
 			custom_effect_tooltip = RUS_attract_PMCs_cet
 			hidden_effect = {
-			    load_oob = RUS_small_CHVK
+			    set_country_flag = RUS_attract_PMC_cf
 			}
 		}
 	}
@@ -6998,6 +8752,23 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_deconservation"
 			custom_effect_tooltip = RUS_deconservation_cet
+			hidden_effect = {
+				set_variable = { var = RUS_deconservation_tank_t55_cost value = 20 }
+				set_variable = { var = RUS_deconservation_tank_t62_cost value = 50 }
+				set_variable = { var = RUS_deconservation_tank_t72_cost value = 70 }
+				set_variable = { var = RUS_deconservation_tank_t80_cost value = 90 }
+				set_variable = { var = RUS_deconservation_tank_t90_cost value = 110 }
+				set_variable = { var = RUS_deconservation_BMP2_cost value = 80 }
+				set_variable = { var = RUS_deconservation_BMP1_cost value = 30 }
+				set_variable = { var = RUS_deconservation_BTR50_cost value = 20 }
+				set_variable = { var = RUS_deconservation_BTR60_cost value = 30 }
+				set_variable = { var = RUS_deconservation_SPA_cost value = 80 }
+				set_variable = { var = RUS_deconservation_TSPA_cost value = 80 }
+				set_variable = { var = RUS_deconservation_SAM_cost value = 80 }
+				set_variable = { var = RUS_deconservation_artillery_cost value = 40 }
+				set_variable = { var = RUS_deconservation_support_cost value = 60 }
+				set_variable = { var = RUS_deconservation_AK_cost value = 60 }
+			}
 		}
 	}
 	focus = {
@@ -7013,10 +8784,8 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_requirements_production_military_equipment"
-			custom_effect_tooltip = RUS_requirements_production_military_equipment_cet
-			hidden_effect = {
-			    add_ideas = RUS_requirements_production
-			}
+			unlock_decision_tooltip = RUS_status_of_military_equipment_production_standards
+			add_ideas = RUS_requirements_production
 		}
 	}
 	focus = {
@@ -7060,6 +8829,25 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_People_Front"
 		    add_political_power = 50
 			custom_effect_tooltip = RUS_People_Front_cet
+			add_equipment_to_stockpile = {  
+				type = imv_civil_0_equipment
+				amount = 2000
+				producer = RUS
+				variant_name = "УАЗ-452"
+			}
+			add_equipment_to_stockpile = {  
+				type = imv_civil_1_equipment
+				amount = 800
+				producer = RUS
+				variant_name = "УАЗ-469"
+			}
+			add_equipment_to_stockpile = {  
+				type = imv_civil_2_equipment
+				amount = 500
+				producer = RUS
+				variant_name = "УАЗ-3163 «Патриот»"
+			}			
+
 			hidden_effect = {
 			    add_to_variable = { var = RUS_assistance_to_veterans_political_power_cost value = 0.25 }
 				add_to_variable = { var = RUS_assistance_to_veterans_army_org_factor value = 0.02 }
@@ -7128,14 +8916,7 @@ focus_tree = {
 		}
 		available = {
 			WGN = {
-				custom_trigger_tooltip = {
-					tooltip = WGN_centr_trigger_tt
-					has_country_flag = WGN_centr_cf
-				}
-				custom_trigger_tooltip = {
-					tooltip = WGN_prisoner_recruitment_start_trigger_tt
-					has_country_flag = WGN_prisoner_recruitment_start_cf
-				}
+				has_completed_focus = WGN_kproject
 			}
 		}
 		completion_reward={
@@ -7143,26 +8924,19 @@ focus_tree = {
 			army_experience = 25
 			add_command_power = 15
 			custom_effect_tooltip = RUS_experience_of_Wagner_cet
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.10
-			}
 
-			add_doctrine_cost_reduction = {
-				name = exp_of_WGN
-				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
+			add_mastery = {
+				amount = 100
+				track = tier_1_infantry
+			}
+			add_mastery = {
+				amount = 100
+				track = tier_2_infantry
 			}
 			hidden_effect = {
-			    add_to_variable = { var = RUS_VCRF_experience_loss_factor value = 0.15 }
-				add_to_variable = { var = RUS_VCRF_army_attack_factor value = 0.05 }
-				add_to_variable = { var = RUS_VCRF_army_defence_factor value = 0.05 }
+			    add_to_variable = { var = RUS_VCRF_experience_loss_factor value = 0.10 }
 				add_to_variable = { var = RUS_VCRF_planning_speed value = 0.1 }
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.10
-				}
+				add_to_variable = { var = RUS_VCRF_max_planning value = 0.05 }
 			}
 		}
 	}
@@ -7186,11 +8960,11 @@ focus_tree = {
 				activate_mission = RUS_shtorm_Z_penaltys
 				add_corps_commander_role = {
                     Character = evgeny_burdinsky
-                    traits={ infantry_officer }
+                    traits={ infantry_officer prisoners_commander }
 					skill = 1
 					attack_skill = 2
 					defense_skill = 1
-					planning_skill = 3
+					planning_skill = 2
 					logistics_skill = 1
                 }
 				division_template = {
@@ -7228,6 +9002,15 @@ focus_tree = {
 						count = 1
 					}
 				}
+				add_to_variable = {	
+					var = RUS_contraband_SMO_dynamic_days
+					value = 15
+				}
+				add_to_variable = { RUS_contraband_modifer_experience_gain_army_unit_factor = -0.05 }
+				add_to_variable = { RUS_contraband_modifer_command_power_gain_mult = -0.05 }
+				add_to_variable = { RUS_contraband_modifer_army_morale_factor = -0.05 }
+				add_to_variable = { RUS_contraband_modifer_org_loss_at_low_org_factor = 0.075 }
+				country_event = { id = rus.230 days = 183 }
 			}
 		}
 	}
@@ -7243,18 +9026,16 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = RUS_PMSC_redoubt_trigger_tt
-				has_country_flag = RUS_redoubt_cf
-			}
+			
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Expand_redoubt"
 			custom_effect_tooltip = RUS_Expand_redoubt_cet
 			hidden_effect = {
+			    add_to_variable = { RUS_GRU_modifer_special_forces_training_time_factor = -0.05 }
 			    add_corps_commander_role = {
                     Character = vladimir_alekseev
-                    traits={ irregulars_officer infantry_officer engineer_officer politically_connected }
+                    traits={ infantry_officer engineer_officer politically_connected special_forces_commander }
 					skill = 2
 					attack_skill = 2
 					defense_skill = 3
@@ -7265,8 +9046,8 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_PMSC_Patriot
-		icon = GFX_RUS_PMSC_Patriot
+		id = RUS_dobrovol_corpus
+		icon = GFX_RUS_dobrovol_corpus
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_Expand_redoubt focus = RUS_Storm_Z }
 		cost = 2
@@ -7276,21 +9057,35 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = RUS_PMSC_Patriot_trigger_tt
-				has_country_flag = RUS_patriot_cf
-			}
-			custom_trigger_tooltip = {
-				tooltip = RUS_PMSC_Patriot_trigger_wagner_die_tt
-				WGN = {
-					has_country_flag = WGN_death_prigozhin_utkin
-				}
-			}
+			
 		}
 		completion_reward={
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_PMSC_Patriot"
-			custom_effect_tooltip = RUS_PMSC_Patriot_cet
-			custom_effect_tooltip = in_development
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_dobrovol_corpus"
+			add_command_power = 75
+			custom_effect_tooltip = RUS_dobrovol_corpus_cet
+			if = {
+				limit = {
+					has_country_flag = Wagner_betray_after_march_cf
+				}
+				custom_effect_tooltip = RUS_dobrovol_corpus_2_cet
+				hidden_effect = {
+					Andrey_Troshev = {
+						add_advisor_role = {
+							advisor = {
+								slot = theorist
+								cost = 75
+								idea_token = RUS_Andrey_Troshev
+								traits = { army_commando_2 }
+							}
+						}
+					}
+				}
+			}
+			hidden_effect = {
+				set_country_flag = RUS_allow_dobr_podz_3_cf
+				add_to_variable = { var = RUS_GRU_modifer_special_forces_attack_factor value = 0.05 }
+				add_to_variable = { var = RUS_GRU_modifer_command_power_gain_mult value = 0.15 }
+			}
 		}
 	}
 	focus = {
@@ -7310,8 +9105,8 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_MOA_f
-		icon = GFX_RUS_MOA
+		id = RUS_destabilization_ukrainian_rear
+		icon = GFX_RUS_destabilization_ukrainian_rear
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_Battalions_of_collaborators }
 		cost = 2.43
@@ -7321,19 +9116,25 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = RUS_MOA_trigger_tt				
-				check_variable = { RUS.prisoners_of_war_captured_by_UKR > 2499 }
-			}
+			
 		}
 		completion_reward={
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_MOA_f"
-		    ##country_event = {
-				##id = rus.69
-				##days = 0
-			##}
-			custom_effect_tooltip = RUS_form_moa_cet
-			custom_effect_tooltip = in_development
+			UKR = {
+				add_ideas = UKR_destabilized_rear_idea
+			}
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 5
+				tooltip = IW_5_var_add_tt
+			}
+			hidden_effect = {
+				add_to_variable = {	
+					var = global.ukr_information_war_var_sum
+					value = -5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
 		}
 	}
 	focus = {
@@ -7341,7 +9142,7 @@ focus_tree = {
 		icon = GFX_RUS_cossacks_volunteers
 		relative_position_id = RUS_real_man_business
 		prerequisite = { focus = RUS_Expand_VS_RF }
-		cost = 2
+		cost = 3
 		x = 1
 		y = 3
 		ai_will_do = {
@@ -7361,8 +9162,18 @@ focus_tree = {
 			}
 			custom_effect_tooltip = RUS_cossacks_volunteers_cet
 			hidden_effect = {
-
-				load_oob = RUS_dobrobati_kazaki
+			    RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_dobrovolcheskoe_podrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_Specpodrazdelenie_Genshtaba_equipment_1 = yes
+				RUS_Redut_Specpodrazdelenie_Genshtaba_equipment_1 = yes
+			    ensure_unit_template_RUS_Dobrovolcheskoe_podrazdelenie_Genshtaba_Redut = yes
+				ensure_unit_template_RUS_Specpodrazdelenie_Genshtaba_Redut = yes
 				add_corps_commander_role = {
                     Character = vitaly_kuznetsov
                     traits={ cavalry_officer engineer_officer irregulars_officer }
@@ -7372,6 +9183,149 @@ focus_tree = {
 					planning_skill = 1
 					logistics_skill = 2
                 }
+				if = {
+				    limit = {
+						has_country_flag = RUS_training_obrspn_16_cf
+					}
+					257 = {
+			        	create_unit = {
+					    	division = "name = \"Batal'on «Listan'» Kazachey brigady «Don»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 12161
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Aksay» Kazachey brigady «Don»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 9924
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Manych» Kazachey brigady «Don»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 6086
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Skif» Kazachey brigady «Terek»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 766
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Sibir'» Kazachey brigady «Terek»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 16902
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Enisey» Kazachey brigady «Terek»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 6587
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Angara» Kazachey brigady «Sibir'»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 16749
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Irtysh» Kazachey brigady «Sibir'»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 7146
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Forshtadt» Kazachey brigady «Sibir'»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 16823
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"1-y batal'on otdel'noy kazach'ey diversionno-razvedyvatel'noy brigady «Dnepr»\" division_template = \"Specpodrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.6 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 18932
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"2-y batal'on otdel'noy kazach'ey diversionno-razvedyvatel'noy brigady «Dnepr»\" division_template = \"Specpodrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.6 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 10281
+					    	count = 1
+				    	}
+					}
+				}	
+				else = {
+					257 = {
+			        	create_unit = {
+					    	division = "name = \"Batal'on «Listan'» Kazachey brigady «Don»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 12161
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Aksay» Kazachey brigady «Don»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 9924
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Manych» Kazachey brigady «Don»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 6086
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Skif» Kazachey brigady «Terek»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 766
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Sibir'» Kazachey brigady «Terek»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 16902
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Enisey» Kazachey brigady «Terek»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 6587
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Angara» Kazachey brigady «Sibir'»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 16749
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Irtysh» Kazachey brigady «Sibir'»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 7146
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"Batal'on «Forshtadt» Kazachey brigady «Sibir'»\" division_template = \"Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 16823
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"1-y batal'on otdel'noy kazach'ey diversionno-razvedyvatel'noy brigady «Dnepr»\" division_template = \"Specpodrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 18932
+					    	count = 1
+				    	}
+						create_unit = {
+					    	division = "name = \"2-y batal'on otdel'noy kazach'ey diversionno-razvedyvatel'noy brigady «Dnepr»\" division_template = \"Specpodrazdelenie Genshtaba (Redut)\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
+					    	owner = RUS
+					    	prioritize_location = 10281
+					    	count = 1
+				    	}
+					}
+				}	
 			}
 		}
 	}
@@ -7421,12 +9375,12 @@ focus_tree = {
 				load_oob = RUS_Special_Forces_Rosgvardia_2
 				add_corps_commander_role = {
                     Character = viktor_zolotov
-                    traits={ infantry_officer organizer media_personality career_officer politically_connected }
-					skill=4
-					attack_skill=3
-					defense_skill=6
-					planning_skill=5
-					logistics_skill=5
+                    traits={ infantry_officer media_personality career_officer politically_connected }
+					skill=2
+					attack_skill=1
+					defense_skill=2
+					planning_skill=1
+					logistics_skill=2
                 }
 			}
 		}
@@ -7435,10 +9389,10 @@ focus_tree = {
 		id = RUS_OSN_Thunder
 		icon = GFX_RUS_OSN_Thunder
 		relative_position_id = RUS_real_man_business
-		prerequisite = { focus = RUS_mobilize_MVD }
-		cost = 1
+		prerequisite = { focus = RUS_anti_ukr_terrorism }
+		cost = 1.43
 		x = 0
-		y = 4
+		y = 5
 		ai_will_do = {
 			factor = 1
 		}
@@ -7474,27 +9428,19 @@ focus_tree = {
 			hidden_effect = {
 				add_to_variable = { var = RUS_MVD_political_power_factor value = 0.05 }
 				set_division_template_lock = {
-					division_template = "CHVK"
+					division_template = "Specpodrazdelenie Genshtaba (Redut)"
 					is_locked = no
 				}
 				set_division_template_lock = {
-					division_template = "CHVK «Patriot»"
+					division_template = "Dobrovol'cheskoe podrazdelenie Genshtaba (Redut)"
 					is_locked = no
 				}
 				set_division_template_lock = {
-					division_template = "CHVK «Redut»"
+					division_template = "Special'noe motorizovannoe podrazdelenie Genshtaba (Redut)"
 					is_locked = no
 				}
 				set_division_template_lock = {
-					division_template = "ODSHBr «Veterany»"
-					is_locked = no
-				}
-				set_division_template_lock = {
-					division_template = "Batalion «Espan'ola»"
-					is_locked = no
-				}
-				set_division_template_lock = {
-					division_template = "CHVK Gazprom"
+					division_template = "Dobrovol'cheskoe artilleriyskoe podrazdelenie Genshtaba (Redut)"
 					is_locked = no
 				}
 				set_division_template_lock = {
@@ -7505,81 +9451,46 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_Reorganize_BARS
-		icon = GFX_RUS_Reorganize_BARS
+		id = RUS_anti_ukr_terrorism
+		icon = GFX_RUS_anti_ukr_terrorism
 		relative_position_id = RUS_real_man_business
-		prerequisite = { focus = RUS_OSN_Thunder }
-		cost = 1.43
+		prerequisite = { focus = RUS_mobilize_MVD }
+		cost = 1
 		x = 0
-		y = 5
+		y = 4
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward={
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_Reorganize_BARS"
-		    add_command_power = 25
-		    custom_effect_tooltip = RUS_Reorganize_BARS_cet
-		    hidden_effect = {
-				country_event = {
-					id = rus.91
-					days = 0
-				}
-			}
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_anti_ukr_terrorism"
+			upgrade_intelligence_agency = upgrade_passive_defense
+
+		    
 		}
 	}
 	focus = {
-		id = RUS_Special_unit_Wagner
-		icon = GFX_RUS_Special_unit_Wagner
+		id = RUS_border_troops_group
+		icon = GFX_RUS_border_troops_group
 		relative_position_id = RUS_real_man_business
+		prerequisite = { focus = RUS_OSN_Thunder }
 		prerequisite = { focus = RUS_Law_on_Volunteer_formations }
-		prerequisite = { focus = RUS_Reorganize_BARS }
-		cost = 2
+		cost = 3
 		x = -1
 		y = 6
 		ai_will_do = {
 			factor = 1
 		}
-		available = {
-		    custom_trigger_tooltip = {
-				tooltip = Wagner_exists_tt
-				WGN = {
-					exists = yes
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = Wagner_prigoshin_die_tt
-				WGN = {
-					has_country_flag = WGN_death_prigozhin_utkin
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = Wagner_pavel_leader_tt
-				WGN = {
-					pavel_prigozhin = {
-						is_country_leader = yes
-					}
-				}
-			}
-		}
 		completion_reward={
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_Special_unit_Wagner"
-		    add_political_power = 50
-		    custom_effect_tooltip = RUS_Special_unit_Wagner_cet
-			remove_power_balance = {
-                id = RUS_power_balance
-            }
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_border_troops_group"
+			add_command_power = 50
+		    custom_effect_tooltip = RUS_border_troops_group_cet
 			hidden_effect = {
-				remove_power_balance = {
-                    id = WGN_power_balance
-                }
-				country_event = {
-					id = rus.147
-					days = 0
-				}
+				country_event = { id = rus.16 days = 15 }
+				add_to_variable = {	RUS_VCRF_army_core_defence_factor = 0.1 }
+				add_to_variable = {	RUS_VCRF_modifier_command_power_gain_mult = 0.05 }
 			}
 		}
 	}
-	
 	focus = {
 		id = RUS_recruitment_combat_veterans
 		icon = GFX_RUS_recruitment_combat_veterans
@@ -7595,7 +9506,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_recruitment_combat_veterans"
 		    army_experience = 40
 			add_command_power = 20
-			add_manpower = 10000
+			add_manpower = 2000
 			add_ideas = {
 				RUS_veterans
 			}
@@ -7631,7 +9542,7 @@ focus_tree = {
 		x = 6
 		y = 2
 		ai_will_do = {
-			factor = 1
+			factor = 50
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Start_covert_mobilization"
@@ -7652,7 +9563,7 @@ focus_tree = {
 		x = 10
 		y = 1
 		ai_will_do = {
-			factor = 1
+			factor = 100
 		}
 		available = {
 			custom_trigger_tooltip = {
@@ -7668,7 +9579,7 @@ focus_tree = {
 				has_civil_war = yes
 				custom_trigger_tooltip = {
 					tooltip = RUS_forced_measures_trigger_tt
-					has_manpower < 250
+					has_manpower < 1000
 				}
 			}
 		}
@@ -7676,6 +9587,9 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_forced_measures"
 			add_political_power = 100
 			add_stability = -0.05
+			set_variable = {
+				RUS_strengthening_the_front_line_limit_var = 5
+			}
 			custom_effect_tooltip = RUS_forced_measures_cet
 		}
 	}
@@ -7689,7 +9603,11 @@ focus_tree = {
 		x = 9
 		y = 2
 		ai_will_do = {
-			factor = 1
+			base = 1
+			modifier = {
+				add = 150
+				date > 2022.07.01
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_amendments_to_the_Law_on_Mobilization"
@@ -7737,7 +9655,7 @@ focus_tree = {
 		x = 9
 		y = 3
 		ai_will_do = {
-			factor = 1
+			base = 200
 		}
 		available = {
 			custom_trigger_tooltip = {
@@ -7749,44 +9667,44 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_begin_partial_mobilization"
 		    add_stability = -0.15
 			add_war_support = -0.2
-			add_manpower = 15000
 			remove_ideas = RUS_covert_mobilization
-			increase_escalation_by_10 = yes
-			custom_effect_tooltip = first_mobiks_tt
-			swap_ideas = {
-				remove_idea = volunteer_only
-				add_idea = extensive_conscription
-			}
-			add_to_variable = { war_fatigue = 150 }
 			if = {
-				limit = {  
+				limit = {
 					RUS = {
-						has_idea = civilian_economy
+						is_ai = yes
 					}
-					 
 				}
-				swap_ideas = {
-					remove_idea = civilian_economy
-					add_idea = partial_economic_mobilisation
+				remove_ideas = RUS_disruption_of_the_operation_2_singleplayer
+				add_timed_idea = {
+					idea = RUS_disruption_of_the_operation_3_singleplayer
+					days = 60
 				}
 			}
 			if = {
 				limit = {
 					RUS = {
-						has_idea = low_economic_mobilisation
+						is_ai = no
 					}
-				 }
-				 swap_ideas = {
-					remove_idea = low_economic_mobilisation
-					add_idea = partial_economic_mobilisation
+				}
+				remove_ideas = RUS_disruption_of_the_operation_2
+				add_timed_idea = {
+					idea = RUS_disruption_of_the_operation_3
+					days = 60
 				}
 			}
+			increase_escalation_by_10 = yes
+			custom_effect_tooltip = first_mobiks_tt
+			swap_ideas = {
+				remove_idea = limited_conscription
+				add_idea = extensive_conscription
+			}
+			add_to_variable = { war_fatigue = 150 }
 			hidden_effect = {
-				
+				add_manpower = 100000
 				load_oob = RUS_first_mobiks #To keep the front from collapsing xD
 				set_country_flag = Russian_partial_mobilization
 				country_event = super.7 #superevent
-				add_to_variable = {	RUS_VCRF_conscription_factor = 0.20 }
+				add_to_variable = {	RUS_VCRF_conscription_factor = 0.51 }
 				country_event = {
 					id = rus.166
 					days = 62
@@ -7859,7 +9777,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_general_mobilization"
 		    add_stability = -0.2
 			add_war_support = -0.3
-			add_manpower = 25000
+			add_manpower = 250000
 			increase_escalation_by_20 = yes
 			custom_effect_tooltip = first_mobiks_tt_1
 			swap_ideas = {
@@ -7892,17 +9810,6 @@ focus_tree = {
 				swap_ideas = {
 					remove_idea = society_medium
 					add_idea = society_low
-				}
-			}
-			if = {
-				limit = {
-					RUS = {
-						has_idea = low_economic_mobilisation
-					}
-				}
-				swap_ideas = {
-					remove_idea = partial_economic_mobilisation
-					add_idea = war_economy
 				}
 			}
 			add_equipment_to_stockpile = {  
@@ -7998,5 +9905,752 @@ focus_tree = {
 		    custom_effect_tooltip = RUS_Quartering_terdefense_cet
 		}
 	}
-
+	
+	###WAGNER
+	focus = {
+		id = RUS_its_happened
+		icon = GFX_RUS_its_happened
+		cost = 0.5
+		x = 25
+		y = 0
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			custom_trigger_tooltip = {
+			    tooltip = in_development
+			    has_country_flag = in_development
+			}
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_its_happened"
+		    
+		}
+		allow_branch = {
+ 			has_global_flag = RUS_Wagner_victory
+        }
+	}
+	focus = {
+		id = RUS_wagner_regions
+		icon = GFX_RUS_wagner_regions
+		cost = 0.5
+		x = -2
+		y = 1
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_wagner_regions"
+		    
+		}
+		prerequisite = { focus = RUS_its_happened }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_wagner_command_headquarters_the_Southern_Military_District
+		icon = GFX_RUS_wagner_command_headquarters_the_Southern_Military_District
+		cost = 0.5
+		x = 2
+		y = 1
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_wagner_command_headquarters_the_Southern_Military_District"
+		    
+		}
+		prerequisite = { focus = RUS_its_happened }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_wagner_Emergency_Committee_State_Defense
+		icon = GFX_RUS_wagner_Emergency_Committee_State_Defense
+		cost = 0.5
+		x = 0
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_wagner_Emergency_Committee_State_Defense"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_regions }
+		prerequisite = { focus = RUS_wagner_command_headquarters_the_Southern_Military_District }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_wagner_new_great_Russia
+		icon = GFX_RUS_wagner_new_great_Russia
+		cost = 0.5
+		x = -1
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_wagner_Patriotic_Coalition }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_wagner_new_great_Russia"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_Emergency_Committee_State_Defense }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_wagner_Patriotic_Coalition
+		icon = GFX_RUS_wagner_Patriotic_Coalition
+		cost = 0.5
+		x = 1
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_wagner_new_great_Russia }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_wagner_Patriotic_Coalition"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_Emergency_Committee_State_Defense }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_wagner_Sledgehammer_State
+		icon = GFX_RUS_wagner_Sledgehammer_State
+		cost = 0.5
+		x = -1
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_wagner_Sledgehammer_State"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_new_great_Russia }
+		prerequisite = { focus = RUS_call_the_traitors_to_account }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_restore_Duma_work
+		icon = GFX_RUS_restore_Duma_work
+		cost = 0.5
+		x = 1
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_restore_Duma_work"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_Patriotic_Coalition }
+		prerequisite = { focus = RUS_call_the_traitors_to_account }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_call_the_traitors_to_account
+		icon = GFX_RUS_call_the_traitors_to_account
+		cost = 0.5
+		x = 0
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_call_the_traitors_to_account"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_new_great_Russia focus = RUS_wagner_Patriotic_Coalition }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_transition_period
+		icon = GFX_RUS_transition_period
+		cost = 0.5
+		x = 0
+		y = 6
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_transition_period"
+		    
+		}
+		prerequisite = { focus = RUS_restore_Duma_work focus = RUS_wagner_Sledgehammer_State }
+		relative_position_id = RUS_its_happened
+	}
+	
+	focus = {
+		id = RUS_Close_borders
+		icon = GFX_RUS_Close_borders
+		cost = 0.5
+		x = -4
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Close_borders"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_regions }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_business_elite
+		icon = GFX_RUS_business_elite
+		cost = 0.5
+		x = -3
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_war_communism }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_business_elite"
+		    
+		}
+		prerequisite = { focus = RUS_Close_borders }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_war_communism
+		icon = GFX_RUS_war_communism
+		cost = 0.5
+		x = -6
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_business_elite }
+		prerequisite = { focus = RUS_populist_Revolution }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_war_communism"
+		    
+		}
+		prerequisite = { focus = RUS_Close_borders }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_economic_sector
+		icon = GFX_RUS_economic_sector
+		cost = 0.5
+		x = -4
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_business_elite }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_economic_sector"
+		    
+		}
+		prerequisite = { focus = RUS_war_communism focus = RUS_business_elite }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_populist_Revolution
+		icon = GFX_RUS_populist_Revolution
+		cost = 0.5
+		x = -11
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_populist_Revolution"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_regions }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_curfew
+		icon = GFX_RUS_curfew
+		cost = 0.5
+		x = -7
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_curfew"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_regions }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Terror_against_enemies
+		icon = GFX_RUS_Terror_against_enemies
+		cost = 0.5
+		x = -8
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_Deploy_pinpoint_flywheel_repression }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Terror_against_enemies"
+		    
+		}
+		prerequisite = { focus = RUS_curfew }
+		prerequisite = { focus = RUS_Close_borders }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Adopt_busification
+		icon = GFX_RUS_Adopt_busification
+		cost = 0.5
+		x = -7
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Adopt_busification"
+		    
+		}
+		prerequisite = { focus = RUS_Terror_against_enemies }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Deploy_pinpoint_flywheel_repression
+		icon = GFX_RUS_Deploy_pinpoint_flywheel_repression
+		cost = 0.5
+		x = -12
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_Terror_against_enemies }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Deploy_pinpoint_flywheel_repression"
+		    
+		}
+		prerequisite = { focus = RUS_populist_Revolution }
+		prerequisite = { focus = RUS_curfew }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Reinstate_death_penalty
+		icon = GFX_RUS_Reinstate_death_penalty
+		cost = 0.5
+		x = -8
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Reinstate_death_penalty"
+		    
+		}
+		prerequisite = { focus = RUS_Terror_against_enemies }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_People_Squad
+		icon = GFX_RUS_People_Squad
+		cost = 0.5
+		x = -12
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_People_Squad"
+		    
+		}
+		prerequisite = { focus = RUS_Deploy_pinpoint_flywheel_repression }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_terrorist_networks_the_GUR
+		icon = GFX_RUS_terrorist_networks_the_GUR
+		cost = 0.5
+		x = -10
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_terrorist_networks_the_GUR"
+		    
+		}
+		prerequisite = { focus = RUS_Terror_against_enemies focus = RUS_Deploy_pinpoint_flywheel_repression }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Clean_up_the_political_space
+		icon = GFX_RUS_Clean_up_the_political_space
+		cost = 0.5
+		x = -10
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Clean_up_the_political_space"
+		    
+		}
+		prerequisite = { focus = RUS_terrorist_networks_the_GUR }
+		relative_position_id = RUS_its_happened
+	}
+	
+	focus = {
+		id = RUS_End_military_bureaucracy
+		icon = GFX_RUS_End_military
+		cost = 0.5
+		x = 3
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_End_military_bureaucracy"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_command_headquarters_the_Southern_Military_District }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Loyalists_the_security_forces
+		icon = GFX_RUS_Loyalists_the_security_forces
+		cost = 0.5
+		x = 5
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Loyalists_the_security_forces"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_command_headquarters_the_Southern_Military_District }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_End_the_Military_Police
+		icon = GFX_RUS_End_the_Military_Police
+		cost = 0.5
+		x = 8
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_Call_for_unity }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_End_the_Military_Police"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_command_headquarters_the_Southern_Military_District }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Call_for_unity
+		icon = GFX_RUS_Call_for_unity
+		cost = 0.5
+		x = 10
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = { focus = RUS_End_the_Military_Police }
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_End_the_Military_Police"
+		    
+		}
+		prerequisite = { focus = RUS_wagner_command_headquarters_the_Southern_Military_District }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Filtering_the_military_command
+		icon = GFX_RUS_Filtering_the_military_command
+		cost = 0.5
+		x = 9
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Filtering_the_military_command"
+		    
+		}
+		prerequisite = { focus = RUS_End_the_Military_Police focus = RUS_Call_for_unity }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_restore_honor
+		icon = GFX_RUS_restore_honor
+		cost = 0.5
+		x = 4
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_restore_honor"
+		    
+		}
+		prerequisite = { focus = RUS_End_military_bureaucracy }
+		prerequisite = { focus = RUS_Loyalists_the_security_forces }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_kill_patrushev
+		icon = GFX_RUS_kill_patrushev
+		cost = 0.5
+		x = 6
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Filtering_the_military_command"
+		    
+		}
+		prerequisite = { focus = RUS_End_the_Military_Police }
+		prerequisite = { focus = RUS_Loyalists_the_security_forces }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_future_of_Rosgvardiya
+		icon = GFX_RUS_future_of_Rosgvardiya
+		cost = 0.5
+		x = 5
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Filtering_the_military_command"
+		    
+		}
+		prerequisite = { focus = RUS_kill_patrushev focus = RUS_restore_honor }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Agreement_security_officers
+		icon = GFX_RUS_Agreement_security_officers
+		cost = 0.5
+		x = 11
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Agreement_security_officers"
+		    
+		}
+		prerequisite = { focus = RUS_Call_for_unity }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Reassemble_the_department
+		icon = GFX_RUS_Reassemble_the_department
+		cost = 0.5
+		x = 10
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Reassemble_the_department"
+		    
+		}
+		prerequisite = { focus = RUS_Filtering_the_military_command }
+		prerequisite = { focus = RUS_Agreement_security_officers }
+		relative_position_id = RUS_its_happened
+		mutually_exclusive = { focus = RUS_Disband_the_Office_of_the_Ministry_of_Defense_of_the_Russian_Federation }
+	}
+	focus = {
+		id = RUS_Disband_the_Office_of_the_Ministry_of_Defense_of_the_Russian_Federation
+		icon = GFX_RUS_Disband_the_Office_of_the_Ministry_of_Defense_of_the_Russian_Federation
+		cost = 0.5
+		x = 7
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Disband_the_Office_of_the_Ministry_of_Defense_of_the_Russian_Federation"
+		    
+		}
+		prerequisite = { focus = RUS_Filtering_the_military_command }
+		prerequisite = { focus = RUS_kill_patrushev }
+		relative_position_id = RUS_its_happened
+		mutually_exclusive = { focus = RUS_Reassemble_the_department }
+	}
+	focus = {
+		id = RUS_Council_of_Field_Commanders
+		icon = GFX_RUS_Council_of_Field_Commanders
+		cost = 0.5
+		x = 9
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Council_of_Field_Commanders"
+		    
+		}
+		prerequisite = { focus = RUS_Disband_the_Office_of_the_Ministry_of_Defense_of_the_Russian_Federation focus = RUS_Reassemble_the_department }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Expand_the_K_project
+		icon = GFX_RUS_Expand_the_K_project
+		cost = 0.5
+		x = 6
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Expand_the_K_project"
+		    
+		}
+		prerequisite = { focus = RUS_Disband_the_Office_of_the_Ministry_of_Defense_of_the_Russian_Federation }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Rethink_assault_operations
+		icon = GFX_RUS_Rethink_assault_operations
+		cost = 0.5
+		x = 12
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Rethink_assault_operations"
+		    
+		}
+		prerequisite = { focus = RUS_Reassemble_the_department }
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Chaos_in_the_Caucasus
+		icon = GFX_RUS_Chaos_in_the_Caucasus
+		cost = 0.5
+		x = 15
+		y = 1
+		ai_will_do = {
+			factor = 1
+		}
+		allow_branch = {
+ 			has_global_flag = RUS_Wagner_victory
+        }
+		available = {
+			custom_trigger_tooltip = {
+			    tooltip = in_development
+			    has_country_flag = in_development
+			}
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Chaos_in_the_Caucasus"
+		    
+		}
+		relative_position_id = RUS_its_happened
+	}
+	focus = {
+		id = RUS_Combat_alert_in_the_Southern_Military_District
+		icon = GFX_RUS_Combat_alert_in_the_Southern_Military_District
+		cost = 0.5
+		x = 15
+		y = 2
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Combat_alert_in_the_Southern_Military_District"
+		    
+		}
+		relative_position_id = RUS_its_happened
+		prerequisite = { focus = RUS_Chaos_in_the_Caucasus }
+	}
+	focus = {
+		id = RUS_Disband_the_local_Ministry_of_Internal_Affairs
+		icon = GFX_RUS_Disband_the_local_Ministry_of_Internal_Affairs
+		cost = 0.5
+		x = 14
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Disband_the_local_Ministry_of_Internal_Affairs"
+		    
+		}
+		relative_position_id = RUS_its_happened
+		prerequisite = { focus = RUS_Combat_alert_in_the_Southern_Military_District }
+	}
+	focus = {
+		id = RUS_Coordinate_the_airstrikes
+		icon = GFX_RUS_Coordinate_the_airstrikes
+		cost = 0.5
+		x = 16
+		y = 3
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Coordinate_the_airstrikes"
+		    
+		}
+		relative_position_id = RUS_its_happened
+		prerequisite = { focus = RUS_Combat_alert_in_the_Southern_Military_District }
+	}
+	focus = {
+		id = RUS_Mobilize_the_National_Anti_Terrorism_Committee
+		icon = GFX_RUS_Mobilize_the_National_Anti_Terrorism_Committee
+		cost = 0.5
+		x = 13
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Mobilize_the_National_Anti_Terrorism_Committee"
+		    
+		}
+		relative_position_id = RUS_its_happened
+		prerequisite = { focus = RUS_Disband_the_local_Ministry_of_Internal_Affairs }
+		prerequisite = { focus = RUS_Agreement_security_officers }
+		mutually_exclusive = { focus = RUS_Remember_Palmyra }
+	}
+	focus = {
+		id = RUS_Remember_Palmyra
+		icon = GFX_RUS_Remember_Palmyra
+		cost = 0.5
+		x = 16
+		y = 4
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Remember_Palmyra"
+		    
+		}
+		relative_position_id = RUS_its_happened
+		prerequisite = { focus = RUS_Coordinate_the_airstrikes }
+		prerequisite = { focus = RUS_Disband_the_local_Ministry_of_Internal_Affairs }
+		mutually_exclusive = { focus = RUS_Mobilize_the_National_Anti_Terrorism_Committee }
+	}
+	focus = {
+		id = RUS_Stabilization_efforts
+		icon = GFX_RUS_Stabilization_efforts
+		cost = 0.5
+		x = 15
+		y = 5
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Stabilization_efforts"
+		    
+		}
+		relative_position_id = RUS_its_happened
+		prerequisite = { focus = RUS_Mobilize_the_National_Anti_Terrorism_Committee focus = RUS_Remember_Palmyra }
+	}
 }

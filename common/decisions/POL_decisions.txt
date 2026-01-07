@@ -2,6 +2,101 @@ POL_supported_opposition_category = {
 	
 }
 
+
+
+POL_RUSSIAN_POLAND_WAR_category = {
+	POL_WAR_mission = {
+		icon = GFX_POL_map_grey
+		fire_only_once = yes
+		available = {		
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			always = no
+		}
+		cancel_trigger = {
+			has_war = no
+			NOT = {
+				has_full_control_of_state = 58
+				has_full_control_of_state = 85
+				has_full_control_of_state = 48
+				has_full_control_of_state = 38
+				has_full_control_of_state = 37
+			}
+			UKR = { 
+				has_capitulated = yes
+			}
+			casualties > 124999
+		}
+		icon = mission_icon
+		is_good = yes
+		days_mission_timeout = POL.WAR_WITH_RUS_DAYS
+		selectable_mission = no
+
+		cancel_effect = {
+			white_peace = RUS
+			leave_faction = yes
+			NTO = { 
+				add_to_faction = POL
+			}
+		}
+
+		timeout_effect = {
+			white_peace = RUS
+			leave_faction = yes
+			NTO = { 
+				add_to_faction = POL
+			}
+		}
+	}
+
+	POL_Expand_days = {
+		fire_only_once = yes
+		available = {		
+		}
+		visible = {
+			has_war_with = RUS
+		}
+		ai_will_do = {
+			factor = 50
+		}
+		days_remove = 1
+		days_re_enable = 20
+		cost = 100
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision POL_Expand_days: remove_effect"
+			custom_effect_tooltip = POL_Expand_days_tt
+			add_to_variable = {
+				var = POL.WAR_WITH_RUS_DAYS
+				value = 30
+			}
+		}
+	}
+
+	POL_WAR_WITH_RYSNYA = {
+		icon = GFX_lend_leas_NTO
+		fire_only_once = no
+		available = {
+		}
+		visible = {
+			has_war_with = RUS
+		}
+		days_remove = 7
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision POL_WAR_WITH_RYSNYA: remove_effect"
+			leave_faction = yes
+			white_peace = RUS
+			NTO = { 
+				add_to_faction = POL
+			}
+			}
+		}
+
+
+}
+
 POL_parlament_elections_category = {
 	POL_platform_start_tv_campain = {
 		icon = GFX_POL_map_grey
@@ -188,7 +283,10 @@ POL_parlament_elections_category = {
 
 	third_kabinet_tuska = {
 		available = {
-			has_country_flag = POL_3_kabinet_moravetskogo
+			custom_trigger_tooltip = {
+				tooltip = POL_3_kabinet_moravetskogo_tt
+				has_country_flag = POL_3_kabinet_moravetskogo
+			}
 		}
 		activation = {
 			always = no
@@ -313,6 +411,7 @@ POL_contracts_with_rheinmetall_category = {
 		}
 	}
 }
+
 POL_support_ukraine_category = {
 	POL_send_ukraine_infantry_equipment = {
 		icon = GFX_lend_leas_NTO
@@ -323,7 +422,11 @@ POL_support_ukraine_category = {
 			}			
 		}
 		visible = {
-			has_completed_focus = POL_Supply_of_infantry_equipment
+			OR = {
+				has_completed_focus = POL_Supply_of_infantry_equipment
+				has_completed_focus = POL_renew_support_for_Ukraine
+				has_completed_focus = POL_support_Ukraine_again
+			}
 		}
 		days_remove = 7
 		cost = 10
@@ -353,7 +456,11 @@ POL_support_ukraine_category = {
 			}			
 		}
 		visible = {
-			has_completed_focus = POL_Supply_of_infantry_equipment
+			OR = {
+				has_completed_focus = POL_Supply_of_infantry_equipment
+				has_completed_focus = POL_renew_support_for_Ukraine
+				has_completed_focus = POL_support_Ukraine_again
+			}
 		}
 		days_remove = 7
 		cost = 10
@@ -383,7 +490,11 @@ POL_support_ukraine_category = {
 			}			
 		}
 		visible = {
-			has_completed_focus = POL_Supply_of_infantry_equipment
+			OR = {
+				has_completed_focus = POL_Supply_of_infantry_equipment
+				has_completed_focus = POL_renew_support_for_Ukraine
+				has_completed_focus = POL_support_Ukraine_again
+			}
 		}
 		days_remove = 7
 		cost = 10
@@ -414,7 +525,11 @@ POL_support_ukraine_category = {
 			}			
 		}
 		visible = {
-			has_completed_focus = POL_Supply_of_infantry_equipment
+			OR = {
+				has_completed_focus = POL_Supply_of_infantry_equipment
+				has_completed_focus = POL_renew_support_for_Ukraine
+				has_completed_focus = POL_support_Ukraine_again
+			}
 		}
 		days_remove = 7
 		cost = 10
@@ -443,7 +558,7 @@ POL_support_ukraine_category = {
 			custom_trigger_tooltip = {
 				tooltip = POL_has_enough_bullets_tt
 			check_variable = {
-				ammunition_variable > 299
+				ammunition_value_k > 299
 			}
 			}
 		}
@@ -454,8 +569,8 @@ POL_support_ukraine_category = {
 		cost = 10
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision POL_send_ukraine_ammunition: remove_effect"
-			UKR = { add_to_variable = { ammunition_variable = 50 } }
-			POL = { add_to_variable = { ammunition_variable = -50 } }
+			UKR = { add_to_variable = { ammunition_value_k = 50 } }
+			POL = { add_to_variable = { ammunition_value_k = -50 } }
 			custom_effect_tooltip = POL_send_ammunition_var_tt
 			add_to_variable = {
 				_POL_weapons_list_ammunition_var = 50000
@@ -477,6 +592,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_armored_vech
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -502,18 +618,19 @@ POL_support_ukraine_category = {
 		fire_only_once = no
 		available = {
 			has_equipment = {
-				motorized_equipment > 499
+				imv_light_1_equipment > 499
 			}	
 		}
 		visible = {
 			has_completed_focus = POL_send_armored_vech
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision POL_send_ukraine_trucks: remove_effect"
 			send_equipment = {
-				equipment = motorized_equipment
+				equipment = imv_light_1_equipment
 				amount = 100
 				target = UKR
 			}
@@ -537,6 +654,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_armored_vech
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -567,6 +685,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_armored_vech
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -597,6 +716,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_armored_vech
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -627,6 +747,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_BMP_BTR
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -657,6 +778,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_BMP_BTR
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -687,6 +809,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_tanks
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -717,6 +840,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_Artillery
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -747,6 +871,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_AntiAir
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -777,6 +902,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_SPG
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 10
 		cost = 10
@@ -807,6 +933,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_Helicopter
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 20
 		cost = 20
@@ -837,6 +964,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_Helicopter
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 20
 		cost = 20
@@ -867,6 +995,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_aircraft
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 30
 		cost = 20
@@ -897,6 +1026,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_aircraft
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 30
 		cost = 20
@@ -928,6 +1058,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_Western_equipment
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 15
 		cost = 20
@@ -958,6 +1089,7 @@ POL_support_ukraine_category = {
 		}
 		visible = {
 			has_completed_focus = POL_send_Western_equipment
+			NOT = { has_completed_focus = POL_tighten_policy_towards_Ukraine }
 		}
 		days_remove = 15
 		cost = 20
@@ -2422,21 +2554,106 @@ POL_Deploy_Patriots_category = {
 
 
 		POL_contracts_western_category = {
+
+			POL_buy_KOR_K2BP = {
+				icon = GFX_lend_leas_NTO
+				fire_only_once = yes
+				available = {
+				}
+				visible = {
+					has_country_flag = POL_Orders_to_Korean_Allowed
+				}
+				days_remove = 750
+				cost = 70
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_buy_KOR_Chunmoo: remove_effect"
+					add_equipment_to_stockpile = {
+						type = tank_usa_abrams_equipment
+						amount = 1100
+						producer = POL
+						variant_name = "K2 Black Panther"
+					}
+				}
+			}
+
+
+			POL_buy_KOR_Chunmoo = {
+				icon = GFX_lend_leas_NTO
+				fire_only_once = yes
+				available = {
+				}
+				visible = {
+					has_country_flag = POL_Orders_to_Korean_Allowed
+				}
+				days_remove = 612
+				cost = 70
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_buy_KOR_Chunmoo: remove_effect"
+					add_equipment_to_stockpile = {
+						type = sp_mlrs_imv_light_1_equipment
+						amount = 320
+						producer = POL
+						variant_name = "K239 Chunmoo"
+					}
+				}
+			}
+
+			POL_buy_KOR_K9Thunder = {
+				icon = GFX_lend_leas_NTO
+				fire_only_once = yes
+				available = {
+				}
+				visible = {
+					has_country_flag = POL_Orders_to_Korean_Allowed
+				}
+				days_remove = 612
+				cost = 70
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_buy_KOR_K9Thunder: remove_effect"
+					add_equipment_to_stockpile = {
+						type = sp_artillery_tank_eng_challenger1_equipment
+						amount = 700
+						producer = POL
+						variant_name = "K9 Thunder"
+					}
+				}
+			}
+
+			POL_buy_USA_Himars = {
+				icon = GFX_lend_leas_NTO
+				fire_only_once = yes
+				available = {
+				}
+				visible = {
+					has_country_flag = POL_Orders_to_Americans_Allowed
+				}
+				days_remove = 512
+				cost = 70
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_Himars: remove_effect"
+					add_equipment_to_stockpile = {
+						type = sp_mlrs_imv_light_1_equipment
+						amount = 700
+						producer = NTO
+						variant_name = "M142 HIMARS"
+					}
+				}
+			}
 			POL_buy_USA_Bradley = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Americans_Allowed
 			}
-			days_remove = 14
+			days_remove = 256
 			cost = 70
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_Bradley: remove_effect"
 				add_equipment_to_stockpile = {
 					type = ifv_usa_bradley_equipment
-					amount = 24
+					amount = 120
 					producer = NTO
 					variant_name = "M2A2 Bradley"
 				}
@@ -2444,39 +2661,39 @@ POL_Deploy_Patriots_category = {
 		}
 		POL_buy_USA_Abrams = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Americans_Allowed
 			}
-			days_remove = 14
+			days_remove = 365
 			cost = 100
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_Abrams: remove_effect"
 				add_equipment_to_stockpile = {
 					type = tank_usa_abrams_equipment
-					amount = 24
+					amount = 400
 					producer = NTO
-					variant_name = "M1A1"
+					variant_name = "M1A2 SEP v1"
 				}
 			}
 		}
 		POL_buy_USA_M109 = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Americans_Allowed
 			}
-			days_remove = 14
+			days_remove = 150
 			cost = 80
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_M109: remove_effect"
 				add_equipment_to_stockpile = {
 					type = sp_artillery_ifv_usa_bradley_equipment
-					amount = 24
+					amount = 350
 					producer = NTO
 					variant_name = "M109"
 				}
@@ -2484,38 +2701,38 @@ POL_Deploy_Patriots_category = {
 		}
 		POL_buy_USA_F16 = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Americans_Allowed
 			}
-			days_remove = 14
+			days_remove = 180
 			cost = 150
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_F16: remove_effect"
 				add_equipment_to_stockpile = {
-					type = NTO_fighter_equipment_f16
-					amount = 12
+					type = NTO_fighter_equipment_f16a
+					amount = 120
 					producer = NTO
 				}
 			}
 		}
 		POL_buy_USA_F35 = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Americans_Allowed
 			}
-			days_remove = 14
+			days_remove = 365
 			cost = 200
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_F35: remove_effect"
 				add_equipment_to_stockpile = {
 					type = NTO_fighter_equipment_f35
-					amount = 12
+					amount = 84
 					producer = NTO
 				}
 			}
@@ -2523,19 +2740,19 @@ POL_Deploy_Patriots_category = {
 
 		POL_buy_USA_Marder = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Germans_Allowed
 			}
-			days_remove = 14
+			days_remove = 80
 			cost = 70
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_Marder: remove_effect"
 				add_equipment_to_stockpile = {
 					type = ifv_ger_marder1_equipment
-					amount = 24
+					amount = 98
 					producer = NTO
 					variant_name = "Marder 1"
 				}
@@ -2543,19 +2760,19 @@ POL_Deploy_Patriots_category = {
 		}
 		POL_buy_USA_Leopard2 = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
 				has_country_flag = POL_Orders_to_Germans_Allowed
 			}
-			days_remove = 14
+			days_remove = 150
 			cost = 100
 			remove_effect = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_Leopard2: remove_effect"
 				add_equipment_to_stockpile = {
 					type = tank_ger_leopard2_equipment
-					amount = 24
+					amount = 128
 					producer = NTO
 					variant_name = "Leopard 2A4"
 				}
@@ -2564,7 +2781,7 @@ POL_Deploy_Patriots_category = {
 
 		POL_buy_USA_challenger = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
@@ -2576,7 +2793,7 @@ POL_Deploy_Patriots_category = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_challenger: remove_effect"
 				add_equipment_to_stockpile = {
 					type = tank_eng_challenger1_equipment
-					amount = 24
+					amount = 60
 					producer = NTO
 					variant_name = "Challenger 2"
 				}
@@ -2584,7 +2801,7 @@ POL_Deploy_Patriots_category = {
 		}
 		POL_buy_USA_warrior = {
 			icon = GFX_lend_leas_NTO
-			fire_only_once = no
+			fire_only_once = yes
 			available = {
 			}
 			visible = {
@@ -2596,7 +2813,7 @@ POL_Deploy_Patriots_category = {
 				log = "[GetDateText]: [Root.GetName]: Decision POL_buy_USA_warrior: remove_effect"
 				add_equipment_to_stockpile = {
 					type = ifv_eng_warrior_equipment
-					amount = 24
+					amount = 92
 					producer = NTO
 					variant_name = "Warrior"
 				}
@@ -2604,28 +2821,7 @@ POL_Deploy_Patriots_category = {
 		}
 		}
 	 
-		POL_POL_WAR_WITH_RYSNYA_category = {
 
-		POL_WAR_WITH_RYSNYA = {
-			icon = GFX_lend_leas_NTO
-			fire_only_once = no
-			available = {
-			}
-			visible = {
-				has_war_with = RUS
-			}
-			days_remove = 7
-			remove_effect = {
-				log = "[GetDateText]: [Root.GetName]: Decision POL_WAR_WITH_RYSNYA: remove_effect"
-				leave_faction = yes
-				white_peace = RUS
-				
-				}
-			}
-
-		
-
-		}
 
 
 		POL_energy_category = { 
@@ -2734,4 +2930,686 @@ POL_Deploy_Patriots_category = {
 			}
 
 			
+		}
+
+
+		POL_UNDER_operation_category = { 
+			POL_curfew = {
+				fire_only_once = yes
+				icon = GFX_KILL_FALANGA
+				remove_effect = {
+					add_political_power = 270
+					add_stability = -0.1
+					
+				}
+			}
+
+			POL_Martial_law = {
+				fire_only_once = yes
+				icon = GFX_KILL_FALANGA
+				remove_effect = {
+					add_political_power = 600
+					add_stability = -0.20
+					remove_ideas = POL_Polish_ambitions
+					
+					hidden_effect = {
+					remove_ideas = POL_Polish_ambitions2
+					
+					}
+				}
+			}
+
+
+			POL_Destroy_falanga_in_32 = {
+				fire_only_once = yes
+				icon = GFX_KILL_FALANGA
+				days_remove = 7
+				highlight_states = {
+					highlight_state_targets = {
+						state = 32
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_32: remove_effect"
+					32 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+
+			POL_Destroy_falanga_in_45 = {
+				fire_only_once = yes
+				icon = GFX_KILL_FALANGA
+				days_remove = 7
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 45
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_45: remove_effect"
+					45 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 45
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+			POL_Destroy_falanga_in_37 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 37
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_37: remove_effect"
+					37 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+			POL_Destroy_falanga_in_48 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 48
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_48: remove_effect"
+					48 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+			
+
+			POL_Destroy_falanga_in_38 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 38
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_38: remove_effect"
+					38 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+			POL_Destroy_falanga_in_55 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 55
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_55: remove_effect"
+					55 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+			POL_Destroy_falanga_in_71 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 71
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_71: remove_effect"
+					71 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+			POL_Destroy_falanga_in_97 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 97
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_97: remove_effect"
+					97 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+
+			}
+		
+
+			POL_Destroy_falanga_in_85 = {
+				icon = GFX_KILL_FALANGA
+				fire_only_once = yes
+				days_remove = 7
+		
+				highlight_states = {
+					highlight_state_targets = {
+						state = 85
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_85: remove_effect"
+					85 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+				}
+			}
+
+			POL_Destroy_falanga_in_58 = {
+				fire_only_once = yes
+				days_remove = 7
+				icon = GFX_KILL_FALANGA
+				highlight_states = {
+					highlight_state_targets = {
+						state = 58
+					}
+					highlight_color_while_active = 3
+					highlight_color_before_active = 2
+				}
+		
+				cost = 120
+				remove_effect = {
+					log = "[GetDateText]: [Root.GetName]: Decision POL_Destroy_falanga_in_58: remove_effect"
+					58 = { 
+					damage_building = {
+						type = infrastructure
+						damage = 1
+					}
+
+					set_variable = {
+						THIS.Falanga_NO_Longer_Active = 1
+					}
+
+					remove_dynamic_modifier = {
+						modifier = POL_Falanga_modifer
+					}
+
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -250
+					}
+					add_manpower = -100
+			
+	
+				}
+			}
+
+			FALANGA_DESTROYED_mission = {
+				activation = {
+					always = no
+				}
+				available = {
+					always = no
+				}
+				cancel_trigger = {
+					has_war = yes
+
+					custom_trigger_tooltip = {
+						tooltip = FALANGA_DESTROYED_mission_tt
+
+						32 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						45 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						37 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						48 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						38 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						55 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						71 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						97 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						85 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+						58 = { check_variable = { THIS.Falanga_NO_Longer_Active = 1 } }
+	
+					}
+
+				}
+				icon = mission_icon
+				is_good = yes
+				days_mission_timeout = POL.FALANGA_MISSION_DAYS
+				selectable_mission = no
+				cancel_effect = {
+					remove_ideas = POL_Civil_War
+					custom_effect_tooltip = DESTROYED_FALANGA_TT
+
+					news_event = news_falanga.9
+
+					hidden_effect = {
+						clr_country_flag = POL_Falanga_PIZDEC
+
+						48 = { 
+							set_demilitarized_zone = no
+						}
+						55 = { 
+							set_demilitarized_zone = no
+						}
+						71 = { 
+							set_demilitarized_zone = no
+						}
+						58 = { 
+							set_demilitarized_zone = no
+						}
+
+					58 = { 
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+					}
+					85 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+	
+					32 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					45 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					37 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					48 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					38 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					55 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					71 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					97 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+											
+				}
+
+				}
+			
+				timeout_effect = {
+					remove_ideas = POL_Civil_War
+
+					news_event = news_falanga.9
+					
+					add_offsite_building = {
+						type = industrial_complex
+							level = -2
+					}
+					add_political_power = -500
+					army_experience = -100
+					custom_effect_tooltip = DESTROYED_FALANGA_TT
+
+					hidden_effect = {
+						clr_country_flag = POL_Falanga_PIZDEC
+						if = {
+							limit = { 
+								has_country_flag = POL_Falanga_PIZDEC
+							}
+							add_political_power = -1000
+						}
+
+					58 = { 
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+					}
+					85 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+	
+					32 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					45 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					37 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					48 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					38 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					55 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					71 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+
+					97 = { 	
+						remove_dynamic_modifier = {
+							modifier = POL_Falanga_modifer
+						}
+						set_variable = {
+							THIS.Falanga_NO_Longer_Active = 1
+						}
+					}
+											
+				}
+				}
+			}
+
 		}

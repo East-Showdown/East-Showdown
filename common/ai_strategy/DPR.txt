@@ -13,11 +13,13 @@
 # ДНР
 ###########################
 
-# 1) Подготовка к войне (при желании)
+# 1) Подготовка к войне 
 DPR_prepare_war_UKR = {
 	allowed = { original_tag = DPR }
 	enable = { always = yes }
-	abort = { always = no }
+	abort = {
+		has_war_with = UKR
+	}	
 	ai_strategy = {
 		type = prepare_for_war
 		id = UKR
@@ -64,366 +66,31 @@ DPR_ignore_coasts = {
 	}
 }
 
-# 3) Захват Донецкой области
-DPR_focus_donetsk = {
-	allowed = { original_tag = DPR }
+DPR_SMO_FRONT_CONTROL = {
+	allowed = {
+		original_tag = DPR
+	}
 	enable = {
-		AND = {
-			has_war_with = UKR
-			OR = {
-				UKR = { controls_state = 237 }
-				UKR = { controls_state = 213 }
-				UKR = { controls_state = 182 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 149 }
-				UKR = { controls_state = 165 }
-			}
+		has_war_with = UKR
+		NOT = { 
+		RUS = { 
+			has_country_flag = RUS_failure_of_SMO
+		}			
 		}
 	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			NOT = { 
-				UKR = { controls_state = 237 }
-				UKR = { controls_state = 213 }
-				UKR = { controls_state = 182 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 149 }
-				UKR = { controls_state = 165 }
-			}
+	abort = { 
+		RUS = { 
+			has_country_flag = RUS_failure_of_SMO
 		}
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 31
-		value = 1500
 	}
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		strategic_region = 31
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
-		priority = 9999
+		priority = 1000
 	}
 }
 
-# 4) ЕСЛИ ДОНЕЦК ЧИСТ ПОМОГАЮТ ЛУГАНСКУ
-DPR_focus_lugansk_after_donetsk = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			# Украина уже потеряла Донецк
-			NOT = { 
-				UKR = { controls_state = 237 }
-				UKR = { controls_state = 213 }
-				UKR = { controls_state = 182 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 149 }
-				UKR = { controls_state = 165 }
-			 }
-			# Но ещё контролирует Луганск
-			OR = { 
-			UKR = { controls_state = 145 }
-			UKR = { controls_state = 116 }
-			UKR = { controls_state = 154 }
-			UKR = { controls_state = 125 }
-
-			}
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			NOT = { 
-				UKR = { controls_state = 145 }
-				UKR = { controls_state = 116 }
-				UKR = { controls_state = 154 }
-				UKR = { controls_state = 125 }
-			}
-		}
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 63
-		value = 1500
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 63
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-}
-
-DPR_next_cities_advance_Kharvok = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			#Украина потеряла и донецк и луганск
-			NOT = {
-				UKR = { controls_state = 145 }
-				UKR = { controls_state = 116 }
-				UKR = { controls_state = 154 }
-				UKR = { controls_state = 125 }
-				UKR = { controls_state = 237 }
-				UKR = { controls_state = 213 }
-				UKR = { controls_state = 182 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 149 }
-				UKR = { controls_state = 165 }
-			}
-			#Но Украина не потеряла Харьков
-			OR = {
-				UKR = { controls_state = 103 }
-				UKR = { controls_state = 100 }
-				UKR = { controls_state = 133 }
-				UKR = { controls_state = 107 }
-				UKR = { controls_state = 101 }
-			}
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			NOT = { 
-				UKR = { controls_state = 103 }
-				UKR = { controls_state = 100 }
-				UKR = { controls_state = 133 }
-				UKR = { controls_state = 107 }
-				UKR = { controls_state = 101 }
-			}
-		}
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 44  # Харьков
-		value = 1000
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 44
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-}
-
-DPR_next_cities_advance_zaporozhie = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			#Украина потеряла и донецк и луганск
-			NOT = {
-				UKR = { controls_state = 145 }
-				UKR = { controls_state = 116 }
-				UKR = { controls_state = 154 }
-				UKR = { controls_state = 125 }
-				UKR = { controls_state = 237 }
-				UKR = { controls_state = 213 }
-				UKR = { controls_state = 182 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 149 }
-				UKR = { controls_state = 165 }
-			}
-			#Но Украина не потеряла запор
-			OR = {
-				UKR = { controls_state = 208 }
-				UKR = { controls_state = 669 }
-				UKR = { controls_state = 667 }
-				UKR = { controls_state = 670 }
-				UKR = { controls_state = 673 }
-				UKR = { controls_state = 668 }
-			}
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			NOT = { 
-				UKR = { controls_state = 208 }
-				UKR = { controls_state = 669 }
-				UKR = { controls_state = 667 }
-				UKR = { controls_state = 670 }
-				UKR = { controls_state = 673 }
-				UKR = { controls_state = 668 }
-			}
-		}
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 57  # запор
-		value = 1000
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 57
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-}
-
-DPR_next_cities_advance_dnipro = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			#Украина потеряла и донецк и луганск и запор
-			NOT = {
-				UKR = { controls_state = 145 }
-				UKR = { controls_state = 116 }
-				UKR = { controls_state = 154 }
-				UKR = { controls_state = 125 }
-				UKR = { controls_state = 237 }
-				UKR = { controls_state = 213 }
-				UKR = { controls_state = 182 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 149 }
-				UKR = { controls_state = 165 }
-				UKR = { controls_state = 208 }
-				UKR = { controls_state = 669 }
-				UKR = { controls_state = 667 }
-				UKR = { controls_state = 670 }
-				UKR = { controls_state = 673 }
-				UKR = { controls_state = 668 }
-			}
-			#Но Украина не потеряла днепро
-			OR = {
-				UKR = { controls_state = 180 }
-				UKR = { controls_state = 162 }
-				UKR = { controls_state = 186 }
-				UKR = { controls_state = 156 }
-				UKR = { controls_state = 151 }
-			}
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			NOT = { 
-				UKR = { controls_state = 180 }
-				UKR = { controls_state = 162 }
-				UKR = { controls_state = 186 }
-				UKR = { controls_state = 156 }
-				UKR = { controls_state = 151 }
-			}
-		}
-	}
-
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 62  # днипро
-		value = 1000
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 62
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-}
-
-
-
-# 6) Меньше агрессии при нехватке
-DPR_less_aggressive_if_low_manpower = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower < -1000
-			OR = { 
-				has_equipment = { infantry_equipment < @DPR_EQUIP_TIER_S }
-				has_equipment = { uniform_equipment  < @DPR_EQUIP_TIER_S }
-				has_equipment = { body_armor_equipment  < @DPR_EQUIP_TIER_S }
-				has_equipment = { grenade_launcher_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { atgm_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { aa_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { mortar_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { motorized_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { artillery_equipment < @DPR_EQUIP_TIER_A }
-				has_equipment = { arv_equipment < @DPR_EQUIP_TIER_B }
-				has_equipment = { engineering_equipment < @DPR_EQUIP_TIER_B }
-				has_equipment = { amv_equipment < @DPR_EQUIP_TIER_B }
-				has_equipment = { arv_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { apc_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { afv_sov_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { ifv_sov_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { tank_sov_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { imv_chassis < @DPR_EQUIP_TIER_C }
-				has_equipment = { sp_artillery_chassis < @DPR_EQUIP_TIER_C }
-				}
-				check_variable = { ammunition_variable < 20 }
-	
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			has_manpower > 2000
-			check_variable = { ammunition_variable > 50 }
-		}
-	}
-
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = balanced
-		execute_order = yes
-		manual_attack = no
-		priority = 9999
-	}
-}
-
-DPR_back_to_aggressive = {
-	allowed = { original_tag = DPR }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			has_manpower > 2000
-			check_variable = { ammunition_variable > 50 }
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			has_manpower < -1000
-			check_variable = { ammunition_variable < 50 }
-
-		}
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-}

@@ -129,9 +129,24 @@ focus_tree = {
             }
 			add_equipment_to_stockpile = {
                 type = support_equipment
-                amount = 400
+                amount = 2000
                 producer = RUS
             }
+			add_equipment_to_stockpile = {  
+				type = engineering_equipment_0
+				amount = 500
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+				type = arv_equipment_0
+				amount = 500
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+				type = amv_equipment_0
+				amount = 500
+				producer = RUS 
+			}
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -154,11 +169,17 @@ focus_tree = {
 		completion_reward={
 			custom_effect_tooltip = DPR_russian_spring_tt
 			add_command_power = 20
+			set_technology = {
+				imv_civil_2 = 1
+				sp_atgm_imv_civil_0 = 1
+				sp_atgm_imv_civil_1 = 1
+				sp_atgm_imv_civil_2 = 1
+			}
 			add_equipment_to_stockpile = {
-                type = motorized_equipment
-                amount = 100
-                producer = DPR
-            }
+				type = sp_atgm_imv_civil_2_equipment
+				amount = 300
+				producer = DPR
+			}
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -183,19 +204,19 @@ focus_tree = {
 			add_equipment_to_stockpile = {
                 type = tank_sov_t64_equipment
 				variant_name = "Т-64"
-                amount = 60
+                amount = 100
                 producer = DPR
             }
 			add_equipment_to_stockpile = {
 				type = tank_sov_t72_equipment
 				variant_name = "Т-72"
-                amount = 40
+                amount = 60
                 producer = DPR
             }
 			add_equipment_to_stockpile = {
 				type = tank_sov_t80_equipment
 				variant_name = "Т-80"
-                amount = 10
+                amount = 25
                 producer = DPR
             }
 		}
@@ -657,7 +678,17 @@ focus_tree = {
 		completion_reward={
 			custom_effect_tooltip = DPR_shelling_ukr_positions
 			custom_effect_tooltip = DPR_SMO_offensive_tt
-			add_timed_idea = { idea = DPR_combined_offensive days = 50 }
+			if = { 	
+				limit = { 
+					DPR = { 
+						is_ai = yes
+					}
+				}
+				add_timed_idea = { idea = DPR_combined_offensive_ai days = 70 }
+			} 
+			else = { 
+				add_timed_idea = { idea = DPR_combined_offensive days = 50 }
+			}
 			set_country_flag = DPR_SMO_Donbass_offensive
 			hidden_effect = {
 				237 = { damage_building = { type = bunker damage = 1 } }
@@ -688,7 +719,8 @@ focus_tree = {
 			add_command_power = 20
 			army_experience = 15
 			add_equipment_to_stockpile = {
-				type = motorized_equipment
+				type = imv_light_1_equipment
+				variant_name = "Урал-4350"
 				producer = RUS
 				amount = 150
 			}
@@ -882,8 +914,10 @@ focus_tree = {
 		}
 		completion_reward={
 		    custom_effect_tooltip = DPR_SMO_tt
+			custom_effect_tooltip = DPR_Expansion_of_the_NM_DPR_cet
 		    add_command_power = 20
 			add_timed_idea = { idea = DPR_Expansion_of_the_NM_DPR_idea days = 62 } 
+			add_to_variable = { DPR_modernisation_army_morale = 0.2 }
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -932,12 +966,14 @@ focus_tree = {
 		x = -2
 		y = 1
 		completion_reward={
-			add_doctrine_cost_reduction = {
-				name = infantry_doctrine_dpr
-				cost_reduction = 0.50
-				uses = 2
-				category = infantry_doctrine_category
+			add_mastery = {
+				amount = 150
+				track = tier_1_infantry
 			}
+			add_mastery = {
+				amount = 150
+				track = tier_2_infantry
+			}	
 			custom_effect_tooltip = DPR_Learn_from_Russia_cet
 			add_to_variable = { DPR_NM_DPR_army_org_factor = 0.05 }
 			add_to_variable = { DPR_NM_DPR_planning_speed = 0.1 }
@@ -956,12 +992,14 @@ focus_tree = {
 		x = -1
 		y = 1
 		completion_reward={
-			add_doctrine_cost_reduction = {
-				name = artillery_doctrine_dpr
-				cost_reduction = 0.50
-				uses = 1
-				category = artillery_doctrine_category
+			add_mastery = {
+				amount = 100
+				track = tier_1_artillery
 			}
+			add_mastery = {
+				amount = 100
+				track = tier_2_artillery
+			}	
 			custom_effect_tooltip = DPR_superiority_of_russian_artillery_cet
 			add_to_variable = { DPR_NM_DPR_breakthrough_factor = 0.025}
 			add_to_Variable = { DPR_NM_DPR_army_attack_factor = 0.035}
@@ -987,20 +1025,24 @@ focus_tree = {
 			add_to_variable = { DPR_NM_DPR_experience_loss_factor = -0.1 }
 			add_to_variable = { DPR_NM_DPR_army_org_factor = 0.05 }
 			hidden_effect = {
-				random_controlled_state = {
-					create_unit = { division = "name = \"3. Batalion Motopechoty VS RF\" division_template = \"Rossiyskiy Motostrelkoviy batalion\" start_experience_factor = 0.75 start_equipment_factor = 1"  owner = DPR }
-					create_unit = { division = "name = \"4. Batalion Motopechoty VS RF\" division_template = \"Rossiyskiy Motostrelkoviy batalion\" start_experience_factor = 0.75 start_equipment_factor = 1"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"5. Batalion Motopechoty VS RF\" division_template = \"Rossiyskiy Motostrelkoviy batalion\" start_experience_factor = 0.75 start_equipment_factor = 1"  owner = DPR }
+				random_list = {
+					50 = { 
+						DPR = {
+							load_oob = DPR_motopechota_1
+						}
 					}
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"6. Batalion Motopechoty VS RF\" division_template = \"Rossiyskiy Motostrelkoviy batalion\" start_experience_factor = 0.75 start_equipment_factor = 1"  owner = DPR }
+					25 = { 
+						DPR = {
+							load_oob = DPR_motopechota_2
+						}
+					}
+					25 = { 
+						DPR = {
+							load_oob = DPR_motopechota_3
+						}
 					}
 				}
-			}
-			
+			}			
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -1136,12 +1178,12 @@ focus_tree = {
 					division_names_group = DPR_MOT_01
 					#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
 					regiments = {
-						tank_sov = {x = 0 y = 0}													
-						tank_sov = {x = 0 y = 1}	
-						tank_sov = {x = 0 y = 2}													
-						ifv_sov = {x = 1 y = 0}																				
-						ifv_sov = {x = 1 y = 1}
-						apc = {x = 1 y = 2}
+						tank_sov = { x = 0 y = 0 }													
+						tank_sov = { x = 0 y = 1 }	
+						tank_sov = { x = 0 y = 2 }													
+						apc = { x = 1 y = 0 }																				
+						apc = { x = 1 y = 1 }
+						apc = { x = 1 y = 2 }
 					}
 					support = {
 						engineer = {x = 0 y = 0}																			
@@ -1159,10 +1201,17 @@ focus_tree = {
 					priority = 2
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1. Tankoviy Batalion VS RF\" division_template = \"Rossiyskiy Tankoviy batalion\" start_experience_factor = 0.75 start_equipment_factor = 1"  owner = DPR }
-					random = {
-						chance = 50
-						create_unit = { division = "name = \"1. Tankoviy Batalion VS RF\" division_template = \"Rossiyskiy Tankoviy batalion\" start_experience_factor = 0.75 start_equipment_factor = 1"  owner = DPR }
+					random_list = {
+						50 = {
+							DPR = {
+								load_oob = DPR_russian_tank_battalion_1
+							}
+						}
+						50 = {
+							DPR = {
+								load_oob = DPR_russian_tank_battalion_2
+							}
+						}
 					}
 				}
 			}
@@ -1180,12 +1229,14 @@ focus_tree = {
 		x = 1
 		y = 1
 		completion_reward={
-			add_doctrine_cost_reduction = {
-				name = infantry_doctrine_dpr
-				cost_reduction = 0.50
-				uses = 1
-				category = infantry_doctrine_category
+			add_mastery = {
+				amount = 100
+				track = tier_1_infantry
 			}
+			add_mastery = {
+				amount = 100
+				track = tier_2_infantry
+			}	
 			custom_effect_tooltip = DPR_SMO_tt
 			swap_ideas = {
 				remove_idea = DPR_Russian_doctrine_accepted_idea
@@ -1460,7 +1511,7 @@ focus_tree = {
 			add_political_power = 50
         	add_war_support = 0.045
 			random_controlled_state = {
-				add_manpower = -2500
+				#add_manpower = -2500
 			}
 			hidden_effect = { remove_ideas = DPR_filtration_process_idea }
 		}
@@ -1568,9 +1619,13 @@ focus_tree = {
 		x = 8
 		y = 1
 		available = {
-			custom_trigger_tooltip = { tooltip = alexey_kostrubitski_needed_tt }
+			custom_trigger_tooltip = { 
+				tooltip = alexey_kostrubitski_needed_tt 
+			}
 			hidden_trigger = {
-				has_idea = DPR_alexey_kostrubitski
+				DPR_alexey_kostrubitski = {
+					is_hired_as_advisor = yes
+				}
 			}
 		}
 		completion_reward={
@@ -1727,7 +1782,7 @@ focus_tree = {
 			custom_effect_tooltip = DPR_new_electric_stations_tt
 			add_to_variable = { DPR_hum_civilian_factory_use = -1 }
 			add_to_variable = { DPR_hum_consumer_goods_factor = 0.015 }
-			add_timed_idea = { idea = recovery_of_energy_idea days = 7}
+			add_timed_idea = { idea = DPR_recovery_of_energy_idea days = 7}
 			custom_effect_tooltip = DPR_Organize_work_to_repair_energy_infrastructure_tt
 			hidden_effect = {
 				189 = {
@@ -1893,7 +1948,7 @@ focus_tree = {
 			add_dynamic_modifier = { modifier = DPR_NM_DPR_modernisation_modifier }
 			set_variable = { DPR_modernisation_army_core_defence_factor = 0.015 }
 			set_variable = { DPR_modernisation_army_morale_factor = 0.02 }
-			#set_variable = { DPR_modernisation_cas_damage_reduction = 0.02 }
+			set_variable = { DPR_modernisation_army_morale = 0.1 }
 			set_division_template_lock = {
 				division_template = "Teretorialnaya oborona"
 				is_locked = no
@@ -1907,7 +1962,7 @@ focus_tree = {
 				is_locked = no
 			}
 			set_division_template_lock = {
-				division_template = "Motopekhota osobogo naznacheniya"
+				division_template = "Motostrelkovyy batal'on osobogo naznacheniya"
 				is_locked = no
 			}
 			set_division_template_lock = {
@@ -2097,6 +2152,7 @@ focus_tree = {
 			custom_effect_tooltip = DPR_must_know_how_to_fight_cet
 			set_variable = { DPR_modernisation_army_morale_factor = 0.05 }
 			add_to_variable = { DPR_modernisation_coordination_bonus = 0.025 }
+			add_to_variable = { DPR_modernisation_army_morale = 0.1 }
     	}
 	}
 	focus = {
@@ -2133,19 +2189,24 @@ focus_tree = {
 			army_experience = 15
 			custom_effect_tooltip = DPR_our_autonomy_tt
 			add_equipment_to_stockpile = {
-				type = arv_equipment_0	
-				amount = 45
-				producer = RUS
-			}
-			add_equipment_to_stockpile = {
-                type = communication_equipment
-                amount = 50
+                type = support_equipment
+                amount = 2000
                 producer = RUS
             }
-			add_equipment_to_stockpile = {
-				type = support_equipment
-				amount = 250
-				producer = RUS
+			add_equipment_to_stockpile = {  
+				type = engineering_equipment_0
+				amount = 300
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+				type = arv_equipment_0
+				amount = 300
+				producer = RUS 
+			}
+			add_equipment_to_stockpile = {  
+				type = amv_equipment_0
+				amount = 300
+				producer = RUS 
 			}
 			set_variable = { DPR_modernisation_equipment_capture_factor = 0.055 }
 			custom_effect_tooltip = DPR_tech_support_from_russia_cet
@@ -2168,24 +2229,25 @@ focus_tree = {
 	 		army_experience = 5
 			add_equipment_to_stockpile = {
 				type = sov_artillery_d30_equipment
-				amount = 120
+				amount = 500
 				producer = RUS
 			}
 			add_equipment_to_stockpile = {
 				type = apc_sov_btr80_equipment
-				version_name = "БТР-82А"
-				amount = 60
+				version_name = "БТР-60"
+				amount = 300
 				producer = RUS
 			}
 			add_equipment_to_stockpile = {
-				type = motorized_equipment_1
-				amount = 350
+				type = apc_sov_mtlb_equipment
+				variant_name = "МТ-ЛБ"
 				producer = RUS
+				amount = 200
 			}
 			add_equipment_to_stockpile = {
-				type = tank_sov_t72_equipment
-				version_name = "Т-72Б"
-				amount = 10
+				type = tank_sov_t62_equipment
+				version_name = "Т-62"
+				amount = 300
 				producer = RUS
 			}
 		}
@@ -2200,7 +2262,6 @@ focus_tree = {
 		}
 		relative_position_id = DPR_russian_surplus
 		completion_reward = {
-			set_country_flag = DPR_arms_supplies
 			add_command_power = 65
 			army_experience = 15
 			custom_effect_tooltip = DPR_regular_arms_supplies_tt
@@ -2280,7 +2341,7 @@ focus_tree = {
 				type = tank_sov_t72_equipment
 				amount = 25
 				producer = DPR
-				variant_name = "Т-72Б"
+				variant_name = "Т-72Б обр. 89"
 			}
 			add_equipment_to_stockpile = {
 				type = tank_sov_t64_equipment
@@ -2391,6 +2452,7 @@ focus_tree = {
 			add_political_power = 25
 			add_fuel = 2500
 			random_controlled_state = {
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = industrial_complex
 					level = 1
@@ -2405,6 +2467,10 @@ focus_tree = {
 					type = infrastructure
 					level = 1
 					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 4
 				}
 			}
 		}
@@ -2430,6 +2496,10 @@ focus_tree = {
 					level = 1
 					instant_build = yes
 				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+				}
 			}
 			random_controlled_state = {
 				add_building_construction = {
@@ -2437,12 +2507,20 @@ focus_tree = {
 					level = 1
 					instant_build = yes
 				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+				}
 			}
 			random_controlled_state = {
 				add_building_construction = {
 					type = arms_factory
 					level = 1
 					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
 				}
 			}
 			custom_effect_tooltip = DPR_question_energy_tt
@@ -2473,6 +2551,10 @@ focus_tree = {
 				add_resource = {
 					type = steel
 					amount = 25
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
 				}
 			}
 			custom_effect_tooltip = DPR_optimisation_work_DMZ_tt
@@ -2512,6 +2594,10 @@ focus_tree = {
 				add_resource = {
 					type = oil
 					amount = 3
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 4
 				}
 			}
 			custom_effect_tooltip = DPR_modernisation_chem_company_cet
@@ -2598,6 +2684,10 @@ focus_tree = {
 					amount = 15
 				}
 				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = electrical_substation
+					level = 4
+				}
 			}
 			custom_effect_tooltip = DPR_realese_components_cet
 			add_to_variable = { DPR_economy_problems_production_speed_buildings_factor = 0.08 }
@@ -2675,12 +2765,20 @@ focus_tree = {
 					instant_build = yes
 				}
 				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = electrical_substation
+					level = 6
+				}
 			}
 			random_controlled_state = {
 				add_building_construction = {
 					type = industrial_complex
 					level = 3
 					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 6
 				}
 				add_extra_state_shared_building_slots = 3
 			}
@@ -2731,14 +2829,16 @@ focus_tree = {
 		relative_position_id = DPR_question_energy
 		completion_reward = {
 			add_political_power = 45
-			random_controlled_state = {
+			205 = {
 				add_building_construction = {
-					type = industrial_complex
+					type = electrical_substation
 					level = 1
 					instant_build = yes
 				}
+			}
+			221 = {
 				add_building_construction = {
-					type = fuel_silo
+					type = electrical_substation
 					level = 1
 					instant_build = yes
 				}
@@ -2767,7 +2867,7 @@ focus_tree = {
 			add_fuel = 5000
 			random_controlled_state = {
 				add_building_construction = {
-					type = fuel_silo
+					type = electrical_substation
 					level = 1
 					instant_build = yes
 				}
@@ -2872,6 +2972,10 @@ focus_tree = {
 				add_building_construction = {
 					type = industrial_complex
 					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 4
 				}
 				add_building_construction = {
 					type = infrastructure
@@ -3193,10 +3297,16 @@ focus_tree = {
 							DPR_talantliviy_upravlenec
 						}
 					}
+					
 				}
+				remove_advisor_role = {
+					character = "rushak_vladimir"
+					slot = political_advisor
+				}	
 			}
 			custom_effect_tooltip = DPR_Vitaliy_Hocenko_tt_1
 			custom_effect_tooltip = DPR_Vitaliy_Hocenko_tt
+			custom_effect_tooltip = DPR_Vitaliy_Hocenko_tt_2
 			custom_effect_tooltip = DPR_republic_decision_tt
 		}
 		

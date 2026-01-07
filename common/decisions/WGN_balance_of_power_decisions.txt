@@ -1,91 +1,383 @@
 WGN_balance_of_power_category = {
 
-	RUS_Wagner_advertisement = {
-		icon = generic_formable_nations
-		cost = 50
-		days_re_enable = 14
-		days_remove = 3
-		ai_will_do = {
-			factor = 40
-		}
-		available = {
-			tag = WGN
-		}
-		visible = {
-			has_war_with = UKR
-			tag = WGN
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_Wagner_advertisement"
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.1
-			}
-			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.1
-			}
-		}	
-	}
-
 	WGN_Wagner_advertisement = {
-		icon = generic_formable_nations
+		icon = WGN_discrediting_Ukraine
 		cost = 50
-		days_re_enable = 14
-		days_remove = 3
+		days_re_enable = 15
+		days_remove = 7
 		ai_will_do = {
 			factor = 40
 		}
 		available = {
 			tag = WGN
-			has_completed_focus = WGN_ad_campaign
+			has_completed_focus = WGN_adcompany
+			check_variable = {
+				var = WGN_budget_var
+				value = 0.2
+				compare = greater_than_or_equals
+			}
 		}
 		visible = {
-			has_war_with = UKR
 			tag = WGN
+		}
+		modifier = {
+			command_power_gain_mult = -0.05
+			weekly_manpower = 800
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Wagner_advertisement"
+			add_command_power = 25
+			army_experience = 20
 			add_power_balance_value = {
 				id = RUS_power_balance
-				value = -0.1
+				value = -0.05
+			}
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.2
+				tooltip = WGN_budget_var_remove18
 			}
 			hidden_effect = {
 				add_power_balance_value = {
 					id = WGN_power_balance
-					value = -0.1
+					value = -0.05
 				}
 			}	
 		}	
 	}
-
-	WGN_Telegramm_AD = {
-		icon = generic_formable_nations
-		cost = 50
-		fire_only_once = yes
+	
+	RUS_Wagner_advertisement = {
+		icon = WGN_discrediting_Ukraine
+		custom_cost_trigger = {
+            command_power > 9
+        }
+        custom_cost_text = decision_cost_CP_10
+		days_re_enable = 7
+		days_remove = 3
 		ai_will_do = {
-			factor = 40
+			base = 50
 		}
 		available = {
-			has_war_with = UKR
 			tag = WGN
+			has_war_with = UKR
 		}
 		visible = {
 			tag = WGN
 		}
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision WGN_Telegramm_AD"
-			add_stability = 0.1
+			hidden_effect = {
+				add_command_power = -10
+			}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_Wagner_advertisement"
+			add_political_power = 35
+			army_experience = 10
 			add_power_balance_value = {
 				id = RUS_power_balance
-				value = -0.1
+				value = -0.035
 			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.035
+				}
+			}
+		}	
+	}
+	WGN_diemen_ad = {
+		icon = WGN_discrediting_Ukraine
+		cost = 40
+		days_re_enable = 60
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			has_war_with = UKR
+			tag = WGN
+			has_country_flag = WGN_BOP_2
+		}
+		visible = {
+			tag = WGN
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_pmc_soldier_ad"
+			RUS = {
+				add_stability = -0.035
+			}
+			add_command_power = 15
 			add_power_balance_value = {
-				id = WGN_power_balance
-				value = -0.1
+				id = RUS_power_balance
+				value = -0.075
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.075
+				}
 			}
 		}	
 	}
 
+	WGN_pmc_soldier_ad = {
+		icon = WGN_discrediting_Ukraine
+		cost = 30
+		days_re_enable = 20
+		days_remove = 7
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			has_war_with = UKR
+			tag = WGN
+		}
+		visible = {
+			tag = WGN
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_pmc_soldier_ad"
+			add_command_power = 30
+			add_to_variable = {
+				var = global.rus_information_war_var_sum
+				value = 2.5
+				tooltip = IW_2_rus_plus_var_add_tt
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.05
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.05
+				}
+				add_to_variable = {
+					var = global.ukr_information_war_var_sum
+					value = -2.5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
+		}	
+	}
+	
+	WGN_Telegramm_AD = {
+		icon = WGN_discrediting_Ukraine
+		cost = 40
+		days_re_enable = 14
+		days_remove = 3
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			tag = WGN
+			has_war_with = UKR
+			has_completed_focus = WGN_socialmediaadcompany
+			check_variable = {
+				var = WGN_budget_var
+				value = 0.1
+				compare = greater_than_or_equals
+			}
+		}
+		visible = {
+			tag = WGN
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_Telegramm_AD"
+			add_to_variable = {
+				var = global.rus_information_war_var_sum
+				value = -2.5
+				tooltip = IW_2_rus_minus_var_add_tt
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.045
+			}
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.1
+				tooltip = WGN_budget_var_remove2
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.045
+				}
+				add_to_variable = {
+					var = global.ukr_information_war_var_sum
+					value = 2.5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
+		}	
+	}
+	
+	WGN_use_troll_factory = {
+		icon = WGN_discrediting_Ukraine
+		cost = 40
+		days_re_enable = 21
+		days_remove = 5
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			has_war_with = UKR
+			tag = WGN
+			has_completed_focus = WGN_trollfactoryexpansion
+			check_variable = {
+				var = WGN_budget_var
+				value = 0.15
+				compare = greater_than_or_equals
+			}
+		}
+		visible = {
+			tag = WGN
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_use_troll_factory"
+			add_to_variable = {
+				var = global.rus_information_war_var_sum
+				value = -5
+				tooltip = IW_5_rus_minus_var_add_tt
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.075
+			}
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.15
+				tooltip = WGN_budget_var_remove1
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.075
+				}
+				add_to_variable = {
+					var = global.ukr_information_war_var_sum
+					value = 5
+				}
+				clamp_variable = {  var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+				clamp_variable = {  var = global.rus_information_war_var_sum  min = 0 max = 100 }
+			}
+		}	
+	}
+
+	WGN_call_for_justice = {
+		icon = WGN_discrediting_Ukraine
+		cost = 30
+		fire_only_once = yes
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			tag = WGN
+			has_completed_focus = WGN_continue_the_battle
+		}
+		visible = {
+			tag = WGN
+			has_completed_focus = WGN_continue_the_battle
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_call_for_justice"
+			RUS = {
+				add_stability = -0.045
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.075
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.075
+				}
+			}
+		}	
+	}
+
+	WGN_blame_shoigu = {
+		icon = WGN_discrediting_Ukraine
+		cost = 40
+		days_re_enable = 7
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			tag = WGN
+			has_completed_focus = WGN_continue_the_battle
+		}
+		visible = {
+			tag = WGN
+			has_completed_focus = WGN_continue_the_battle
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_blame_shoigu"
+			RUS = {
+				add_stability = -0.015
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.05
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.05
+				}
+			}
+			IF = {
+				LIMIT = {
+					has_completed_focus = WGN_fight_against_military_bureaucracy
+				}
+				RUS = {
+					add_stability = -0.01
+				}
+				add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.025
+				}
+				hidden_effect = {
+					add_power_balance_value = {
+						id = WGN_power_balance
+						value = -0.025
+					}
+				}
+			}
+		}	
+	}
+
+	WGN_lobby_interests = {
+		icon = WGN_discrediting_Ukraine
+		cost = 25
+		fire_only_once = yes
+		ai_will_do = {
+			base = 50
+		}
+		available = {
+			tag = WGN
+			has_completed_focus = WGN_loyalist_help
+		}
+		visible = {
+			tag = WGN
+			has_completed_focus = WGN_loyalist_help
+		}
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_lobby_interests"
+			add_command_power = 20
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.075
+			}
+			hidden_effect = {
+				add_power_balance_value = {
+					id = WGN_power_balance
+					value = -0.075
+				}
+			}
+		}	
+	}
 }
 

@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 16								-- 0.4.1.0
+NDefines.NGame.SAVE_VERSION = 19								-- 0.6.2.0
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -46,10 +46,10 @@ NDefines.NDiplomacy.LICENSE_ACCEPTANCE_TECH_DIFFERENCE_BASE = 20    -- Acceptanc
 NDefines.NCountry.CONVOY_LENDLEASE_RANGE_FACTOR = 1				-- How much range affects convoy need for lend lease
 NDefines.NCountry.CONVOY_INTERNATIONAL_MARKET_RANGE_FACTOR = 1	-- How much range affects convoy need for international market
 NDefines.NCountry.CONVOY_RANGE_FACTOR = 1                        -- how much range affects convoy need
-NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.002				-- Conversion scale for planes to air supply
 NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for every country
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
+NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.17 -- 0.01
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.04					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
 NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
 NDefines.NResistance.GARRISON_MANPOWER_LOST_BY_ATTACK = 0.016 	-- Ratio of manpower lost by garrison at each attack on garrison (this number will be reduced by the hardness of garrison template)
@@ -58,15 +58,16 @@ NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_VALUE =
 NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_PERCENT = 0.1	-- The minimum number of factories we have to put on consumer goods in percent.
 NDefines.NProduction.BASE_FACTORY_SPEED = 2 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 NDefines.NProduction.MAX_EQUIPMENT_RESOURCES_NEED = 6 -- vanila 3 Max number of different strategic resources an equipment can be dependent on.
+NDefines.NProduction.BASE_LAND_EQUIPMENT_CONVERSION_IC_COST_FACTOR = 0.1 -- vanilla 0.9, Fraction of the chassis industry cost which is always included in the conversion cost.
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 5	-- Weekly increase of PP.
 NDefines.NBuildings.MAX_BUILDING_LEVELS = 50			-- Max levels a building can have.
 NDefines.NBuildings.AIRBASE_CAPACITY_MULT = 50		-- Each level of airbase building multiplied by this gives capacity (max operational value). Value is int. 1 for each airplane.
-NDefines.NBuildings.RADAR_RANGE_BASE = 280				-- Radar range base first level radar will be this + min best radar will be this + max
-NDefines.NBuildings.RADAR_RANGE_MIN = 320				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
-NDefines.NBuildings.RADAR_RANGE_MAX = 1050				-- Range is interpolated between building levels 1-15.
+NDefines.NBuildings.RADAR_RANGE_BASE = 224				-- Radar range base first level radar will be this + min best radar will be this + max
+NDefines.NBuildings.RADAR_RANGE_MIN = 256				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
+NDefines.NBuildings.RADAR_RANGE_MAX = 840				-- Range is interpolated between building levels 1-15.
 NDefines.NBuildings.RADAR_INTEL_EFFECT = 100			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars then the value sums up.
 NDefines.NBuildings.BASE_FACTORY_REPAIR = 0.3			-- Default repair rate before factories are taken into account
-NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 2.0	-- Factory speed modifier when repairing.
+NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 1.8	-- Factory speed modifier when repairing.
 NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throughput per level of naval base lancaster
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NMilitary.MIN_DIVISION_BRIGADE_HEIGHT = 4		-- Min height of regiments in division designer.
@@ -113,8 +114,7 @@ NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
 NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
 NDefines.NMilitary.LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 1 -- vanial 3 how many CAS/TAC can enter a combat depending on enemy width there
 NDefines.NMilitary.ATTRITION_DAMAGE_ORG = 0.08					   -- vanila 0.08 ущерб от истощения Организации
-NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.025		    -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
-NDefines.NMilitary.ATTRITION_EQUIPMENT_PER_TYPE_LOSS_CHANCE = 0.025 -- #0.1  Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
+NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.002   -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 NDefines.NMilitary.COMBAT_MOVEMENT_SPEED = 0.33	               -- vanila 0.33 speed reduction base modifier in combat
 NDefines.NMilitary.SUPPLY_USE_FACTOR_MOVING = 1.5                -- Deprecated/Unused
 NDefines.NMilitary.SUPPLY_USE_FACTOR_INACTIVE = 0.95			   -- Deprecated/Unused
@@ -137,7 +137,7 @@ NDefines.NMilitary.LAND_SPEED_MODIFIER = 0.45                    -- vanila 0.5 b
 NDefines.NMilitary.BASE_FORT_PENALTY = -0.15 					   -- vanilla -0.15 fort penalty
 NDefines.NMilitary.MULTIPLE_COMBATS_PENALTY = -0.5               -- defender penalty if attacked from multiple directions
 NDefines.NMilitary.DIG_IN_FACTOR = 0.03						   --vanila 0.02 bonus factor for each dug-in level
-NDefines.NMilitary.ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.25 -- #was 0.1 XP gain per unit in combat
+NDefines.NMilitary.ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.1 -- #was 0.1 XP gain per unit in combat
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_IMPACT = -0.6          -- #was -0.35 effect on defense due to enemy air superiorty
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE = 0.20	       -- more AA attack will approach this amount of help (diminishing returns)
 NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112 -- how quickly defense approaches the max impact diminishing returns curve
@@ -187,9 +187,9 @@ NDefines.NAir.NAVAL_RECON_DETECTION_BALANCE_FACTOR = 0.7			-- Value used to scal
 NDefines.NAir.AIR_MORE_GROUND_CREWS_COST = 5.0					-- CP cost to maintain more ground crews
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain when running training exercise mission
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
-2.5, -- AIR_SUPERIORITY
-2.0, -- CAS
-1.5, -- INTERCEPTION
+1.5, -- AIR_SUPERIORITY
+1.5, -- CAS
+1.0, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
@@ -201,7 +201,7 @@ NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane t
 0.0, -- TRAINING
 0.0, -- NAVAL_MINES_PLANTING
 0.0, -- NAVAL_MINES_SWEEPING
-0.0, -- RECON
+0.1, -- RECON
 0.0 -- NAVAL_PATROL
 }
 NDefines.NAir.THRUST_WEIGHT_SPEED_FACTOR = 3								-- For plane designs additive Km/h max speed bonus per point of thrust exceeding weight
@@ -276,7 +276,6 @@ NDefines.NAI.INDUSTRIAL_ORG_PRODUCTION_ASSIGN_RANDOMNESS = 3-- AI will pick a ra
 NDefines.NAI.INDUSTRIAL_ORG_POLICY_CHANGE_SCALE = 1.0		-- Policy change weight will be scaled by this value
 NDefines.NAI.INDUSTRIAL_ORG_TRAIT_RANK_FACTOR = 0.80		-- When precomputing weights traits will affect the final score less the further down the tree they are by this factor
 NDefines.NAI.INDUSTRIAL_ORG_RESEARCH_BONUS_FACTOR = 1.0		-- Research bonus will be multiplied by this factor when evaluating design teams
-NDefines.NAI.DIVISION_SUPPLY_RATIO_TO_MOTORIZE = 0.80						-- If supply ratio is less than this consider motorizing any applicable nearby supply hub
 NDefines.NAI.MIN_POLITICAL_POWER_MONTHLY_GAIN_FOR_IMPROVE_RELATIONS = 0.50	-- If country makes less than this PP per month they won't improve relations
 NDefines.NAI.RESEARCH_NEW_WEIGHT_FACTOR = 0.3 			-- Impact of previously unexplored tech weights. Higher means more random exploration.
 NDefines.NAI.RESEARCH_AHEAD_BONUS_FACTOR = 2.0          -- To which extent AI should care about ahead of time bonuses to research
@@ -318,15 +317,9 @@ NDefines.NAI.AREA_DEFENSE_CAPITAL_PEACE_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
 NDefines.NAI.AREA_DEFENSE_CAPITAL_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
 NDefines.NAI.AREA_DEFENSE_HOME_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
 NDefines.NAI.AREA_DEFENSE_OTHER_BASE_WEIGHT = { 0.0, 0.0, 0.0 }
-NDefines.NAI.STR_UNIT_STRONG = 0.75						-- Strength (equipment) % for unit to be considered strong
 NDefines.NAI.ORG_UNIT_WEAK = 0.15						-- Organization % for unit to be considered weak
-NDefines.NAI.STR_UNIT_WEAK = 0.2						-- Strength (equipment) % for unit to be considered weak
+NDefines.NAI.STR_UNIT_WEAK = 0.4						-- Strength (equipment) % for unit to be considered weak
 NDefines.NAI.WANTED_UNITS_INDUSTRY_FACTOR = 1.45                        -- How many units a country wants is partially based on how much military industry that is available
-NDefines.NAI.WANTED_UNITS_THREAT_BASE = 0.7                             -- If no threat multiply min wanted units by this
-NDefines.NAI.WANTED_UNITS_THREAT_MAX = 25.0                             -- Normalized threat is clamped to this
-NDefines.NAI.WANTED_UNITS_WAR_THREAT_FACTOR = 1.5                       -- Factor threat with this if country is at war. this value is overriden by the value in ideology database if that value exceedes this.
-NDefines.NAI.WANTED_UNITS_DANGEROUS_NEIGHBOR_FACTOR = 1.25              -- Factor if has dangerous neighbor
-NDefines.NAI.WANTED_UNITS_MANPOWER_DIVISOR = 22000                      -- Normalizing divisor for AI manpower. (for each x max available manpower they want one division)
 NDefines.NAI.WANTED_CARRIER_PLANES_PER_CARRIER_CAPACITY_FACTOR = 1					-- Scales how many carrier planes the AI want per carrier deck space.
 NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.1					-- How big part of the army that should be considered for upgrading
 NDefines.NAI.MISSING_CONVOYS_BOOST_FACTOR = 18.0					-- The more convoys a country is missing the more resources it diverts to cover this.
@@ -437,12 +430,13 @@ NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show s
 NDefines.NTechnology.MAX_SUBTECHS = 10
 
 -- MPR
+NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.10 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
-NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.009 --0.0015
-NDefines.NMilitary.UNIT_EXPERIENCE_SCALE = 0.12 --1
-NDefines.NMilitary.UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0040 --0.0001
+NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.005 -- 0.0015
+NDefines.NMilitary.UNIT_EXPERIENCE_SCALE = 1 --1
+NDefines.NMilitary.UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0005 --0.0001
 NDefines.NMilitary.TRAINING_ATTRITION = 0.01 -- 0.05
 NDefines.NMilitary.ARMY_TRAINING_FUEL_MULT = 0.15 -- 1
 NDefines.NSupply.COOLDOWN_DAYS_AFTER_MOVING_SUPPLY_CAPITAL = 1
@@ -462,3 +456,32 @@ NDefines.NMilitary.BASE_DIVISION_BRIGADE_GROUP_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_CHANGE_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_SUPPORT_SLOT_COST = 1 -- 10
 NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.040 -- 0.060
+NDefines.NMilitary.COHESION_IMMOBILE_PLANNING_SPEED_MULTIPLIER = 1 -- 0.5
+NDefines.NRaids.RAID_DEFAULT_TARGET_COOLDOWN_DAYS = 1
+NDefines.NProject.BREAKTHROUGH_DAILY_TECHNOLOGY_GAIN = 35
+NDefines.NProject.BREAKTHROUGH_DAILY_SCIENTIST_SKILL_GAIN = 25
+NDefines.NGame.ENERGY_RESOURCE = ""
+NDefines.NAI.MIN_FACTORIES_TO_WANT_TO_IMPORT = { -- minimum number of civilian factories the AI must have to consider importing a resource - per strategic resource. Default 0, array -should- be updated with new resources, or if the order changes
+    0, --oil
+    0, --electronic
+    0, --aluminium
+    0, --rubber
+    0, --tungsten
+    0, --steel
+    0, --chromium
+    0, --gas
+}
+NDefines.NMapIcons.SUPPLY_AREAS_PRIORITY_ADJACENCY_RULE = 3
+NDefines.NGraphics.RAILWAY_CAMERA_CUTOFF = 200.0
+NDefines.NGraphics.TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.75 }
+NDefines.NProduction.BASE_ENERGY_COST = 0.001
+NDefines.NProduction.ENERGY_SCALING_COST_BY_FACTORY_COUNT = 0
+NDefines.NProduction.RESOURCE_TO_ENERGY_COEFFICIENT = 0.001
+NDefines.NProduction.BASE_COUNTRY_ENERGY_PRODUCTION = 99999999
+NDefines.NProduction.POWERED_FACTORY_SPEED = 3.5
+NDefines.NProduction.POWERED_FACTORY_SPEED_MIL = 3.5
+NDefines.NProduction.POWERED_FACTORY_SPEED_NAV = 3.5
+
+NDefines.NDoctrines.MASTERY_BANK_MAX = 0 --200
+NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 999 --50
+NDefines.NDoctrines.MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 20 --5.0

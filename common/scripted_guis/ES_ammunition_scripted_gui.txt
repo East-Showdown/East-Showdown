@@ -1,0 +1,288 @@
+scripted_gui = {
+
+	ammunition_topbar = {
+    	window_name = "ammunition_topbar"
+    	context_type = player_context
+
+	    effects = {
+	      	ammo_value_bg_click = {
+		      	if = {
+					limit = {
+						NOT = { has_country_flag = open_ammunition_topbar_gui }
+					}
+					set_country_flag = open_ammunition_topbar_gui
+				}
+				else = {
+					clr_country_flag = open_ammunition_topbar_gui
+				}
+			}
+			ammo_icon_click = {
+		      	if = {
+					limit = {
+						NOT = { has_country_flag = open_ammunition_topbar_gui }
+					}
+					set_country_flag = open_ammunition_topbar_gui
+				}
+				else = {
+					clr_country_flag = open_ammunition_topbar_gui
+				}
+			}
+			
+
+			ammo_value_bg_shift_right_click = {
+				if = {
+					limit = { has_country_flag = ammunition_topbar_tooltip_short_enabled }
+					clr_country_flag = ammunition_topbar_tooltip_short_enabled
+				} 
+				else = {
+					set_country_flag = ammunition_topbar_tooltip_short_enabled
+				}
+			}	
+
+			ammo_icon_shift_right_click = {
+				if = {
+					limit = { has_country_flag = ammunition_topbar_tooltip_short_enabled }
+					clr_country_flag = ammunition_topbar_tooltip_short_enabled
+				} 
+				else = {
+					set_country_flag = ammunition_topbar_tooltip_short_enabled
+				}
+			}
+	    }
+
+	    properties = {
+			ammo_ratio_bar = {
+				frame = ammo_ratio_var
+			}
+
+			ammo_icon = {
+				frame = ammo_frame_var
+			}
+        }
+	}
+
+	ammunition_topbar_scripted_gui = {
+    	window_name = "ammunition_topbar_scripted_gui"
+    	context_type = player_context
+
+    	visible = {
+      		has_country_flag = open_ammunition_topbar_gui
+    	}
+
+    	ai_enabled = {
+      		always = no
+    	}
+
+    	effects = {
+
+			ammunition_window_supply_factor_ai_button_click = {				
+				if = {
+					limit = { has_country_flag = ammunition_supply_factor_ai_disable }
+					clr_country_flag = ammunition_supply_factor_ai_disable
+				} 
+				else = {
+					set_country_flag = ammunition_supply_factor_ai_disable
+				}
+			}		
+
+			# Распределение производства и восстановления
+			ammunition_window_plants_factor_production_button_click = {
+				set_temp_variable = { temp_delta = 0.01 }
+				ammunition_change_produce_recovery_factors = yes
+			}
+			ammunition_window_plants_factor_production_button_right_click = {
+				set_temp_variable = { temp_delta = -0.01 }
+				ammunition_change_produce_recovery_factors = yes
+			}
+			ammunition_window_plants_factor_production_button_control_click = {
+				set_temp_variable = { temp_delta = 0.10 }
+				ammunition_change_produce_recovery_factors = yes
+			}
+			ammunition_window_plants_factor_production_button_control_right_click = {
+				set_temp_variable = { temp_delta = -0.10 }
+				ammunition_change_produce_recovery_factors = yes
+			}
+			ammunition_window_plants_factor_production_button_shift_click = {
+				set_temp_variable = { temp_delta = 1.00 }
+				ammunition_change_produce_recovery_factors = yes
+
+			}
+			ammunition_window_plants_factor_production_button_shift_right_click = {
+				set_temp_variable = { temp_delta = -1.00 }
+				ammunition_change_produce_recovery_factors = yes
+			}
+
+			# Общее снабжение
+			ammunition_window_supply_factor_value_button_click = {
+				set_temp_variable = { temp_delta = 0.01 }
+				ammunition_change_supply_factor = yes
+			}
+			ammunition_window_supply_factor_value_button_right_click = {
+				set_temp_variable = { temp_delta = -0.01 }
+				ammunition_change_supply_factor = yes
+			}
+			ammunition_window_supply_factor_value_button_control_click = {
+				set_temp_variable = { temp_delta = 0.10 }
+				ammunition_change_supply_factor = yes
+			}
+			ammunition_window_supply_factor_value_button_control_right_click = {
+				set_temp_variable = { temp_delta = -0.10 }
+				ammunition_change_supply_factor = yes
+			}
+			ammunition_window_supply_factor_value_button_shift_click = {
+				set_temp_variable = { temp_delta = 1.00 }
+				ammunition_change_supply_factor = yes
+
+			}
+			ammunition_window_supply_factor_value_button_shift_right_click = {
+				set_temp_variable = { temp_delta = -1.00 }
+				ammunition_change_supply_factor = yes
+			}
+
+			# Распределение снабжения по атаке и защите
+			ammunition_window_supply_relative_factor_button_click = {
+				set_temp_variable = { temp_delta = 0.01 }
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+			ammunition_window_supply_relative_factor_button_right_click = {
+				set_temp_variable = { temp_delta = -0.01 }
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+			ammunition_window_supply_relative_factor_button_control_click = {
+				set_temp_variable = { temp_delta = 0.10 }
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+			ammunition_window_supply_relative_factor_button_control_right_click = {
+				set_temp_variable = { temp_delta = -0.10 }
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+			ammunition_window_supply_relative_factor_button_shift_click = {
+				set_temp_variable = { temp_delta = 1.00 }
+				ammunition_change_offensive_defensive_supply_factors = yes
+
+			}
+			ammunition_window_supply_relative_factor_button_shift_right_click = {
+				set_temp_variable = { temp_delta = -1.00 }
+				ammunition_change_offensive_defensive_supply_factors = yes
+			}
+
+    		ammunition_window_import_button_click = {
+	        	if = {
+					limit = {
+						NOT = { has_country_flag = open_import_minigui }
+					}
+					#set_country_flag = open_import_minigui
+				}
+				else = {
+					clr_country_flag = open_import_minigui
+				}
+
+				if = {
+	        		limit = {
+	        			has_country_flag = open_export_minigui
+	        		}
+	        		clr_country_flag = open_export_minigui
+	        	}
+	      	}
+    		ammunition_window_export_button_click = {
+	        	if = {
+					limit = {
+						NOT = { has_country_flag = open_export_minigui }
+					}
+					#set_country_flag = open_export_minigui
+				}
+				else = {
+					clr_country_flag = open_export_minigui
+				}
+
+				if = {
+	        		limit = {
+	        			has_country_flag = open_import_minigui
+	        		}
+	        		clr_country_flag = open_import_minigui
+	        	}
+	      	}
+	      	ammunition_button_close_click = {
+	        	clr_country_flag = open_ammunition_topbar_gui
+	      	}
+	    }
+  	}
+
+	import_mini_scripted_gui = {
+    	window_name = "import_mini_scripted_gui"
+    	context_type = player_context
+
+    	visible = {
+      		has_country_flag = open_import_minigui
+      		has_country_flag = open_ammunition_topbar_gui
+    	}
+
+    	ai_enabled = {
+      		always = no
+    	}
+
+		dynamic_lists = {
+			import_minigui_gridbox = {
+				array = global.import_minigui
+				entry_container = import_minigui_list_entry
+				change_scope = yes
+			}
+		}
+
+		properties = {
+
+		}
+
+    	effects = {
+	      	import_minigui_button_close_click = {
+	        	clr_country_flag = open_import_minigui
+	        	if = {
+	        		limit = {
+	        			has_country_flag = open_export_minigui
+	        		}
+	        		clr_country_flag = open_export_minigui
+	        	}
+	      	}
+	    }
+  	}
+
+  	export_mini_scripted_gui = {
+    	window_name = "export_mini_scripted_gui"
+    	context_type = player_context
+
+    	visible = {
+      		has_country_flag = open_export_minigui
+      		has_country_flag = open_ammunition_topbar_gui
+    	}
+
+    	ai_enabled = {
+      		always = no
+    	}
+
+		dynamic_lists = {
+			export_minigui_gridbox = {
+				array = global.export_minigui
+				entry_container = export_minigui_list_entry
+				change_scope = yes
+			}
+		}
+
+		properties = {
+
+		}
+
+    	effects = {
+	      	export_minigui_button_close_click = {
+	        	clr_country_flag = open_export_minigui
+	        	if = {
+	        		limit = {
+	        			has_country_flag = open_import_minigui
+	        		}
+	        		clr_country_flag = open_import_minigui
+	        	}
+	      	}
+	    }
+  	}
+
+
+}

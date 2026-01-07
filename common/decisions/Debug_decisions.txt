@@ -1,4 +1,82 @@
 debug_category = {
+
+	abstract_test_decision = {
+		remove_effect = { 
+
+		 for_loop_effect = {
+		 	start = 1          
+		 	end = 1000
+		 	value = t        
+		 		meta_effect = {
+		 			ID = "[?t|.0]"        
+		 			text = {
+		 				country_event = {
+		 					id = ukr_SMO.[ID]
+		 				}
+		 			}
+		 		}
+		 	}
+		
+
+			#set_temp_variable = { api_src_state_id = 94 }
+			#set_temp_variable = { api_building_type = token:industrial_complex }		
+			#set_temp_variable = { api_amount = 10 }
+			#set_temp_variable = { api_consider_energy_opt = 1 }
+			#ESAPI_transfer_random_state_building = yes
+			#custom_effect_tooltip = ESAPI_transfer_random_state_building_tt
+
+
+			#set_temp_variable = { api_state_id = 79 }	
+			#set_temp_variable = { api_building_type = token:industrial_complex }	
+			#set_temp_variable = { api_amount = 25 }	
+			#set_temp_variable = { api_consider_energy_opt = 1 }		
+			#hidden_effect = {
+			#ESAPI_add_state_building = yes				
+			#}
+			#custom_effect_tooltip = ESAPI_add_state_building_tt	
+			
+			#RUS = { ESAPI_add_random_state_building_td = yes }
+
+			#set_temp_variable = { api_building_type = token:industrial_complex }	
+			#set_temp_variable = { api_amount = 25 }	
+			#set_temp_variable = { api_consider_energy_opt = 1 }		
+			#ESAPI_add_random_state_building = yes
+			#custom_effect_tooltip = ESAPI_add_random_state_building_tt
+
+			#custom_effect_tooltip = ESAPI_transfer_random_state_building_tt
+
+
+			#set_temp_variable = { api_src_state_id = 94 }
+			#set_temp_variable = { api_building_type = token:industrial_complex }		
+			#set_temp_variable = { api_amount = 5 }
+			#set_temp_variable = { api_consider_energy_opt = 1 }
+
+			#add_to_temp_array = { api_state_candidates = 65 }
+			#add_to_temp_array = { api_state_candidates = 76 }
+			#add_to_temp_array = { api_state_candidates = 81 }
+
+			#ESAPI_transfer_area_building = yes
+
+			#custom_effect_tooltip = ESAPI_transfer_area_building_tt
+
+			
+		}
+
+	}
+
+	RUS_wagner_vosstanie_armyan = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+		}
+		complete_effect = {
+			country_event = {
+				id = WGN.4
+				days = 0
+			}
+		}
+	}
+
 	RUS_bz_create_template = {
 		icon = generic_formable_nations
 		fire_only_once = no
@@ -84,16 +162,6 @@ debug_category = {
 		}
 	}
 	#Wagner
-	wgnloadfocustree = {
-		icon = generic_formable_nations
-		fire_only_once = no
-		visible = {
-			original_tag = WGN
-		}
-		complete_effect = {
-			load_focus_tree = WGN_2
-		}
-	}
 	WGN_shell_hunger_flag_decision = {
 		icon = generic_formable_nations
 		fire_only_once = no
@@ -101,17 +169,30 @@ debug_category = {
 			original_tag = WGN
 		}
 		complete_effect = {
-			set_global_flag = WGN_shell_hunger_flag
+			set_global_flag = WGN_shell_hunger_flag_worse
+			mark_focus_tree_layout_dirty = yes
 		}
 	}
-	WGN_shell_hunger_flag_end_decision = {
+	WGN_shell_hunger_idea_decision = {
 		icon = generic_formable_nations
 		fire_only_once = no
 		visible = {
 			original_tag = WGN
 		}
 		complete_effect = {
-			clr_global_flag = WGN_shell_hunger_flag
+			WGN = {
+				add_dynamic_modifier = { modifier = WGN_shell_hunger_modifier }
+			}
+		}
+	}
+	WGN_shell_hunger_flag_end_decision= {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			clr_global_flag = WGN_shell_hunger_flag_worse
 		}
 	}
 	WGN_loss_ammo = {
@@ -122,7 +203,7 @@ debug_category = {
 		}
 		complete_effect = {
 			set_variable = {
-				ammunition_variable = 0
+				ammunition_value_k = 0
 			}
 		}
 	}
@@ -134,7 +215,7 @@ debug_category = {
 		}
 		complete_effect = {
 			set_variable = {
-				ammunition_variable = 10000000
+				ammunition_value_k = 10000000
 			}
 		}
 	}
@@ -147,11 +228,12 @@ debug_category = {
 		complete_effect = {
 			RUS = {
 				set_variable = {
-					ammunition_variable = 0
+					ammunition_value_k = 0
 				}
 			}
 		}
 	}
+	
 	RUS_have_ammo = {
 		icon = generic_formable_nations
 		fire_only_once = no
@@ -161,14 +243,22 @@ debug_category = {
 		complete_effect = {
 			RUS = {
 				set_variable = {
-					ammunition_variable = 1000000
+					ammunition_value_k = 1000000
 				}
 			}
 		}
 	}
-	#What
-	exit_the_game = {
+	WGN_raschitat_budjet = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			original_tag = WGN
+		}
+		complete_effect = {
+			WGN_budget_raschet_se = yes
+		}
 	}
+
 	#All
 	bridge_attack_test1 = {
 		fire_only_once = yes
@@ -198,7 +288,7 @@ debug_category = {
 			log = "[BRIDGES TEST 2] EXECUTED"
 		}
 	}
-	create_pro_russian_peoples_republics = {
+	bridge_attack_test1 = {
 		fire_only_once = yes
 		visible = {
 			OR = {
@@ -206,312 +296,27 @@ debug_category = {
 				original_tag = UKR
 			}
 		}
-		complete_effect = {
-			custom_effect_tooltip = create_peoples_republics_tt
-			hidden_effect = {
-				#Russian People's rebulics
-				ODS = {
-					add_state_core = 256
-					add_state_core = 274
-					add_state_core = 271
-					add_state_core = 268
-					add_state_core = 296
-					add_state_core = 310
-					add_state_core = 227
-					add_state_core = 235
-					add_state_core = 203
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				NKO = {
-					add_state_core = 233
-					add_state_core = 215
-					add_state_core = 209
-					add_state_core = 202
-					add_state_core = 269
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				HER = {
-					add_state_core = 253
-					add_state_core = 231
-					add_state_core = 251
-					add_state_core = 240
-					add_state_core = 264
-					add_state_core = 262
-					add_state_core = 413
-					add_state_core = 287
-					add_state_core = 289
-					add_state_core = 291
-					add_state_core = 276
-					add_state_core = 266
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				ZPR = {
-					add_state_core = 208
-					add_state_core = 226
-					add_state_core = 246
-					add_state_core = 242
-					add_state_core = 223
-					add_state_core = 210
-					add_state_core = 222
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				DPR = {
-					add_state_core = 237
-					add_state_core = 213
-					add_state_core = 182
-					add_state_core = 149
-					add_state_core = 165
-					add_state_core = 149
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				LPR = {
-					add_state_core = 145
-					add_state_core = 116
-					add_state_core = 125
-					add_state_core = 154
-					add_state_core = 176
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				HRV = {
-					add_state_core = 103
-					add_state_core = 130
-					add_state_core = 138
-					add_state_core = 133
-					add_state_core = 139
-					add_state_core = 107
-					add_state_core = 100
-					add_state_core = 101
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				DNP = {
-					add_state_core = 187
-					add_state_core = 180
-					add_state_core = 162
-					add_state_core = 151
-					add_state_core = 156
-					add_state_core = 197
-					add_state_core = 216
-					add_state_core = 169
-					add_state_core = 186
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
+		remove_effect = {
+			subtract_from_variable = {
+				global.dnipro_obj_current_hp^0 = 600
 			}
+			log = "[BRIDGES TEST 1] УРОН : 600, итоговое HP = [?global.dnipro_obj_current_hp^0]"
 		}
 	}
-	create_pro_ukrainian_peoples_republics = {
-		fire_only_once = yes
+	bridges_check_variable_TEST = {
+		fire_only_once = no
 		visible = {
 			OR = {
 				original_tag = RUS
 				original_tag = UKR
 			}
 		}
-		complete_effect = {
-			custom_effect_tooltip = create_pro_ukrainian_peoples_republics_tt
-			hidden_effect = {
-				#Ukrainian People's Republic
-				KUB = {
-					add_state_core = 257
-					add_state_core = 411
-					add_state_core = 415
-					add_state_core = 324
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				BLG = {
-					add_state_core = 70
-					add_state_core = 371
-					add_state_core = 336
-					add_state_core = 120
-					add_state_core = 122
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				CRI = {
-					add_state_core = 335
-					add_state_core = 303
-					add_state_core = 321
-					add_state_core = 337
-					add_state_core = 309
-					add_state_core = 304
-					add_state_core = 297
-					add_state_core = 280
-					add_state_core = 290
-					add_state_core = 314
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-				ROS = {
-					add_state_core = 420
-					add_state_core = 421
-					add_state_core = 418
-					add_state_core = 419
-					add_state_core = 417
-					add_state_core = 426
-					add_state_core = 427
-					add_state_core = 423
-					add_state_core = 422
-					add_state_core = 416
-					add_state_core = 445
-					add_state_core = 446
-					add_state_core = 447
-					add_state_core = 470
-					add_state_core = 449
-					add_state_core = 448
-					add_state_core = 425
-					add_state_core = 453
-					add_state_core = 454
-					add_state_core = 455
-					add_state_core = 456
-					add_state_core = 467
-					add_state_core = 464
-					add_state_core = 465
-					add_state_core = 466
-					add_state_core = 152
-					add_state_core = 395
-					add_state_core = 396
-					add_state_core = 183
-					add_state_core = 397
-					add_state_core = 126
-					add_state_core = 468
-					add_state_core = 113
-					add_state_core = 450
-					add_state_core = 424
-					add_state_core = 451
-					add_state_core = 452
-					add_state_core = 442
-					add_state_core = 443
-					add_state_core = 440
-					add_state_core = 436
-					add_state_core = 444
-					add_state_core = 441
-					add_state_core = 439
-					add_state_core = 438
-					add_state_core = 432
-					add_state_core = 431
-					add_state_core = 430
-					add_state_core = 429
-					add_state_core = 428
-					add_state_core = 433
-					add_state_core = 434
-					add_state_core = 435
-					add_state_core = 437
-					add_state_core = 458
-					add_state_core = 459
-					add_state_core = 461
-					add_state_core = 460
-					add_state_core = 457
-					add_state_core = 463
-					add_state_core = 462
-					every_state = {
-						limit = {
-							is_core_of = PREV
-						}
-						transfer_state_to = PREV
-					}
-				}
-			}
+		remove_effect = {
+			ESB_VARIABLE_CHECK_TEST = yes
+			log = "[BRIDGES TEST 2] EXECUTED"
 		}
 	}
-	#BLR
-	BLR_load_full_focus_tree = {
-		icon = generic_formable_nations
-		fire_only_once = no
-		visible = {
-			original_tag = BLR
-		}
-		complete_effect = {
-			BLR = {
-				set_country_flag = BLR_load_full_focus_tree_flag
-			}
-			mark_focus_tree_layout_dirty = yes
-		}
-	}
-	BLR_reload_full_focus_tree = {
-		icon = generic_formable_nations
-		fire_only_once = no
-		visible = {
-			original_tag = BLR
-		}
-		complete_effect = {
-			BLR = {
-				clr_country_flag = BLR_load_full_focus_tree_flag
-			}
-			mark_focus_tree_layout_dirty = yes
-		}
-	}
-	BLR_civil_war = {
-		icon = generic_formable_nations
-		fire_only_once = no
-		visible = {
-			original_tag = BLR
-		}
-		complete_effect = {
-			BLR = {
-				set_country_flag = BPR_Brest_Slot
-				set_country_flag = BPR_Grodno_Slot
-				set_country_flag = BPR_Pinsk_Slot
-				set_country_flag = BPR_Baranovichi_Slot
-				set_country_flag = BLR_third_sector_flag
-			}
-			country_event = {
-				id = blr.4
-				hours = 5
-			}
-		}
-	}
+
 	DEBUG_Start_SMO = {
 		icon = generic_formable_nations
 		fire_only_once = no
@@ -521,6 +326,8 @@ debug_category = {
 			}
 		}
 	}
+
+
 	DEBUG_set_energy_dynamic_mod_in_state_94 = {
 		icon = generic_formable_nations
 		fire_only_once = no
@@ -528,9 +335,6 @@ debug_category = {
 			94 = {
 				add_dynamic_modifier = {
 					modifier = energy_local_blackout
-				}
-				add_dynamic_modifier = {
-					modifier = energy_global_blackout
 				}
 			}
 		}
@@ -565,7 +369,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 1
+				ammunition_value_k = 1
 			}
 		}
 	}
@@ -577,7 +381,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 2
+				ammunition_value_k = 2
 			}
 		}
 	}
@@ -589,7 +393,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 5
+				ammunition_value_k = 5
 			}
 		}
 	}
@@ -601,7 +405,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 10
+				ammunition_value_k = 10
 			}
 		}
 	}
@@ -613,7 +417,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 50
+				ammunition_value_k = 50
 			}
 		}
 	}
@@ -622,12 +426,10 @@ debug_category = {
 		fire_only_once = no
 		visible = {
 			has_global_flag = DEBUG_add_ammo_cat_flag
-		}visible = {
-			has_global_flag = DEBUG_add_ammo_cat_flag
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 100
+				ammunition_value_k = 100
 			}
 		}
 	}
@@ -639,7 +441,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 500
+				ammunition_value_k = 500
 			}
 		}
 	}
@@ -651,7 +453,7 @@ debug_category = {
 		}
 		complete_effect = {
 			add_to_variable = {
-				ammunition_variable = 1000
+				ammunition_value_k = 1000
 			}
 		}
 	}
@@ -663,7 +465,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 1
+				ammunition_value_k = 1
 			}
 		}
 	}
@@ -675,7 +477,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 2
+				ammunition_value_k = 2
 			}
 		}
 	}
@@ -687,7 +489,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 5
+				ammunition_value_k = 5
 			}
 		}
 	}
@@ -699,7 +501,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 10
+				ammunition_value_k = 10
 			}
 		}
 	}
@@ -711,7 +513,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 50
+				ammunition_value_k = 50
 			}
 		}
 	}
@@ -723,7 +525,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 100
+				ammunition_value_k = 100
 			}
 		}
 	}
@@ -735,7 +537,7 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 500
+				ammunition_value_k = 500
 			}
 		}
 	}
@@ -747,11 +549,346 @@ debug_category = {
 		}
 		complete_effect = {
 			subtract_from_variable = {
-				ammunition_variable = 1000
+				ammunition_value_k = 1000
 			}
 		}
 	}
-}
+	WGN_POWER_BALANCE_Shoigy_05 = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			tag = WGN
+		}
+		complete_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = 0.05
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.05
+			}
+		}
+	}
+	WGN_POWER_BALANCE_Shoigy_25 = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			tag = WGN
+		}
+		complete_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = 0.25
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = 0.25
+			}
+		}
+	}
+	WGN_POWER_BALANCE_Wagner_05 = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			tag = WGN
+		}
+		complete_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.05
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.05
+			}
+		}
+	}
+	WGN_POWER_BALANCE_Wagner_25 = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		visible = {
+			tag = WGN
+		}
+		complete_effect = {
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.25
+			}
+			add_power_balance_value = {
+				id = RUS_power_balance
+				value = -0.25
+			}
+		}
+	}
 
-RUS_Battleplan_GUI_debug = {
+	idiotus_krasava = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		complete_effect = {
+			set_global_flag = idiotus_krasava_flag
+		}
+	}
+	
+	RUS_idiotus_krasava = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		complete_effect = {
+			country_event = {
+				    id = WGN.4
+				    days = 0
+	        }
+		}
+	}
+
+		UKR_test_dynamic_defence = {
+		icon = generic_formable_nations
+		allowed = {
+			original_tag = UKR
+		}
+		visible = {
+			
+		}
+
+		complete_effect = {
+			# every_controlled_state = {
+			# 	add_building_construction = {
+			# 		type = bunker
+			# 		level = 3
+			# 		province = {
+			# 			all_provinces = yes
+       		# 			limit_to_border = yes
+			# 			limit_to_border_country = RUS
+			# 			#level < 5
+			# 		}
+			# 	}
+			# 	add_building_construction = {
+			# 		type = bunker
+			# 		level = 3
+			# 		province = {
+			# 			all_provinces = yes
+       		# 			limit_to_border = yes
+			# 			limit_to_border_country = BLR
+			# 			#level < 5
+			# 		}
+			# 	}
+			# 	add_building_construction = {
+			# 		type = bunker
+			# 		level = 3
+			# 		province = {
+			# 			all_provinces = yes
+       		# 			limit_to_border = yes
+			# 			limit_to_border_country = PMR
+			# 			#level < 5
+			# 		}
+			# 	}
+			# }
+			every_core_state = {
+				add_building_construction = {
+					type = bunker
+					level = 3
+					province = {
+						all_provinces = yes
+       					limit_to_border = yes
+						limit_to_border_country = RUS
+						#level < 5
+					}
+				}
+			}
+			# if = {
+			# 	limit = { NOT = {  } }
+			# }
+		}
+	}
+
+	# RUS_test_dynamic_defence = {
+	# 	icon = generic_formable_nations
+	# 	allowed = {
+	# 		original_tag = RUS
+	# 	}
+	# 	visible = {
+			
+	# 	}
+
+	# 	complete_effect = {
+	# 		# every_controlled_state = {
+	# 		# 	add_building_construction = {
+	# 		# 		type = bunker
+	# 		# 		level = 3
+	# 		# 		province = {
+	# 		# 			all_provinces = yes
+    #    		# 			limit_to_border = yes
+	# 		# 			limit_to_border_country = RUS
+	# 		# 			#level < 5
+	# 		# 		}
+	# 		# 	}
+	# 		# 	add_building_construction = {
+	# 		# 		type = bunker
+	# 		# 		level = 3
+	# 		# 		province = {
+	# 		# 			all_provinces = yes
+    #    		# 			limit_to_border = yes
+	# 		# 			limit_to_border_country = BLR
+	# 		# 			#level < 5
+	# 		# 		}
+	# 		# 	}
+	# 		# 	add_building_construction = {
+	# 		# 		type = bunker
+	# 		# 		level = 3
+	# 		# 		province = {
+	# 		# 			all_provinces = yes
+    #    		# 			limit_to_border = yes
+	# 		# 			limit_to_border_country = PMR
+	# 		# 			#level < 5
+	# 		# 		}
+	# 		# 	}
+	# 		# }
+	# 		# every_owned_state = {
+	# 		# 	add_building_construction = {
+	# 		# 		type = bunker
+	# 		# 		level = 3
+	# 		# 		province = {
+	# 		# 			all_provinces = yes
+    #    		# 			limit_to_border = yes
+	# 		# 			limit_to_border_country = UKR
+	# 		# 			#level < 5
+	# 		# 		}
+	# 		# 	}
+	# 		# }
+			
+	# 		# # как варик
+	# 		# if = {
+	# 		# 	limit = {
+	# 		# 		controls_state = 57
+	# 		# 	}
+	# 		# 	57 = {
+	# 		# 		add_building_construction = {
+	# 		# 			type = bunker
+	# 		# 			level = 1
+	# 		# 			province = {
+	# 		# 				all_provinces = yes
+	# 		# 				limit_to_border = yes
+	# 		# 				#level < 5
+	# 		# 			}
+	# 		# 		}
+	# 		# 	}
+	# 		# }
+
+
+
+	# 		#если стейт не полностью под контролем(этот в прифронте будет юзатся)
+	# 		if = {
+	# 			limit = {
+	# 				num_divisions_in_states = {
+	# 					#type = infantry
+	# 					count > 1
+	# 					states = {107}
+	# 				}
+	# 			}
+	# 			107 = {
+	# 				add_building_construction = {
+	# 					type = bunker
+	# 					level = 1
+	# 					province = {
+	# 						all_provinces = yes
+	# 						limit_to_border = yes
+	# 						limit_to_border_country = UKR
+	# 						#level < 5
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+
+
+
+	# 		# every_controlled_state = {
+				
+	# 		# 	add_building_construction = {
+	# 		# 		type = bunker
+	# 		# 		level = 1
+	# 		# 		province = {
+	# 		# 			all_provinces = yes
+    #    		# 			limit_to_border = yes
+	# 		# 			limit_to_border_country = UKR
+	# 		# 			#level < 5
+	# 		# 		}
+	# 		# 	}
+	# 		# }
+
+
+			
+
+	# 		# if = {
+	# 		# 	limit = { NOT = {  } }
+	# 		# }
+	# 	}
+	# }
+	RUS_unlock_sp_after_smo_fail_decision = {
+		visible = {
+			tag = RUS
+		}
+		complete_effect = {
+			set_country_flag = RUS_unlock_sp_after_smo_fail_flag
+		}
+	}
+	UKR_nto_help_new_brigades_category_unlock_decision = {
+		visible = {
+			original_tag = UKR
+		}
+		complete_effect = {
+			UKR = {
+				set_country_flag = UKR_nto_help_new_brigades_category_unlocked_flag
+			}
+		}
+	}
+	UKR_New_brigades_category_unlock_decision = {
+		visible = {
+			original_tag = UKR
+		}
+		complete_effect = {
+			UKR = {
+				set_country_flag = UKR_New_brigades_category_unlocked_flag
+			}
+		}
+	}
+	UKR_create_territorial_defence_category_unlock_decision = {
+		visible = {
+			original_tag = UKR
+		}
+		complete_effect = {
+			UKR = {
+				set_country_flag = UKR_create_territorial_defence_category_unlocked_flag
+			}
+		}
+	}
+	UKR_IL_Territorial_Defense_Ukraine_category_unlock_decision = {
+		visible = {
+			original_tag = UKR
+		}
+		complete_effect = {
+			UKR = {
+				set_country_flag = UKR_IL_Territorial_Defense_Ukraine_category_unlocked_flag
+			}
+		}
+	}
+	UKR_Coordination_of_MTR_with_foreign_MTR_category_unlock_decision = {
+		visible = {
+			original_tag = UKR
+		}
+		complete_effect = {
+			UKR = {
+				set_country_flag = Coordination_of_MTR_with_foreign_MTR_flag
+			}
+		}
+	}
+	DPR_shelling_GUI_decision = {
+		visible = {
+			original_tag = DPR
+		}
+		complete_effect = {
+			DPR = {
+				set_country_flag = DPR_shelling_GUI_dec
+			}
+		}
+	}
 }

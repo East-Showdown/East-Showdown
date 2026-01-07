@@ -1,0 +1,399 @@
+# -----------------------------------------------------------
+# PRIVATE: ESAPI_int_transfer_state_building
+# ADDED IN: 0.6.0.0
+# -----------------------------------------------------------
+ESAPI_int_transfer_state_building = {
+	set_temp_variable = { src_state = api_src_state_id }
+    set_temp_variable = { trg_state = api_trg_state_id }
+    set_temp_variable = { bld_token = api_building_type }
+    set_temp_variable = { amount = api_amount }
+    set_temp_variable = { check_energy = api_consider_energy_opt }
+    set_temp_variable = { put_extra_slots = api_put_extra_slots_opt }
+    set_temp_variable = { num_extra_slots = api_put_number_extra_slots_opt }
+
+	var:src_state = { 
+		meta_effect = {	
+			BTYPE = "[?bld_token.GetTokenKey]" 
+			AMOUNT = "[?amount|.0]" 
+
+			text = {
+				remove_building = {
+					type  = [BTYPE]
+					level = [AMOUNT]
+				}
+			}	
+		}		
+	}
+
+	var:trg_state = { 
+		meta_effect = {	
+			BTYPE = "[?bld_token.GetTokenKey]" 
+			AMOUNT = "[?amount|.0]" 
+
+			text = {
+				add_building_construction = {
+					type  = [BTYPE]
+					level = [AMOUNT]
+				}
+			}	
+		}
+		
+		if = { 
+			limit = { 
+				check_variable = {
+					put_extra_slots = 0
+				}
+			}
+			add_extra_state_shared_building_slots = amount				
+		}
+
+		if = { 
+			limit = { 
+				check_variable = {
+					put_extra_slots = 1
+				}
+			}
+			add_extra_state_shared_building_slots = num_extra_slots			
+		}
+	}
+
+
+	if = { 
+		limit = { 
+			NOT = { 
+			var:trg_state = {
+					free_building_slots = {
+						building = electrical_substation   
+						size > 0
+					}
+
+					free_building_slots = {
+						building = electrical_substation_big   
+						size > 0
+					}				
+				} 
+			}
+		}
+    log = "[EasyScriptsAPI] ESAPI_UNREACHABLE_CONDITION_ERROR: transfer_state_building – not enough free slots in state [?trg_state|0]."
+	}	
+
+	if = {
+		limit = { 
+			check_variable = {
+				check_energy = 1
+			}
+		}
+
+		ESAPI_int_resolve_building_consumption = yes
+
+
+        set_temp_variable = { shortage = amount }
+        multiply_temp_variable = { shortage = pwr_per_build }
+
+        set_temp_variable = { big_out = global.energy_substation_big_transfer_capacity_power }
+        set_temp_variable = { small_out = global.energy_substation_transfer_capacity_power }
+
+		set_temp_variable = { big_needed = shortage }          
+		divide_temp_variable = { big_needed = big_out }          
+		subtract_from_temp_variable = { big_needed = 0.001 }      
+		round_temp_variable = big_needed
+		clamp_temp_variable = { var = big_needed min = 0 }
+
+		set_temp_variable = { rest_left = shortage }
+		set_temp_variable = { tmp_power = big_needed }
+		multiply_temp_variable = { tmp_power = big_out }        
+		subtract_from_temp_variable = { rest_left = tmp_power } 
+		clamp_temp_variable = { var = rest_left min = 0 }     
+
+		set_temp_variable = { small_needed = rest_left }
+		divide_temp_variable = { small_needed = small_out }      
+		add_to_temp_variable = { small_needed = 0.999 }     
+		round_temp_variable = small_needed                     
+		clamp_temp_variable = { var = small_needed min = 0 }
+
+        set_temp_variable = { subs_total = big_needed }
+        add_to_temp_variable = { subs_total = small_needed }
+	}
+
+
+	if = { 
+    	limit = { 
+			check_variable = { big_needed > 0 }  
+
+			var:trg_state = { 
+			meta_trigger = {
+				NEED = "[?big_needed|.0]" 
+				text = {
+					free_building_slots = {
+						building = electrical_substation_big
+						size > [NEED]               
+						include_locked  = yes
+					}
+				}
+			}
+		}
+	}
+
+	var:trg_state = { 
+		meta_effect = {
+			NEED = "[?big_needed|.0]"
+			text = {
+				add_building_construction = {
+					type = electrical_substation_big
+					level = [NEED]
+				}
+			}
+		}	
+	}
+
+	subtract_from_temp_variable = { rest_left = big_needed }
+
+	}
+
+
+
+	if = { 
+		limit = { 
+			check_variable = { small_needed > 0 }
+
+			var:trg_state = { 
+			meta_trigger = {
+				NEED = "[?small_needed|.0]" 
+				text = {
+					free_building_slots = {
+						building = electrical_substation
+						size > [NEED]               
+						include_locked  = yes
+					}
+				}
+			}
+		}			
+		}
+
+	var:trg_state = { 
+		meta_effect = {
+			NEED = "[?small_needed|.0]"
+			text = {
+				add_building_construction = {
+					type = electrical_substation
+					level = [NEED]
+				}
+			}
+		}	
+	}
+
+	}
+}
+
+# -----------------------------------------------------------
+# PRIVATE: ESAPI_int_add_state_building
+# ADDED  : 0.6.0.0
+# -----------------------------------------------------------
+ESAPI_int_add_state_building = {
+	set_temp_variable = { trg_state = api_state_id }
+    set_temp_variable = { bld_token = api_building_type }
+    set_temp_variable = { amount = api_amount }
+    set_temp_variable = { check_energy  = api_consider_energy_opt }
+    set_temp_variable = { put_extra_slots = api_put_extra_slots_opt }
+    set_temp_variable = { num_extra_slots = api_put_number_extra_slots_opt }
+
+	var:trg_state = {
+        meta_effect = {
+            BTYPE  = "[?bld_token.GetTokenKey]"
+            AMOUNT = "[?amount|.0]"
+
+            text = {
+                add_building_construction = {
+                    type  = [BTYPE]
+                    level = [AMOUNT]
+                }
+            }
+        }
+        if = {
+            limit = { check_variable = { put_extra_slots = 0 } }
+            add_extra_state_shared_building_slots = amount
+        }
+        if = {
+            limit = { check_variable = { put_extra_slots = 1 } }
+            add_extra_state_shared_building_slots = num_extra_slots
+        }
+    }
+
+    if = {
+        limit = {
+            check_variable = { 
+				check_energy = 1 
+			}
+        }
+
+        ESAPI_int_resolve_building_consumption = yes
+
+        set_temp_variable = { shortage = amount }
+        multiply_temp_variable = { shortage = pwr_per_build }
+
+        set_temp_variable = { big_out   = global.energy_substation_big_transfer_capacity_power }
+        set_temp_variable = { small_out = global.energy_substation_transfer_capacity_power }
+
+        set_temp_variable = { big_needed = shortage }
+        divide_temp_variable = { big_needed = big_out }
+        subtract_from_temp_variable = { big_needed = 0.001 }
+        round_temp_variable = big_needed
+        clamp_temp_variable = { var = big_needed min = 0 }
+
+        set_temp_variable = { rest_left = shortage }
+        set_temp_variable = { tmp_power = big_needed }
+        multiply_temp_variable = { tmp_power = big_out }
+        subtract_from_temp_variable = { rest_left = tmp_power }
+        clamp_temp_variable = { var = rest_left min = 0 }
+
+        set_temp_variable = { small_needed = rest_left }
+        divide_temp_variable = { small_needed = small_out }
+        add_to_temp_variable = { small_needed = 0.999 }
+        round_temp_variable  = small_needed
+        clamp_temp_variable  = { var = small_needed min = 0 }
+
+        if = {
+            limit = {
+                check_variable = { big_needed > 0 }
+
+                var:trg_state = {
+                    meta_trigger = {
+                        NEED = "[?big_needed|.0]"
+                        text = {
+                            free_building_slots = {
+                                building = electrical_substation_big
+                                size > [NEED]
+                                include_locked = yes
+                            }
+                        }
+                    }
+                }
+            }
+			var:trg_state = {
+				meta_effect = {
+					NEED = "[?big_needed|.0]"
+					text = {
+						add_building_construction = {
+							type  = electrical_substation_big
+							level = [NEED]
+						}
+					}
+				}
+			}
+        }
+        if = {
+            limit = {
+                check_variable = { small_needed > 0 }
+
+                var:trg_state = {
+                    meta_trigger = {
+                        NEED = "[?small_needed|.0]"
+                        text = {
+                            free_building_slots = {
+                                building = electrical_substation
+                                size > [NEED]
+                                include_locked = yes
+                            }
+                        }
+                    }
+                }
+            }
+			var:trg_state = {
+				meta_effect = {
+					NEED = "[?small_needed|.0]"
+					text = {
+						add_building_construction = {
+							type  = electrical_substation
+							level = [NEED]
+						}
+					}
+				}
+			}			
+        }
+
+    }
+	
+	if = { 
+		limit = { 
+			NOT = { 
+			var:trg_state = {
+					free_building_slots = {
+						building = electrical_substation   
+						size > 0
+					}
+
+					free_building_slots = {
+						building = electrical_substation_big   
+						size > 0
+					}				
+				} 
+			}
+		}
+    log = "[EasyScriptsAPI] ESAPI_UNREACHABLE_CONDITION_ERROR: transfer_state_building – not enough free slots in state [?trg_state|0]."
+	}
+}
+
+
+
+
+
+
+
+# -----------------------------------------------------------
+# PRIVATE:	ESAPI_int_resolve_building_power
+# ADDED IN: 0.6.0.0
+# INPUT:	bld_token  – token:<building>
+# OUTPUT:	pwr_per_build (temp) – building energy consumption
+# -----------------------------------------------------------
+
+ESAPI_int_resolve_building_consumption = { 
+		if = {
+			limit = { check_variable = { bld_token = token:arms_factory } }
+			set_temp_variable = { pwr_per_build = global.energy_arms_factory_consumption_power }
+		}
+		if = {
+			limit = { check_variable = { bld_token = token:ammunition_plant } }
+			set_temp_variable = { pwr_per_build = global.energy_ammunition_plant_consumption_power }
+		}
+		if = {
+			limit = { check_variable = { bld_token = token:industrial_complex } }
+			set_temp_variable = { pwr_per_build = global.energy_industrial_complex_consumption_power }
+		}
+		if = {
+			limit = { check_variable = { bld_token = token:dockyard } }
+			set_temp_variable = { pwr_per_build = global.energy_dockyard_consumption_power }
+		}
+		if = {
+			limit = { check_variable = { bld_token = token:synthetic_refinery } }
+			set_temp_variable = { pwr_per_build = global.energy_synthetic_refinery_consumption_power }
+		}
+
+	if = {
+		limit = { NOT = { check_variable = { pwr_per_build > 0 } } }
+		log   = "[EasyScriptsAPI] ESAPI_UNKNOWN_BUILDING_ERROR: unknown token [?bld_token.GetTokenKey]. [ESAPI_SOFT_FAIL]"
+	}
+
+}
+
+
+
+# -----------------------------------------------------------
+# PRIVATE: ESAPI_int_check_version
+# INPUT:
+#   method_version
+#   SuppressWarnings (0|1) – if 1 no warnings
+# -----------------------------------------------------------
+ESAPI_int_check_version = {
+    if = {
+        limit = {
+            NOT = { check_variable = { SuppressWarnings = 1 } }
+            NOT = { check_variable = { method_version = global.mod_version } }
+			is_debug = yes
+        }
+
+        custom_effect_tooltip = ESAPI_VERSION_MISMATCH_TT
+        log = "[EasyScriptsAPI] ESAPI_DEPRECATED_WARNING: method version [?method_version|0] vs mod version [?global.mod_version|0]."
+    }
+}
+
+

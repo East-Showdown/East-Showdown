@@ -1,28 +1,607 @@
-WGN_decisions_category = {
-    WGN_death_penalty = {
-		icon = death_penalty_Wagner
+WGN_concord_category = {
+	WGN_get_money = {
+		activation = {
+			always = no
+		}
+		available = {
+			always = no
+		}
+		icon = WGN_money
+		fire_only_once = no
+		days_mission_timeout = wgn_get_money_days_var
+		timeout_effect = {
+			custom_effect_tooltip = WGN_get_money_concord_cet
+			add_to_variable = { WGN_budget_var = WGN_budget_var_for_monthly_loc }
+			add_to_variable = { WGN_debts_var = WGN_debts_plus_var }
+			subtract_from_variable = { WGN_debts_var = WGN_debts_minus_var }
+			WGN_budget_raschet_se = yes
+			set_variable = { new_casualties_k_for_loc = 0 }
+			set_variable = { WGN_casualties_costs_minus_for_loc_var = 0 }
+			hidden_effect = {
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 0 } }
+				set_variable = { wgn_get_money_days_var = 28 }
+				set_variable = { wgn_get_money_month_var = 1 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 1 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 2 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 2 } }
+				set_variable = { wgn_get_money_days_var = 30 }
+				set_variable = { wgn_get_money_month_var = 3 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 3 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 4 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 4 } }
+				set_variable = { wgn_get_money_days_var = 30 }
+				set_variable = { wgn_get_money_month_var = 5 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 5 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 6 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 6 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 7 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 7 } }
+				set_variable = { wgn_get_money_days_var = 30 }
+				set_variable = { wgn_get_money_month_var = 8 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 8 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 9 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 9 } }
+				set_variable = { wgn_get_money_days_var = 30 }
+				set_variable = { wgn_get_money_month_var = 10 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 10 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 11 }
+				}
+				if = {
+					limit = { check_variable = { wgn_get_money_month_var = 11 } }
+				set_variable = { wgn_get_money_days_var = 31 }
+				set_variable = { wgn_get_money_month_var = 0 }
+				}
+				activate_mission = WGN_get_money
+			}
+		}
+	}	
+	WGN_invest_gorskoe = {
+		icon = GFX_WGN_invest_gorskoe
 
         fire_only_once = yes
-        cost = 50
+        cost = 100
 		ai_will_do = {  
 		    base = 50
 		}
 		
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_smo
 		}
 
 		available = {
-			has_completed_focus = WGN_smo
+			custom_trigger_tooltip = {
+				tooltip = WGN_invest_gorskoe_1_trigger
+				check_variable = { WGN_budget_var > 10 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = WGN_invest_gorskoe_trigger
+				check_variable = { WGN_pressure_on_smolniy_var = 3 }
+			}
+	    }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_invest_gorskoe"
+			custom_effect_tooltip = WGN_invest_gorskoe_cet
+		}
+	}
+	WGN_sev_versal = {
+		icon = GFX_WGN_sev_versal
+
+        fire_only_once = yes
+        cost = 50
+		days_remove = 25
+		ai_will_do = {  
+		    base = 50
+		}
+		
+		visible = {
+			original_tag = WGN
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_sev_versal_trigger
+				check_variable = { WGN_budget_var > 0.100 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = WGN_sev_versal_1_trigger
+				check_variable = { WGN_pressure_on_smolniy_var = 1 }
+			}
+	    }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_sev_versal"
+			custom_effect_tooltip = WGN_sev_versal_complete_cet
+			add_to_variable = { WGN_budget_var = -0.15 }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_sev_versal"
+			custom_effect_tooltip = WGN_sev_versal_cet
+			add_to_variable = { WGN_budget_var = 0.75 }
+			add_to_variable = { WGN_realty_plus = 0.11 }
+			add_to_variable = { WGN_realty_minus = 0.035 }
+			WGN_budget_raschet_se = yes
+		}
+	}
+	WGN_voentorg_contract = {
+		icon = GFX_WGN_voentorg_contract
+
+        fire_only_once = yes
+        cost = 75
+		days_remove = 7
+		ai_will_do = {  
+		    base = 50
+		}
+		
+		visible = {
+			original_tag = WGN
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_voentorg_contract_trigger
+				check_variable = { WGN_budget_var > 1 }
+			}
+	    }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_voentorg_contract"
+			custom_effect_tooltip = WGN_budget_var_remove_20
+			add_to_variable = { WGN_budget_var = -1 }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_voentorg_contract"
+			custom_effect_tooltip = WGN_voentorg_contract_cet
+			add_to_variable = { WGN_kempering_plus = 2.23 }
+			add_to_variable = { WGN_kempering_minus = 1.85 }
+			WGN_budget_raschet_se = yes
+		}
+	}
+	WGN_minobr_contract = {
+		icon = GFX_WGN_minobr_contract
+
+        fire_only_once = yes
+        cost = 50
+		days_remove = 7
+		ai_will_do = {  
+		    base = 50
+		}
+		
+		visible = {
+			original_tag = WGN
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_minobr_contract_trigger
+				check_variable = { WGN_budget_var > 0.5 }
+			}
+	    }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_minobr_contract"
+			custom_effect_tooltip = WGN_budget_var_remove_5
+			add_to_variable = { WGN_budget_var = -0.5 }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_minobr_contract"
+			custom_effect_tooltip = WGN_minobr_contract_cet
+			add_to_variable = { WGN_kempering_plus = 1.059 }
+			add_to_variable = { WGN_kempering_minus = 0.8 }
+			WGN_budget_raschet_se = yes
+		}
+	}
+	WGN_build_military_base_belgorod_contract = {
+		icon = GFX_WGN_build_military_base_belgorod_contract
+
+        fire_only_once = yes
+        cost = 50
+		days_remove = 31
+		ai_will_do = {  
+		    base = 50
+		}
+		
+		visible = {
+			original_tag = WGN
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_build_military_base_belgorod_contract_trigger
+				check_variable = { WGN_budget_var > 1.5 }
+			}
+	    }
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_build_military_base_belgorod_contract"
+			custom_effect_tooltip = WGN_budget_var_remove_10
+			custom_effect_tooltip = WGN_build_military_base_belgorod_contract_cet
+			add_to_variable = { WGN_budget_var = -1.5 }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_minobr_contract"
+			custom_effect_tooltip = WGN_budget_var_add_15
+			556 = {
+				add_building_construction = {
+                    type = infrastructure
+                    level = 1
+                    instant_build = yes
+                }
+			}
+			574 = {
+				add_building_construction = {
+                    type = infrastructure
+                    level = 1
+                    instant_build = yes
+                }
+			}
+			add_to_variable = { WGN_budget_var = 3 }
+			WGN_budget_raschet_se = yes
+		}
+	}
+}
+
+WGN_africa_category = {
+	WGN_quartering_the_unit_Molkino = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			always = no
+		}
+		days_mission_timeout = 14
+		is_good = yes
+		icon = WGN_discrediting_Ukraine
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_quartering_the_unit_Molkino: timeout_effect"
+			custom_effect_tooltip = WGN_quartering_the_unit_Molkino_tt
+			hidden_effect = {
+				for_loop_effect = {
+					end = WGN_count_of_unit_quartering
+					411 = {
+						create_unit = {
+							division = "division_template = \"Batalion CHVK Wagnera\" start_experience_factor = 0.65 start_equipment_factor = 0.01"
+							owner = WGN
+							prioritize_location = 3040
+							count = 1
+						}
+					}
+				}
+				set_variable = { WGN_count_of_unit_quartering = 0 }
+			}
+		}
+	}
+	WGN_quartering_the_unit_Molkino_1 = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			always = no
+		}
+		days_mission_timeout = 31
+		is_good = yes
+		icon = WGN_discrediting_Ukraine
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_quartering_the_unit_Molkino: timeout_effect"
+			custom_effect_tooltip = WGN_quartering_the_unit_Molkino_tt
+			hidden_effect = {
+				for_loop_effect = {
+					end = WGN_count_of_unit_quartering
+					411 = {
+						create_unit = {
+							division = "division_template = \"Batalion CHVK Wagnera\" start_experience_factor = 0.3 start_equipment_factor = 0.01"
+							owner = WGN
+							prioritize_location = 3040
+							count = 1
+						}
+					}
+				}
+				set_variable = { WGN_count_of_unit_quartering = 0 }
+			}
+		}
+	}
+	WGN_quartering_the_unit_Molkino_2 = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			always = no
+		}
+		days_mission_timeout = 31
+		is_good = yes
+		icon = WGN_discrediting_Ukraine
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_quartering_the_unit_Molkino: timeout_effect"
+			custom_effect_tooltip = WGN_quartering_the_unit_Molkino_tt
+			hidden_effect = {
+				for_loop_effect = {
+					end = WGN_count_of_unit_quartering
+					411 = {
+						create_unit = {
+							division = "division_template = \"Batalion CHVK Wagnera\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = WGN
+							prioritize_location = 3040
+							count = 1
+						}
+					}
+				}
+				set_variable = { WGN_count_of_unit_quartering = 0 }
+			}
+		}
+	}
+	WGN_mali_gold = {
+		icon = GFX_WGN_mali_gold
+        cost = 50
+        days_remove = 40
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 40
+		}
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_mali_gold_trigger
+				check_variable = { map_africa_enabled_region_indexes^map_africa_sahel_region_index = 0 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = WGN_mali_gold_trigger_1
+				has_country_flag = WGN_mali_gold_cf
+			}
+			custom_trigger_tooltip = {
+				tooltip = WGN_budget_var_trigger_5
+				check_variable = { WGN_budget_var > 3.5 }
+			}
+	    }
+		complete_effect = {
+			custom_effect_tooltip = WGN_budget_var_remove_15
+			add_to_variable = { WGN_budget_var = -3.5 }
+		}
+		remove_effect = {
+			custom_effect_tooltip = WGN_mali_gold_cet
+			add_to_variable = {	
+				var = map_africa_interpreter_RUS^global.map_africa_sahel_region_index
+				value = 1
+			}
+			add_to_variable = { WGN_african_actives_Mali_var = 0.52 }
+			add_to_variable = { WGN_african_actives_minus_Mali_var = 0.092 }
+			WGN_budget_raschet_se = yes
+			set_country_flag = WGN_mali_gold_accept_cf
+		}
+	}
+	WGN_operations_in_timbykty = {
+		icon = GFX_WGN_operations_in_timbykty
+        custom_cost_trigger = {
+            command_power > 49
+        }
+        custom_cost_text = decision_cost_CP_50
+        days_remove = 25
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 40
+		}
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_mali_gold_trigger
+				check_variable = { map_africa_enabled_region_indexes^map_africa_sahel_region_index = 0 }
+			}
+	    }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -50
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = WGN_operations_in_timbykty_cet
+			add_to_variable = {	
+				var = map_africa_interpreter_RUS^global.map_africa_sahel_region_index
+				value = 2
+				tooltip = map_africa_interpreter_RUS_add_2_MAL
+			}
+			set_country_flag = WGN_operations_in_timbykty_cf
+		}
+	}
+	WGN_buy_oil = {
+		icon = WGN_buy_oil_icon
+        cost = 50
+        days_remove = 31
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 40
+		}
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_budget_var_trigger_3
+				check_variable = { WGN_budget_var > 2.5 }
+			}
+			has_completed_focus = WGN_expansionminingcapacities
+	    }
+		complete_effect = {
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 2.5
+				tooltip = WGN_budget_var_remove_13
+			}
+		}
+		remove_effect = {
+			swap_ideas = {
+				remove_idea = WGN_african_resources
+				add_idea = WGN_african_resources_2
+			}
+			custom_effect_tooltip = WGN_buy_oil_cet
+		}
+	}
+	WGN_russian_homes = {
+		icon = GFX_WGN_russian_homes
+        custom_cost_trigger = {
+            check_variable = { WGN_budget_var > 0.35 }
+        }
+        custom_cost_text = decision_cost_rub_0_35
+        days_remove = 14
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 40
+		}
+
+		available = {
+			original_tag = WGN
+			
+	    }
+		complete_effect = {
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.35
+				tooltip = WGN_budget_var_remove_3
+			}
+			add_political_power = 95
+			add_to_variable = {	
+				var = map_africa_interpreter_RUS^global.map_africa_center_region_index
+				value = 1.5
+				tooltip = map_africa_interpreter_RUS_add_1_5_CAR
+			}
+		}
+	}
+	WGN_film_turist = {
+		icon = GFX_WGN_film_turist
+        custom_cost_trigger = {
+            check_variable = { WGN_budget_var > 0.1 }
+        }
+        custom_cost_text = decision_cost_rub_0_1
+        days_remove = 14
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 40
+		}
+
+		available = {
+			original_tag = WGN
+			
+	    }
+		complete_effect = {
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.1
+				tooltip = WGN_budget_var_remove_2
+			}
+			add_political_power = 50
+			add_to_variable = {	
+				var = map_africa_interpreter_RUS^global.map_africa_center_region_index
+				value = 0.5
+				tooltip = map_africa_interpreter_RUS_add_0_5_CAR
+			}
+		}
+	}
+}
+
+WGN_decisions_category = {
+	WGN_redeployment_to_molkino_1 = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			NOT = {
+				has_completed_focus = WGN_redeployment
+			}
+		}
+		days_mission_timeout = 7
+		is_good = yes
+		icon = WGN_discrediting_Ukraine
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_redeployment_to_molkino_1: complete_effect"
+			custom_effect_tooltip = WGN_redeployment_to_molkino_tooltip
+			hidden_effect = {
+				load_oob = WGN_Wagner_2
+				add_manpower = 500
+			}
+		}
+	}
+
+	WGN_redeployment_to_molkino_2 = {
+		allowed = {
+			original_tag = WGN
+		}
+		activation = {
+			always = no
+		}
+		available = {
+			NOT = {
+				has_completed_focus = WGN_redeployment
+			}
+		}
+		days_mission_timeout = 20
+		is_good = yes
+		icon = WGN_discrediting_Ukraine
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_redeployment_to_molkino_2: complete_effect"
+			custom_effect_tooltip = WGN_redeployment_to_molkino_tooltip
+			hidden_effect = {
+				load_oob = WGN_Wagner_4
+				add_manpower = 1000
+			}
+		}
+	}
+
+    WGN_death_penalty = {
+		icon = death_penalty_Wagner
+
+        fire_only_once = yes
+        cost = 25
+		ai_will_do = {  
+		    base = 50
+		}
+		
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_calltowar
+		}
+
+		available = {
+			has_completed_focus = WGN_contractwithmotherland
 	    }
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_death_penalty"
 			swap_ideas = {
-				remove_idea = WGN_win_or_die
-				add_idea = WGN_win_or_die_1
+				remove_idea = WGN_Codex
+				add_idea = WGN_Codex_1
 			}
-			army_experience = -50
 		}
 	}
 	
@@ -30,7 +609,7 @@ WGN_decisions_category = {
 		icon = WGN_new_symbol
 
         fire_only_once = yes
-        cost = 70
+        cost = 25
 		ai_will_do = {  
 		    base = 0  
 			modifier = {  
@@ -40,8 +619,11 @@ WGN_decisions_category = {
 		}
 
 		available = {
-			has_completed_focus = WGN_symbolic_ad
+			has_completed_focus = WGN_symbolicadcompany
 	    }
+		visible = {
+			has_completed_focus = WGN_symbolicadcompany
+		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_change_symbol"
 		    custom_effect_tooltip = WGN_change_symbol_tooltip
@@ -50,16 +632,6 @@ WGN_decisions_category = {
 				set_country_leader_ideology = wgn_new
 			}
 			add_stability = 0.05
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.05
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.05
-				}
-			}
 		}
 	}
 	
@@ -74,22 +646,22 @@ WGN_decisions_category = {
 		}
 
 		available = {
-			has_completed_focus = WGN_ad_campaign
+			has_completed_focus = WGN_greatorchestra
 			check_variable = {
 				var = WGN_budget_var
-				value = 500
+				value = 0.5
 				compare = greater_than_or_equals
 			}
 	    }
 		visible = {
-			has_completed_focus = WGN_ad_campaign
+			has_completed_focus = WGN_greatorchestra
 	    }
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_best_in_hell: complete_effect"
 		    subtract_from_variable = {	
 				var = WGN_budget_var
-				value = 500
+				value = 0.5
 				tooltip = WGN_budget_var_remove7
 			}
 		}
@@ -97,15 +669,7 @@ WGN_decisions_category = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_best_in_hell: remove_effect"
 		    add_political_power = 100
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.1
-			}
 			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.1
-				}
 				RUS = {
 					country_event = {
 						id = smo.12
@@ -141,24 +705,24 @@ WGN_decisions_category = {
 	WGN_PMC_Liga = {
 		icon = PMC_Liga
 		fire_only_once = yes
-        cost = 150
-        days_remove = 35
+        cost = 100
+        days_remove = 20
 		ai_will_do = {
-			factor = 40
+			base = 40
 		}
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_sac
+			has_completed_focus = WGN_expandthestormingcorps
 		}
 
 		available = {
 			original_tag = WGN
-			has_army_experience > 100
+			has_army_experience > 24
 	    }
 		
 		complete_effect = {
-			army_experience = -100
+			army_experience = -25
 		}
 		
 		remove_effect = {
@@ -169,19 +733,120 @@ WGN_decisions_category = {
 			}
 		}
 	}
-	
+
+	WGN_umbrella_division_decision = {
+		icon = umbrella
+		fire_only_once = yes
+        cost = 50
+        days_remove = 15
+		ai_will_do = {
+			base = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_umbrellaproject
+		}
+
+		available = {
+			original_tag = WGN
+			has_completed_focus = WGN_umbrellaproject
+	    }
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_umbrella_division_decision"
+			custom_effect_tooltip = WGN_umbrella_division_tooltip
+			hidden_effect = {
+				load_oob = WGN_umbrella_division
+			}
+		}
+	}
+
+	WGN_expand_dshrg_rusich = {
+		icon = WGN_expand_dshrg_rusich_icon
+		fire_only_once = yes
+        cost = 30
+        days_remove = 10
+		ai_will_do = {
+			base = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_expandthestormingcorps
+		}
+
+		available = {
+			original_tag = WGN
+			has_army_experience > 20
+	    }
+		
+		complete_effect = {
+			army_experience = -20
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_expand_dshrg_rusich"
+			add_units_to_division_template = {
+				template_name = "DSHRG Rusich"
+				regiments = {
+					spetsnaz = 0
+					apc = 1
+				}
+			}
+		}
+	}
+
+	WGN_expand_serbian_volunteers_division = {
+		icon = WGN_serbian_volunteers
+		fire_only_once = yes
+        cost = 30
+        days_remove = 10
+		ai_will_do = {
+			base = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_expandthestormingcorps
+			has_country_flag = serbian_volunteers_exist
+		}
+
+		available = {
+			original_tag = WGN
+			has_army_experience > 20
+	    }
+		
+		complete_effect = {
+			army_experience = -20
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_expand_serbian_volunteers_division"
+			add_units_to_division_template = {
+				template_name = "Serbian Volunteers"
+				regiments = {
+					infantry = 0
+				}
+				support = {
+					sp_aa = 0
+				}
+			}
+		}
+	}
+
 	WGN_rooster_division = {
 		icon = Rooster_division
 		fire_only_once = yes
         cost = 100
         days_remove = 15
 		ai_will_do = {
-			factor = 0
+			base = 40
 		}
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			check_variable = { WGN_prisoner_recruitment_var_sum > 49 }
 			NOT = {
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -191,7 +856,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		
 		remove_effect = {
@@ -210,40 +875,30 @@ WGN_decisions_category = {
 	WGN_Slavic_corps = {
 		icon = kolovrat
 		fire_only_once = yes
-        cost = 150
+        cost = 100
         days_remove = 35
 		ai_will_do = {
-			factor = 0
+			base = 40
 		}
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_best_pmc
+			has_completed_focus = WGN_bestpmc
 		}
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_best_pmc
-			has_army_experience > 200
+			has_completed_focus = WGN_bestpmc
+			has_army_experience > 100
 	    }
 		
 		complete_effect = {
-			army_experience = -200
+			army_experience = -100
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Slavic_corps"
 			custom_effect_tooltip = WGN_slavic_corps_tt
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.05
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.05
-				}
-			}
 			hidden_effect = {
 				load_oob = WGN_slavic_corps
 			}
@@ -257,30 +912,58 @@ WGN_decisions_category = {
         cost = 25
         days_remove = 14
 		ai_will_do = {
-			factor = 40
+			base = 40
+		}
+		visible = {
+			has_completed_focus = WGN_recruitmentofforeignvolunteers
 		}
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_ad_campaign
+			has_completed_focus = WGN_recruitmentofforeignvolunteers
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_SERBIAN_VOLUNTEERS"
 			custom_effect_tooltip = WGN_SERBIAN_VOLUNTEERS_tooltip
+			add_manpower = 100
 			hidden_effect = {
 				load_oob = WGN_serb
-				add_to_variable = {
-					var = WGN_prisoner_recruitment_var_sum
-					value = 1
-				}
+				set_country_flag = serbian_volunteers_exist
 			}
 		}
 	}
 
+	WGN_syrian_isis_hunters = {
+		icon = WGN_ISIS_Hunters
+		fire_only_once = yes
+        cost = 25
+        days_remove = 7
+		ai_will_do = {
+			base = 40
+		}
+		visible = {
+			has_completed_focus = WGN_recruitmentofforeignvolunteers
+		}
+
+		available = {
+			original_tag = WGN
+			has_completed_focus = WGN_recruitmentofforeignvolunteers
+	    }
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_syrian_isis_hunters"
+			custom_effect_tooltip = WGN_syrian_isis_hunters_tooltip
+			add_manpower = 100
+			hidden_effect = {
+				load_oob = WGN_isis_hunters
+			}
+		}
+	}
+
+
 	WGN_prisoner_recruitment_decision_1 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -288,7 +971,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var1 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -298,7 +981,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_1"
@@ -315,6 +998,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 300
 				}
 				random = {
 					chance = 50
@@ -327,6 +1011,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 20
@@ -339,14 +1024,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_2 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -354,7 +1040,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var2 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -364,7 +1050,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_2"
@@ -381,6 +1067,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 50
@@ -393,6 +1080,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 20
@@ -405,14 +1093,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_3 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -420,7 +1109,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var3 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -430,7 +1119,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_3"
@@ -447,6 +1136,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 50
@@ -459,6 +1149,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 20
@@ -471,14 +1162,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_4 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -486,7 +1178,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var4 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -496,7 +1188,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_4"
@@ -513,6 +1205,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 40
@@ -525,14 +1218,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_5 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -540,7 +1234,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var5 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -550,7 +1244,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_5"
@@ -567,6 +1261,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 40
@@ -579,14 +1274,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_6 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -594,7 +1290,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var6 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -604,7 +1300,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_6"
@@ -621,6 +1317,7 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 				random = {
 					chance = 40
@@ -633,14 +1330,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 500
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_7 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -648,7 +1346,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var7 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -658,7 +1356,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_7"
@@ -675,14 +1373,15 @@ WGN_decisions_category = {
 						var = WGN_prisoner_recruitment_var_sum
 						value = 1
 					}
+					add_manpower = 100
 				}
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_8 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -690,7 +1389,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var8 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -700,7 +1399,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_8"
@@ -718,13 +1417,14 @@ WGN_decisions_category = {
 						value = 1
 					}
 				}
+				add_manpower = 100
 			}
 		}
 	}
 	WGN_prisoner_recruitment_decision_9 = {
-		icon = generic_formable_nations
+		icon = WGN_prisoner_recruitment_decision_icon
 		fire_only_once = no
-        cost = 20
+        cost = 10
         days_remove = 30
 		ai_will_do = {
 			factor = 40
@@ -732,7 +1432,7 @@ WGN_decisions_category = {
 
 		visible = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 			NOT = {
 				check_variable = { WGN_prisoner_recruitment_var9 > 6 }
 				has_global_flag = RF_ban_prisoner_recruitment
@@ -742,7 +1442,7 @@ WGN_decisions_category = {
 
 		available = {
 			original_tag = WGN
-			has_completed_focus = WGN_prisoner_recruitment
+			has_completed_focus = WGN_kproject
 	    }
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_prisoner_recruitment_decision_9"
@@ -760,6 +1460,7 @@ WGN_decisions_category = {
 						value = 1
 					}
 				}
+				add_manpower = 100
 			}
 		}
 	}
@@ -780,6 +1481,12 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
@@ -812,6 +1519,12 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
@@ -856,7 +1569,7 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = yes
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 50
@@ -864,6 +1577,12 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
@@ -872,11 +1591,19 @@ WGN_information_war = {
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_zelensky_flight"
-		    add_to_variable = {	
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
 				var = global.ukr_information_war_var_sum
-				value = -1
-				tooltip = IW_ukr_m_1_var_add_tt
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		    UKR = {
 			    add_political_power = -20
 				add_stability = -0.05
@@ -887,7 +1614,7 @@ WGN_information_war = {
 		icon = WGN_discrediting_Ukraine
 
 		fire_only_once = yes
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 50
@@ -895,6 +1622,12 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
@@ -904,14 +1637,199 @@ WGN_information_war = {
 		
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_death_zaluzhny"
-		    add_to_variable = {	
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
 				var = global.ukr_information_war_var_sum
-				value = -1
-				tooltip = IW_ukr_m_1_var_add_tt
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		    UKR = {
 			    add_command_power = -20
 				add_war_support = -0.05
+			}
+		}
+	}
+	WGN_Budanov_is_dead = {
+		icon = WGN_discrediting_Ukraine
+
+		fire_only_once = no
+		days_re_enable = 30
+		days_remove = 4
+		cost = 30
+		
+		ai_will_do = {
+	    	factor = 35
+        }
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		}
+		
+		remove_effect = {
+			add_to_variable = {	
+				var = global.rus_information_war_var_sum
+				value = 1
+				tooltip = IW_1_var_add_tt
+			}
+			UKR = {
+			    add_war_support = -0.05
+			}
+		}
+	}
+	WGN_betrayal_of_the_elite = {
+		icon = WGN_discrediting_Ukraine
+
+		fire_only_once = no
+		days_re_enable = 60
+		days_remove = 4
+		cost = 90
+		
+		ai_will_do = {
+	    	factor = 35
+        }
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+		}
+		
+		remove_effect = {
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -5
+			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+			UKR = {
+			    add_political_power = -10
+				add_stability = -0.02
+			}
+		}
+	}
+	WGN_bribing_bloggers = {
+		icon = WGN_discrediting_Ukraine
+
+		fire_only_once = no
+		days_re_enable = 60
+		days_remove = 4
+		cost = 90
+		
+		ai_will_do = {
+	    	factor = 35
+        }
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_interactionwithbloggers
+		}
+		
+		remove_effect = {
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -5
+			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+			RUS = {
+			    add_war_support = 0.05
+				add_stability = 0.02
+			}
+		}
+	}
+	WGN_hire_loyal_bloggers = {
+		icon = WGN_discrediting_Ukraine
+
+		fire_only_once = no
+		days_re_enable = 60
+		days_remove = 4
+		cost = 80
+		
+		ai_will_do = {
+	    	factor = 35
+        }
+
+		available = {
+			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+			has_completed_focus = WGN_interactionwithbloggers
+		}
+		
+		remove_effect = {
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
+			add_to_variable = {	
+				var = global.ukr_information_war_var_sum
+				value = -5
+			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
+			RUS = {
+			    add_war_support = 0.05
+				add_stability = 0.05
 			}
 		}
 	}
@@ -921,7 +1839,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -929,19 +1847,34 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
 			original_tag = WGN
+			has_completed_focus = WGN_socialmediaadcompany
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_VK"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_YouTube = {
@@ -950,7 +1883,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -958,19 +1891,34 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
 			original_tag = WGN
+			has_completed_focus = WGN_socialmediaadcompany
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_YouTube"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_OK = {
@@ -979,7 +1927,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -987,19 +1935,34 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
 			original_tag = WGN
+			has_completed_focus = WGN_socialmediaadcompany
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_OK"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_Telegram = {
@@ -1008,7 +1971,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1016,19 +1979,34 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
 			original_tag = WGN
+			has_completed_focus = WGN_socialmediaadcompany
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_Telegram"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_Twitter = {
@@ -1037,7 +2015,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1045,20 +2023,35 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
 			original_tag = WGN
 			has_country_flag = WGN_expand_kremlebots_CF
+			has_completed_focus = WGN_socialmediaadcompany
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_Twitter"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
+		}
 		}
 	}
 	WGN_Expansion_bots_Facebook = {
@@ -1067,7 +2060,7 @@ WGN_information_war = {
 		fire_only_once = no
 		days_re_enable = 44
 		days_remove = 14
-		cost = 30
+		cost = 90
 		
 		ai_will_do = {
 	    	factor = 60
@@ -1075,46 +2068,35 @@ WGN_information_war = {
 
 		available = {
 			original_tag = WGN
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
 		}
 
 		visible = {
 			original_tag = WGN
 			has_country_flag = WGN_expand_kremlebots_CF
+			has_completed_focus = WGN_socialmediaadcompany
 		}
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision WGN_Expansion_bots_Facebook"
+		add_to_variable = {	
+			var = global.rus_information_war_var_sum
+			value = 5
+			tooltip = IW_5_var_add_tt
+		}
+		hidden_effect = {
 			add_to_variable = {	
-				var = global.rus_information_war_var_sum
-				value = 0.5
-				tooltip = IW_0_5_var_add_tt
+				var = global.ukr_information_war_var_sum
+				value = -5
 			}
+			clamp_variable = { var = global.ukr_information_war_var_sum  min = 0 max = 100 }
+			clamp_variable = { var = global.rus_information_war_var_sum  min = 0 max = 100 }
 		}
-	}
-	WGN_expand_kremlebots = {
-		icon = WGN_discrediting_Ukraine
-
-		fire_only_once = yes
-		cost = 100
-		
-		ai_will_do = {
-	    	factor = 40
-        }
-
-		available = {
-			original_tag = WGN
-		}
-
-		visible = {
-			original_tag = WGN
-		}
-		
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision WGN_expand_kremlebots"
-		    custom_effect_tooltip = UKR_Information_campaign_ce_tt
-			hidden_effect = {
-				set_country_flag = WGN_expand_kremlebots_CF
-			}
 		}
 	}
 	WGN_monthly_maintenance_costs = {
@@ -1135,14 +2117,14 @@ WGN_information_war = {
 				}
 				subtract_from_variable = {	
 					var = WGN_budget_var
-					value = 2500
+					value = 2.5
 					tooltip = WGN_budget_var_IW_2
 				}
 			}
 			else = {
 				subtract_from_variable = {	
 					var = WGN_budget_var
-					value = 1500
+					value = 1.5
 					tooltip = WGN_budget_var_IW_1
 				}
 			}
@@ -1151,8 +2133,11 @@ WGN_information_war = {
 	WGN_close_troll_factory = {
 		icon = WGN_discrediting_Ukraine
 
-		fire_only_once = yes
+		fire_only_once = no
 		cost = 10
+		ai_will_do = {
+			base = -999
+		}
 
 		available = {
 			original_tag = WGN
@@ -1160,6 +2145,9 @@ WGN_information_war = {
 
 		visible = {
 			original_tag = WGN
+			NOT = {
+				has_country_flag = WGN_close_troll_factory_CF
+			}
 		}
 		
 		complete_effect = {
@@ -1170,302 +2158,46 @@ WGN_information_war = {
 			}
 		}
 	}
+	WGN_open_troll_factory = {
+		icon = WGN_discrediting_Ukraine
+
+		fire_only_once = no
+		cost = 50
+		days_remove = 30
+		ai_will_do = {
+			base = 50
+		}
+
+		available = {
+			original_tag = WGN
+			check_variable = {
+				var = WGN_budget_var
+				value = 2.4
+				compare = greater_than_or_equals
+			}
+		}
+
+		visible = {
+			original_tag = WGN
+			has_country_flag = WGN_close_troll_factory_CF
+		}
+
+		complete_effect = {
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 2.5
+				tooltip = WGN_budget_var_IW_2
+			}
+		}
+		
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision WGN_open_troll_factory"
+		    custom_effect_tooltip = WGN_open_troll_factory_tooltip
+			hidden_effect = {
+				clr_country_flag = WGN_close_troll_factory_CF
+			}
+		}
+	}
+
 }
 
-WGN_march_category = {
-	take_rostov = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			WGN = {
-				controls_province = 18897
-			}
-		}
-		days_mission_timeout = 2
-		is_good = no
-		fire_only_once = yes
-		icon = generic_formable_nations
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision take_rostov: complete_effect"
-			news_event = news.125
-			WGN = {
-				activate_mission = take_voronezh
-				activate_mission = hold_rostov
-			}	
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision take_rostov: timeout_effect"
-			country_event = WGN.9
-		}
-	}
-	hold_rostov = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			WGN = {
-				NOT = {
-					controls_province = 18897
-				}
-			}
-		}
-		days_mission_timeout = 10
-		is_good = yes
-		fire_only_once = yes
-		icon = generic_formable_nations
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision hold_rostov: complete_effect"
-			country_event = WGN.9
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision hold_rostov: timeout_effect"
-			add_war_support = 0.05
-		}
-	}
-	take_voronezh = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			WGN = {
-				controls_province = 9227
-			}
-		}
-		days_mission_timeout = 10
-		is_good = no
-		icon = generic_formable_nations
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision take_voronezh: complete_effect"
-			add_war_support = 0.05
-			activate_mission = hold_voronezh
-			activate_mission = get_to_moscow
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision take_voronezh: timeout_effect"
-			country_event = WGN.9
-		}
-	}
-	hold_voronezh = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			WGN = {
-				NOT = {
-					controls_province = 9227
-				}
-			}
-		}
-		days_mission_timeout = 4
-		is_good = yes
-		fire_only_once = yes
-		icon = generic_formable_nations
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision hold_voronezh: complete_effect"
-			country_event = WGN.9
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision hold_voronezh: timeout_effect"
-			add_war_support = 0.05
-		}
-	}
-	get_to_moscow = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			WGN = {
-				OR = {
-					divisions_in_border_state = {
-						size > 2
-						state = 13
-						border_state = 14
-					}
-					divisions_in_state = {
-						state = 14
-						size > 2
-					}
-				}
-			}
-		}
-		days_mission_timeout = 21
-		is_good = no
-		icon = generic_formable_nations
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision get_to_moscow: complete_effect"
-			country_event = WGN.7
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision get_to_moscow: timeout_effect"
-			country_event = WGN.9
-		}
-	}
-	take_moscow = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			WGN = {
-				controls_province = 18198
-			}
-		}
-		days_mission_timeout = 28
-		is_good = no
-		icon = generic_formable_nations
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision take_moscow: complete_effect"
-			country_event = WGN.4
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision take_moscow: timeout_effect"
-			country_event = WGN.9
-		}
-	}
-}
-
-WGN_missions_category = {
-	WGN_soledar_conquest = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			UKR = {
-				NOT = {
-					controls_province = 18294
-					controls_province = 18609
-					controls_province = 18702
-					controls_province = 18292
-					controls_province = 18315
-				}
-			}
-			WGN = {
-				divisions_in_state = {
-					size > 4
-					state = 165
-				}
-			}
-		}
-		days_mission_timeout = 60
-		is_good = no
-		icon = WGN_soledar_conquest
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_conquest: complete_effect"
-			add_war_support = 0.1
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.10
-			}
-			evgeniy_prigozhin = {
-				unit_leader_event = WGN_mission.2
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.10
-				}	
-			}
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision WGN_soledar_conquest: timeout_effect"
-			add_war_support = -0.1
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = 0.10
-			}
-			evgeniy_prigozhin = {
-				unit_leader_event = WGN_mission.3
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = 0.10
-				}	
-			}
-		}
-	}
-    WGN_bakhmut_conquest = {
-		allowed = {
-			original_tag = WGN
-		}
-		activation = {
-			always = no
-		}
-		available = {
-			UKR = {
-				NOT = {
-					controls_province = 15750
-					controls_province = 15685
-					controls_province = 6711
-					controls_province = 18617
-					controls_province = 18619
-					controls_province = 18616
-					controls_province = 18614
-					controls_province = 18615
-				}
-			}
-			WGN = {
-				divisions_in_state = {
-					size > 4
-					state = 165
-				}
-			}
-		}
-		days_mission_timeout = 70
-		is_good = no
-		icon = WGN_bakhmut_conquest
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_conquest: complete_effect"
-			add_war_support = 0.1
-			add_political_power = 100
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.20
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.20
-				}	
-			}
-		}
-		timeout_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision WGN_bakhmut_conquest: timeout_effect"
-			add_war_support = -0.1
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = 0.10
-			}
-			evgeniy_prigozhin = {
-				unit_leader_event = WGN_mission.3
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = 0.10
-				}	
-			}
-		}
-	}
-}

@@ -5,7 +5,7 @@ NTO_AID_category = {
 
 	close_infantry_equipment_folder = { fire_only_once = no  visible = { has_country_flag = open_infantry_equipment_folder_OPEN }
 		complete_effect  = {  clr_country_flag = open_infantry_equipment_folder_OPEN log = "[GetDateText]: [Root.GetName]: Decision close_infantry_equipment_folder"}
-	}
+	}	
 
 	
 
@@ -144,27 +144,6 @@ NTO_AID_category = {
 		UKR = { add_equipment_to_stockpile = { type = motorized_equipment_1 amount = 200 producer = NTO } }
 				log = "[GetDateText]: [Root.GetName]: Decision send_motorized_equipment" }
 	}
-
-	#ARV
-
-	send_arv_equipment = { icon = usa_flag_ll fire_only_once = no cost = 10 days_remove = 9 days_re_enable = 2
-        available = { 
-			custom_trigger_tooltip = { tooltip = USA_MORE_THAN_50_SUPPORT  check_variable = { USA_parliament_support > 50 } } 
-			has_equipment  = { arv_equipment > 2000 }
-				NOT = { custom_trigger_tooltip = { tooltip = JONSON_AXYEL_TT
-				has_country_flag = JONSON_AXYEL } } }
-        visible = { has_country_flag = open_infantry_equipment_folder_OPEN has_completed_focus = nto_supplies_of_additional_equipment }
-		ai_will_do = { 
-			factor = 50
-				modifier = { 
-					factor = 500
-					UKR = { has_equipment = { arv_equipment_0 < 1 } }
-				}
-			}
-		remove_effect = { add_equipment_to_stockpile = { type = arv_equipment amount = -100 producer = NTO }
-		UKR = { add_equipment_to_stockpile = { type = arv_equipment amount = 100 producer = NTO } }
-				log = "[GetDateText]: [Root.GetName]: Decision send_arv_equipment" }
-	}	
 
 	#AMV
 
@@ -368,17 +347,17 @@ NTO_AID_category = {
 	send_AMMO_SMALL_BATCHES = { icon = usa_flag_ll fire_only_once = no cost = 5 days_remove = 14 days_re_enable = 2
         available = { 
 			custom_trigger_tooltip = { tooltip = EU_MORE_THAN_50_SUPPORT  check_variable = { EU_parliament_support > 50 } } 
-			custom_trigger_tooltip = { tooltip = ENOUGH_AMMO_EU check_variable = { ammunition_variable > 200 }}}
+			custom_trigger_tooltip = { tooltip = ENOUGH_AMMO_EU check_variable = { ammunition_value_k > 200 }}}
         visible = { has_country_flag = open_infantry_equipment_folder_OPEN has_completed_focus = nto_czech_arms_initiative }
 		ai_will_do = { 
 			factor = 1500
 				modifier = { 
 					factor = 10000
-					UKR = { check_variable = { ammunition_variable < 200 } }
+					UKR = { check_variable = { ammunition_value_k < 200 } }
 				}
 		}
-		remove_effect = { add_to_variable = { ammunition_variable = -7.5 } 
-		UKR = { add_to_variable = { ammunition_variable = 7.5 } custom_effect_tooltip = AMMO_10K }
+		remove_effect = { add_to_variable = { ammunition_value_k = -7.5 } 
+		UKR = { add_to_variable = { ammunition_value_k = 7.5 } custom_effect_tooltip = AMMO_10K }
 				log = "[GetDateText]: [Root.GetName]: Decision send_AMMO_SMALL_BATCHES" }
 	}
 	
@@ -388,19 +367,87 @@ NTO_AID_category = {
 			custom_trigger_tooltip = { tooltip = USA_MORE_THAN_50_SUPPORT  check_variable = { USA_parliament_support > 50 } } 
 			NOT = { custom_trigger_tooltip = { tooltip = JONSON_AXYEL_TT
 			has_country_flag = JONSON_AXYEL } }
-			custom_trigger_tooltip = { tooltip = ENOUGH_AMMO_EU check_variable = { ammunition_variable > 200 }}}
+			custom_trigger_tooltip = { tooltip = ENOUGH_AMMO_EU check_variable = { ammunition_value_k > 200 }}}
         visible = { has_country_flag = open_infantry_equipment_folder_OPEN has_completed_focus = nto_czech_arms_initiative }
 		ai_will_do = { 
 			factor = 1400
 				modifier = { 
 					factor = 10000
-					UKR = { check_variable = { ammunition_variable < 200 } }
+					UKR = { check_variable = { ammunition_value_k < 200 } }
 				}
 		}
-		remove_effect = { add_to_variable = { ammunition_variable = -35 } 
-		UKR = { add_to_variable = { ammunition_variable = 35 } custom_effect_tooltip = AMMO_30K }
+		remove_effect = { add_to_variable = { ammunition_value_k = -35 } 
+		UKR = { add_to_variable = { ammunition_value_k = 35 } custom_effect_tooltip = AMMO_30K }
 				log = "[GetDateText]: [Root.GetName]: Decision send_AMMO_BIG_BATCHES" }
 	}
+	#поставки с африки, 1 раз!
+	send_AMMO_africa = { icon = usa_flag_ll fire_only_once = yes cost = 50 days_remove = 80
+        visible = { has_country_flag = open_infantry_equipment_folder_OPEN has_completed_focus = nto_czech_arms_initiative }
+		ai_will_do = { 
+			factor = 1400
+				modifier = { 
+					factor = 10000
+					UKR = { check_variable = { ammunition_value_k < 200 } }
+				}
+		}
+		remove_effect = { custom_effect_tooltip = AMMO_350K UKR = { add_to_variable = { ammunition_value_k = 350 } custom_effect_tooltip = AMMO_350K }
+				log = "[GetDateText]: [Root.GetName]: Decision send_AMMO_BIG_BATCHES"}  
+	}
+	#поставки с южной кореи, 1 раз!
+	send_AMMO_kor = { 
+		icon = usa_flag_ll 
+		fire_only_once = yes 
+		cost = 50 
+		days_remove = 80
+        visible = { 
+			has_country_flag = open_infantry_equipment_folder_OPEN
+			has_completed_focus = nto_czech_arms_initiative
+		}
+		ai_will_do = { 
+			factor = 1400
+				modifier = { 
+					factor = 10000
+					check_variable = { 
+						UKR.ammunition_value_k < 200 
+					}
+				}
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision send_AMMO_BIG_BATCHES"
+			custom_effect_tooltip = AMMO_500K
+			add_to_variable = {
+				UKR.ammunition_value_k = 500
+			}
+		} 
+	}
+	#поставки с пакистана, 1 раз!
+	send_AMMO_pak = { icon = usa_flag_ll fire_only_once = yes cost = 50 days_remove = 80
+        visible = { has_country_flag = open_infantry_equipment_folder_OPEN has_completed_focus = nto_czech_arms_initiative }
+		ai_will_do = { 
+			factor = 1400
+				modifier = { 
+					factor = 10000
+					UKR = { check_variable = { ammunition_value_k < 200 } }
+				}
+		}
+		remove_effect = { custom_effect_tooltip = AMMO_300K UKR = { add_to_variable = { ammunition_value_k = 300 } custom_effect_tooltip = AMMO_300K }
+				log = "[GetDateText]: [Root.GetName]: Decision send_AMMO_BIG_BATCHES" } 
+	}
+	#поставки с индии, 1 раз!
+	send_AMMO_ind = { icon = usa_flag_ll fire_only_once = yes cost = 50 days_remove = 80
+        visible = { has_country_flag = open_infantry_equipment_folder_OPEN has_completed_focus = nto_czech_arms_initiative }
+		ai_will_do = { 
+			factor = 1400
+				modifier = { 
+					factor = 10000
+					UKR = { check_variable = { ammunition_value_k < 200 } }
+				}
+		}
+		remove_effect = { custom_effect_tooltip = AMMO_400K UKR = { add_to_variable = { ammunition_value_k = 400 } custom_effect_tooltip = AMMO_400K }
+				log = "[GetDateText]: [Root.GetName]: Decision send_AMMO_BIG_BATCHES" } 
+	}
+	
+	
 	
 	
 	open_vechicle_folder = { fire_only_once = no  visible = { has_completed_focus = nto_sending_afv NOT = { has_country_flag = open_vechicle_folder_OPEN } }
@@ -1614,23 +1661,6 @@ NTO_AID_category = {
 
 NTO_supply_of_the_eastern_european_army_category = {
 
-
-    European_defence_agency = {
-		fire_only_once = yes
-		cost = 30  
-		days_remove = 30
-        available = {
-			has_completed_focus = nto_European_Defense_Agency
-		}
-        visible = {
-			has_completed_focus = nto_European_Defense_Agency
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision European_defence_agency"
-			add_ideas = NTO_EDA
-		}
-	}
-
     increase_the_supply_of_the_army_in_eastern_europe_no_increase = {
         icon = generic_formable_nations
 
@@ -2213,7 +2243,7 @@ NTO_supply_of_the_eastern_european_army_category = {
 		ai_will_do = {
 			factor = 4
 			modifier = {
-				threat > 87
+				threat > 0.87
 				add = 6
 			}
 			modifier = {
@@ -2582,7 +2612,7 @@ NTO_weapons_production = {
 					type = imv_medium_1_equipment
 					amount = 80
 					producer = "NTO"
-					variant_name = "Senator"
+					variant_name = "International MaxxPro"
 				}
 				add_equipment_to_stockpile = {
 					type = imv_medium_2_equipment
@@ -2870,7 +2900,6 @@ NTO_weapons_production = {
 ####авторство больного шизофреника MaX1m4Uk, если переделать писать мне!
 NTO_genshtab_decision_category = {
 	NTO_start_slow_reopening = {
-		set_country_flag = slow_reopening
 		ai_will_do = {
 			factor = 0
 		}
@@ -2884,6 +2913,7 @@ NTO_genshtab_decision_category = {
 		}
 		remove_effect = {
 			custom_effect_tooltip = NTO_start_slow_reopening_tt
+			set_country_flag = slow_reopening
 			hidden_effect = { 	
 				country_event = {
 					id = nto_reopening.5
@@ -3315,7 +3345,7 @@ NTO_genshtab_decision_category = {
 				}
 				add_equipment_to_stockpile = {
 					type = imv_medium_1_equipment
-					variant_name = "Senator"
+					variant_name = "International MaxxPro"
 					amount = 1000
 					producer = NTO
 				}
@@ -3644,7 +3674,6 @@ NTO_genshtab_decision_category = {
 	}
 
 	NTO_start_rapid_reopening = {
-		set_country_flag = fast_reopening
 		cost = 250
 		fire_only_once = yes
 		days_remove = 60
@@ -3664,6 +3693,7 @@ NTO_genshtab_decision_category = {
 		}
 		remove_effect = {
 			custom_effect_tooltip = NTO_start_rapid_reopening_tt
+			set_country_flag = fast_reopening
 			hidden_effect = {
 				news_event = {
 					id = news.314
@@ -4102,7 +4132,7 @@ NTO_genshtab_decision_category = {
 						}
 						add_equipment_to_stockpile = {
 							type = imv_medium_1_equipment
-							variant_name = "Senator"
+							variant_name = "International MaxxPro"
 							amount = 1000
 							producer = NTO
 						}
@@ -4859,7 +4889,7 @@ NTO_genshtab_decision_category = {
 						
 						add_equipment_to_stockpile = {
 							type = imv_medium_1_equipment
-							variant_name = "Senator"
+							variant_name = "International MaxxPro"
 							amount = 750
 							producer = NTO
 						}
@@ -6004,7 +6034,7 @@ NTO_genshtab_decision_category = {
 							producer = NTO
 						}
 						
-						БТР
+						#БТР
 						
 						add_equipment_to_stockpile = {
 							type = apc_eng_fv432_equipment
@@ -6101,7 +6131,7 @@ NTO_genshtab_decision_category = {
 							amount = 62
 							producer = NTO
 						}
-						МАШИНЫ
+						#МАШИНЫ
 						add_equipment_to_stockpile = {
 							type = imv_medium_1_equipment
 							variant_name = "HMMWV"
@@ -6110,7 +6140,7 @@ NTO_genshtab_decision_category = {
 						}
 						add_equipment_to_stockpile = {
 							type = imv_medium_1_equipment
-							variant_name = "Senator"
+							variant_name = "International MaxxPro"
 							amount = 250
 							producer = NTO
 						}
@@ -6162,7 +6192,7 @@ NTO_genshtab_decision_category = {
 							producer = NTO
 						}
 						
-						ЛТ
+						#ЛТ
 						
 						add_equipment_to_stockpile = {
 							type = light_tank_apc_ita_freccia_equipment
@@ -6186,7 +6216,7 @@ NTO_genshtab_decision_category = {
 						}
 						
 						
-						АРТА
+						#АРТА
 						add_equipment_to_stockpile = {
 							type = arv_tank_ita_ariete_equipment
 							variant_name = "Ariete ARV"

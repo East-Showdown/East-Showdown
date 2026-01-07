@@ -1,5 +1,6 @@
 focus_tree = {
 	id = WGN
+	continuous_focus_position = { x = 5000 y = 5000 } 
 	country = {
 		factor = 0
 		modifier = {
@@ -10,666 +11,1543 @@ focus_tree = {
 	default = no
 	focus = {
 		id = WGN_utkin_orchestra
-		icon = GFX_wagner_orchestre
-		cost = 2
-		x = 14
+		icon = GFX_WGN_utkin_orchestra
+		cost = 0.8
+		x = 44
 		y = 0
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_utkin_orchestra"
 			add_political_power = 50
-			add_war_support = 0.1
 		}
-
 	}
 	focus = {
-		id = WGN_africa
-		icon = GFX_wagner_africa
-		cost = 3
+		id = WGN_buyweaponsafrica
+		icon = GFX_WGN_buyweaponsafrica
+		cost = 0.8
 		prerequisite = {
 			focus = WGN_utkin_orchestra
 		}
-		x = 12
+		x = 44
 		y = 1
+		available = {
+			check_variable = {
+				var = WGN_budget_var
+				value = 1.2
+				compare = greater_than_or_equals
+			}
+		}	
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_africa"
-			add_war_support = 0.05
-			add_political_power = 50
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buyweapons"
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 1.2
+				tooltip = WGN_budget_var_remove16
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_ak12_equipment
+				amount = 3000
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = mortar_2b24_podnos_equipment
+				amount = 200
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 1000
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = engineering_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = arv_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = amv_equipment
+				amount = 50
+				producer = RUS
+			}
 		}
-
 	}
 	focus = {
-		id = WGN_council
-		icon = GFX_WGN_council
-		cost = 3
+		id = WGN_recruitment
+		icon = GFX_WGN_recruitment
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_buyweaponsafrica
+		}
+		x = 44
+		y = 2
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_recruitment"
+			add_manpower = 250
+		}
+	}
+	focus = {
+		id = WGN_expandcooperation
+		icon = GFX_WGN_expandcooperation
+		cost = 0.8
 		prerequisite = {
 			focus = WGN_utkin_orchestra
 		}
-		x = 14
+		x = 42
 		y = 1
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_council"
-			add_ideas = WGN_council_idea
-			add_political_power = 50
-			add_war_support = 0.05
-			add_stability = 0.05
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_expandcooperation"
+			army_experience = 15
+			add_command_power = 25
 		}
-
 	}
 	focus = {
-		id = WGN_slavic_corps
-		icon = GFX_slavic_corps
-		cost = 3
+		id = WGN_newcontracts
+		icon = GFX_WGN_newcontracts
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_expandcooperation
+		}
+		x = 42
+		y = 2
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_newcontracts"
+			add_political_power = 25
+			add_to_variable = {	
+				var = WGN_budget_var
+				value = 1
+				tooltip = WGN_budget_var_add
+			}
+		}
+	}
+	focus = {
+		id = WGN_contractlogistics
+		icon = GFX_WGN_contractlogistics
+		cost = 0.8
 		prerequisite = {
 			focus = WGN_utkin_orchestra
 		}
-		x = 16
+		x = 46
 		y = 1
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_slavic_corps"
-			add_war_support = 0.05
-			add_political_power = 50
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_contractlogistics"
+			add_command_power = 25
+			add_stability = 0.02
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 10
+			}
+		}
+	}
+	focus = {
+		id = WGN_training
+		icon = GFX_WGN_training
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_contractlogistics
+		}
+		x = 46
+		y = 2
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_training"
 			army_experience = 30
 		}
 	}
 	focus = {
-		id = WGN_smo
-		icon = GFX_WGN_SMO
+		id = WGN_newcontingent
+		icon = GFX_WGN_newcontingent
+		cost = 2
+		prerequisite = {
+			focus = WGN_recruitment
+		}
+		prerequisite = {
+			focus = WGN_newcontracts
+		}
+		prerequisite = {
+			focus = WGN_training
+		}
+		x = 44
+		y = 3
+		available = {
+			
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_newcontingent"
+			add_manpower = 750
+			add_equipment_to_stockpile = {
+				type = infantry_ak74_equipment
+				amount = 1000
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = mortar_2b24_podnos_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_6b1_equipment
+				amount = 200
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = engineering_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = arv_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = amv_equipment
+				amount = 50
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1
+				amount = 250
+				producer = RUS
+			}
+		}
+	}
+	focus = {
+		id = WGN_africanoperations
+		icon = GFX_WGN_africanoperations
 		cost = 1
 		prerequisite = {
-			focus = WGN_council
-			focus = WGN_slavic_corps
-			focus = WGN_africa
+			focus = WGN_newcontingent
 		}
+		x = 44
+		y = 4
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_africanoperations"
+			custom_effect_tooltip = in_development
+		}	
+	}
+	focus = {
+		id = WGN_expansionminingcapacities
+		icon = GFX_WGN_expansionminingcapacities
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_africanoperations
+		}
+		x = 44
+		y = 5
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_expansionminingcapacities"
+			custom_effect_tooltip = WGN_decisionetc_tooltip
+		}	
+	}
+	focus = {
+		id = WGN_buyweapons
+		icon = GFX_WGN_buyweapons
+		cost = 0.5
+		prerequisite = {
+			focus = WGN_materialsupport
+		}
+		x = 34
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buyweapons"
+			custom_effect_tooltip = WGN_buyweapons_tooltip
+		}	
+	}
+	focus = {
+		id = WGN_buysattelites
+		icon = GFX_WGN_buysattelites
+		cost = 0.8
+		available = {
+			check_variable = {
+				var = WGN_budget_var
+				value = 0.5
+				compare = greater_than_or_equals
+			}
+		}
+		prerequisite = {
+			focus = WGN_materialsupport
+		}
+		x = 32
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buysattelites"
+			add_to_variable = {	var = WGN_recon_factor value = 0.2	}
+			add_to_variable = {	var = WGN_army_org_factor value = 0.1 }
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.5
+				tooltip = WGN_budget_var_remove7
+			}
+			custom_effect_tooltip = WGN_buysattelites_tooltip
+		}	
+	}
+	focus = {
+		id = WGN_buydrones
+		icon = GFX_WGN_buydrones
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_materialsupport
+		}
+		x = 30
+		y = 8
+		available = {
+			check_variable = {
+				var = WGN_budget_var
+				value = 0.3
+				compare = greater_than_or_equals
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_buydrones"
+			set_technology = {
+				tech_fpv = 1
+			}
+			add_units_to_division_template = {
+				template_name = "Batalion CHVK Wagnera"
+				support = {
+					fpv_team = 1
+				}
+			}
+			subtract_from_variable = {	
+				var = WGN_budget_var
+				value = 0.3
+				tooltip = WGN_budget_var_remove9
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1		
+				amount = 5000
+				producer = RUS
+			}
+		}	
+	}
+	focus = {
+		id = WGN_offerassistancetorussia
+		icon = GFX_WGN_offerassistancetorussia
+		cost = 0.8
+		x = 32
+		y = 3
+		available = {
+			always = no
+		}
+		mutually_exclusive = {
+			focus = WGN_modrfcooperation
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_offerassistancetorussia"
+			add_command_power = 30
+			set_global_flag = WGN_offerassistancetorussia_flag
+		}
+	}
+	focus = {
+		id = WGN_modrfcooperation
+		icon = GFX_WGN_modrfcooperation
+		cost = 0.8
+		x = 34
+		y = 3
+		available = {
+			always = no
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_modrfcooperation"
+			add_command_power = 30
+			set_global_flag = WGN_offerassistancetorussia_flag
+		}
+	}
+	focus = {
+		id = WGN_convenecouncil
+		icon = GFX_WGN_convenecouncil
+		cost = 0.2
+		x = 30
+		y = 3
 		available = {
 			RUS = {
 				has_war_with = UKR
 			}
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_smo"
-			country_event = WGN.18
-			hidden_effect = {
-				remove_ideas = does_not_participate_in_smo_in_ukraine
-			}
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_convenecouncil"
+			add_command_power = 15
+			add_political_power = 50
 		}
-		x = 14
-		y = 2
-
 	}
 	focus = {
-		id = WGN_troops_transfer
-		icon = GFX_WGN_troops_transfer
-		cost = 1
-		prerequisite = {
-			focus = WGN_smo
-		}
+		id = WGN_setprecisegoals
+		icon = GFX_WGN_setprecisegoals
+		cost = 0.5
+		prerequisite = { focus = WGN_convenecouncil }
+		prerequisite = { focus = WGN_contractwithmotherland }
+		x = 30
+		y = 5
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_troops_transfer"
-			custom_effect_tooltip = WGN_custom1
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_setprecisegoals"
+			add_command_power = 15
+			add_intel = { target = UKR civilian_intel = 5 army_intel = 14 airforce_intel = 5 }
+			upgrade_intelligence_agency = upgrade_army_department
+			upgrade_intelligence_agency = upgrade_form_department
+		}
+	}
+	focus = {
+		id = WGN_redeployment
+		icon = GFX_WGN_redeployment
+		cost = 0.5
+		prerequisite = { focus = WGN_contractwithmotherland }
+		x = 32
+		y = 5
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_redeployment"
 			add_equipment_to_stockpile = {
-				type = RUS_cas_equipment_su25
-				amount = 24
+				type = RUS_cas_equipment_su24m
+				amount = 12
 				producer = RUS
 			}
-			hidden_effect = {
-				load_oob = "WGN_Wagner_1"
-				add_power_balance_value = {
-					id = RUS_power_balance
-					value = -0.05
-				}
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.05
-				}	
+			add_equipment_to_stockpile = {
+				type = RUS_fighter_equipment_mig29
+				amount = 12
+				producer = RUS
 			}
-			add_political_power = 50
-			add_war_support = 0.1
-			add_manpower = 5000
+			custom_effect_tooltip = WGN_redeployment_tooltip
 		}
-		x = 13
-		y = 3
-
 	}
 	focus = {
-		id = WGN_ad_campaign
-		icon = GFX_WGN_ad_campaign
-		cost = 1
+		id = WGN_shapinglogistics
+		icon = GFX_WGN_shapinglogistics
+		cost = 0.5
 		prerequisite = {
-			focus = WGN_smo
+			focus = WGN_contractwithmotherland
 		}
+		x = 34
+		y = 5
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_ad_campaign"
-			custom_effect_tooltip = WGN_manpower_custom_1
-			add_political_power = 75
-			add_stability = 0.05
-			add_war_support = 0.05
-			hidden_effect = {
-				add_ideas = WGN_manpower_1
-			}
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_shapinglogistics"
+			add_to_variable = {	var = WGN_supply_factor value = 0.15	}
+			custom_effect_tooltip = WGN_shapinglogistics_tooltip
 		}
-		x = 15
-		y = 3
-
 	}
 	focus = {
-		id = WGN_cooperation_with_rf
-		icon = GFX_cooperation_with_rf
-		cost = 2
-		prerequisite = {
-			focus = WGN_troops_transfer
-		}
-		prerequisite = {
-			focus = WGN_ad_campaign
-		}
+		id = WGN_contractwithmotherland
+		icon = GFX_WGN_contractwithmotherland
+		cost = 0.5
+		prerequisite = {	focus = WGN_offerassistancetorussia focus = WGN_modrfcooperation }
+		x = 33
+		y = 4
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_cooperation_with_rf"
-			add_political_power = 50
+			log = "[GetDateText]: [Root.GetName]: WGN_contractwithmotherland"
 			add_command_power = 50
-			army_experience = 50
-			add_war_support = 0.05
-		}
-		x = 14
-		y = 4
-
-	}
-	focus = {
-		id = WGN_donbass_concentrate
-		icon = GFX_donbass_concentrate
-		cost = 2
-		prerequisite = {
-			focus = WGN_cooperation_with_rf
-		}
-		mutually_exclusive = {
-			focus = WGN_kyiv_concentrate
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_donbass_concentrate"
-			army_experience = 30
-			add_war_support = 0.05
-		}
-		x = 15
-		y = 5
-	}
-
-	focus = {
-		id = WGN_bakhmut
-		icon = GFX_WGN_bakhmut
-		cost = 2
-		prerequisite = {
-			focus = WGN_donbass_concentrate
-		}
-		x = 15
-		y = 6
-		completion_reward = {	
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_bakhmut"
-			165 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 180
-					scope = WGN
-				}		
+			add_equipment_to_stockpile = {
+				type = imv_light_1_equipment
+				variant_name = "Урал-4350"
+				producer = RUS
+				amount = 1000
 			}
-			if = {
-				limit = {
-					UKR = {
-						controls_province = 18294
+			add_equipment_to_stockpile = {
+				type = infantry_akm_equipment
+				amount = 2000
+				producer = RUS
+			}
+			add_to_variable = {	
+				var = WGN_budget_var
+				value = 7
+				tooltip = WGN_budget_var_add_2
+			}
+			add_to_variable = { var = WGN_political_power_factor value = 0.1 }
+			custom_effect_tooltip = WGN_contractwithmotherland_tooltip
+		}
+	}
+	focus = {
+		id = WGN_suppliesfrommdrf
+		icon = GFX_WGN_suppliesfrommdrf
+		cost = 0.5
+		prerequisite = {
+			focus = WGN_contractwithmotherland
+		}
+		x = 36
+		y = 5
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_suppliesfrommdrf"
+			custom_effect_tooltip = WGN_suppliesfrommdrf_tooltip
+		}
+	}
+	focus = {
+		id = WGN_calltowar
+		icon = GFX_WGN_calltowar
+		cost = 0.5
+		prerequisite = { focus = WGN_setprecisegoals }
+		prerequisite = { focus = WGN_redeployment }
+		prerequisite = { focus = WGN_shapinglogistics }
+		prerequisite = { focus = WGN_suppliesfrommdrf }
+		x = 33
+		y = 6
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_calltowar"
+			hidden_effect = {
+				remove_ideas = does_not_participate_in_smo_in_ukraine
+				set_portraits = {
+					character = evgeniy_prigozhin
+					civilian = {
+						large = "GFX_evgeniy_prigozhin_after_war"
+					}
+					army = {
+						large = "GFX_evgeniy_prigozhin_after_war"
 					}
 				}
-				anton_elizarov = {
-					unit_leader_event = WGN_mission.1
+				play_song = SKWLKR_best_in_hell
+				add_to_war = {
+					targeted_alliance = RUS
+					enemy = UKR
+					hostility_reason = asked_to_join
 				}
 			}
+			country_event = {
+				id = WGN.18
+			}
+			
 		}
-		bypass = {
-			UKR = {
-				NOT = {
-					controls_state = 165
-				}	
+	}
+	focus = {
+		id = WGN_materialsupport
+		icon = GFX_WGN_materialsupport
+		cost = 0.8
+		prerequisite = { focus = WGN_calltowar }
+		x = 32
+		y = 7
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_materialsupport"
+			add_political_power = 100
+		}
+	}
+	focus = {
+		id = WGN_internalaffairs
+		icon = GFX_WGN_internalaffairs
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_calltowar
+		}
+		x = 38
+		y = 7
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_internalaffairs"
+			add_political_power = 25
+			custom_effect_tooltip =  WGN_internalaffairs_tooltip
+			add_to_variable = { var = WGN_political_power_factor value = 0.1 }
+		}
+	}
+	focus = {
+		id = WGN_agreementwiththegovernmentvolunteerrecruitment
+		icon = GFX_WGN_agreementwiththegovernmentvolunteerrecruitment
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_expansionofthecontingent
+		}
+		x = 52
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_agreementwiththegovernmentvolunteerrecruitment"
+			add_to_variable = { var = WGN_weekly_manpower value = 50 }
+			custom_effect_tooltip = WGN_agreementwiththegovernmentvolunteerrecruitment_tooltip
+		}
+	}
+	focus = {
+		id = WGN_recruitmentcentresinrussia
+		icon = GFX_WGN_recruitmentcentresinrussia
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_agreementwiththegovernmentvolunteerrecruitment
+		}
+		available = {
+			power_balance_value = {
+				id = WGN_power_balance
+				value < -0.20
+			}
+		}
+		x = 51
+		y = 10
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_recruitmentcentresinrussia"
+			add_to_variable = { var = WGN_weekly_manpower value = 75 }
+			custom_effect_tooltip = WGN_recruitmentcentresinrussia_tooltip
+		}
+	}
+	focus = {
+		id = WGN_thebestchoice
+		icon = GFX_WGN_thebestchoice
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_recruitmentcentresinrussia
+		}
+		available = {
+			power_balance_value = {
+				id = WGN_power_balance
+				value < -0.60
+			}
+		}
+		x = 51
+		y = 11
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_thebestchoice"
+			add_to_variable = { var = WGN_weekly_manpower value = 125 }
+			custom_effect_tooltip = WGN_thebestchoice_tooltip
+		}
+	}
+	focus = {
+		id = WGN_recruitmentofforeignvolunteers
+		icon = GFX_WGN_recruitmentofforeignvolunteers
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_expansionofthecontingent
+		}
+		x = 50
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_recruitmentofforeignvolunteers"
+			custom_effect_tooltip = WGN_recruitmentofforeignvolunteers_tooltip
+		}
+	}
+	focus = {
+		id = WGN_newbattlefieldenvironment
+		icon = GFX_WGN_newbattlefieldenvironment
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_calltowar
+		}
+		x = 47
+		y = 7
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_newbattlefieldenvironment"
+			army_experience = 75
+		}
+	}
+	focus = {
+		id = WGN_optimalwarfightingstrategy
+		icon = GFX_WGN_optimalwarfightingstrategy
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_newbattlefieldenvironment
+		}
+		x = 45
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_optimalwarfightingstrategy"
+			set_technology = {
+				basic_doctrines = 1
+			}
+			enable_tactic = wgn_urban_tactic
+			army_experience = 25
+		}
+	}
+	focus = {
+		id = WGN_encirclementattacktactics
+		icon = GFX_WGN_encirclementattacktactics
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_optimalwarfightingstrategy
+		}
+		mutually_exclusive = { focus = WGN_tacticsofthefiringshaft }
+		x = 44
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_encirclementattacktactics"
+			add_mastery = {
+				amount = 200
+				track = tier_1_infantry
+			}
+			add_mastery = {
+				amount = 200
+				track = tier_2_infantry
+			}
+			add_mastery = {
+				amount = 100
+				track = tier_1_sso
+			}
+			add_mastery = {
+				amount = 100
+				track = tier_2_sso
 			}
 		}
 	}
-
 	focus = {
-		id = WGN_prigozhin_line
-		icon = GFX_WGN_prigozhin_line
-		cost = 2
+		id = WGN_lightningfastcaptureoftheflanks
+		icon = GFX_WGN_lightningfastcaptureoftheflanks
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_donbass_concentrate
+			focus = WGN_encirclementattacktactics
 		}
-		x = 17
-		y = 6
-		available = {
-			RUS = {
-				controls_state = 145
-				controls_state = 165
-				controls_state = 154
+		x = 44
+		y = 10
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_lightningfastcaptureoftheflanks"
+		}
+	}
+	focus = {
+		id = WGN_tacticsofthefiringshaft
+		icon = GFX_WGN_tacticsofthefiringshaft
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_optimalwarfightingstrategy
+		}
+		mutually_exclusive = { focus = WGN_encirclementattacktactics }
+		x = 46
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_tacticsofthefiringshaft"
+			add_mastery = {
+				amount = 200
+				track = tier_1_artillery
 			}
+			add_mastery = {
+				amount = 200
+				track = tier_2_artillery
+			}
+		}
+	}
+	focus = {
+		id = WGN_continuousstorming
+		icon = GFX_WGN_continuousstorming
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_tacticsofthefiringshaft
+		}
+		x = 46
+		y = 10
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_сontinuousstorming"
+		}
+	}
+	focus = {
+		id = WGN_approvalofoptimaltacticsforwar
+		icon = GFX_WGN_approvalofoptimaltacticsforwar
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_continuousstorming
+			focus = WGN_lightningfastcaptureoftheflanks
+		}
+		x = 45
+		y = 11
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_approvalofoptimaltacticsforwar"
+			army_experience = 75
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.4
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	focus = {
+		id = WGN_expansionofthecontingent
+		icon = GFX_WGN_expansionofthecontingent
+		cost = 0.8
+		available = {
+			has_army_experience > 50
+		}
+		prerequisite = {
+			focus = WGN_newbattlefieldenvironment
+		}
+		x = 50
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_expansionofthecontingent"
+			add_to_variable = { var = WGN_weekly_manpower value = 25 }
+			army_experience = -50
+			custom_effect_tooltip = WGN_expansionofthecontingent_tooltip
+		}
+	}
+	focus = {
+		id = WGN_expandthestormingcorps
+		icon = GFX_WGN_expandthestormingcorps
+		prerequisite = {
+			focus = WGN_expansionofthecontingent
+		}
+		cost = 0.8
+		x = 48
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_expandthestormingcorps"
+			custom_effect_tooltip = WGN_decisionetc_tooltip
+		}
+	}
+	focus = {
+		id = WGN_formationofartillerybrigades
+		icon = GFX_WGN_formationofartillerybrigades
+		cost = 0.8
+		x = 48
+		y = 10
+		prerequisite = {
+			focus = WGN_expandthestormingcorps
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_prigozhin_line"
-			custom_effect_tooltip = PRIGOZHIN_LINE1
+			log = "[GetDateText]: [Root.GetName]: WGN_formationofartillerybrigades"
 			hidden_effect = {
-				165 = {
-					add_building_construction = { type = bunker province = 18300 level = 2 }
-					add_building_construction = { type = bunker province = 18307 level = 2 }
-					add_building_construction = { type = bunker province = 18134 level = 2 }			
-				}	
-				145 = {
-					add_building_construction = { type = bunker province = 15717 level = 2 }
-					add_building_construction = { type = bunker province = 11274 level = 2 }
-					add_building_construction = { type = bunker province = 2605 level = 2 }
-					add_building_construction = { type = bunker province = 8899 level = 2 }
-					add_building_construction = { type = bunker province = 12133 level = 2 }
-					add_building_construction = { type = bunker province = 18657 level = 2 }
-					add_building_construction = { type = bunker province = 18656 level = 2 }
-					add_building_construction = { type = bunker province = 18653 level = 2 }
-					add_building_construction = { type = bunker province = 18660 level = 2 }
-					add_building_construction = { type = bunker province = 18659 level = 2 }
-					add_building_construction = { type = bunker province = 18658 level = 2 }
-					add_building_construction = { type = bunker province = 18143 level = 2 }
-					add_building_construction = { type = bunker province = 18643 level = 2 }
-				}
-				154 = {
-					add_building_construction = { type = bunker province = 15613 level = 2 }
-					add_building_construction = { type = bunker province = 8898 level = 2 }
-					add_building_construction = { type = bunker province = 7749 level = 2 }
-					add_building_construction = { type = bunker province = 18711 level = 2 }
-					add_building_construction = { type = bunker province = 10800 level = 2 }
-					add_building_construction = { type = bunker province = 18519 level = 2 }
-					add_building_construction = { type = bunker province = 18712 level = 2 }
-					add_building_construction = { type = bunker province = 18713 level = 2 }
-					add_building_construction = { type = bunker province = 18714 level = 2 }
-				}	
+				load_oob = WGN_artillery
 			}
+			custom_effect_tooltip = WGN_formationofartillerybrigades_tooltip
 		}
-
 	}
 	focus = {
-		id = WGN_destroy_nazi
-		icon = GFX_WGN_destroy_nazi
-		cost = 2
+		id = WGN_formationoftankbrigades
+		icon = GFX_WGN_formationoftankbrigades
+		cost = 0.8
+		x = 48
+		y = 11
 		prerequisite = {
-			focus = WGN_bakhmut
+			focus = WGN_formationofartillerybrigades
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_formationoftankbrigades"
+			hidden_effect = {
+				load_oob = WGN_tanks
+			}
+			custom_effect_tooltip = WGN_formationoftankbrigades_tooltip
+		}
+	}
+	focus = {
+		id = WGN_extrememeasures
+		icon = GFX_WGN_extrememeasures
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_agreementwiththegovernmentvolunteerrecruitment
+		}
+		x = 54
+		y = 10
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_extrememeasures"
+			add_political_power = 50
+		}
+	}
+	focus = {
+		id = WGN_umbrellaproject
+		icon = GFX_WGN_umbrellaproject
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_extrememeasures
+		}
+		x = 53
+		y = 11
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_umbrellaproject"
+			custom_effect_tooltip = WGN_decisionetc_tooltip
+		}
+	}
+	focus = {
+		id = WGN_kproject
+		icon = GFX_WGN_kproject
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_extrememeasures
+		}
+		
+		x = 55
+		y = 11
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_kproject"
+			custom_effect_tooltip = WGN_custom2
+			random_army_leader = {
+				limit = { is_field_marshal = no }
+				add_unit_leader_trait = prisoners_commander
+			}
 		}
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = WGN_bakhmut_focus_tt
-				UKR = {
-					NOT = {
-						controls_province = 15750
-						controls_province = 15685
-						controls_province = 6711
-						controls_province = 18617
-						controls_province = 18619
-						controls_province = 18616
-						controls_province = 18614
-						controls_province = 18615
-					}
-				}
+				tooltip = WGN_kproject_trigger_tt
+				has_country_flag = WGN_project_K_allow
 			}
 		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_destroy_nazi"
-			army_experience = 50
-			add_war_support = 0.1
-			add_stability = 0.1
-			add_political_power = 100
-		}
-		x = 15
-		y = 7
-
 	}
 	focus = {
-		id = WGN_symbolic_ad
-		icon = GFX_symbolic_ad
-		cost = 2
+		id = WGN_ownmedals
+		icon = GFX_WGN_ownmedals
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_ad_campaign
+			focus = WGN_internalaffairs
 		}
+		x = 36
+		y = 8
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_symbolic_ad"
-			add_war_support = 0.05
-			add_stability = 0.05
-			add_political_power = 50
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.05
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.05	
-				}
-			}
+			log = "[GetDateText]: [Root.GetName]: WGN_ownmedals"
+			custom_effect_tooltip = WGN_ownmedals_tooltip
 		}
-		x = 20
-		y = 4
-
 	}
 	focus = {
-		id = WGN_recruitment_buildings
-		icon = GFX_recruitment_buildings
-		cost = 3
+		id = WGN_privatecemeteries
+		icon = GFX_WGN_privatecemeteries
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_ad_campaign
+			focus = WGN_internalaffairs
 		}
+		x = 38
+		y = 8
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_recruitment_buildings"
-			custom_effect_tooltip = WGN_manpower_custom_2
-			custom_effect_tooltip = WGN_custom3
-			add_political_power = 100
-			hidden_effect = {
-				add_manpower = 2500
-				load_oob = "WGN_Wagner_2"
-				add_power_balance_value = {
-					id = RUS_power_balance
-					value = -0.2
-				}
-				swap_ideas = {
-					remove_idea = WGN_manpower_1
-					add_idea =  WGN_manpower_2
-				}
-			}
+			log = "[GetDateText]: [Root.GetName]: WGN_privatecemeteries"
+			add_to_variable = { var = WGN_army_morale_factor value = 0.15 }
+			add_to_variable = { var = WGN_political_power_factor value = 0.05 }
+			custom_effect_tooltip = WGN_privatecemeteries_tooltip
 		}
-		x = 22
-		y = 4
-
 	}
 	focus = {
-		id = WGN_private_cemetries
-		icon = GFX_private_cemetries
-		cost = 2
+		id = WGN_memorialcomplexes
+		icon = GFX_WGN_memorialcomplexes
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_symbolic_ad
+			focus = WGN_privatecemeteries
 		}
-		prerequisite = {
-			focus = WGN_recruitment_buildings
-		}
+		x = 38
+		y = 9
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_private_cemetries"
-			add_political_power = 50
-			add_war_support = 0.05
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.05
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.05	
-				}
-			}
+			log = "[GetDateText]: [Root.GetName]: WGN_memorialcomplexes"
+			add_to_variable = { var = WGN_political_power_factor value = 0.15 }
+			custom_effect_tooltip = WGN_memorialcomplexes_tooltip
 		}
-		x = 20
-		y = 5
-
 	}
 	focus = {
-		id = WGN_troll_factories
-		icon = GFX_troll_factories
-		cost = 2
+		id = WGN_planningofmilitaryoperations
+		icon = GFX_WGN_planningofmilitaryoperations
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_recruitment_buildings
+			focus = WGN_newbattlefieldenvironment
 		}
-		prerequisite = {
-			focus = WGN_symbolic_ad
-		}
+		x = 41
+		y = 8
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_troll_factories"
-			add_political_power = 50
-			custom_effect_tooltip = pmcs_wagner_IW_ce_tt
-			custom_effect_tooltip = in_development
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.05
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.05
-				}
-			}
+			log = "[GetDateText]: [Root.GetName]: WGN_planningofmilitaryoperations"
+			add_political_power = 75
+			add_command_power = 25
+			army_experience = 20
+			custom_effect_tooltip = WGN_planningofmilitaryoperations_tooltip
 		}
-		x = 22
-		y = 5
-
 	}
 	focus = {
-		id = WGN_sac
-		icon = GFX_WGN_sac
-		cost = 2
+		id = WGN_expandairforcecooperation
+		icon = GFX_WGN_expandairforcecooperation
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_troll_factories
+			focus = WGN_planningofmilitaryoperations
 		}
-		prerequisite = {
-			focus = WGN_private_cemetries
-		}
+		x = 40
+		y = 9
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_sac"
-			add_war_support = 0.1
-			add_stability = 0.1
-			add_political_power = 100
-			add_power_balance_value = {
-				id = RUS_power_balance
-				value = -0.1
-			}
-			hidden_effect = {
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.1	
-				}
-			}
+			log = "[GetDateText]: [Root.GetName]: WGN_expandairforcecooperation"
+			air_experience = 50
+			add_to_variable = { var = WGN_air_mission_xp_gain_factor value = 0.1 }
+			add_to_variable = { var = WGN_air_mission_efficiency value = 0.2 }
+			custom_effect_tooltip = WGN_expandairforcecooperation_tooltip
 		}
-		x = 21
-		y = 6
-
 	}
 	focus = {
-		id = WGN_centre
-		icon = GFX_WGN_centre
-		cost = 2
+		id = WGN_expandarmycooperation
+		icon = GFX_WGN_expandarmycooperation
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_sac
+			focus = WGN_planningofmilitaryoperations
 		}
-		x = 21
+		x = 42
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_expandarmycooperation"
+			army_experience = 25
+			add_command_power = 50
+			add_to_variable = { var = WGN_max_planning value = 0.1 }
+			add_to_variable = { var = WGN_planning_speed value = 0.2 }
+			custom_effect_tooltip = WGN_expandarmycooperation_tooltip
+		}
+	}
+	focus = {
+		id = WGN_informationwar
+		icon = GFX_WGN_informationwar
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_calltowar
+		}
+		x = 27
 		y = 7
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_centre"
-			custom_effect_tooltip = WGN_manpower_custom_3
-			add_research_slot = 1
-			add_political_power = 100
+			log = "[GetDateText]: [Root.GetName]: WGN_informationwar"
+			custom_effect_tooltip = WGN_prigozhin_troll_factory_CF_tooltip
+			upgrade_intelligence_agency = upgrade_training_centers
 			hidden_effect = {
-				add_war_support = 0.05
-				swap_ideas = {
-					remove_idea = WGN_manpower_2
-					add_idea =  WGN_manpower_3
+				set_global_flag = WGN_prigozhin_troll_factory_CF
+				add_dynamic_modifier = {
+					modifier = WGN_information_war_BOP_modifier
 				}
-				set_country_flag = WGN_centr_cf
 				RUS = {
-				    country_event = rus.171
+					add_dynamic_modifier = {
+						modifier = WGN_information_war_BOP_modifier
+					}
+					add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
+					add_to_variable = { var = WGN_BOP_fascism_drift value = 0.01 }
+					add_to_variable = { var = WGN_BOP_stability_weekly_factor value = -0.1 }
 				}
+				add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
 			}
+			add_political_power = 50
 		}
 	}
 	focus = {
-		id = WGN_kyiv_concentrate
-		icon = GFX_kyiv_concentrate
-		cost = 2
-		prerequisite = {
-			focus = WGN_cooperation_with_rf
-		}
-		mutually_exclusive = {
-			focus = WGN_donbass_concentrate
-		}
-		bypass = {
-			UKR = {
-				NOT = {	
-					controls_state = 94
-				}
-			}
-		}
-		completion_reward = {	
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_kyiv_concentrate"
-			94 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-			73 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-			68 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-			86 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-		}
-
-		x = 13
-		y = 5
-
-	}
-	focus = {
-		id = WGN_liberate_kyiv
-		icon = GFX_WGN_liberate_kyiv
-		cost = 2
-		prerequisite = {
-			focus = WGN_kyiv_concentrate
-		}
-		available = {
-			UKR = {
-				NOT = {	
-					controls_state = 94
-				}
-			}
-		}	
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_liberate_kyiv"
-			add_war_support = 0.15
-			army_experience = 50
-		}					
-		x = 13
-		y = 6
-
-	}
-	focus = {
-		id = WGN_vinnitsa
-		icon = GFX_WGN_vinnitsa
-		cost = 2
-		prerequisite = {
-			focus = WGN_liberate_kyiv
-		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_vinnitsa"
-			add_war_support = 0.1
-			106 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-			104 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-			115 = {
-				add_dynamic_modifier = {
-					modifier = WGN_offensive_modifier
-					days = 60
-					scope = WGN
-				}		
-			}
-		}
-		x = 13
-		y = 7
-	}
-	focus = {
-		id = WGN_best_pmc
-		icon = GFX_best_pmc
-		cost = 2
+		id = WGN_bestpmc
+		icon = GFX_WGN_bestpmc
+		cost = 0.8
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = WGN_bakhmut_operation_not_fail_tt
-				NOT = {
-					has_country_flag = WGN_BM_fail
+				tooltip = WGN_bestpmc_trigger_tt
+				check_variable = {
+					var = WGN_successful_stormings
+					value = 3
+					compare = greater_than_or_equals
+				}
+				check_variable = {
+					var = WGN_failed_stormings
+					value = 0
+					compare = less_than_or_equals
 				}
 			}
 		}
 		prerequisite = {
-			focus = WGN_vinnitsa
-			focus = WGN_destroy_nazi
+			focus = WGN_informationwar
 		}
+		x = 28
+		y = 8
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_best_pmc"
+			log = "[GetDateText]: [Root.GetName]: WGN_bestpmc"
+			custom_effect_tooltip = WGN_decisionetc_tooltip
 			add_ideas = WGN_best_idea
 		}
-		x = 14
-		y = 8
-
 	}
 	focus = {
-		id = WGN_prisoner_recruitment
-		icon = GFX_prisoner_recruitment
-		cost = 3
+		id = WGN_adcompany
+		icon = GFX_WGN_adcompany
+		cost = 0.8
 		prerequisite = {
-			focus = WGN_recruitment_buildings
+			focus = WGN_informationwar
 		}
-		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_prisoner_recruitment"
-			custom_effect_tooltip = WGN_custom2
-			hidden_effect = {
-				add_power_balance_value = {
-					id = RUS_power_balance
-					value = -0.15
+		x = 26
+		y = 8
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
 				}
-				add_power_balance_value = {
-					id = WGN_power_balance
-					value = -0.15
-				}
-                set_country_flag = WGN_prisoner_recruitment_start_cf				
 			}
 		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_adcompany"
+			custom_effect_tooltip = WGN_adcompany_tooltip
+			add_to_variable = { var = WGN_political_power_factor value = 0.1 }
+			add_political_power = 75
+
+		}
+	}
+	focus = {
+		id = WGN_symbolicadcompany
+		icon = GFX_WGN_symbolicadcompany
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_adcompany
+		}
+		x = 26
+		y = 9
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_symbolicadcompany"
+			custom_effect_tooltip = WGN_symbolicadcompany_tooltip
+		}
+	}
+	focus = {
+		id = WGN_expandpatriotmediaholding
+		icon = GFX_WGN_expandpatriotmediaholding
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_informationwar
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+		x = 23
+		y = 8
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_expandpatriotmediaholding"
+			custom_effect_tooltip = WGN_expandpatriotmediaholding_tooltip
+			add_to_variable = { var = WGN_political_power_factor value = 0.15 }
+			add_political_power = 75
+		}
+	}
+	focus = {
+		id = WGN_socialmediaadcompany
+		icon = GFX_WGN_socialmediaadcompany
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_expandpatriotmediaholding
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+		x = 23
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_socialmediaadcompany"
+			add_political_power = 25
+			custom_effect_tooltip = WGN_socialmediaadcompany_tooltip
+			add_trait = {
+				character = evgeniy_prigozhin
+				ideology = wgn
+				trait = peoples_favorite
+		   }
+		}
+	}
+	focus = {
+		id = WGN_wagnercentreexpansion
+		icon = GFX_WGN_wagnercentreexpansion
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_expandpatriotmediaholding
+		}
+		x = 21
+		y = 9
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_wagnercentreexpansion"
+			add_research_slot = 1
+			upgrade_intelligence_agency = upgrade_decryption_boost
+			upgrade_intelligence_agency = upgrade_invisible_ink
+		}
+	}
+	focus = {
+		id = WGN_trollfactoryexpansion
+		icon = GFX_WGN_trollfactoryexpansion
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_socialmediaadcompany
+		}
+		prerequisite = {
+			focus = WGN_symbolicadcompany
+		}
+		x = 22
+		y = 10
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_trollfactoryexpansion"
+		    custom_effect_tooltip = WGN_trollfactoryexpansion_tooltip
+			hidden_effect = {
+				set_country_flag = WGN_expand_kremlebots_CF
+			}
+		}
+	}
+	focus = {
+		id = WGN_greatorchestra
+		icon = GFX_WGN_greatorchestra
+		cost = 0.8
+		prerequisite = {
+			focus = WGN_socialmediaadcompany
+		}
+		prerequisite = {
+			focus = WGN_symbolicadcompany
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+		x = 26
+		y = 10
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_greatorchestra"
+			custom_effect_tooltip = WGN_greatorchestra_tooltip
+		}
+	}
+
+	focus = {
+		id = WGN_interactionwithbloggers
+		icon = GFX_WGN_interactionwithbloggers
+		cost = 0.8
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_closedtrollfactory_tooltip
+				NOT = {
+					has_country_flag = WGN_close_troll_factory_CF
+				}
+			}
+		}
+		prerequisite = {
+			focus = WGN_socialmediaadcompany
+		}
+		prerequisite = {
+			focus = WGN_symbolicadcompany
+		}
 		x = 24
-		y = 5
+		y = 10
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: WGN_interactionwithbloggers"
+			custom_effect_tooltip = WGN_decisionetc_tooltip
+		}
+	}
+
+	#Shell Hunger
+	focus = {
+		id = WGN_shell_starvation
+		icon = GFX_WGN_shell_starvation
+		cost = 1
+		x = 32
+		y = 12
+		allow_branch = {
+			has_global_flag = WGN_shell_hunger_flag_worse
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_only_events
+				always = no
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_shell_starvation"
+			custom_effect_tooltip = WGN_shell_starvation_tooltip
+		}
+	}
+
+	focus = {
+		id = WGN_appeal
+		icon = GFX_WGN_appeal
+		cost = 1
+		prerequisite = {
+			focus = WGN_shell_starvation
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_only_events
+				always = no
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_appeal"
+			custom_effect_tooltip = WGN_appeal_tooltip
+			hidden_effect = {
+			    country_event = { id = WGN.47 days = 1 }
+			}
+		}
+		x = 32
+		y = 13
+
+	}
+
+	focus = {
+		id = WGN_appeal_to_putin
+		icon = GFX_WGN_appeal_to_putin
+		cost = 0.6
+		prerequisite = {
+			focus = WGN_appeal
+		}
+		mutually_exclusive = {
+			focus = WGN_continue_the_battle
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = {
+				add = 100
+				is_historical_focus_on = no
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_appeal_to_putin"
+			hidden_effect = {
+				RUS = {
+					country_event = { id = rus.70 hours = 6 }
+				}
+				country_event = { id = WGN.3 hours = 4 }
+			}
+			custom_effect_tooltip = WGN_appeal_to_putin_tooltip
+		}
+		x = 33
+		y = 14
+
+
+	}
+
+	focus = {
+		id = WGN_continue_the_battle
+		icon = GFX_WGN_continue_the_battle
+		cost = 0.6
+		mutually_exclusive = {
+			focus = WGN_appeal_to_putin
+		}
+		prerequisite = {
+			focus = WGN_appeal
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		select_effect = {
+			hidden_effect = {
+				mikhail_mizintsev = {
+					unit_leader_event = { id = wgn_unit_leader_event.3 hours = 12 }
+				}
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_continue_the_battle"
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.05
+			}
+			custom_effect_tooltip = WGN_continue_the_battle_tooltip
+			add_to_variable = { WGN_hunger_political_power_factor = 0.2 }
+			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.15 }
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}
+				country_event = { id = WGN.42 hours = 6 }
+				RUS = {
+					country_event = { id = rus.243 hours = 6 }
+				}
+			}
+		}
+		x = 31
+		y = 14
 
 	}
 	focus = {
-		id = WGN_tank_division
-		icon = GFX_WGN_tank_division
-		cost = 2
+		id = WGN_fight_against_military_bureaucracy
+		icon = GFX_WGN_fight_against_military_bureaucracy
+		cost = 0.6
 		prerequisite = {
-			focus = WGN_prisoner_recruitment
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
 		}
-		available = {
-			has_army_experience > 100
+		ai_will_do = {
+			factor = 100
 		}
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus WGN_tank_division"
-			army_experience = -100
-			add_manpower = -2100
-			load_oob = WGN_tanks
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_fight_against_military_bureaucracy"
+			add_political_power = 50
+			custom_effect_tooltip = WGN_fight_against_military_bureaucracy_cet
+			country_event = { id = WGN.46 hours = 6 }
+			 add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.05
+			}
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}
+				add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
+				RUS = {
+					country_event = { id = rus.244 hours = 10 }
+					add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
+					add_to_variable = { var = WGN_BOP_fascism_drift value = 0.01 }
+					add_to_variable = { var = WGN_BOP_stability_weekly_factor value = -0.1 }
+				}
+			}
 		}
-		x = 24
-		y = 6
+		x = 35
+		y = 15
+
+	}
+
+	focus = {
+		id = WGN_military_improvisation
+		icon = GFX_WGN_military_improvisation
+		cost = 0.6
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_mikhail_mizintsev_PMC_commander_cet
+				has_country_flag = WGN_mikhail_mizintsev_PMC_commander
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_military_improvisation"
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.035
+			}
+			add_command_power = 35
+			custom_effect_tooltip = WGN_military_improvisation_tooltip
+			add_to_variable = { WGN_hunger_supply_factor = 0.2 }
+			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.1 }
+			add_to_variable = { WGN_hunger_weekly_manpower = -50 }
+			add_to_variable = { WGN_hunger_army_org_factor = 0.15 }
+			add_to_variable = { WGN_shell_hunger_modifier_army_attack_factor = 0.05 }
+			add_to_variable = { WGN_shell_hunger_modifier_breakthrough_factor = 0.1 }
+			add_to_variable = { WGN_hunger_experience_loss_factor = 0.05 }
+			random_army_leader = {
+			    limit = { is_field_marshal = yes NOT = { has_trait = logistics_wizard } }
+				add_unit_leader_trait = logistics_wizard
+			}
+			if = {
+				limit = { has_country_flag = WGN_mikhail_mizintsev_PMC_commander }
+				mikhail_mizintsev = {
+					add_advisor_role = {
+						advisor = {
+							slot = army_chief
+							cost = 100
+							idea_token = WGN_mikhail_mizintsev
+							traits = {
+								army_logistics_2
+							}
+						}
+					}
+				}
+			}
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.035
+				}
+			}
+		}
+		x = 33
+		y = 15
+	}
+
+	focus = {
+		id = WGN_loyalist_help
+		icon = GFX_WGN_loyalist_help
+		cost = 0.6
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_loyalist_help"
+			custom_effect_tooltip = WGN_loyalist_help_tooltip
+			hidden_effect = {
+				WGN_sergei_syrovikin_for_event = {
+					unit_leader_event = { id = wgn_unit_leader_event.4 days = 0 }
+				}
+			}
+		}
+		x = 31
+		y = 15
+	}
+
+	focus = {
+		id = WGN_never_give_up
+		icon = GFX_WGN_never_give_up
+		cost = 0.6
+		prerequisite = {
+			focus = WGN_appeal_to_putin
+			focus = WGN_continue_the_battle
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_never_give_up"
+			add_power_balance_value = {
+				id = WGN_power_balance
+				value = -0.05
+			}
+			add_country_leader_trait = mouthpiece_justice
+			custom_effect_tooltip = WGN_never_give_up_tooltip
+			hidden_effect = {
+			    add_power_balance_value = {
+					id = RUS_power_balance
+					value = -0.05
+				}
+			}
+		}
+		x = 29
+		y = 15
+	}
+
+
+	focus = {
+		id = WGN_march
+		icon = GFX_WGN_march
+		cost = 3.7
+		prerequisite = {
+			focus = WGN_fight_against_military_bureaucracy
+		}
+		prerequisite = {
+			focus = WGN_military_improvisation
+		}
+		prerequisite = {
+			focus = WGN_loyalist_help
+		}
+		prerequisite = {
+			focus = WGN_never_give_up
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = WGN_march_trigger_1_tt
+				check_variable = { global.bz_russian_border_is_breached = 0 }		
+			}
+			custom_trigger_tooltip = {
+				tooltip = WGN_march_trigger_2_tt
+				UKR = {
+					NOT = {
+						surrender_progress > 74
+					}
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 200
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus WGN_march"
+			custom_effect_tooltip = WGN_march_tooltip
+			hidden_effect = {
+				set_global_flag = WGN_march_flag
+				country_event = { id = WGN.50 hours = 2 }
+				country_event = { id = WGN.68 hours = 9 }
+				if = {
+					limit = {
+						OR = {
+							date > 2023.06.23
+							date = 2023.06.23
+						}
+					}
+					country_event = { id = WGN_hidden.1 days = 1 hours = 2 }
+				}
+				if = {
+					limit = {
+						date < 2023.06.23
+					}
+					set_country_flag = RUS_Wagner_march_for_24_june
+				}
+			}
+		}
+		x = 32
+		y = 16
 
 	}
 }
+

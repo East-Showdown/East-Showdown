@@ -8,10 +8,28 @@ map_plan_is_attack_available = {
 	NOT = { check_variable = { map_plan_attack_cooldown > global.num_days } }
 	command_power > 99
 	NOT = { check_variable = { selected_region = -1 } }
+	NOT = {
+		AND = {
+			check_variable = { map_plans_defence_region_index = selected_region }
+			check_variable = { map_plan_defence_cooldown > global.num_days }
+		}
+	}
 }
 
 map_plan_is_defence_available = {	
 	NOT = { check_variable = { map_plan_defence_cooldown > global.num_days } }
 	command_power > 59
+	NOT = { check_variable = { selected_region = -1 } }
+	NOT = {
+		AND = {
+			check_variable = { map_plans_attack_region_index = selected_region }
+			check_variable = { map_plan_attack_cooldown > global.num_days }
+		}
+	}
+}
+
+map_plan_build_fortifications_available = {
+	NOT = { check_variable = { map_plan_build_fortifications_cooldown > global.num_days } }
+	command_power > 49
 	NOT = { check_variable = { selected_region = -1 } }
 }

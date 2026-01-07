@@ -18,97 +18,406 @@ focus_tree = {
 			FOCUS_FILTER_POLITICAL
 		}
 		completion_reward = {
-			add_political_power = 35
+			add_political_power = 100
 		}
 	}
 	focus = {
-		id = CHE_strengthening_kadyrov_position
-		icon =  GFX_IMAGE_NOT_FOUND
+		id = CHE_Kadyrov_bastions
+		icon =  GFX_CHE_Kadyrov_bastions
 		prerequisite = { focus = CHE_start_situation }
 		relative_position_id = CHE_start_situation
-		mutually_exclusive = {
-			focus = CHE_kadyrov_resigning
-		}
-		x = -4
+		x = 0
 		y = 1
 		cost = 2
-		ai_will_do = {
-			factor = 4
+		ai_will_do = { factor = 4 }
+		bypass = {
+			has_completed_focus = CHE_experience_of_the_military_operation
 		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 30
-			hidden_effect = {
-				add_dynamic_modifier = { modifier = CHE_kadyrovshchina }
-				add_to_variable = { CHE_kadyrovshchina_political_power_factor = 0.05 }
-				add_to_variable = { CHE_kadyrovshchina_stability_factor = -0.15 }
-				add_to_variable = { CHE_kadyrovshchina_war_support_factor = 0.02 }
-				add_to_variable = { CHE_kadyrovshchina_neutrality_drift = 0.01 }
-			}
+			add_political_power = 100
+			add_popularity = { ideology = neutrality popularity = 0.1 }
+			add_stability = 0.05
 			country_event = {
-				id = che.2
+				id = che.20
 				days = 0
 			}
-			custom_effect_tooltip = CHE_kadyrovshchina_intro_focus_tt
+		}
+	}
+
+	##ветка исламской политики
+	focus = {
+		id = CHE_Islamic_policy
+		icon =  GFX_CHE_Islamic_policy
+		prerequisite = { focus = CHE_Kadyrov_bastions }
+		relative_position_id = CHE_start_situation
+		x = -5
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			increase_terrorism_rate = yes
+			custom_effect_tooltip = CHE_Islamic_policy_tt
+			hidden_effect = {
+				add_popularity = { ideology = fascism popularity = 0.1 }
+				add_ideas = {
+					problems_with_terrorism
+				}
+			}
 		}
 	}
 	focus = {
-		id = CHE_kadyrov_resigning
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_start_situation }
+		id = CHE_Islam_bank
+		icon =  GFX_CHE_Islam_bank
+		prerequisite = { focus = CHE_Islamic_policy }
 		relative_position_id = CHE_start_situation
-		mutually_exclusive = {
-			focus = CHE_strengthening_kadyrov_position
-		}
-		available = {
-			controls_state = 390
-		}
-		x = 4
-		y = 1
+		x = -7
+		y = 3
 		cost = 2
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_Islam_bank_tt
+			hidden_effect = {
+				#финансы
+			}
 		}
+	}
+	focus = {
+		id = CHE_finincial_aid
+		icon =  GFX_CHE_finincial_aid
+		prerequisite = { focus = CHE_Islam_bank }
+		relative_position_id = CHE_start_situation
+		x = -7
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_finincial_aid_tt
+			hidden_effect = {
+				country_event = {
+					id = che.21
+					days = 0
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_Islamic_behavior
+		icon =  GFX_CHE_Islamic_behavior
+		prerequisite = { focus = CHE_Islamic_policy }
+		relative_position_id = CHE_start_situation
+		x = -3
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			
 		}
 	}
 	focus = {
-		id = CHE_kadyrov_family
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_strengthening_kadyrov_position }
+		id = CHE_Informal_Sharia
+		icon =  GFX_CHE_Informal_Sharia
+		prerequisite = { focus = CHE_Islamic_behavior }
+		mutually_exclusive = { focus = CHE_Circumvention_federal_laws }
 		relative_position_id = CHE_start_situation
 		x = -3
-		y = 2
-		cost = 3
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 40
-            add_stability = -0.05
-			hidden_effect = {
-				add_to_variable = { CHE_kadyrovshchina_political_advisor_cost_factor = -0.05 }
-				add_to_variable = { CHE_kadyrovshchina_autonomy_gain = 0.1 }
-			}
-			custom_effect_tooltip = CHE_kadyrov_family_dm_tt
-			custom_effect_tooltip = CHE_kadyrov_family_cet_tt
+			
 		}
 	}
 	focus = {
-		id = CHE_fighting_opposition
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_strengthening_kadyrov_position }
+		id = CHE_Circumvention_federal_laws
+		icon =  GFX_CHE_Circumvention_federal_laws
+		prerequisite = { focus = CHE_Islamic_behavior }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -1
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Suppression_secular_culture
+		icon =  GFX_CHE_Suppression_secular_culture
+		prerequisite = { focus = CHE_Circumvention_federal_laws focus = CHE_Informal_Sharia  }
+		prerequisite = { focus = CHE_Religious_reforms }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -4
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Islamic_organizations
+		icon =  GFX_CHE_Islamic_organizations
+		prerequisite = { focus = CHE_Religious_reforms }
+		prerequisite = { focus = CHE_finincial_aid }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -6
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Sharia_Court
+		icon =  GFX_CHE_Sharia_Court
+		prerequisite = { focus = CHE_Circumvention_federal_laws }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -1
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Pressure_on_the_ROC
+		icon =  GFX_CHE_Pressure_on_the_ROC
+		prerequisite = { focus = CHE_Sharia_Court }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -1
+		y = 6
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = CHE_Support_Hamas
+		icon =  GFX_CHE_Support_Hamas
+		prerequisite = { focus = CHE_Islamic_organizations }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -7
+		y = 6
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = CHE_Construction_mosques
+		icon =  GFX_CHE_Construction_mosques
+		prerequisite = { focus = CHE_Islamic_organizations }
+		prerequisite = { focus = CHE_Suppression_secular_culture }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
 		relative_position_id = CHE_start_situation
 		x = -5
-		y = 2
-		cost = 1.8
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		y = 6
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Hajj_and_Umrah
+		icon =  GFX_CHE_Hajj_and_Umrah
+		prerequisite = { focus = CHE_Suppression_secular_culture }
+		mutually_exclusive = { focus = CHE_Informal_Sharia }
+		relative_position_id = CHE_start_situation
+		x = -3
+		y = 6
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	
+	
+	focus = {
+		id = CHE_Oil_control
+		icon =  GFX_CHE_Oil_control
+		prerequisite = { focus = CHE_Islam_bank }
+		relative_position_id = CHE_start_situation
+		x = -9
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			372 = {
+				add_resource = {
+					type = oil
+					amount = 50
+				}
+			}	
+		}
+	}
+	focus = {
+		id = CHE_Islam_the_foundation_state
+		icon =  GFX_CHE_Islam_the_foundation_state
+		prerequisite = { focus = CHE_Islamic_policy }
+		relative_position_id = CHE_start_situation
+		x = -5
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_Islamic_policy_tt
+			hidden_effect = {
+				add_popularity = { ideology = fascism popularity = 0.25 }
+				add_ideas = {
+					average_terrorism
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_Religious_reforms
+		icon =  GFX_CHE_Religious_reforms
+		prerequisite = { focus = CHE_Islam_the_foundation_state }
+		relative_position_id = CHE_start_situation
+		x = -5
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_Islamic_policy_tt
+			hidden_effect = {
+				add_popularity = { ideology = fascism popularity = 0.15 }
+				add_ideas = {
+					high_terrorism
+				}
+			}
+		}
+	}
+	##
+
+	##ветка лояльности кремлю
+	focus = {
+		id = CHE_Loyalty_Moscow
+		icon =  GFX_CHE_Loyalty_Moscow
+		prerequisite = { focus = CHE_Kadyrov_bastions }
+		relative_position_id = CHE_start_situation
+		x = 3
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_autonomy_score = {
+				value = -50
+			}
+		}
+	}
+	focus = {
+		id = CHE_The_voice_Chechnya
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_Loyalty_Moscow }
+		relative_position_id = CHE_start_situation
+		x = 1
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_autonomy_score = {
+				value = 50
+			}
+			add_political_power = 50
+		}
+	}
+	focus = {
+		id = CHE_The_Kadyrovtsy_are_Putin_guards
+		icon =  GFX_CHE_The_Kadyrovtsy_are_Putin_guards
+		prerequisite = { focus = CHE_Loyalty_Moscow }
+		relative_position_id = CHE_start_situation
+		x = 3
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_The_Kadyrovtsy_are_Putin_guards_tt
+			hidden_effect = {
+				add_autonomy_score = {
+					value = -100
+				}
+				add_command_power = 100
+				add_opinion_modifier = {
+					target = RUS
+					modifier = our_liberators
+				}
+				load_oob = CHE_sentyabr #пока так, потом завезу норм дивки
+			}
+		}
+	}
+	focus = {
+		id = CHE_Financial_flow_from_Moscow
+		icon =  GFX_CHE_Financial_flow_from_Moscow
+		prerequisite = { focus = CHE_Loyalty_Moscow }
+		relative_position_id = CHE_start_situation
+		x = 5
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {}
+	}
+	focus = {
+		id = CHE_Moscow_pays_Kadyrov_rules 
+		icon =  GFX_CHE_Moscow_pays_Kadyrov_rules
+		prerequisite = { focus = CHE_Financial_flow_from_Moscow }
+		prerequisite = { focus = CHE_The_Kadyrovtsy_are_Putin_guards }
+		prerequisite = { focus = CHE_The_voice_Chechnya }
+		relative_position_id = CHE_start_situation
+		x = 3
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {}
+	}
+	focus = {
+		id = CHE_fighting_the_opposition
+		icon =  GFX_CHE_fighting_the_opposition
+		prerequisite = { focus = CHE_Moscow_pays_Kadyrov_rules }
+		relative_position_id = CHE_start_situation
+		x = 3
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_ideas = CHE_fighting_the_opposition
 			add_popularity = {  ideology = communism  popularity = -0.15 }
 			add_popularity = {  ideology = democratic  popularity = -0.15 }
 			add_stability = -0.03
@@ -117,19 +426,15 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = CHE_cult_kadyrov_personality
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_fighting_opposition focus = CHE_kadyrov_family }
+		id = CHE_the_Kadyrovs_personality_cult
+		icon =  GFX_CHE_the_Kadyrovs_personality_cult
+		prerequisite = { focus = CHE_Moscow_pays_Kadyrov_rules }
 		relative_position_id = CHE_start_situation
-		x = -7
-		y = 3
-		cost = 4
-		ai_will_do = {
-			factor = 2
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		x = 1
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			country_event = {
 				id = che.3
@@ -146,20 +451,57 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = CHE_fight_against_corruption
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_fighting_opposition }
-		prerequisite = { focus = CHE_kadyrov_family }
+		id = CHE_the_situation_of_Kadyrov_family
+		icon =  GFX_CHE_the_situation_of_Kadyrov_family
+		prerequisite = { focus = CHE_Moscow_pays_Kadyrov_rules }
 		relative_position_id = CHE_start_situation
-		mutually_exclusive = {
-			focus = CHE_subdue_corruption
+		x = 5
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_political_power = 40
+            add_stability = -0.05
+			hidden_effect = {
+				add_to_variable = { CHE_kadyrovshchina_political_advisor_cost_factor = -0.05 }
+				add_to_variable = { CHE_kadyrovshchina_autonomy_gain = 0.1 }
+			}
+			custom_effect_tooltip = CHE_kadyrov_family_dm_tt
+			custom_effect_tooltip = CHE_kadyrov_family_cet_tt
 		}
-		x = -3
-		y = 3
-		cost = 4
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
+	}
+	focus = {
+		id = CHE_patronage_of_corruption
+		icon =  GFX_CHE_patronage_of_corruption
+		prerequisite = { focus = CHE_fighting_the_opposition }
+		prerequisite = { focus = CHE_the_Kadyrovs_personality_cult }
+		prerequisite = { focus = CHE_the_situation_of_Kadyrov_family }
+		mutually_exclusive = { focus = CHE_fight_against_corruption }
+		relative_position_id = CHE_start_situation
+		x = 2
+		y = 6
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_ideas = CHE_subdue_corruption_ideas
+			add_political_power = 45
 		}
+	}
+	focus = {
+		id = CHE_fight_against_corruption
+		icon =  GFX_CHE_fight_against_corruption
+		prerequisite = { focus = CHE_fighting_the_opposition }
+		prerequisite = { focus = CHE_the_Kadyrovs_personality_cult }
+		prerequisite = { focus = CHE_the_situation_of_Kadyrov_family }
+		mutually_exclusive = { focus = CHE_patronage_of_corruption }
+		relative_position_id = CHE_start_situation
+		x = 4
+		y = 6
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			add_ideas = CHE_fight_against_corruption_ideas
 			add_stability = 0.02
@@ -167,81 +509,39 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = CHE_subdue_corruption
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_fighting_opposition }
-		prerequisite = { focus = CHE_kadyrov_family }
+		id = CHE_into_the_future_together_with_Russia
+		icon =  GFX_CHE_into_the_future_together_with_Russia
+		prerequisite = { focus = CHE_fight_against_corruption focus = CHE_patronage_of_corruption }
 		relative_position_id = CHE_start_situation
-		mutually_exclusive = {
-			focus = CHE_fight_against_corruption
-		}
-		x = -5
-		y = 3
-		cost = 4
-		ai_will_do = {
-			factor = 2
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		completion_reward = {
-			add_ideas = CHE_subdue_corruption_ideas
-			add_political_power = 45
-		}
-	}
-	focus = {
-		id = CHE_islam
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_subdue_corruption focus = CHE_fight_against_corruption }
-		relative_position_id = CHE_start_situation
-		mutually_exclusive = {
-			focus = CHE_fight_against_corruption
-		}
-		x = -4
-		y = 4
-		cost = 6
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		completion_reward = {
-			add_political_power = 60
-			country_event = {
-				id = che.10
-				days = 0
-			}
-		}
-	}
-	focus = {
-		id = CHE_into_future_together_with_Russia
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_islam }
-		relative_position_id = CHE_start_situation
-		x = -4
-		y = 5
-		cost = 5
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		x = 3
+		y = 7
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			add_political_power = 60
             swap_ideas = {
                 remove_idea = state_within_a_state
                 add_idea = CHE_state_within_a_state
-            }
+			}
 		}
 	}
+	##
+
+	## ветка армии и сво
 	focus = {
 		id = CHE_our_army
-		icon =  GFX_IMAGE_NOT_FOUND
-		x = 28
-		y = 0
+		icon =  GFX_CHE_our_army
+		prerequisite = { focus = CHE_Kadyrov_bastions }
+		relative_position_id = CHE_start_situation
+		x = 13
+		y = 2
 		cost = 2
-		ai_will_do = {
-			factor = 3
+		bypass = {
+			has_completed_focus = CHE_experience_of_the_military_operation
 		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			country_event = {
 				id = che.4
@@ -250,235 +550,460 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = CHE_experience_the_Chechen_war
-		icon =  GFX_IMAGE_NOT_FOUND
-		available = {
-			
-		}
-		prerequisite = { focus = CHE_our_army }
-		prerequisite = { focus = CHE_SMO }
-		x = 28
-		y = 1
-		cost = 3.6
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		completion_reward = {
-		    army_experience = 25
-			add_command_power = 30
-			add_ideas = CHE_experience_the_Chechen_war_ideas
-		}
-	}
-	focus = {
-		id = CHE_SOBR_Achmat
-		icon =  GFX_IMAGE_NOT_FOUND
+		id = CHE_experience_of_the_military_operation
+		icon =  GFX_CHE_experience_of_the_military_operation
 		prerequisite = { focus = CHE_our_army }
 		relative_position_id = CHE_our_army
+		x = 1
+		y = 1
+		cost = 1
+		ai_will_do = { factor = 4 }
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = CHE_specnaz_tt
-				has_country_flag = CHE_skoro_war
+				tooltip = RUS_only_events
+				always = no
 			}
 		}
-		x = -2
-		y = 1
-		cost = 1.2
-		ai_will_do = {
-			factor = 5
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			army_experience = 5
-			add_command_power = 10
-			hidden_effect = {			
+			add_command_power = 35
+			army_experience = 15
+			add_equipment_to_stockpile = {  
+			    type = infantry_ak74_equipment
+				amount = 5000
+				producer = RUS 
 			}
-			country_event = {
-				id = che.5
-				days = 0
+			add_equipment_to_stockpile = {  
+			    type = support_equipment
+				amount = 1200
+				producer = RUS 
 			}
-			custom_effect_tooltip = CHE_SOBR_Achmat_intro_tt
+			add_equipment_to_stockpile = {
+				type = imv_heavy_1_equipment
+				variant_name = "\"Выстрел\" с \"Корд\""
+				amount = 75
+				producer = RUS
+			}
 		}
 	}
 	focus = {
-		id = CHE_polk_kadyrov
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_SOBR_Achmat }
-		relative_position_id = CHE_our_army
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = CHE_specnaz_tt
-				has_country_flag = CHE_skoro_war
-			}
-		}
-		x = -2
-		y = 2
-		cost = 1.2
-		ai_will_do = {
-			factor = 5
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		completion_reward = {
-			army_experience = 5
-			add_command_power = 10
-			hidden_effect = {			
-			}
-			country_event = {
-				id = che.6
-				days = 0
-			}
-			custom_effect_tooltip = CHE_polk_kadyrov_intro_tt
-		}
-	}
-	focus = {
-		id = CHE_SMO
-		icon =  GFX_IMAGE_NOT_FOUND
-		available = {
-			RUS = {
-			    has_war_with = UKR
-			}
-		}
-		x = 31
-		y = 0
-		cost = 0.2
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-		completion_reward = {
-			add_war_support = 0.05
-			add_manpower = 250
-		}
-	}
-	focus = {
-		id = CHE_sacred_war
-		icon =  GFX_IMAGE_NOT_FOUND
+		id = CHE_heroic_history
+		icon =  GFX_CHE_heroic_history
 		prerequisite = { focus = CHE_our_army }
-		prerequisite = { focus = CHE_SMO }
 		relative_position_id = CHE_our_army
-		x = 2
+		mutually_exclusive = { focus = CHE_shahad }
+		x = -5
 		y = 1
 		cost = 2
-		ai_will_do = {
-			factor = 2
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-		    add_command_power = 20
+			
+		}
+	}
+	focus = {
+		id = CHE_shahad
+		icon =  GFX_CHE_shahad
+		prerequisite = { focus = CHE_our_army }
+		relative_position_id = CHE_our_army
+		mutually_exclusive = { focus = CHE_heroic_history }
+		x = -3
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Return_Ichkerians
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_heroic_history focus = CHE_shahad }
+		relative_position_id = CHE_our_army
+		x = -4
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			hidden_effect = {
+				country_event = {
+					id = che.25
+					days = 5
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_guard_people_faith
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_Return_Ichkerians }
+		relative_position_id = CHE_our_army
+		mutually_exclusive = { focus = CHE_mydshahidi }
+		x = -4
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_mydshahidi
+		icon =  GFX_CHE_mydshahidi
+		prerequisite = { focus = CHE_shahad }
+		prerequisite = { focus = CHE_Holy_War }
+		relative_position_id = CHE_our_army
+		mutually_exclusive = { focus = CHE_guard_people_faith }
+		x = -2
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = CHE_Holy_War
+		icon =  GFX_CHE_Holy_War
+		prerequisite = { focus = CHE_experience_of_the_military_operation }
+		relative_position_id = CHE_our_army
+		x = -1
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
 			add_ideas = CHE_sacred_war
 		}
 	}
 	focus = {
-		id = CHE_recruitment_volunteers
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_our_army }
-		prerequisite = { focus = CHE_SMO }
+		id = CHE_volunteer_recruitment
+		icon =  GFX_CHE_volunteer_recruitment
+		prerequisite = { focus = CHE_experience_of_the_military_operation }
 		relative_position_id = CHE_our_army
-		x = 4
-		y = 1
-		cost = 1
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		x = 1
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-		    add_manpower = 1000
 			add_ideas = CHE_volunteers_recruitment_idea
 		}
 	}
 	focus = {
-		id = CHE_Akhmat_sila
-		icon =  GFX_IMAGE_NOT_FOUND
-		prerequisite = { focus = CHE_sacred_war }
-		prerequisite = { focus = CHE_recruitment_volunteers }
+		id = CHE_Akhmat_Strength
+		icon =  GFX_CHE_Akhmat_Strength
+		prerequisite = { focus = CHE_volunteer_recruitment }
+		prerequisite = { focus = CHE_Holy_War}
 		relative_position_id = CHE_our_army
-		x = 3
-		y = 2
-		cost = 3
-		ai_will_do = {
-			factor = 2
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		x = 0
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-		    add_command_power = 40
 			add_ideas = CHE_ahmat_sila
 		}
 	}
-    focus = {
-		id = CHE_fondprom
-		icon =  GFX_IMAGE_NOT_FOUND
-		x = 39
-		y = 0
-		cost = 4
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+	focus = {
+		id = CHE_Business_in_ZVoi_Ruki
+		icon =  GFX_CHE_Business_in_ZVoi_Ruki
+		prerequisite = { focus = CHE_experience_of_the_military_operation }
+		relative_position_id = CHE_our_army
+		x = 3
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			swap_ideas = {
-                remove_idea = CHE_collapse_of_the_economy_1
-                add_idea = CHE_fondrazv
-            }
+			custom_effect_tooltip = CHE_Business_in_ZVoi_Ruki_tt
+			hidden_effect = {
+				news_event = {
+					id = news.505
+					days = 0
+				}
+				372 = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
 		}
 	}
-    focus = {
-		id = CHE_obrazzaved
-		icon =  GFX_IMAGE_NOT_FOUND
-		relative_position_id = CHE_fondprom
-        prerequisite = { focus = CHE_fondprom }
-		x = -2
-		y = 1
-		cost = 3
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
+	focus = {
+		id = CHE_business_in_the_liberated_territories
+		icon =  GFX_CHE_business_in_the_liberated_territories
+		prerequisite = { focus = CHE_Business_in_ZVoi_Ruki }
+		relative_position_id = CHE_our_army
+		x = 3
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			country_event = {
+				id = che.22
+				days = 1
+			}
 		}
+	}
+	##
+
+	##энергетика чечни
+	focus = {
+		id = CHE_Chechen_energy_networks
+		icon =  GFX_CHE_Chechen_energy_networks
+		prerequisite = { focus = CHE_start_situation }
+		relative_position_id = CHE_start_situation
+		x = 20
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_ideas = CHE_Chechen_energy_networks
+		}
+	}
+	focus = {
+		id = CHE_new_substations_in_Grozny
+		icon =  GFX_CHE_new_substations_in_Grozny
+		prerequisite = { focus = CHE_Chechen_energy_networks }
+		relative_position_id = CHE_start_situation
+		x = 20
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_new_substations_in_Grozny_tt
+		}
+	}
+	focus = {
+		id = CHE_open_a_new_thermal_pp_in_Grozny
+		icon =  GFX_CHE_open_a_new_thermal_pp_in_Grozny
+		prerequisite = { focus = CHE_new_substations_in_Grozny }
+		relative_position_id = CHE_start_situation
+		x = 19
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_new_substations_in_Grozny_tt
+		}
+	}
+	focus = {
+		id = CHE_solar_and_wind_energy_in_chechnya
+		icon =  GFX_CHE_solar_and_wind_energy_in_chechnya
+		prerequisite = { focus = CHE_new_substations_in_Grozny }
+		relative_position_id = CHE_start_situation
+		x = 21
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_new_substations_in_Grozny_tt
+		}
+	}
+	focus = {
+		id = CHE_Chechnya_NPP_project
+		icon =  GFX_CHE_Chechnya_NPP_project
+		prerequisite = { focus = CHE_solar_and_wind_energy_in_chechnya }
+		prerequisite = { focus = CHE_open_a_new_thermal_pp_in_Grozny }
+		relative_position_id = CHE_start_situation
+		x = 20
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_Chechnya_NPP_project_tt
+		}
+	}
+	##
+
+	## фонд развития промки
+	focus = {
+		id = CHE_industrial_development_fund
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_start_situation }
+		relative_position_id = CHE_start_situation
+		x = 26
+		y = 1
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			add_ideas = CHE_fondrazv
+		}
+	}
+	focus = {
+		id = CHE_educational_institutions_in_Naursky_district
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_industrial_development_fund }
+		relative_position_id = CHE_start_situation
+		x = 24
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			add_ideas = CHE_orazzaved_idea
 		}
 	}
-    focus = {
-		id = CHE_avtovokzalaeroport
+	focus = {
+		id = CHE_Chechen_science_academy
 		icon =  GFX_IMAGE_NOT_FOUND
-		relative_position_id = CHE_fondprom
-        prerequisite = { focus = CHE_fondprom }
-		x = 0
-		y = 1
-		cost = 5
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		prerequisite = { focus = CHE_educational_institutions_in_Naursky_district }
+		relative_position_id = CHE_start_situation
+		x = 24
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-            372 = {
-			add_building_construction = {
-                type = infrastructure
-                level = 1
-                instant_build = yes
-            }
-            add_building_construction = {
-                type = air_base
-                level = 2
-                instant_build = yes
-            }
-        }
+			add_ideas = CHE_academy
 		}
 	}
-    focus = {
-		id = CHE_exportvoae
+	focus = {
+		id = CHE_Grozny_second_Moscow
 		icon =  GFX_IMAGE_NOT_FOUND
-		relative_position_id = CHE_fondprom
-        prerequisite = { focus = CHE_avtovokzalaeroport }
-		x = 0
+		prerequisite = { focus = CHE_industrial_development_fund }
+		relative_position_id = CHE_start_situation
+		x = 26
 		y = 2
 		cost = 2
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-            add_ideas = CHE_oae
+			372 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+				}
+			}
 		}
 	}
+	focus = {
+		id = CHE_Grozny_airport_and_railway_station
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_industrial_development_fund }
+		relative_position_id = CHE_start_situation
+		x = 28
+		y = 2
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			372 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+				}
+				add_building_construction = {
+					type = air_base
+					level = 2
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_Grozny_ammunition_plant
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_Grozny_airport_and_railway_station }
+		relative_position_id = CHE_start_situation
+		x = 28
+		y = 3
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			372 = {
+				add_extra_state_shared_building_slots = 4
+				add_building_construction = {
+					type = ammunition_plant
+					level = 3
+				}
+				add_building_construction = {
+					type = ammunition_silo
+					level = 1
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_Grozny_armored_plant
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_Grozny_ammunition_plant }
+		relative_position_id = CHE_start_situation
+		x = 28
+		y = 4
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			372 = {
+				add_extra_state_shared_building_slots = 4
+				add_building_construction = {
+					type = arms_factory
+					level = 4
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_create_an_analogue_shahed
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_Grozny_armored_plant }
+		relative_position_id = CHE_start_situation
+		x = 27
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_create_an_analogue_shahed_tt
+			hidden_effect = {
+				set_technology = {
+					missile_rus_shahed136 = 1
+				}
+				create_equipment_variant = {
+					name = "типа нейминг"
+					type = rus_guided_uav_geranium
+				}
+			}
+		}
+	}
+	focus = {
+		id = CHE_the_first_Chechen_ballistic_missile
+		icon =  GFX_IMAGE_NOT_FOUND
+		prerequisite = { focus = CHE_Grozny_armored_plant }
+		relative_position_id = CHE_start_situation
+		x = 29
+		y = 5
+		cost = 2
+		ai_will_do = { factor = 4 }
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		completion_reward = {
+			custom_effect_tooltip = CHE_the_first_Chechen_ballistic_missile_tt
+			hidden_effect = {
+				set_technology = {
+					missile_rus_9M723 = 1
+				}
+				create_equipment_variant = {
+					name = "типа нейминг"
+					type = rus_ballistic_missile_9M723
+				}
+			}
+		}
+	}
+	##
 }

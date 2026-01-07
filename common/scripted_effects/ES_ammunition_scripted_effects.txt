@@ -1,0 +1,1228 @@
+################
+# Документация # В ПРОЦЕССЕ НАПИСАНИЯ
+################
+
+# Определения:
+#   tick - единица измерения времени. В данном случае - каждый день
+#
+# sum_ammunition_value_k - суммарное количество готовых и старых боеприпасов
+# ammunition_value_k - сколько на складах готовых к использованию боеприпасов
+# ammunition_old_value_k - сколько на складах старых боеприпасов (требуют восстановления для использования)
+#
+# ammunition_delta_value_k - нетто снарядов за tick
+# ammunition_generation_value_k - суммарная генерация боеприпасов за tick
+# ammunition_delivery_value_k - суммарное нетто за tick по импорту/экспорту боеприпасов
+# ammunition_produce_value_k - сколько за tick произведено новых боеприпасов
+# ammunition_recovery_value_k - сколько за tick восстановлено старых боеприпасов
+#
+# ammunition_storage_free_value_k - свободное место на складах боеприпасов (в тысячах)
+# ammunition_silos_filling_factor - процент заполнения складов боеприпасов
+# ammunition_max_storage_capacity_k - максимальный суммарный объём хранимых боеприпасов
+# ammunition_field_storage_capacity_k - объём полевых складов (высчитывается по юнитам)
+#
+# ammunition_plants_efficiency_factor_var - эффективность заводов боеприпасов
+# ammunition_produce_factor_result - итоговый множитель эффективности производства новых боеприпасов
+# ammunition_recovery_factor_result - итоговый множитель эффективности восстановления старых боеприпасов
+#
+# commanded_divisions - сколько юнитов в стране под командованием генералов
+# divisions_in_offensive_combat - сколько юнитов в атаке
+# divisions_in_defensive_combat - сколько юнитов в обороне
+#
+# ammunition_default_max_consumption_k - дефолтное (без учёта модификаторов) максимальное потребление боеприпасов юнитами
+
+
+ammunition_on_daily = {
+    if = {
+        limit = { # Оптимизация. Нет смысла считать повторно потребление, если ИИ не в войне
+            OR = {
+                check_variable = { ammunition_on_daily_ticks_passed = 0 }
+                NOT = { is_ai = yes }
+                AND = {
+                    is_ai = yes
+                    has_war = yes
+                }
+            }
+        }
+        ammunition_tick_country = yes
+        ammunition_tick_country_units_leaders = yes
+    }
+
+    ammunition_supply_factor_clamp = yes
+    ammunition_change_offensive_defensive_supply_factors_clamp = yes
+	ammunition_calculate_generation = yes
+	ammunition_calculate_consumption = yes
+	ammunition_calculate_storage_capacity = yes
+	ammunition_calculate_tick_result_value = yes
+
+    ammunition_calculate_tick_army_effects = yes
+
+    if = {
+        limit = { NOT = { has_country_flag = ammunition_supply_factor_ai_disable } }
+        ammunition_calculate_tick_ai = yes
+    }
+    
+    add_to_variable = { ammunition_on_daily_ticks_passed = 1 }
+}
+
+
+ammunition_tick_country = {
+	if = {
+        limit = { # Оптимизация
+            OR = { # Перерасчёт максимального потребления боеприпасов, если изменилось число юнитов или прошло больше N дней
+                NOT = { check_variable = { num_battalions_prev = num_battalions } } 
+                check_variable = { ammunition_next_update_num_days < global.num_days }                
+            }
+            OR = {            
+                NOT = { is_ai = yes }
+                AND = { # Оптимизация. Проверка на ИИ и мин кол-во дней 
+                    is_ai = yes
+                    check_variable = { ammunition_ai_min_next_update_num_days < global.num_days }
+                }
+            }
+        }
+        
+        set_variable = { num_battalions_prev = num_battalions }
+        set_variable = { ammunition_next_update_num_days = global.num_days }
+        add_to_variable = { ammunition_next_update_num_days = global.ammunition_next_update_num_days_max_delay_country }
+
+        set_variable = { ammunition_ai_min_next_update_num_days = global.num_days }
+        add_to_variable = { ammunition_ai_min_next_update_num_days = global.ammunition_next_update_num_days_ai_min_delay_country }
+
+        ammunition_update_max_usage = yes
+    }
+}
+
+ammunition_tick_country_units_leaders = {
+	set_variable = { commanded_divisions = 0 }
+	set_variable = { divisions_in_offensive_combat = 0 }
+	set_variable = { divisions_in_defensive_combat = 0 }
+
+    set_variable = { ammunition_consumption_offensive_base_k = 0 }
+    set_variable = { ammunition_consumption_defensive_base_k = 0 }
+
+	every_army_leader = {
+		limit = {
+            is_assigned = yes
+            is_leading_army_group = no
+        }
+
+		add_to_variable = { PREV.commanded_divisions = num_units }
+		add_to_variable = { PREV.divisions_in_offensive_combat = num_units_offensive_combats }
+		add_to_variable = { PREV.divisions_in_defensive_combat = num_units_defensive_combats }
+
+        if = {
+            limit = { # Оптимизация
+                OR = { # Перерасчёт максимального потребления боеприпасов, если изменилось число юнитов или прошло больше N дней
+                    NOT = { check_variable = { num_battalions_prev = num_battalions } } 
+                    check_variable = { ammunition_next_update_num_days < global.num_days }
+                }
+                OR = {            
+                    NOT = { PREV = { is_ai = yes } }
+                    AND = { # Оптимизация. Проверка на ИИ и мин кол-во дней 
+                        PREV = { is_ai = yes }
+                        check_variable = { ammunition_ai_min_next_update_num_days < global.num_days }
+                    }
+                }
+            }
+            
+            set_variable = { num_battalions_prev = num_battalions }
+            set_variable = { ammunition_next_update_num_days = global.num_days }
+            add_to_variable = { ammunition_next_update_num_days = global.ammunition_next_update_num_days_max_delay_army_leader }            
+
+            set_variable = { ammunition_ai_min_next_update_num_days = global.num_days }
+            add_to_variable = { ammunition_ai_min_next_update_num_days = global.ammunition_next_update_num_days_ai_min_delay_army_leader }
+
+            ammunition_update_max_usage = yes
+
+            set_variable = { ammunition_default_average_unit_consumption_k = ammunition_default_max_consumption_k }
+            divide_variable = { ammunition_default_average_unit_consumption_k = num_units }
+        }
+
+        set_variable = { ammunition_leader_consumption_offensive_base_k = num_units_offensive_combats }
+        multiply_variable = { ammunition_leader_consumption_offensive_base_k = ammunition_default_average_unit_consumption_k }
+        add_to_variable = { PREV.ammunition_consumption_offensive_base_k = ammunition_leader_consumption_offensive_base_k }
+
+        set_variable = { ammunition_leader_consumption_defensive_base_k = num_units_defensive_combats }
+        multiply_variable = { ammunition_leader_consumption_defensive_base_k = ammunition_default_average_unit_consumption_k }
+        add_to_variable = { PREV.ammunition_consumption_defensive_base_k = ammunition_leader_consumption_defensive_base_k }
+	}
+}
+
+
+ammunition_update_max_usage = {  
+    set_variable = { ammunition_default_max_consumption_k = 0 }
+
+    # Пехота
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@infantry }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_infantry }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Морпехи
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@marine }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_marine }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Горнострелки
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@mountaineers }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_mountaineers }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Парашютисты
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@paratrooper }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_paratrooper }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Ополчение
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@opolchenie }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_opolchenie }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Зеки
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@prisoners }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_prisoners }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Вагнер
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@PMC_wagner }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_PMC_wagner }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Спецназ
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@spetsnaz }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_spetsnaz }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Пограничники
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@border_guard }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_border_guard }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Артиллерия
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@artillery }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_artillery }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Самоходная артиллерия
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@sp_art }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_sp_art }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Самоходная тяж. артиллерия
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@sp_heavy_art }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_sp_heavy_art }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Буксируемая артиллерия
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@towed_art }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_towed_art }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # ТОС
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@TOS }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_TOS }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # РСЗО
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@MRLS }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_MRLS }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БТР
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@apc }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_apc }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП СССР
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_sov }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_sov }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП США
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_usa }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_usa }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП Германии
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_ger }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_ger }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП Англии
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_eng }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_eng }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП Франции
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_fra }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_fra }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП Италии
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_ita }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_ita }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМП Швеции
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@ifv_swe }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_ifv_swe }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМД СССР
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@afv_sov }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_afv_sov }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # БМПТ
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@bmpt }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_bmpt }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Танки СССР
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_sov }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_tank_sov }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Танки США
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_usa }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_tank_usa }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Танки Германии
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_ger }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_tank_ger }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Танки Англии
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_eng }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_tank_eng }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Танки Франции
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_fra }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_tank_fra }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+
+    # Танки Италии
+    set_temp_variable = { temp_ammunition_consumption_k = num_battalions_with_type@tank_ita }
+    multiply_temp_variable = { temp_ammunition_consumption_k = ROOT.battalion_ammunition_consumption_k_tank_ita }
+    add_to_variable = { ammunition_default_max_consumption_k = temp_ammunition_consumption_k }
+}
+
+
+# THIS scope is COUNTRY
+# Вычисляем генерацию боеприпасов
+ammunition_calculate_generation = {	
+    # Подготавливаем множитель эффективность заводов по производству боеприпасов
+	set_variable = { ammunition_plants_efficiency_factor_var = 1 }
+	add_to_variable = { ammunition_plants_efficiency_factor_var = modifier@ammunition_plants_efficiency_factor }
+	clamp_variable = { var = ammunition_plants_efficiency_factor_var min = 0 }
+    
+    set_variable = { ammunition_produce_factor_result = ammunition_produce_factor }
+    set_variable = { ammunition_recovery_factor_result = ammunition_recovery_factor }
+
+    # Высчитываем объём производства заводов
+    set_variable = { ammunition_plans_production_base_value = modifier@daily_ammunition_gain }
+    divide_variable = { ammunition_plans_production_base_value = 1000 }
+
+    set_variable = { ammunition_plants_production_value = ammunition_plans_production_base_value }
+    multiply_variable = { ammunition_plants_production_value = ammunition_plants_efficiency_factor_var }
+
+    # Высчитываем восстановление старых боеприпасов
+    set_variable = { ammunition_recovery_efficiency_factor_var = 2 }
+    subtract_from_variable = { ammunition_recovery_efficiency_factor_var = modifier@ammunition_recovery_efficiency_factor }
+    clamp_variable = { var = ammunition_recovery_efficiency_factor_var min = 0 }
+
+    set_variable = { ammunition_recovery_value_k = ammunition_plants_production_value }
+    multiply_variable = { ammunition_recovery_value_k = ammunition_recovery_factor_result }
+    multiply_variable = { ammunition_recovery_value_k = ammunition_recovery_efficiency_factor_var }
+
+    # Очищаем излишек мощностей восстановления старых боеприпасов
+    set_variable = { ammunition_recovery_excess_factor = 0 }
+
+    if = { # Если пытается восстановить больше старых боеприпасов, чем есть на складе
+        limit = { check_variable = { ammunition_recovery_value_k > ammunition_old_value_k } }
+
+        # Высчитываем, сколько лишних процентов от восстановления перераспределить на производство новых боеприпасов
+        set_variable = { ammunition_recovery_excess_factor = ammunition_recovery_value_k }
+        subtract_from_variable = { ammunition_recovery_excess_factor = ammunition_old_value_k }
+        divide_variable = { ammunition_recovery_excess_factor = ammunition_recovery_value_k }
+
+        # Ограничиваем восстановление старых боеприпасов
+        set_variable = { ammunition_recovery_value_k = ammunition_old_value_k }
+
+        # Передаём излишние мощности с восстановления старых на производство новых
+        set_variable = { ammunition_recovery_excess_factor_to_produce_mult = ammunition_recovery_excess_factor }
+        multiply_variable = { ammunition_recovery_excess_factor_to_produce_mult = ammunition_recovery_factor }
+        add_to_variable = { ammunition_produce_factor_result = ammunition_recovery_excess_factor_to_produce_mult }
+
+        set_temp_variable = { ammunition_recovery_excess_factor_to_recovery_mult = 1 }
+        subtract_from_temp_variable = { ammunition_recovery_excess_factor_to_recovery_mult = ammunition_recovery_excess_factor }
+        multiply_variable = { ammunition_recovery_factor_result = ammunition_recovery_excess_factor_to_recovery_mult }
+    }
+
+    # Высчитываем производство новых боеприпасов    
+    set_variable = { ammunition_produce_efficiency_factor_var = 1 }
+    subtract_from_variable = { ammunition_produce_efficiency_factor_var = modifier@ammunition_produce_efficiency_factor }
+    clamp_variable = { var = ammunition_produce_efficiency_factor_var min = 0 }
+
+    set_variable = { ammunition_produce_value_k = ammunition_plants_production_value }
+    multiply_variable = { ammunition_produce_value_k = ammunition_produce_factor_result }
+    multiply_variable = { ammunition_produce_value_k = ammunition_produce_efficiency_factor_var }
+    clamp_variable = { var = ammunition_produce_value_k min = 0 }
+}
+
+# THIS scope is COUNTRY
+# Вычисляет расход боеприпасов страны
+ammunition_calculate_consumption = {	
+    # Подготавливаем к использованию множитель расхода боеприпасов юнитам
+	clamp_variable = { var = ammunition_consumption_supply_factor_var min = 0 max = 2 }    
+	clamp_variable = { var = ammunition_consumption_offensive_supply_factor_var min = -1 max = 1 }    
+	clamp_variable = { var = ammunition_consumption_defensive_supply_factor_var min = -1 max = 1 }
+
+        
+    set_variable = { ammunition_consumption_supply_offensive_result_factor_var = ammunition_consumption_supply_factor_var}
+    add_to_variable = { ammunition_consumption_supply_offensive_result_factor_var = ammunition_consumption_offensive_supply_factor_var }
+	clamp_variable = { var = ammunition_consumption_supply_offensive_result_factor_var min = 0 }   
+    
+    set_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_supply_factor_var}
+    add_to_variable = { ammunition_consumption_supply_defensive_result_factor_var = ammunition_consumption_defensive_supply_factor_var } 
+	clamp_variable = { var = ammunition_consumption_supply_defensive_result_factor_var min = 0 }  
+    
+    set_variable = { ammunition_consumption_offensive_factor_var_result = ammunition_consumption_offensive_factor_var }
+    add_to_variable = { ammunition_consumption_offensive_factor_var_result = modifier@ammunition_consumption_offensive_factor }
+    clamp_variable = { var = ammunition_consumption_offensive_factor_var_result min = 0 }
+
+    set_variable = { ammunition_consumption_defensive_factor_var_result = ammunition_consumption_defensive_factor_var }
+    add_to_variable = { ammunition_consumption_defensive_factor_var_result = modifier@ammunition_consumption_defensive_factor }
+    clamp_variable = { var = ammunition_consumption_defensive_factor_var_result min = 0 }
+	
+    # Обнуляем переменную-счётчик расхода боеприпасов
+	set_variable = { ammunition_consumption_k = 0 }
+
+	if = { # Если у страны есть юниты под командованием генералов
+		limit = { check_variable = { commanded_divisions > 0 } }
+
+        # Высчитываем расход боеприпасов от атакующих юнитов
+		set_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_base_k }
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_offensive_factor_var_result } 
+		multiply_variable = { ammunition_consumption_offensive_k = ammunition_consumption_supply_offensive_result_factor_var }  
+        
+
+        # Суммируем в расход боеприпасов расход от атакующих юнитов
+		add_to_variable = { ammunition_consumption_k = ammunition_consumption_offensive_k }
+		
+        # Высчитываем расход боеприпасов от обороняющихся юнитов
+		set_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_base_k }
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_defensive_factor_var_result }  
+		multiply_variable = { ammunition_consumption_defensive_k = ammunition_consumption_supply_defensive_result_factor_var }  
+
+        # Суммируем в расход боеприпасов расход от обороняющихся юнитов
+		add_to_variable = { ammunition_consumption_k = ammunition_consumption_defensive_k }
+	}
+}
+
+# THIS scope is COUNTRY
+# Высчитывает вместимость всех складов страны
+ammunition_calculate_storage_capacity = {
+    # Учитываем базовую вместимость складов от построек
+	set_variable = { ammunition_max_storage_capacity_k = modifier@ammunition_capacity_k }
+
+    # Учитываем вместимость полевых складов юнитов (персональный запас юнитов на N дней)
+	set_variable = { ammunition_field_storage_capacity_k = ammunition_default_max_consumption_k }
+	multiply_variable = { ammunition_field_storage_capacity_k = ammunition_field_storage_for_consumption_days }
+	add_to_variable = { ammunition_max_storage_capacity_k = ammunition_field_storage_capacity_k }
+}
+
+ammunition_calculate_tick_result_value = {	
+    # Высчитываем итоговую генерацию готовых к бою боеприпасов
+    set_variable = { ammunition_generation_value_k = ammunition_produce_value_k }
+    add_to_variable = { ammunition_generation_value_k = ammunition_recovery_value_k }
+
+    set_variable = { ammunition_delivery_value_k = ammunition_import_value_k }
+    subtract_from_variable = { ammunition_delivery_value_k = ammunition_export_value_k }
+
+    # Высчитываем итоговое потребление готовых к бою боеприпасов
+    # TODO: Добавить дополнительные траты (передача боеприпасов, возврат на резервные склады)
+
+    # Высчитываем изменение количества готовых к применению боеприпасов
+	set_variable = { ammunition_delta_value_k = ammunition_generation_value_k }
+    add_to_variable = { ammunition_delta_value_k = ammunition_delivery_value_k }
+	subtract_from_variable = { ammunition_delta_value_k = ammunition_consumption_k }
+
+    # Снимаем со склада неготовые к применению (старые) боеприпасы
+    subtract_from_variable = { ammunition_old_value_k = ammunition_recovery_value_k }
+    # Добавляем на склад изменение количества готовых к применение боеприпасов
+	add_to_variable = { ammunition_value_k = ammunition_delta_value_k }
+
+    # Проверка, чтобы не экспортировать боеприпасов, которых нет на складе
+    if = {
+        limit = { check_variable = { ammunition_value_k < 0 } }
+        
+        set_temp_variable = { temp_inverse_ammunition_value_k = ammunition_value_k }
+        multiply_temp_variable = { temp_inverse_ammunition_value_k = -1 }
+
+        if = {
+            limit = { check_variable = { temp_inverse_ammunition_value_k < ammunition_delivery_value_k }}
+            set_variable = { ammunition_export_value_k_result = ammunition_delivery_value_k }
+            subtract_from_variable = { ammunition_export_value_k_result = temp_inverse_ammunition_value_k }
+        } 
+        else = {
+            set_variable = { ammunition_export_value_k_result = 0 }
+        }
+            
+        set_temp_variable = { ammunition_export_value_k_refund = ammunition_export_value_k }
+        subtract_from_temp_variable = { ammunition_export_value_k_refund = ammunition_export_value_k_result }
+        add_to_variable = { ammunition_delivery_value_k = ammunition_export_value_k_refund }
+        add_to_variable = { ammunition_delta_value_k = ammunition_export_value_k_refund }
+        add_to_variable = { ammunition_value_k = ammunition_export_value_k_refund }
+    }
+    else = {
+        set_variable = { ammunition_export_value_k_result = ammunition_export_value_k }
+    }
+
+    # Вычисляем суммарное количество боеприпасов на складе
+    set_variable = { sum_ammunition_value_k = ammunition_value_k }
+    add_to_variable = { sum_ammunition_value_k = ammunition_old_value_k }
+
+    # Высчитываем недостаточка боеприпасов
+    if = {
+        # Если на складе нет боеприпасов
+        limit = { check_variable = { ammunition_value_k < 0 } }
+        
+        # Считаем % дефицита боеприпасов
+        set_variable = { ammunition_deficite_factor = ammunition_delta_value_k }
+        divide_variable = { ammunition_deficite_factor = ammunition_consumption_k }
+        multiply_variable = { ammunition_deficite_factor = -1 }
+        clamp_variable = { var = ammunition_deficite_factor min = 0 max = 1 }
+    }
+    else_if = {
+        # Если на складе есть боеприпасы
+        limit = { check_variable = { ammunition_value_k > 0 } }
+
+        # Убираем дефицит боеприпасов
+        set_variable = { ammunition_deficite_factor = 0 }
+    }
+    
+    # Убираем лишние боеприпасы, если необходимо
+    ammunition_remove_excess_ammunition_if_needed = yes
+
+    # Проверяем, чтобы кол-во боеприпасов не ушло в минус
+    clamp_variable = { var = sum_ammunition_value_k min = 0 }
+    clamp_variable = { var = ammunition_value_k min = 0 }
+    clamp_variable = { var = ammunition_old_value_k min = 0 }
+
+    # Высчитываем заполненность складов
+    set_variable = { ammunition_silos_filling_factor = sum_ammunition_value_k }
+    divide_variable = { ammunition_silos_filling_factor = ammunition_max_storage_capacity_k }
+
+    # Высчитываем свободное место на складах
+    set_variable = { ammunition_storage_free_value_k = ammunition_max_storage_capacity_k }
+    subtract_from_variable = { ammunition_storage_free_value_k = sum_ammunition_value_k }
+        
+    set_variable = { ammo_ratio_var = ammunition_value_k }
+    divide_variable = { ammo_ratio_var = ammunition_max_storage_capacity_k }
+    multiply_variable = { ammo_ratio_var = 100 }
+
+    set_variable = { ammo_days_to_full = ammunition_max_storage_capacity_k }
+    subtract_from_variable = { ammo_days_to_full = ammunition_value_k }
+    divide_variable = { ammo_days_to_full = ammunition_delta_value_k }
+
+    set_variable = { ammo_days_to_empty = ammunition_value_k }
+    divide_variable = { ammo_days_to_empty = ammunition_delta_value_k }
+    multiply_variable = { ammo_days_to_empty = -1 }
+
+    if = {
+        limit = { check_variable = { ammunition_delta_value_k > 0 } }
+        set_variable = { ammo_frame_var = 2 }
+    }
+    else_if = {
+        limit = { check_variable = { ammunition_delta_value_k < 0 } }
+        set_variable = { ammo_frame_var = 3 }
+    } else = {
+        set_variable = { ammo_frame_var = 1 }
+    }
+}
+
+
+# THIS scope is COUNTRY
+ammunition_remove_excess_ammunition_if_needed = {
+    # Вычисляем, сколько боеприпасов выходит за пределы объёма складов
+    set_temp_variable = { temp_ammunition_excess_value_k = sum_ammunition_value_k }
+    subtract_from_temp_variable = { temp_ammunition_excess_value_k = ammunition_max_storage_capacity_k }
+
+    if = { # Если слишком много боеприпасов на складах
+        limit = { check_variable = { temp_ammunition_excess_value_k > 0 }}
+
+        if = { # Если превышение вместимости больше, чем количество старых боеприпасов
+            limit = { check_variable = { ammunition_old_value_k < temp_ammunition_excess_value_k } }
+
+            # Убираем полностью старые боеприпасы
+            subtract_from_temp_variable = { temp_ammunition_excess_value_k = ammunition_old_value_k }
+            set_variable = { ammunition_old_value_k = 0 }
+
+            # Убираем лишние готовые к использованию боеприпасы
+            clamp_variable = {
+                var = ammunition_value_k
+                max = ammunition_max_storage_capacity_k
+            }
+        }
+        else = { # Иначе превышение вместимости миньше или равно количеству старых боеприпасов
+            subtract_from_variable = { ammunition_old_value_k = temp_ammunition_excess_value_k }
+        }
+    }
+}
+
+
+ammunition_calculate_tick_army_effects = {
+    ammunition_calculate_tick_army_effects_deficite = yes
+    ammunition_calculate_tick_army_offensive_effects_factor = yes
+    ammunition_calculate_tick_army_defensive_effects_factor = yes
+    ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor = yes
+
+    # Атака от дефицита
+    set_variable = { ammunition_effect_army_attack_factor = ammunition_effect_deficite_factor }
+    multiply_variable = { ammunition_effect_army_attack_factor = global.ammunition_effect_army_attack_factor_coef }
+
+    # Защита от дефицита
+    set_variable = { ammunition_effect_army_defence_factor = ammunition_effect_deficite_factor }
+    multiply_variable = { ammunition_effect_army_defence_factor = global.ammunition_effect_army_defence_factor_coef }
+
+    # Прорыв
+    set_variable = { ammunition_effect_breakthrough_factor = ammunition_army_offense_effect_factor }
+    multiply_variable = { ammunition_effect_breakthrough_factor = global.ammunition_effect_breakthrough_factor_coef }
+
+    if = { # Срезает силу дебафа на наступление у РФ при ограничении боеприпасов от МО РФ, если на Украине есть игрок
+        limit = { 
+            AND = { 
+                check_variable = { ammunition_effect_breakthrough_factor < 0 } 
+                original_tag = RUS
+                has_country_flag = RUS_genstab_ammunition_supply_factor_limitation
+                UKR = { NOT = { is_ai = yes } }
+            }
+        }
+        multiply_variable = { ammunition_effect_breakthrough_factor = global.ammunition_effect_breakthrough_factor_MP_negative_factor }
+    }
+
+    # Окапываемость
+    set_variable = { ammunition_effect_max_dig_in_factor = ammunition_army_defense_effect_factor }
+    multiply_variable = { ammunition_effect_max_dig_in_factor = global.ammunition_effect_max_dig_in_factor_coef }
+
+    set_variable = { ammunition_effect_dig_in_speed_factor = ammunition_army_defense_effect_factor }
+    multiply_variable = { ammunition_effect_dig_in_speed_factor = global.ammunition_effect_dig_in_speed_factor_coef }
+    
+}
+
+ammunition_calculate_tick_army_effects_deficite = {
+    # Сбрасываем прошлое итоговое значение
+    set_variable = { ammunition_effect_deficite_factor = 0 }
+    
+    # Вычисляем индекс последнего референсного значения в массиве
+    set_temp_variable = { temp_last_index = global.ammunition_deficite_factor_effects_target^num }
+    subtract_from_temp_variable = { temp_last_index = 1 }
+
+    if = { # Если не заданы референсные значения
+        limit = { check_variable = { global.ammunition_deficite_factor_effects_target^num = 0 }}
+        add_to_variable = { ammunition_effect_deficite_factor = 1 }
+    }
+    else_if = { # Если лежит до или на первом референсном значении
+        limit = { check_variable = { 
+            var = ammunition_deficite_factor 
+            value = global.ammunition_deficite_factor_effects_target^0 
+            compare = less_than_or_equals
+        } }
+
+        add_to_variable = { 
+            var = ammunition_effect_deficite_factor
+            value = global.ammunition_deficite_factor_effects_value^0 
+        }
+    }
+    else_if = { # Если лежит после последнего референсного значения
+        limit = { check_variable = { 
+            var = ammunition_deficite_factor 
+            value = global.ammunition_deficite_factor_effects_target^temp_last_index 
+            compare = greater_than
+        } }
+        
+        add_to_variable = { 
+            var = ammunition_effect_deficite_factor
+            value = global.ammunition_deficite_factor_effects_value^temp_last_index 
+        }
+    }
+    else = { # Иначе идём в цикле по элементам референсных значений
+        for_loop_effect = {
+            start = 0
+            end = temp_last_index
+
+            value = current_index
+            break = temp_break_flag
+
+            set_temp_variable = { temp_next_index = current_index }
+            add_to_temp_variable = { temp_next_index = 1 }
+
+            if = {
+                limit = { # Если target_x находится в диапазоне (x0; x1]
+                    check_variable = { 
+                        var = ammunition_deficite_factor
+                        value = global.ammunition_deficite_factor_effects_target^current_index
+                        compare = greater_than
+                    } 
+                    check_variable = { 
+                        var = ammunition_deficite_factor
+                        value = global.ammunition_deficite_factor_effects_target^temp_next_index 
+                        compare = less_than_or_equals
+                    }
+                }
+                
+                # Устанавливаем параметры вызова ESAPI_calculate_linear
+                set_temp_variable = { api_x1 = global.ammunition_deficite_factor_effects_target^current_index }
+                set_temp_variable = { api_y1 = global.ammunition_deficite_factor_effects_value^current_index }
+                set_temp_variable = { api_x2 = global.ammunition_deficite_factor_effects_target^temp_next_index }
+                set_temp_variable = { api_y2 = global.ammunition_deficite_factor_effects_value^temp_next_index }
+                set_temp_variable = { api_target_x = ammunition_deficite_factor }
+                set_temp_variable = { api_target_y = 0 }
+
+                # Вычисляем через линейную интерполяцию нужное значение
+                ESAPI_calculate_linear = yes
+
+                add_to_variable = { ammunition_effect_deficite_factor = api_target_y }
+                add_to_temp_variable = { temp_break_flag = 1 }    
+            }
+        }
+    }
+}
+
+ammunition_calculate_tick_army_offensive_effects_factor = {
+    # Сбрасываем прошлое итоговое значение
+    set_variable = { ammunition_army_offense_effect_factor = 0 }
+
+    # Вычисляем индекс последнего референсного значения в массиве
+    set_temp_variable = { temp_last_index = global.ammunition_consumption_offensive_supply_factor_effects_target^num }
+    subtract_from_temp_variable = { temp_last_index = 1 }
+
+    if = { # Если не заданы референсные значения
+        limit = { check_variable = { global.ammunition_consumption_offensive_supply_factor_effects_target^num = 0 }}
+        add_to_variable = { ammunition_army_offense_effect_factor = 1 }
+    }
+    else_if = { # Если лежит до или на первом референсном значении
+        limit = { check_variable = { 
+            var = ammunition_consumption_supply_offensive_result_factor_var 
+            value = global.ammunition_consumption_offensive_supply_factor_effects_target^0 
+            compare = less_than_or_equals
+        } }
+
+        add_to_variable = { 
+            var = ammunition_army_offense_effect_factor
+            value = global.ammunition_consumption_offensive_supply_factor_effects_value^0 
+        }
+    }
+    else_if = { # Если лежит после последнего референсного значения
+        limit = { check_variable = { 
+            var = ammunition_consumption_supply_offensive_result_factor_var 
+            value = global.ammunition_consumption_offensive_supply_factor_effects_target^temp_last_index 
+            compare = greater_than
+        } }
+        
+        add_to_variable = { 
+            var = ammunition_army_offense_effect_factor
+            value = global.ammunition_consumption_offensive_supply_factor_effects_value^temp_last_index 
+        }
+    }
+    else = { # Иначе идём в цикле по элементам референсных значений
+        for_loop_effect = {
+            start = 0
+            end = temp_last_index
+
+            value = current_index
+            break = temp_break_flag
+
+            set_temp_variable = { temp_next_index = current_index }
+            add_to_temp_variable = { temp_next_index = 1 }
+
+            if = {
+                limit = { # Если target_x находится в диапазоне (x0; x1]
+                    check_variable = { 
+                        var = ammunition_consumption_supply_offensive_result_factor_var
+                        value = global.ammunition_consumption_offensive_supply_factor_effects_target^current_index
+                        compare = greater_than
+                    } 
+                    check_variable = { 
+                        var = ammunition_consumption_supply_offensive_result_factor_var
+                        value = global.ammunition_consumption_offensive_supply_factor_effects_target^temp_next_index 
+                        compare = less_than_or_equals
+                    }
+                }
+                
+                # Устанавливаем параметры вызова ESAPI_calculate_linear
+                set_temp_variable = { api_x1 = global.ammunition_consumption_offensive_supply_factor_effects_target^current_index }
+                set_temp_variable = { api_y1 = global.ammunition_consumption_offensive_supply_factor_effects_value^current_index }
+                set_temp_variable = { api_x2 = global.ammunition_consumption_offensive_supply_factor_effects_target^temp_next_index }
+                set_temp_variable = { api_y2 = global.ammunition_consumption_offensive_supply_factor_effects_value^temp_next_index }
+                set_temp_variable = { api_target_x = ammunition_consumption_supply_offensive_result_factor_var }
+                set_temp_variable = { api_target_y = 0 }
+
+                # Вычисляем через линейную интерполяцию нужное значение
+                ESAPI_calculate_linear = yes
+
+                add_to_variable = { ammunition_army_offense_effect_factor = api_target_y }
+                add_to_temp_variable = { temp_break_flag = 1 }    
+            }
+        }
+    }
+}
+ammunition_calculate_tick_army_defensive_effects_factor = {
+    # Сбрасываем прошлое итоговое значение
+    set_variable = { ammunition_army_defense_effect_factor = 0 }
+
+    # Вычисляем индекс последнего референсного значения в массиве
+    set_temp_variable = { temp_last_index = global.ammunition_result_defensive_supply_factor_effects_target^num }
+    subtract_from_temp_variable = { temp_last_index = 1 }
+
+    if = { # Если не заданы референсные значения
+        limit = { check_variable = { global.ammunition_result_defensive_supply_factor_effects_target^num = 0 }}
+        add_to_variable = { ammunition_army_defense_effect_factor = 1 }
+    }
+    else_if = { # Если лежит до или на первом референсном значении
+        limit = { check_variable = { 
+            var = ammunition_consumption_supply_defensive_result_factor_var 
+            value = global.ammunition_result_defensive_supply_factor_effects_target^0 
+            compare = less_than_or_equals
+        } }
+
+        add_to_variable = { 
+            var = ammunition_army_defense_effect_factor
+            value = global.ammunition_result_defensive_supply_factor_effects_value^0 
+        }
+    }
+    else_if = { # Если лежит после последнего референсного значения
+        limit = { check_variable = { 
+            var = ammunition_consumption_supply_defensive_result_factor_var 
+            value = global.ammunition_result_defensive_supply_factor_effects_target^temp_last_index 
+            compare = greater_than
+        } }
+        
+        add_to_variable = { 
+            var = ammunition_army_defense_effect_factor
+            value = global.ammunition_result_defensive_supply_factor_effects_value^temp_last_index 
+        }
+    }
+    else = { # Иначе идём в цикле по элементам референсных значений
+        for_loop_effect = {
+            start = 0
+            end = temp_last_index
+
+            value = current_index
+            break = temp_break_flag
+
+            set_temp_variable = { temp_next_index = current_index }
+            add_to_temp_variable = { temp_next_index = 1 }
+
+            if = {
+                limit = { # Если target_x находится в диапазоне (x0; x1]
+                    check_variable = { 
+                        var = ammunition_consumption_supply_defensive_result_factor_var
+                        value = global.ammunition_result_defensive_supply_factor_effects_target^current_index
+                        compare = greater_than
+                    } 
+                    check_variable = { 
+                        var = ammunition_consumption_supply_defensive_result_factor_var
+                        value = global.ammunition_result_defensive_supply_factor_effects_target^temp_next_index 
+                        compare = less_than_or_equals
+                    }
+                }
+                
+                # Устанавливаем параметры вызова ESAPI_calculate_linear
+                set_temp_variable = { api_x1 = global.ammunition_result_defensive_supply_factor_effects_target^current_index }
+                set_temp_variable = { api_y1 = global.ammunition_result_defensive_supply_factor_effects_value^current_index }
+                set_temp_variable = { api_x2 = global.ammunition_result_defensive_supply_factor_effects_target^temp_next_index }
+                set_temp_variable = { api_y2 = global.ammunition_result_defensive_supply_factor_effects_value^temp_next_index }
+                set_temp_variable = { api_target_x = ammunition_consumption_supply_defensive_result_factor_var }
+                set_temp_variable = { api_target_y = 0 }
+
+                # Вычисляем через линейную интерполяцию нужное значение
+                ESAPI_calculate_linear = yes
+
+                add_to_variable = { ammunition_army_defense_effect_factor = api_target_y }
+                add_to_temp_variable = { temp_break_flag = 1 }    
+            }
+        }
+    }    
+}
+
+ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor = {  
+    # Сбрасываем прошлое итоговое значение  
+    set_variable = { ammunition_effect_ai_focus_aggressive_factor = 0 }
+
+    ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_supply = yes
+    ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_supply = yes
+    subtract_from_variable = { ammunition_effect_ai_focus_aggressive_factor = ammunition_deficite_factor }
+}
+
+ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_supply = {  
+    # Вычисляем индекс последнего референсного значения в массиве
+    set_temp_variable = { temp_last_index = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^num }
+    subtract_from_temp_variable = { temp_last_index = 1 }
+
+    if = { # Если не заданы референсные значения
+        limit = { check_variable = { global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^num = 0 }}
+        add_to_variable = { ammunition_effect_ai_focus_aggressive_factor = 0 }
+    }
+    else_if = { # Если лежит до или на первом референсном значении
+        limit = { check_variable = { 
+            var = ammunition_consumption_supply_factor_var 
+            value = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^0 
+            compare = less_than_or_equals
+        } }
+
+        add_to_variable = { 
+            var = ammunition_effect_ai_focus_aggressive_factor
+            value = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_value^0 
+        }
+    }
+    else_if = { # Если лежит после последнего референсного значения
+        limit = { check_variable = { 
+            var = ammunition_consumption_supply_factor_var 
+            value = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^temp_last_index 
+            compare = greater_than
+        } }
+        
+        add_to_variable = { 
+            var = ammunition_effect_ai_focus_aggressive_factor
+            value = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_value^temp_last_index 
+        }
+    }
+    else = { # Иначе идём в цикле по элементам референсных значений
+        for_loop_effect = {
+            start = 0
+            end = temp_last_index
+
+            value = current_index
+            break = temp_break_flag
+
+            set_temp_variable = { temp_next_index = current_index }
+            add_to_temp_variable = { temp_next_index = 1 }
+
+            if = {
+                limit = { # Если target_x находится в диапазоне (x0; x1]
+                    check_variable = { 
+                        var = ammunition_consumption_supply_factor_var
+                        value = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^current_index
+                        compare = greater_than
+                    } 
+                    check_variable = { 
+                        var = ammunition_consumption_supply_factor_var
+                        value = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^temp_next_index 
+                        compare = less_than_or_equals
+                    }
+                }
+                
+                # Устанавливаем параметры вызова ESAPI_calculate_linear
+                set_temp_variable = { api_x1 = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^current_index }
+                set_temp_variable = { api_y1 = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_value^current_index }
+                set_temp_variable = { api_x2 = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_target^temp_next_index }
+                set_temp_variable = { api_y2 = global.ammunition_consumption_supply_factor_effects_ai_focus_aggressive_factor_value^temp_next_index }
+                set_temp_variable = { api_target_x = ammunition_consumption_supply_factor_var }
+                set_temp_variable = { api_target_y = 0 }
+
+                # Вычисляем через линейную интерполяцию нужное значение
+                ESAPI_calculate_linear = yes
+
+                add_to_variable = { ammunition_effect_ai_focus_aggressive_factor = api_target_y }
+                add_to_temp_variable = { temp_break_flag = 1 }    
+            }
+        }
+    }  
+}
+
+ammunition_calculate_tick_army_effects_ai_focus_aggressive_factor_by_relative_supply = {  
+    # Вычисляем индекс последнего референсного значения в массиве
+    set_temp_variable = { temp_last_index = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^num }
+    subtract_from_temp_variable = { temp_last_index = 1 }
+
+    if = { # Если не заданы референсные значения
+        limit = { check_variable = { global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^num = 0 }}
+        add_to_variable = { ammunition_effect_ai_focus_aggressive_factor = 0 }
+    }
+    else_if = { # Если лежит до или на первом референсном значении
+        limit = { check_variable = { 
+            var = ammunition_consumption_offensive_supply_factor_var 
+            value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^0 
+            compare = less_than_or_equals
+        } }
+
+        add_to_variable = { 
+            var = ammunition_effect_ai_focus_aggressive_factor
+            value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_value^0 
+        }
+    }
+    else_if = { # Если лежит после последнего референсного значения
+        limit = { check_variable = { 
+            var = ammunition_consumption_offensive_supply_factor_var 
+            value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^temp_last_index 
+            compare = greater_than
+        } }
+        
+        add_to_variable = { 
+            var = ammunition_effect_ai_focus_aggressive_factor
+            value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_value^temp_last_index 
+        }
+    }
+    else = { # Иначе идём в цикле по элементам референсных значений
+        for_loop_effect = {
+            start = 0
+            end = temp_last_index
+
+            value = current_index
+            break = temp_break_flag
+
+            set_temp_variable = { temp_next_index = current_index }
+            add_to_temp_variable = { temp_next_index = 1 }
+
+            if = {
+                limit = { # Если target_x находится в диапазоне (x0; x1]
+                    check_variable = { 
+                        var = ammunition_consumption_offensive_supply_factor_var
+                        value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^current_index
+                        compare = greater_than
+                    } 
+                    check_variable = { 
+                        var = ammunition_consumption_offensive_supply_factor_var
+                        value = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^temp_next_index 
+                        compare = less_than_or_equals
+                    }
+                }
+                
+                # Устанавливаем параметры вызова ESAPI_calculate_linear
+                set_temp_variable = { api_x1 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^current_index }
+                set_temp_variable = { api_y1 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_value^current_index }
+                set_temp_variable = { api_x2 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_target^temp_next_index }
+                set_temp_variable = { api_y2 = global.ammunition_consumption_relative_off_to_def_supply_factor_effects_ai_focus_aggressive_factor_value^temp_next_index }
+                set_temp_variable = { api_target_x = ammunition_consumption_offensive_supply_factor_var }
+                set_temp_variable = { api_target_y = 0 }
+
+                # Вычисляем через линейную интерполяцию нужное значение
+                ESAPI_calculate_linear = yes
+
+                add_to_variable = { ammunition_effect_ai_focus_aggressive_factor = api_target_y }
+                add_to_temp_variable = { temp_break_flag = 1 }    
+            }
+        }
+    }    
+}
+
+ammunition_calculate_tick_ai = {
+    # Formula: ammunition_ai_supply_days_left = ammunition_value_k / (ammunition_delta_value_k_only_negative + global.ammunition_ai_supply_days_left_formula_factor * (ammunition_default_max_consumption_k - ammunition_delta_value_k_only_negative))
+    set_variable = { ammunition_ai_supply_days_left = ammunition_value_k }
+
+    set_variable = { ammunition_ai_supply_demiliter = ammunition_default_max_consumption_k }
+    set_variable = { ammunition_delta_value_k_only_negative = ammunition_delta_value_k }
+    multiply_variable = { ammunition_delta_value_k_only_negative = -1 }
+    clamp_variable = { var = ammunition_delta_value_k_only_negative min = 0 }
+    subtract_from_variable = { ammunition_ai_supply_demiliter = ammunition_delta_value_k_only_negative }
+    multiply_variable = { ammunition_ai_supply_demiliter = global.ammunition_ai_supply_days_left_formula_factor }
+    add_to_variable = { ammunition_ai_supply_demiliter = ammunition_delta_value_k_only_negative }
+
+    divide_variable = { ammunition_ai_supply_days_left = ammunition_ai_supply_demiliter }
+
+    set_variable = { ammunition_ai_supply_factor = 0 }
+    ammunition_calculate_tick_ai_supply_factor = yes
+
+    set_variable = { ammunition_consumption_supply_factor_var = ammunition_ai_supply_factor }
+    ammunition_supply_factor_clamp = yes
+}
+
+ammunition_calculate_tick_ai_supply_factor = {
+    # Вычисляем индекс последнего референсного значения в массиве
+    set_temp_variable = { temp_last_index = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^num }
+    subtract_from_temp_variable = { temp_last_index = 1 }
+
+    if = { # Если не заданы референсные значения
+        limit = { check_variable = { global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^num = 0 }}
+        add_to_variable = { ammunition_ai_supply_factor = 1 }
+    }
+    else_if = { # Если лежит до или на первом референсном значении
+        limit = { check_variable = { 
+            var = ammunition_ai_supply_days_left 
+            value = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^0 
+            compare = less_than_or_equals
+        } }
+
+        add_to_variable = { 
+            var = ammunition_ai_supply_factor
+            value = global.ammunition_ai_supply_factor_by_special_consumption_days_left_value^0 
+        }
+    }
+    else_if = { # Если лежит после последнего референсного значения
+        limit = { check_variable = { 
+            var = ammunition_ai_supply_days_left 
+            value = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^temp_last_index 
+            compare = greater_than
+        } }
+        
+        add_to_variable = { 
+            var = ammunition_ai_supply_factor
+            value = global.ammunition_ai_supply_factor_by_special_consumption_days_left_value^temp_last_index 
+        }
+    }
+    else = { # Иначе идём в цикле по элементам референсных значений
+        for_loop_effect = {
+            start = 0
+            end = temp_last_index
+
+            value = current_index
+            break = temp_break_flag
+
+            set_temp_variable = { temp_next_index = current_index }
+            add_to_temp_variable = { temp_next_index = 1 }
+
+            if = {
+                limit = { # Если target_x находится в диапазоне (x0; x1]
+                    check_variable = { 
+                        var = ammunition_ai_supply_days_left
+                        value = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^current_index
+                        compare = greater_than
+                    } 
+                    check_variable = { 
+                        var = ammunition_ai_supply_days_left
+                        value = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^temp_next_index 
+                        compare = less_than_or_equals
+                    }
+                }
+                
+                # Устанавливаем параметры вызова ESAPI_calculate_linear
+                set_temp_variable = { api_x1 = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^current_index }
+                set_temp_variable = { api_y1 = global.ammunition_ai_supply_factor_by_special_consumption_days_left_value^current_index }
+                set_temp_variable = { api_x2 = global.ammunition_ai_supply_factor_by_special_consumption_days_left_target^temp_next_index }
+                set_temp_variable = { api_y2 = global.ammunition_ai_supply_factor_by_special_consumption_days_left_value^temp_next_index }
+                set_temp_variable = { api_target_x = ammunition_ai_supply_days_left }
+                set_temp_variable = { api_target_y = 0 }
+
+                # Вычисляем через линейную интерполяцию нужное значение
+                ESAPI_calculate_linear = yes
+
+                add_to_variable = { ammunition_ai_supply_factor = api_target_y }
+                add_to_temp_variable = { temp_break_flag = 1 }    
+            }
+        }
+    } 
+}
+
+# THIS scope is COUNTRY
+# Must contain temp_delta
+ammunition_change_produce_recovery_factors = {    
+    add_to_variable = { ammunition_produce_factor = temp_delta }
+    subtract_from_variable = { ammunition_recovery_factor  = temp_delta }
+    
+    if = {
+        limit = { check_variable = { ammunition_produce_factor > 1 } }
+
+        set_temp_variable = { temp = 1 }
+        subtract_from_temp_variable = { temp = ammunition_produce_factor }
+
+        add_to_variable = { ammunition_produce_factor = temp }
+        subtract_from_variable = { ammunition_recovery_factor = temp }
+    } 
+    else_if = {
+        limit = { check_variable = { ammunition_produce_factor < 0 } }
+        
+        add_to_variable = { ammunition_recovery_factor = ammunition_produce_factor }
+        set_variable = { ammunition_produce_factor = 0 }
+    }
+
+    set_temp_variable = { temp_sum = ammunition_produce_factor }
+    add_to_temp_variable = { temp_sum = ammunition_recovery_factor }
+
+    if = {
+        limit = { NOT = { check_variable = { temp_sum = 1 } } }
+        
+        set_temp_variable = { temp = 1 }
+        subtract_from_temp_variable = { temp = temp_sum }
+
+        add_to_variable = { ammunition_recovery_factor = temp }
+    }
+}
+
+ammunition_change_supply_factor = {
+    add_to_variable = { ammunition_consumption_supply_factor_var = temp_delta }
+    ammunition_supply_factor_clamp = yes
+    ammunition_calculate_consumption = yes
+    ammunition_calculate_tick_army_effects = yes
+}
+
+ammunition_supply_factor_clamp = {
+    set_variable = { ammunition_supply_max = global.ammunition_supply_max }
+    set_variable = { ammunition_supply_min = global.ammunition_supply_min }
+
+	if = {
+        limit = { 
+			original_tag = RUS 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_limitation 
+		}
+        set_variable = { ammunition_supply_max = 0.5 }
+    }
+	
+    if = {
+        limit = { check_variable = { ammunition_consumption_supply_factor_var > ammunition_supply_max } }
+        set_variable = { ammunition_consumption_supply_factor_var = ammunition_supply_max }
+    } 
+    else_if = {
+        limit = { check_variable = { ammunition_consumption_supply_factor_var < ammunition_supply_min } }
+        
+        set_variable = { ammunition_consumption_supply_factor_var = ammunition_supply_min }
+    }
+}
+
+ammunition_change_offensive_defensive_supply_factors = {
+    add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp_delta }
+    subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var  = temp_delta }
+    
+    ammunition_change_offensive_defensive_supply_factors_clamp = yes
+    ammunition_calculate_consumption = yes
+    ammunition_calculate_tick_army_effects = yes
+}
+
+ammunition_reset_relative_supplies = {
+    set_variable = { ammunition_consumption_offensive_supply_factor_var = 0 }
+    set_variable = { ammunition_consumption_defensive_supply_factor_var = 0 }
+}
+
+ammunition_change_offensive_defensive_supply_factors_clamp = {
+    set_variable = { ammunition_consumption_relative_max = global.ammunition_consumption_relative_max }
+    set_variable = { ammunition_consumption_relative_min = global.ammunition_consumption_relative_min }
+
+    if = {
+        limit = { 
+			original_tag = RUS 
+			has_country_flag = RUS_genstab_ammunition_supply_factor_limitation 
+		}
+        add_to_variable = { ammunition_consumption_relative_max = -2 }
+    }
+
+
+    if = {
+        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var > ammunition_consumption_relative_max } }
+
+        set_temp_variable = { temp = ammunition_consumption_relative_max }
+        subtract_from_temp_variable = { temp = ammunition_consumption_offensive_supply_factor_var }
+
+        add_to_variable = { ammunition_consumption_offensive_supply_factor_var = temp }
+        subtract_from_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
+    } 
+    else_if = {
+        limit = { check_variable = { ammunition_consumption_offensive_supply_factor_var < ammunition_consumption_relative_min } }
+        
+        add_to_variable = { ammunition_consumption_defensive_supply_factor_var = ammunition_consumption_offensive_supply_factor_var }
+        set_variable = { ammunition_consumption_offensive_supply_factor_var = ammunition_consumption_relative_min }
+    }
+
+    set_temp_variable = { temp_sum = ammunition_consumption_offensive_supply_factor_var }
+    add_to_temp_variable = { temp_sum = ammunition_consumption_defensive_supply_factor_var }
+
+    if = {
+        limit = { NOT = { check_variable = { temp_sum = 0 } } }
+        
+        set_temp_variable = { temp = 0 }
+        subtract_from_temp_variable = { temp = temp_sum }
+
+        add_to_variable = { ammunition_consumption_defensive_supply_factor_var = temp }
+    }
+}

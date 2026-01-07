@@ -20,9 +20,7 @@ WGN_me_ne_frego = {
 	}
 }
 
-#########################################
-# 0) Блок: Вагнер не сидит на лишних границах
-#########################################
+
 WGN_border_setup = {
 	allowed = {
 		original_tag = WGN
@@ -34,7 +32,6 @@ WGN_border_setup = {
 		always = no
 	}
 
-	# Глушим гарнизоны
 	ai_strategy = {
 		type = garrison
 		value = -10000
@@ -44,7 +41,6 @@ WGN_border_setup = {
 		value = -10000
 	}
 
-	# Ставим front_unit_request = -2000 для BOR/RBZ (если нужно)
 	ai_strategy = {
 		type = front_unit_request
 		tag = BOR
@@ -100,26 +96,23 @@ WGN_donbass_front = {
 		}
 	}
 
-	# Даем большой запрос на Донецк (31) и Луганск (63)
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 31  # Донецк
+		strategic_region = 118
 		value = 1500
 	}
 	ai_strategy = {
 		type = front_unit_request
-		strategic_region = 63  # Луганск
+		strategic_region = 119  # Луганск
 		value = 1500
 	}
 
-	# front_control: rush
-	# (Если хотим — manual_attack=yes)
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		strategic_region = 31
+		strategic_region = 118
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
 		priority = 9999
@@ -127,66 +120,12 @@ WGN_donbass_front = {
 	ai_strategy = {
 		type = front_control
 		tag = UKR
-		strategic_region = 63
+		strategic_region = 119
 		ordertype = front
-		execution_type = rush
+		execution_type = rush_weak
 		execute_order = yes
 		manual_attack = yes
 		priority = 9999
 	}
 }
 
-#########################################
-# 2) Детализированные цели: Лисичанск, Бахмут, и пр. (опционально)
-#########################################
-# Если хотим для "Лисичанска" (часть Луганска) — обычно state=145,154,176 и т.п.
-# Но HOI4 AI лучше работает, если мы просто даём front_unit_request= луганской области,
-# чем мельчить по state. 
-# Однако, если всё же нужно:
-
-WGN_take_lysichansk = {
-	allowed = { original_tag = WGN }
-	enable = {
-		AND = {
-			has_war_with = UKR
-			# (уберём has_completed_focus, чтобы не блокировать логику)
-			# хотим, чтобы Укр всё ещё держала эти стейты (145,154,176)
-			OR = {
-				UKR = { controls_state = 145 }
-				UKR = { controls_state = 154 }
-				UKR = { controls_state = 176 }
-			}
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-			# Украина перестала контролировать
-			NOT = {
-				OR = {
-					UKR = { controls_state = 145 }
-					UKR = { controls_state = 154 }
-					UKR = { controls_state = 176 }
-				}
-			}
-		}
-	}
-
-	# Увеличиваем приоритет на регион 63 (Луганск), или конкретный state=145
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 63
-		value = 2000
-	}
-
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 63
-		ordertype = front
-		execution_type = rush
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-}

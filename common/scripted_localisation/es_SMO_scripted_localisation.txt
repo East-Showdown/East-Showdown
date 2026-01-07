@@ -1,4 +1,20 @@
 defined_text = {
+	name = RUS_transition_period_script_loc
+	text = {
+		trigger = { NOT = { has_completed_focus = RUS_wagner_Patriotic_Coalition has_completed_focus = RUS_wagner_new_great_Russia } }
+		localization_key = "RUS_transition_period_n"
+	}
+	text = {
+		trigger = { has_completed_focus = RUS_wagner_Patriotic_Coalition }
+		localization_key = "RUS_transition_period_b"
+	}
+	text = {
+		trigger = { has_completed_focus = RUS_wagner_new_great_Russia }
+		localization_key = "RUS_transition_period_r"
+	}
+}
+
+defined_text = {
 	name = RUS_SMO_GET_REGION_PICTURE
 	text = {
 		trigger = { check_variable = { selected_region = global.selected_region_belgorodskaya_oblast_index } }
@@ -325,6 +341,15 @@ defined_text = {
 		localization_key = map_plan_no_selected_region_status
 	}
 	text = {
+		trigger = {
+			AND = {
+				check_variable = { map_plans_defence_region_index = selected_region }
+				check_variable = { map_plan_defence_cooldown > global.num_days }
+			}
+		}
+		localization_key = map_plan_defence_already_active_status
+	}
+	text = {
 		localization_key = map_plan_activation_status_available
 	}
 }
@@ -337,6 +362,34 @@ defined_text = {
 	}
 	text = {
 		trigger = { command_power < 60 }
+		localization_key = map_plan_activation_status_not_enough_command_power
+	}
+	text = {
+		trigger = { check_variable = { selected_region = -1 } }
+		localization_key = map_plan_no_selected_region_status
+	}
+	text = {
+		trigger = {
+			AND = {
+				check_variable = { map_plans_attack_region_index = selected_region }
+				check_variable = { map_plan_attack_cooldown > global.num_days }
+			}
+		}
+		localization_key = map_plan_attack_already_active_status
+	}
+	text = {
+		localization_key = map_plan_activation_status_available
+	}
+}
+
+defined_text = {
+	name = GetMapPlanBuildFortificationStatus
+	text = {
+		trigger = { check_variable = { map_plan_build_fortifications_cooldown > global.num_days } }
+		localization_key = map_plan_build_fortifications_status
+	}
+	text = {
+		trigger = { command_power < 50 }
 		localization_key = map_plan_activation_status_not_enough_command_power
 	}
 	text = {
@@ -1232,6 +1285,14 @@ defined_text = {
 		localization_key = "SMO_priority_direction_priazovye"
 	}
 	text = {
+		trigger = { check_variable = { SMO_priority_direction_variable = 6 } }
+		localization_key = "SMO_priority_direction_krivoyrog"
+	}
+	text = {
+		trigger = { check_variable = { SMO_priority_direction_variable = 7 } }
+		localization_key = "SMO_priority_direction_zaporozie"
+	}
+	text = {
 		trigger = { check_variable = { SMO_priority_direction_variable = 24 } }
 		localization_key = "SMO_priority_direction_donbass_Eastern_Ukraine"
 	}
@@ -1274,6 +1335,14 @@ defined_text = {
 	text = {
 		trigger = { check_variable = { SMO_military_objectives_variable = 6 } }
 		localization_key = "RUS_SMO_send_troops_to_the_republic_of_donbass_mo"
+	}
+	text = {
+		trigger = { check_variable = { SMO_military_objectives_variable = 7 } }
+		localization_key = "RUS_SMO_send_rightbank_dnepr_mo"
+	}
+	text = {
+		trigger = { check_variable = { SMO_military_objectives_variable = 8 } }
+		localization_key = "RUS_SMO_send_leftbank_dnepr_mo"
 	}
 }
 
@@ -1365,10 +1434,8 @@ defined_text = {
 	name = GFX_SMO_MO_minister_defense_gui
 	text = {
 		trigger = {
-			NOT = {
-				has_global_flag = RUS_Wagner_victory
-				original_tag = UKR
-			}
+			original_tag = RUS
+			has_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
 		}
 		localization_key = "GFX_SMO_MO_minister_defense"
 	}
@@ -1377,8 +1444,52 @@ defined_text = {
 		localization_key = "GFX_SMO_UKR_MO_minister_defense_reznikov"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory }
-		localization_key = "GFX_SMO_MO_minister_defense_prigoshin"
+		trigger = { original_tag = RUS has_global_flag = RUS_Wagner_victory_shoigy_die }
+		localization_key = "GFX_SMO_MO_minister_defense_nobody"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_Wagner_victory_Evkyrov }
+		localization_key = "GFX_SMO_MO_minister_defense_Evkyrov_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Beloysov }
+		localization_key = "GFX_SMO_MO_minister_defense_Beloysov"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Manturov }
+		localization_key = "GFX_SMO_MO_minister_defense_Manturov"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Krivorychko }
+		localization_key = "GFX_SMO_MO_minister_defense_Krivorychko"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Chemezov }
+		localization_key = "GFX_SMO_MO_minister_defense_Chemezov"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Medvedev }
+		localization_key = "GFX_SMO_MO_minister_defense_Medvedev"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Dumin }
+		localization_key = "GFX_SMO_MO_minister_defense_Dumin"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Korolev }
+		localization_key = "GFX_SMO_MO_minister_defense_Korolev"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Nyrgaliev }
+		localization_key = "GFX_SMO_MO_minister_defense_Nyrgaliev"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_mizintsev }
+		localization_key = "GFX_SMO_MO_minister_defense_mizintsev"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_sadovenko }
+		localization_key = "GFX_SMO_MO_minister_defense_sadovenko"
 	}
 }
 
@@ -1387,7 +1498,7 @@ defined_text = {
 	text = {
 		trigger = {
 			NOT = {
-				has_global_flag = RUS_Wagner_victory
+				has_global_flag = RUS_Wagner_victory_shoigy_die
 				original_tag = UKR
 			}
 		}
@@ -1398,8 +1509,44 @@ defined_text = {
 		localization_key = "GFX_SMO_UKR_general_staff_chiefe_shaptala"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory }
-		localization_key = "GFX_SMO_general_staff_chiefe_utkin"
+		trigger = { has_global_flag = RUS_Wagner_victory_shoigy_die }
+		localization_key = "GFX_SMO_MO_minister_defense_nobody"
+	}
+}
+
+defined_text = {
+	name = GFX_SMO_redoubt_picture_gui
+	text = {
+		trigger = { NOT = { has_completed_focus = RUS_dobrovol_corpus } }
+		localization_key = "GFX_RUS_genshtab_redoubt_picture_gs"
+	}
+	text = {
+		trigger = { has_completed_focus = RUS_dobrovol_corpus }
+		localization_key = "GFX_RUS_genshtab_redoubt_picture_1_gs"
+	}
+}
+
+defined_text = {
+	name = RUS_Genshtab_redoubt_GUI_script_loc_desc
+	text = {
+		trigger = { NOT = { has_completed_focus = RUS_dobrovol_corpus } }
+		localization_key = "RUS_genshtab_redoubt_picture_gs_desc"
+	}
+	text = {
+		trigger = { has_completed_focus = RUS_dobrovol_corpus }
+		localization_key = "RUS_genshtab_redoubt_picture_1_gs_desc"
+	}
+}
+
+defined_text = {
+	name = RUS_Genshtab_redoubt_GUI_script_loc_delayed_desc
+	text = {
+		trigger = { NOT = { has_completed_focus = RUS_dobrovol_corpus } }
+		localization_key = "RUS_genshtab_redoubt_picture_gs_delayed_desc"
+	}
+	text = {
+		trigger = { has_completed_focus = RUS_dobrovol_corpus }
+		localization_key = "RUS_genshtab_redoubt_picture_1_gs_delayed_desc"
 	}
 }
 
@@ -1407,10 +1554,8 @@ defined_text = {
 	name = RUS_SMO_MO_minister_defense_script_loc
 	text = {
 		trigger = {
-			NOT = {
-				has_global_flag = RUS_Wagner_victory
-				original_tag = UKR
-			}
+			original_tag = RUS
+			has_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
 		}
 		localization_key = "RUS_SMO_MO_minister_defense_shoigy_title"
 	}
@@ -1419,8 +1564,67 @@ defined_text = {
 		localization_key = "RUS_SMO_UKR_MO_minister_defense_reznikov_title"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory }
-		localization_key = "RUS_SMO_MO_minister_defense_prigoshin_title"
+		trigger = { original_tag = RUS has_global_flag = RUS_Wagner_victory_shoigy_die }
+		localization_key = "RUS_SMO_MO_minister_defense_nobody_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_Wagner_victory_Evkyrov_1_loc }
+		localization_key = "RUS_SMO_MO_minister_defense_Evkyrov_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_Wagner_victory_Evkyrov_2_loc }
+		localization_key = "RUS_SMO_MO_minister_defense_Evkyrov_1_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Beloysov }
+		localization_key = "RUS_SMO_MO_minister_defense_Beloysov_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Manturov }
+		localization_key = "RUS_SMO_MO_minister_defense_Manturov_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Krivorychko }
+		localization_key = "RUS_SMO_MO_minister_defense_Krivorychko_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Chemezov }
+		localization_key = "RUS_SMO_MO_minister_defense_Chemezov_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Medvedev }
+		localization_key = "RUS_SMO_MO_minister_defense_Medvedev_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Dumin }
+		localization_key = "RUS_SMO_MO_minister_defense_Dumin_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Korolev }
+		localization_key = "RUS_SMO_MO_minister_defense_Korolev_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_Nyrgaliev }
+		localization_key = "RUS_SMO_MO_minister_defense_Nyrgaliev_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_mizintsev }
+		localization_key = "RUS_SMO_MO_minister_defense_mizintsev_title"
+	}
+	text = {
+		trigger = { original_tag = RUS has_global_flag = RUS_MO_minister_defense_sadovenko }
+		localization_key = "RUS_SMO_MO_minister_defense_sadovenko_title"
+	}
+}
+
+defined_text = {
+	name = RUS_Medvedev_event_79_script_loc
+	text = {
+		trigger = {
+			original_tag = RUS
+			has_completed_focus = RUS_strong_and_powerful
+		}
+		localization_key = "RUS_Medvedev_event_79_script_loc_ENABLE"
 	}
 }
 
@@ -1429,7 +1633,7 @@ defined_text = {
 	text = {
 		trigger = {
 			NOT = {
-				has_global_flag = RUS_Wagner_victory
+				has_global_flag = RUS_Wagner_victory_shoigy_die
 				original_tag = UKR
 			}
 		}
@@ -1440,8 +1644,8 @@ defined_text = {
 		localization_key = "RUS_SMO_UKR_general_staff_chief_shaptala_title"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory }
-		localization_key = "RUS_SMO_general_staff_chief_utkin_title"
+		trigger = { has_global_flag = RUS_Wagner_victory_shoigy_die }
+		localization_key = "RUS_SMO_general_staff_chief_nobody_title"
 	}
 }
 
@@ -1450,14 +1654,14 @@ defined_text = {
 	text = {
 		trigger = {
 			NOT = {
-				has_global_flag = RUS_Wagner_victory
+				has_global_flag = RUS_Wagner_victory_shoigy_die
 				original_tag = UKR
 			}
 		}
 		localization_key = "RUS_SMO_military_loyalty_rus"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory }
+		trigger = { has_global_flag = RUS_Wagner_victory_shoigy_die }
 		localization_key = "RUS_SMO_military_loyalty_wgn"
 	}
 }
@@ -1467,14 +1671,14 @@ defined_text = {
 	text = {
 		trigger = {
 			NOT = {
-				has_global_flag = RUS_Wagner_victory
+				has_global_flag = RUS_Wagner_victory_shoigy_die
 				original_tag = UKR
 			}
 		}
 		localization_key = "RUS_SMO_MO_minister_defense_tt_desc_sl_shoigy"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory }
+		trigger = { has_global_flag = RUS_Wagner_victory_shoigy_die }
 		localization_key = "RUS_SMO_MO_minister_defense_tt_desc_sl_prigoshin"
 	}
 }
@@ -1484,14 +1688,14 @@ defined_text = {
 	text = {
 		trigger = {
 			NOT = {
-				has_global_flag = RUS_Wagner_victory
+				has_global_flag = RUS_Wagner_victory_shoigy_die
 				original_tag = UKR
 			}
 		}
 		localization_key = "RUS_SMO_general_staff_chief_tt_desc_sl_gerasimov"
 	}
 	text = {
-		trigger = { has_global_flag = RUS_Wagner_victory 	}
+		trigger = { has_global_flag = RUS_Wagner_victory_shoigy_die 	}
 		localization_key = "RUS_SMO_MO_minister_defense_tt_desc_sl_utkin"
 	}
 }
@@ -1573,5 +1777,77 @@ defined_text = {
 	text = {
 		trigger = { original_tag = UKR }
 		localization_key = "GFX_SMO_UKR_general_staff"
+	}
+}
+
+defined_text = {
+	name = RUS_chapso_script_loc
+	text = {
+		trigger = { original_tag = RUS }
+		localization_key = "GFX_RUS_chipson"
+	}
+	text = {
+		trigger = { original_tag = UKR }
+		localization_key = "GFX_RUS_chipson_ukr"
+	}
+}
+
+defined_text = {
+	name = UKR_chapso_script_loc
+	text = {
+		trigger = { original_tag = RUS }
+		localization_key = "GFX_UKR_chipson_rus"
+	}
+	text = {
+		trigger = { original_tag = UKR }
+		localization_key = "GFX_UKR_chipson"
+	}
+}
+
+defined_text = {
+	name = ANTIRUS_Caucasus_jihadism_idea_sl
+	text = {
+		trigger = { TAG = ISI }
+		localization_key = "Caucasus_jihadism_1_idea"
+	}
+	text = {
+		trigger = { OR = { TAG = VCH TAG = VNO TAG = VDG } }
+		localization_key = "Caucasus_jihadism_2_idea"
+	}
+	text = {
+		trigger = { TAG = VCU }
+		localization_key = "Caucasus_jihadism_3_idea"
+	}
+	text = {
+		trigger = { TAG = HAR }
+		localization_key = "Caucasus_jihadism_4_idea"
+	}
+}
+
+defined_text = {
+	name = ANTIRUS_Caucasus_nationalism_idea_sl
+	text = {
+		trigger = { TAG = SDG }
+		localization_key = "Caucasus_nationalism_DGN_idea"
+	}
+	text = {
+		trigger = { TAG = DRG }
+		localization_key = "Caucasus_nationalism_DRG_idea"
+	}
+	text = {
+		trigger = { TAG = SKL }
+		localization_key = "Caucasus_nationalism_SKL_idea"
+	}
+	text = {
+		trigger = { TAG = ASC }
+		localization_key = "Caucasus_nationalism_ASC_idea"
+	}
+	text = {
+		trigger = { TAG = ING }
+		localization_key = "Caucasus_nationalism_ING_idea"
+	}
+	text = {
+		trigger = { TAG = SCR }
+		localization_key = "Caucasus_nationalism_SCR_idea"
 	}
 }

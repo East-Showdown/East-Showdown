@@ -1,13 +1,7 @@
 ﻿l_russian:
- ammunition_value: "[GetAmmoFilling]"
- ammonition_full: "§GПолный§!"
- ammonition_filling: "[?ammo_days_to_full|0G] §Gd§!"
- ammonition_dwindles: "[?ammo_days_to_empty|0R] §Rd§!"
- ammonition_empty: "§RПустой§!"
- ammunition_topbar_tooltip: "§HБоеприпасы§! \n\nТекущие боеприпасы: [GetAmmoHundreds] \nЕжедневное производство: [GetAmmoGainHundreds] \nЭффективность производства: §H[?ammunition_plants_efficiency_factor_var|%]§!\nОбъём складов боеприпасов: [GetMaxAmmoHundreds] \n\nЕжедневное потребление: [GetAmmoNeedHundreds] \nМаксимальное ежедневное потребление: [GetPotentialAmmoNeedHundreds]\n\nЦеха по производству боеприпасов: §H[?ammunition_plants] шт.§! \nСклады боеприпасов: §H[?ammunition_silos] шт.§!"
  ammunition_topbar_tooltip_delayed: "§HБоеприпасы§! производятся на военных цехах или цехах по производству боеприпасов. Участвующие в бою подразделения потребляют боеприпасы. §RКогда боеприпасы закончатся, ваша армия будет неэффективна в бою, что в худшем случае выведет из строя юниты!§!"
  ammonition_hundreds: "[?ammo_h|H]"
- ammonition_thousands: "[?ammunition_variable|H1]§HK§!"
+ ammonition_thousands: "[?ammunition_value_k|H1]§HK§!"
  ammonition_max_hundreds: "[?ammunition_max_h|H]"
  ammonition_max_thousands: "[?ammunition_max|H1]§HK§!"
  ammonition_gain_hundreds: "[?ammo_daily_h|H0]"
@@ -23,14 +17,156 @@
  ammunition_plants: "Цеха по производству боеприпасов"
  ammunition_silos: "Склады боеприпасов"
 
- ammunition_effects: "Нехватка боеприпасов"
+ ammunition_effects: "Боеприпасы"
  daily_ammunition_gain: "£GFX_ammo_icon Ежедневное номинальное \nпроизводство боеприпасов"
- ammunition_plants_efficiency_factor: "£GFX_ammo_icon Эффективность производства боеприпасов"
+ ammunition_plants_efficiency_factor: "£GFX_ammo_icon Эффективность заводов боеприпасов"
  ammunition_factor: "Ежедневный прирост боеприпасов"
  ammunition_capacity_k: "£GFX_ammo_icon Объём складов боеприпасов (K)" 
+ ammunition_recovery_efficiency_factor: "£GFX_ammo_icon Эффективность восстановления старых боеприпасов"
+ ammunition_produce_efficiency_factor: "£GFX_ammo_icon Эффективность производства новых боеприпасов"
+ ammunition_consumption_offensive_factor: "£GFX_ammo_icon Базовый расход боеприпасов в наступлении"
+ ammunition_consumption_defensive_factor: "£GFX_ammo_icon Базовый расход боеприпасов в обороне"
 
 
  ammunition_plant: "Цех по производству боеприпасов"
  ammunition_plant_desc: "Цех, производящий боеприпасы. \nПотребление электроэнергии: §R-0.075§! ГВт"
  ammunition_silo: "Склад боеприпасов"
  ammunition_silo_desc: "Склад для боеприпасов."
+
+ ammunition_window_title_text: "§YУправление боеприпасами§!"
+ ammunition_window_plants_title_text: "§gМощности заводов§!"
+ ammunition_window_plants_production_factor_text: "Производство:"
+ ammunition_window_plants_factor_production_value_text: "§Y[?ammunition_produce_factor|%]§!"
+ ammunition_window_plants_recovery_factor_text: "Восстановление:"
+ ammunition_window_plants_recovery_factor_value_text: "§Y[?ammunition_recovery_factor|%]§!"
+ ammunition_window_consumption_title_text: "§gРаспределение боеприпасов§!"
+
+ ammunition_window_supply_factor_ai_status_tt: "§YАктивация снабжения войск через ИИ позволяет автоматизировать процесс выделения боеприпасов для боевых действий.\n\nДля рассчёта процента общего снабжения, ИИ использует формулу:§!\n\n  §O<X дня(-ей)>§! = §G<свободные боеприпасы>§! /\n(§R<отрицательный ежеднев. баланс>§! + §Y[?global.ammunition_ai_supply_days_left_formula_factor]§! * (§R<макс. расход>§! - §R<отрицательный ежеднев. баланс>§!))\n\n§O[?ammunition_ai_supply_days_left|0] дня(-ей)§! = §G[?ammunition_value_k|2]k ед§! /\n(§R[?ammunition_delta_value_k_only_negative|2]k ед/день§! + §Y[?global.ammunition_ai_supply_days_left_formula_factor]§! * (§R[?ammunition_default_max_consumption_k|2]k ед/день§! - §R[?ammunition_delta_value_k_only_negative|2]k ед/день§!))\n\n§YПолученное значение сверяется по диапазону референсных значений, заданных в коде ИИ§!"
+
+ ammunition_window_supply_factor_ai_status_text: "§YАвтоматизация:§!"
+ ammunition_supply_factor_ai_disabled: "§Rвыкл§!"
+ ammunition_supply_factor_ai_enabled: "§Gвкл§!"
+ ammunition_window_supply_factor_text: "Базовое снабжение:"
+ ammunition_window_supply_offence_factor_text: "Доп. обеспеч. в атаке:"
+ ammunition_window_supply_defence_factor_text: "Доп. обеспеч. обороны:"
+ ammunition_window_effects_title_text: "§gЭффекты от обеспечения§!"
+ ammunition_window_effects_army0_text: "Прорыв: [GET_ammunition_effect_breakthrough_factor]"
+ ammunition_window_effects_army1_text: "Макс. укреплённость: [GET_ammunition_effect_max_dig_in_factor]"
+ ammunition_window_effects_army2_text: "Скорость окапывания: [GET_ammunition_effect_dig_in_speed_factor]"
+ ammunition_window_deficite_text: "§gДефицит боеприпасов:§! §R[?ammunition_deficite_factor|%]§!"
+ ammunition_window_effects_army3_text: "Атака дивизии: [GET_ammunition_effect_army_attack_factor]"
+ ammunition_window_effects_army4_text: "Защита дивизии: [GET_ammunition_effect_army_defence_factor]"
+
+ ammunition_window_trade_title_text: "§gПоставки боеприпасов§!"
+ ammunition_window_trade_import_value_text: "§G[?ammunition_import_value_k_result|2]k ед/день§!"
+ ammunition_window_trade_export_value_text: "§R[?ammunition_export_value_k_result|2]k ед/день§!"
+ import_tt: "Импорт"
+ export_tt: "Экспорт"
+ ammunition_window_delivery_in_development_tt: "§OНовая система находится в разработке.§!\n\n§YПередача боеприпасов сейчас осуществляется через старые§! §OРешения§! §Yи§! §OМиссии§! §Yстраны§!"
+
+ammunition_topbar_tooltip: "[GET_ammunition_topbar_tooltip]"
+
+ammunition_topbar_tooltip_short: "§HБоеприпасы§!\n§OНажми ЛКМ для управления боеприпасами§!\n§OSHIFT+ПКМ§!§Y - §!§Oпоказать§!§Y инфо о заводах и складах§!\n\n[GET_ammunition_info_short]\n\n[GET_ammunition_info_ammunition_army]"
+ammunition_topbar_tooltip_long: "§HБоеприпасы§!\n§OНажми ЛКМ для управления боеприпасами§!\n§OSHIFT+ПКМ§!§Y - §!§Oскрыть§!§Y инфо о заводах и складах§!\n\n[GET_ammunition_info_short]\n\n[GET_ammunition_info_ammunition_plants]\n\n[GET_ammunition_info_ammunition_silos]\n\n[GET_ammunition_info_ammunition_army]"
+
+ammunition_window_plants_factor_production_button_tt: "§YИзменение распределения мощности на производство новых и восстановление старых боеприпасов§!\n\n §YЛКМ§! - добавить 1% на производство\n§YCTRL+ЛКМ§! - добавить 10% на производство\n§YSHIFT+ЛКМ§! - добавить 100% на производство\n\n§YПКМ§! - добавить 1% на восстановление\n§YCTRL+ПКМ§! - добавить 10% на восстановление\n§YSHIFT+ПКМ§! - добавить 100% на восстановление"
+ammunition_window_supply_factor_value_button_tt: "§YИзменение общего множителя траты боеприпасов подразделениями в бою§!\n\n§YДиапазон значений:§! \n   Верхняя граница: §Y[?ammunition_supply_max|%]§!\n   Нижняя граница: §Y[?ammunition_supply_min|%]§!\n\n§YЛКМ§! - увеличить на 1%\n§YCTRL+ЛКМ§! - увеличить на 10%\n§YSHIFT+ЛКМ§! - увеличить на 100%\n\n§YПКМ§! - уменьшить на 1%\n§YCTRL+ПКМ§! - увеличить на 10%\n§YSHIFT+ПКМ§! - уменьшить на 100%"
+ammunition_window_supply_relative_factor_button_tt: "§YИзменение распределения снабжения между атакующими и обороняющимися подразделениями§!\n\n§YДиапазон значений:§! \n   Верхняя граница: §Y[?ammunition_consumption_relative_max|%]§!\n   Нижняя граница: §Y[?ammunition_consumption_relative_min|%]§!\n\n§YЛКМ§! - добавить 1% на атаку\n§YCTRL+ЛКМ§! - добавить 10% на атаку\n§YSHIFT+ЛКМ§! - добавить 100% на атаку\n\n§YПКМ§! - добавить 1% на оборону\n§YCTRL+ПКМ§! - добавить 10% на оборону\n§YSHIFT+ПКМ§! - добавить 100% на оборону"
+
+ammunition_info_short: "Краткая сводка:\n  Готово к применению: §G[?ammunition_value_k|2]k ед§!\n  [GET_ammunition_days_status]\n  Ежедневный баланс: [GET_ammunition_delta_value_k]\n    Производство: §G[?ammunition_produce_value_k|2]k ед/д§!\n    Восстановление: §G[?ammunition_recovery_value_k|2]k ед/день§!\n    Поставки: [GET_ammunition_delivery_value_k]\n    Потребление: §R[?ammunition_consumption_k|2]k ед/день§!\n  Базовое снабжение боеприпасами: [GET_ammunition_consumption_supply_factor_var]\n      §gЭффективный диапазон: [?ammunition_supply_min|%] - [?ammunition_supply_max|%]§!\n  Базовое макс. потребление: §R[?ammunition_default_max_consumption_k|2]k ед/день§!\n  Дефицит боеприпасов: §R[?ammunition_deficite_factor|%]§!"
+
+ammunition_value: "[GetAmmoFilling]"
+ammonition_full: "§GПолный§!"
+ammonition_refitting: "[?ammo_days_to_full|0G] §Gд§!"
+ammonition_filling: "[?ammo_days_to_full|0G] §Gд§!"
+ammonition_dwindles: "[?ammo_days_to_empty|0R] §Rд§!"
+ammonition_empty: "§RПустой§!"
+
+ammunition_delivery_value_k_green: "§G[?ammunition_delivery_value_k|2]k ед/день§!"
+ammunition_delivery_value_k_yellow: "§Y[?ammunition_delivery_value_k|2]k ед/день§!"
+ammunition_delivery_value_k_red: "§R[?ammunition_delivery_value_k|2]k ед/день§!"
+
+
+ammunition_delta_value_k_green: "§G[?ammunition_delta_value_k|2]k ед/день§!"
+ammunition_delta_value_k_yellow: "§Y[?ammunition_delta_value_k|2]k ед/день§!"
+ammunition_delta_value_k_red: "§R[?ammunition_delta_value_k|2]k ед/день§!"
+
+ammunition_days_status_will_be_refitted: "§GСклады обновятся§! через §G[?ammo_days_to_full|0] дня(-ей)§!"
+ammunition_days_status_will_be_full: "§GСклады заполнятся§! через §G[?ammo_days_to_full|0] дня(-ей)§!"
+ammunition_days_status_will_run_out: "§RБоеприпасы закончатся§! через §R[?ammo_days_to_empty|0] дня(-ей)§!"
+ammunition_days_status_run_out: "§RБоеприпасы закончились§!"
+
+
+ammunition_info_ammunition_plants: "Заводы боеприпасов: §O[?modifier@ammunition_plants] шт.§!\n   Очки мощности: §Y[?ammunition_plans_production_base_value|2]k ед => [?ammunition_plants_production_value|2]k ед§!\n   Эффективность заводов: [GET_ammunition_plants_efficiency_factor_var]\n[GET_ammunition_info_ammunition_plants_production]\n[GET_ammunition_info_ammunition_plants_recovery]"
+ammunition_info_ammunition_plants_production: "   Производство: §G[?ammunition_produce_value_k|2]k ед/день§!\n      Выделение мощностей: §Y[?ammunition_produce_factor_result|%]§!\n      Эффективность: §Y[?ammunition_produce_efficiency_factor_var|%]§!"
+ammunition_info_ammunition_plants_recovery: "   Восстановление: §G[?ammunition_recovery_value_k|2]k ед/день§!\n      Выделение мощностей: §Y[?ammunition_recovery_factor_result|%]§!\n      Эффективность: §Y[?ammunition_recovery_efficiency_factor_var|%]§!"
+
+ammunition_plants_efficiency_factor_var_green: "§G[?ammunition_plants_efficiency_factor_var|%]§!"
+ammunition_plants_efficiency_factor_var_yellow: "§Y[?ammunition_plants_efficiency_factor_var|%]§!"
+ammunition_plants_efficiency_factor_var_red: "§R[?ammunition_plants_efficiency_factor_var|%]§!"
+
+ammunition_produce_efficiency_factor_var_green: "§G[?ammunition_produce_efficiency_factor_var|%]§!"
+ammunition_produce_efficiency_factor_var_yellow: "§Y[?ammunition_produce_efficiency_factor_var|%]§!"
+ammunition_produce_efficiency_factor_var_red: "§R[?ammunition_produce_efficiency_factor_var|%]§!"
+
+ammunition_recovery_efficiency_factor_var_green: "§G[?ammunition_recovery_efficiency_factor_var|%]§!"
+ammunition_recovery_efficiency_factor_var_yellow: "§Y[?ammunition_recovery_efficiency_factor_var|%]§!"
+ammunition_recovery_efficiency_factor_var_red: "§R[?ammunition_recovery_efficiency_factor_var|%]§!"
+
+ammunition_info_ammunition_silos: "Склады боеприпасов: §O[?modifier@ammunition_silos] шт.§!\n   Общая вместимость: §O[?ammunition_max_storage_capacity_k|2]k ед§!\n      От складов боеприпасов: §Y[?modifier@ammunition_capacity_k|2]k ед§!\n      От полевых складов: §Y[?ammunition_field_storage_capacity_k|2]k ед§!\n         (запас на §g[?ammunition_field_storage_for_consumption_days|2] дня(-ей)/юнит§!)\n   Заполненность складов: [GET_ammunition_silos_filling_factor]\n      Готово к применению: §G[?ammunition_value_k|2]k ед§!\n      Требует восстановления: §Y[?ammunition_old_value_k|2]k ед§!\n   Стратегические запасы: §Y[?ammunition_reserve_value_k|2]k ед§!"
+
+ammunition_silos_filling_factor_green: "§G[?ammunition_silos_filling_factor|%]§!"
+ammunition_silos_filling_factor_yellow: "§Y[?ammunition_silos_filling_factor|%]§!"
+ammunition_silos_filling_factor_red: "§R[?ammunition_silos_filling_factor|%]§!"
+
+
+ammunition_info_ammunition_army: "Военные силы:\n   Юниты под командованием: §O[?commanded_divisions] шт.§!\n   Базовое снабжение боеприпасами: [GET_ammunition_consumption_supply_factor_var]\n      §gЭффективный диапазон: [?ammunition_supply_min|%] - [?ammunition_supply_max|%]§!\n   Текущее потребление: §R[?ammunition_consumption_k|2]k ед/день§!\n   Базовое макс. потребление: §R[?ammunition_default_max_consumption_k|2]k ед/день§!\n[GET_ammunition_info_ammunition_army_units_attack]\n[GET_ammunition_info_ammunition_army_units_defence]\n   Эффекты:\n      Атака дивизии: [GET_ammunition_effect_army_attack_factor]\n      Защита дивизии: [GET_ammunition_effect_army_defence_factor]\n      Прорыв: [GET_ammunition_effect_breakthrough_factor]\n      Максимальная укреплённость: [GET_ammunition_effect_max_dig_in_factor]\n      Скорость окапывания: [GET_ammunition_effect_dig_in_speed_factor]\n      Агрессивность ИИ ([?THIS.GetName]): §Y[?ammunition_effect_ai_focus_aggressive_factor|=%]§!"
+
+ammunition_info_ammunition_army_units_attack: "   Юниты в атаке: §O[?divisions_in_offensive_combat] шт.§!\n      Базовый расход: §Y[?ammunition_consumption_offensive_factor_var_result|%]§!\n      Дополнительное обеспечение: [GET_ammunition_consumption_offensive_supply_factor_var]\n      Итоговое обеспечение: [GET_ammunition_consumption_supply_offensive_result_factor_var]\n         §gЭффективный диапазон: [?global.ammunition_consumption_offensive_supply_factor_effects_target_min|%] - [?global.ammunition_consumption_offensive_supply_factor_effects_target_max|%]§!\n      Потребление: §R[?ammunition_consumption_offensive_k|2]k ед/день§!"
+
+ammunition_info_ammunition_army_units_defence: "   Юниты в обороне: §O[?divisions_in_defensive_combat] шт.§!\n      Базовый расход: §Y[?ammunition_consumption_defensive_factor_var_result|%]§!\n      Дополнительное обеспечение: [GET_ammunition_consumption_defensive_supply_factor_var]\n      Итоговое обеспечение: [GET_ammunition_consumption_supply_defensive_result_factor_var]\n         §gЭффективный диапазон: [?global.ammunition_result_defensive_supply_factor_effects_target_min|%] - [?global.ammunition_result_defensive_supply_factor_effects_target_max|%]§!\n      Потребление: §R[?ammunition_consumption_defensive_k|2]k ед/день§!"
+
+ammunition_consumption_supply_offensive_result_factor_var_green: "§G[?ammunition_consumption_supply_offensive_result_factor_var|%]§!"
+ammunition_consumption_supply_offensive_result_factor_var_yellow: "§Y[?ammunition_consumption_supply_offensive_result_factor_var|%]§!"
+ammunition_consumption_supply_offensive_result_factor_var_red: "§R[?ammunition_consumption_supply_offensive_result_factor_var|%]§!"
+
+ammunition_consumption_supply_defensive_result_factor_var_green: "§G[?ammunition_consumption_supply_defensive_result_factor_var|%]§!"
+ammunition_consumption_supply_defensive_result_factor_var_yellow: "§Y[?ammunition_consumption_supply_defensive_result_factor_var|%]§!"
+ammunition_consumption_supply_defensive_result_factor_var_red: "§R[?ammunition_consumption_supply_defensive_result_factor_var|%]§!"
+
+ammunition_consumption_supply_factor_var_green: "§G[?ammunition_consumption_supply_factor_var|%]§!"
+ammunition_consumption_supply_factor_var_yellow: "§Y[?ammunition_consumption_supply_factor_var|%]§!"
+ammunition_consumption_supply_factor_var_red: "§R[?ammunition_consumption_supply_factor_var|%]§!"
+
+ammunition_consumption_offensive_supply_factor_var_green: "§G[?ammunition_consumption_offensive_supply_factor_var|%]§!"
+ammunition_consumption_offensive_supply_factor_var_yellow: "§Y[?ammunition_consumption_offensive_supply_factor_var|%]§!"
+ammunition_consumption_offensive_supply_factor_var_red: "§R[?ammunition_consumption_offensive_supply_factor_var|%]§!"
+
+ammunition_consumption_defensive_supply_factor_var_green: "§G[?ammunition_consumption_defensive_supply_factor_var|%]§!"
+ammunition_consumption_defensive_supply_factor_var_yellow: "§Y[?ammunition_consumption_defensive_supply_factor_var|%]§!"
+ammunition_consumption_defensive_supply_factor_var_red: "§R[?ammunition_consumption_defensive_supply_factor_var|%]§!"
+
+ammunition_effect_army_attack_factor_green: "§G[?ammunition_effect_army_attack_factor|=%]§!"
+ammunition_effect_army_attack_factor_yellow: "§Y[?ammunition_effect_army_attack_factor|=%]§!"
+ammunition_effect_army_attack_factor_red: "§R[?ammunition_effect_army_attack_factor|=%]§!"
+
+ammunition_effect_breakthrough_factor_green: "§G[?ammunition_effect_breakthrough_factor|=%]§!"
+ammunition_effect_breakthrough_factor_yellow: "§Y[?ammunition_effect_breakthrough_factor|=%]§!"
+ammunition_effect_breakthrough_factor_red: "§R[?ammunition_effect_breakthrough_factor|=%]§!"
+
+ammunition_effect_max_dig_in_factor_green: "§G[?ammunition_effect_max_dig_in_factor|=%]§!"
+ammunition_effect_max_dig_in_factor_yellow: "§Y[?ammunition_effect_max_dig_in_factor|=%]§!"
+ammunition_effect_max_dig_in_factor_red: "§R[?ammunition_effect_max_dig_in_factor|=%]§!"
+
+ammunition_effect_army_morale_factor_green: "§G[?ammunition_effect_army_morale_factor|=%]§!"
+ammunition_effect_army_morale_factor_yellow: "§Y[?ammunition_effect_army_morale_factor|=%]§!"
+ammunition_effect_army_morale_factor_red: "§R[?ammunition_effect_army_morale_factor|=%]§!"
+
+ammunition_effect_dig_in_speed_factor_green: "§G[?ammunition_effect_dig_in_speed_factor|=%]§!"
+ammunition_effect_dig_in_speed_factor_yellow: "§Y[?ammunition_effect_dig_in_speed_factor|=%]§!"
+ammunition_effect_dig_in_speed_factor_red: "§R[?ammunition_effect_dig_in_speed_factor|=%]§!"
+
+ammunition_effect_army_defence_factor_green: "§G[?ammunition_effect_army_defence_factor|=%]§!"
+ammunition_effect_army_defence_factor_yellow: "§Y[?ammunition_effect_army_defence_factor|=%]§!"
+ammunition_effect_army_defence_factor_red: "§R[?ammunition_effect_army_defence_factor|=%]§!"
+

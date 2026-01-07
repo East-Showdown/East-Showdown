@@ -51,7 +51,7 @@ bz_on_SMO_start = {
 bz_remove_update_tick = {
 	if = {
 		# Если разрешено создавать погранзоны
-		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag } }
+		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag ABK = { has_cosmetic_tag = ABK_meme } } }
 
 		for_each_scope_loop = { # Цикл по пограничным зонам
 			array = global.bz_states_ids
@@ -60,6 +60,21 @@ bz_remove_update_tick = {
 				limit = { owner = { has_country_flag = is_bz_country }}
 				bz_remove_if_needed = yes
 			}
+		}
+	}
+}
+
+bz_global_update_tick = {
+	set_variable = { global.bz_russian_border_is_breached = 0 }
+	for_each_scope_loop = { # Цикл по пограничным зонам
+		array = global.bz_states_ids
+		break = global.bz_russian_border_is_breached
+
+		if = { # Если владелец не контролирует погранзону полностью
+			limit = { owner = { NOT = { has_full_control_of_state = PREV } } }
+
+			# Значит её прорвали
+			set_variable = { global.bz_russian_border_is_breached = 1 }				
 		}
 	}
 }
@@ -101,7 +116,7 @@ bz_remove_if_needed = {
 bz_daily_update_tick = {
 	if = {
 		# Если разрешено создавать погранзоны
-		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag } }
+		limit = { NOT = { has_global_flag = RUS_ban_border_zones_flag ABK = { has_cosmetic_tag = ABK_meme }  } }
 
 		for_each_scope_loop = { # Цикл по пограничным зонам
 			array = global.bz_states_ids

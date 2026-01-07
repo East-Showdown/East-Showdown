@@ -1,0 +1,331 @@
+shared_focus = {
+    id = ABK_protests_in_country
+	allow_branch = { has_country_flag = ABK_protests_in_country_flag }
+    x = 0
+    y = 2
+    icon = GFX_LATIN_focus_icon
+	cost = 0.5
+	relative_position_id = generic_conflict
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        
+    }
+}
+shared_focus = {
+    id = ABK_try_to_ratify_the_agreement_with_RUS
+    x = 0
+    y = 1
+	bypass = { hidden_trigger = { has_country_flag = ABK_seizure_of_the_government_complex_flag } }
+	prerequisite = { focus = ABK_protests_in_country }
+    icon = GFX_LATIN_focus_icon
+	cost = 0.5
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        custom_effect_tooltip = ABK_try_to_ratify_the_agreement_with_RUS_tt
+    }
+	select_effect = {
+		hidden_effect = { country_event = { id = abk.2 days = 1 hours = 12 random_hours = 6 } }
+	}
+}
+
+shared_focus = {
+    id = ABK_seizure_of_the_government_complex
+	allow_branch = { has_country_flag = ABK_seizure_of_the_government_complex_flag }
+    x = -1
+    y = 2
+	prerequisite = { focus = ABK_try_to_ratify_the_agreement_with_RUS }
+    icon = GFX_LATIN_focus_icon
+	cost = 0.2
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        
+    }
+}
+
+shared_focus = {
+    id = ABK_freeze_the_bill
+	allow_branch = { has_country_flag = ABK_seizure_of_the_government_complex_flag }
+    x = 1
+    y = 2
+	prerequisite = { focus = ABK_try_to_ratify_the_agreement_with_RUS }
+    icon = GFX_LATIN_focus_icon
+	cost = 0.2
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        add_opinion_modifier = { target = RUS modifier = protest_action_strong }
+		add_ideas = ABK_freezed_bill
+        hidden_effect = { country_event = { id = abk.3 days = 1 random_hours = 12 } }
+    }
+}
+
+
+shared_focus = {
+    id = ABK_defeat
+    x = 0
+    y = 3
+	allow_branch = { has_country_flag = ABK_defeat_flag }
+	prerequisite = { focus = ABK_seizure_of_the_government_complex }
+	prerequisite = { focus = ABK_freeze_the_bill }
+    icon = GFX_LATIN_focus_icon
+	cost = 0.2
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        
+    }
+}
+
+shared_focus = {
+    id = ABK_early_elections
+    x = 0
+    y = 4
+	prerequisite = { focus = ABK_defeat }
+    icon = GFX_LATIN_focus_icon
+	cost = 14
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        country_event = { id = abk.4 days = 0 }
+    }
+}
+
+shared_focus = {
+    id = ABK_government_wins
+	allow_branch = { has_country_flag = ABK_government_wins_flag }
+    x = 0
+    y = 5
+	prerequisite = { focus = ABK_early_elections }
+    icon = GFX_LATIN_focus_icon
+	cost = 0.2
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        if = { limit = { ABK_badra_gunba = { is_country_leader = no } } 
+        add_country_leader_role = {
+			character = ABK_badra_gunba
+			promote_leader = yes
+			country_leader = { ideology = authoritarian_democracy }
+		}
+        }
+    }
+}
+
+
+shared_focus = {
+    id = ABK_reject_the_bill
+    x = 0
+    y = 1
+	prerequisite = { focus = ABK_government_wins }
+    icon = GFX_LATIN_focus_icon
+	cost = 1
+	relative_position_id = ABK_government_wins
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+		swap_ideas = {
+            remove_idea = ABK_russian_dependent_economy
+            add_idea = ABK_russian_dependent_economy_2
+        }
+        remove_ideas = ABK_freezed_bill
+    }
+}
+
+shared_focus = {
+    id = ABK_join_csto
+    x = 0
+    y = 2
+	prerequisite = { focus = ABK_reject_the_bill }
+    icon = GFX_LATIN_focus_icon
+	cost = 3
+	relative_position_id = ABK_government_wins
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        RUS = { add_to_faction = ABK }
+    }
+}
+
+shared_focus = {
+    id = ABK_opposition_wins
+	allow_branch = { has_country_flag = ABK_opposition_wins_flag }
+    x = 0
+    y = 5
+	prerequisite = { focus = ABK_early_elections }
+    icon = GFX_LATIN_focus_icon
+	cost = 0.2
+	relative_position_id = ABK_protests_in_country
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+		add_country_leader_role = {
+			character = ABK_adgur_ardzinba
+			promote_leader = yes
+			country_leader = { ideology = authoritarian_democracy }
+		}
+        set_party_name = {
+			ideology = neutrality
+			long_name = ABK_neutrality_opposition_party_long
+			name = ABK_neutrality_opposition_party
+		}
+    }
+}
+
+shared_focus = {
+    id = ABK_accept_the_bill
+    x = 0
+    y = 1
+	prerequisite = { focus = ABK_opposition_wins }
+    icon = GFX_LATIN_focus_icon
+	cost = 1
+	relative_position_id = ABK_opposition_wins
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        remove_ideas = ABK_freezed_bill
+        swap_ideas = {
+            remove_idea = ABK_russian_dependent_economy
+            add_idea = ABK_russian_dependent_economy_3
+        }
+    }
+}
+
+shared_focus = {
+    id = ABK_integrate_in_RUS
+    x = 0
+    y = 2
+	prerequisite = { focus = ABK_accept_the_bill }
+    icon = GFX_LATIN_focus_icon
+	cost = 3
+	relative_position_id = ABK_opposition_wins
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        if = {
+            limit = { has_dlc = "Together for Victory" }
+           RUS = {
+            set_autonomy = {
+                target = ABK
+                autonomous_state = autonomy_federal_subject
+            }
+            else = {
+                puppet = ABK
+            }
+           } 
+        }
+    }
+}
+
+shared_focus = {
+    id = ABK_launch_a_coup
+	allow_branch = { original_tag = ABK WGN = { has_country_flag = WGN_death_prigozhin_utkin } has_global_flag = pmc_abkhazia_on_flag }
+    x = 0
+    y = -1
+    icon = GFX_LATIN_focus_icon
+	cost = 0.5
+	relative_position_id = generic_conflict
+    search_filters = { FOCUS_FILTER_POLITICAL }
+
+    completion_reward = {
+        set_cosmetic_tag = ABK_meme
+        set_politics = {
+            ruling_party = fascism
+            elections_allowed = No
+        }
+        add_country_leader_role = {
+            character = ABK_dmitriy_utkin
+            promote_leader = yes
+            country_leader = { 
+                ideology = national_socialism
+                traits = {
+                    electrician prigozhin_lover butcher
+                }
+            }
+        }
+        add_field_marshal_role = {
+            character = ABK_dmitriy_utkin
+            traits={ butcher wgn_leader harsh_leader }
+            skill=7
+            attack_skill=0
+            defense_skill=4
+            planning_skill=8
+            logistics_skill=8
+        }
+        load_focus_tree = {
+            tree = ABK_meme_focus_tree
+            keep_completed = yes
+        }
+        set_country_flag = head_of_gov_enabled_flag
+        set_party_name = {
+            ideology = fascism
+            long_name = ABK_meme_party_long
+            name = ABK_meme_party
+        }
+        remove_ideas = ABK_russian_dependent_economy
+        swap_ideas = {
+            remove_idea = volunteer_only
+            add_idea = scraping_the_barrel
+        }
+        swap_ideas = {
+            remove_idea = mobilization_age_25_30
+            add_idea = mobilization_age_18
+        }
+        swap_ideas = {
+            remove_idea = service_age_55
+            add_idea = service_age_60
+        }
+        swap_ideas = {
+            remove_idea = standard_funding
+            add_idea = huge_military_budget
+        }
+        swap_ideas = {
+            remove_idea = voluntary_service
+            add_idea = compulsory_service
+        }
+        swap_ideas = {
+            remove_idea = society_medium
+            add_idea = society_very_high
+        }
+        swap_ideas = {
+            remove_idea = export_focus
+            add_idea = closed_economy
+        }
+        swap_ideas = {
+            remove_idea = civilian_economy
+            add_idea = tot_economic_mobilisation
+        }
+        swap_ideas = {
+            remove_idea = low_corruption_level
+            add_idea = miserable_corruption_level
+        }
+        swap_ideas = {
+            remove_idea = low_corruption_level
+            add_idea = miserable_corruption_level
+        }
+        swap_ideas = {
+            remove_idea = consolidated_power_center
+            add_idea = total_centralization
+        }
+        swap_ideas = {
+            remove_idea = borders_heavily
+            add_idea = borders_closed
+        }
+        swap_ideas = {
+            remove_idea = security_basic
+            add_idea = security_bloated
+        }
+        swap_ideas = {
+            remove_idea = security_basic
+            add_idea = security_bloated
+        }
+    }
+}
