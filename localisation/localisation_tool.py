@@ -30,6 +30,17 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 
+# CRITICAL FIX FOR WINDOWS: Change to script's directory
+# This fixes the issue where Windows runs scripts from System32
+script_dir = os.path.dirname(os.path.abspath(__file__))
+try:
+    os.chdir(script_dir)
+except Exception as e:
+    print(f"CRITICAL ERROR: Cannot change to script directory: {e}")
+    print("Make sure to run this script from the localisation/ folder.")
+    input("Press Enter to exit...")
+    sys.exit(1)
+
 # Константи директорій
 RUSSIAN_DIR = "./russian"
 ENGLISH_DIR = "./english"
@@ -202,10 +213,14 @@ def check_localization(ui):
     # Check directories exist
     if not os.path.isdir(RUSSIAN_DIR):
         print_colored(ui['error_russian_dir'], Colors.RED)
+        print(f"Current working directory: {os.getcwd()}")
+        print(f"Looking for: {os.path.abspath(RUSSIAN_DIR)}")
         return 1
 
     if not os.path.isdir(ENGLISH_DIR):
         print_colored(ui['error_english_dir'], Colors.RED)
+        print(f"Current working directory: {os.getcwd()}")
+        print(f"Looking for: {os.path.abspath(ENGLISH_DIR)}")
         return 1
 
     # Create/clear temp directory
@@ -574,16 +589,22 @@ def main():
         if func_input in ['1', 'check']:
             print()
             result = check_localization(ui)
+            print()
+            input("Press Enter to exit...")
             sys.exit(result)
         elif func_input in ['2', 'create']:
             print()
             result = create_wip_files(ui)
+            print()
+            input("Press Enter to exit...")
             sys.exit(result)
         elif func_input in ['3', 'both']:
             print()
             result = check_localization(ui)
             print()
             result2 = create_wip_files(ui)
+            print()
+            input("Press Enter to exit...")
             sys.exit(result or result2)
         else:
             print_colored("Invalid choice. Please enter 1, 2, 3, check, create, or both", Colors.RED)
