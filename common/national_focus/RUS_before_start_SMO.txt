@@ -3179,16 +3179,16 @@ focus_tree = {
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_resumption_of_active_offensive_actions  }
 		mutually_exclusive = { focus = RUS_frontal_assaults}
-		cost = 1.5
+		cost = 2
 		x = 1
 		y = 1
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
+		completion_reward = {
+			add_command_power = 150
+			custom_effect_tooltip = RUS_cut_off_from_supplies_tt
+			add_to_variable = {	
+				var = RUS_VCRF_max_planning
+				value = 0.2
 			}
-		}
-		completion_reward = {	
 		}
 		ai_will_do = {
 			factor = 1
@@ -3200,16 +3200,20 @@ focus_tree = {
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_resumption_of_active_offensive_actions }
 		mutually_exclusive = { focus = RUS_cut_off_from_supplies }
-		cost = 1.5
+		cost = 2
 		x = -1
 		y = 1
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
-		}
 		completion_reward = {	
+			add_to_variable = {	
+				var = RUS_VCRF_breakthrough_factor
+				value = 0.2
+			}
+			add_to_variable = {	
+				var = RUS_VCRF_experience_loss_factor
+				value = 0.25
+			}
+			activate_mission = RUS_frontal_assaults_mission_timeout
+			custom_effect_tooltip = RUS_frontal_assaults_tt
 		}
 		ai_will_do = {
 			factor = 1
@@ -3224,12 +3228,74 @@ focus_tree = {
 		x = 0
 		y = 2
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
+			OR = {
+				is_special_project_completed = sp:rus_umpk
+				is_special_project_completed = sp:rus_umpb
 			}
+			has_completed_focus = RUS_Modernization_of_military_aviation
 		}
-		completion_reward = {	
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						is_special_project_completed = sp:rus_umpb
+						is_special_project_completed = sp:rus_umpk
+					}
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpk
+					NOT = {
+						is_special_project_completed = sp:rus_umpb
+					}
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.25
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_1
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpb
+					NOT = {
+						is_special_project_completed = sp:rus_umpk
+					}
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.25
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_1
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpb
+					is_special_project_completed = sp:rus_umpk
+					NOT = {
+						is_special_project_completed = sp:RUS_umpk_pd
+					}
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.5
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_2
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpb
+					is_special_project_completed = sp:rus_umpk
+					is_special_project_completed = sp:RUS_umpk_pd
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.6
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_3
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -3260,16 +3326,13 @@ focus_tree = {
 		icon = GFX_404
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_frontal_assaults focus = RUS_cut_off_from_supplies }
-		cost = 1.5
+		cost = 2
 		x = 2
 		y = 2
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
 		}
 		completion_reward = {	
+			custom_effect_tooltip = in_development
 		}
 		ai_will_do = {
 			factor = 1
