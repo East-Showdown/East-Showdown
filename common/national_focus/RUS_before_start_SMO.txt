@@ -6206,14 +6206,6 @@ focus_tree = {
 		prerequisite = { focus = RUS_3_ways_One_country }
 		prerequisite = { focus = RUS_ideological_question }
 		available = {
-			has_dynamic_modifier = {
-				modifier = crisis_developed_Putinism
-			}
-			custom_trigger_tooltip = {
-				has_global_flag = WGN_death_prigozhin_utkin_global
-				tooltip = WGN_death_prigozhin_utkin_tooltip
-			}
-			date > 2024.03.9
 		}
 		cost = 2
 		x = -1
@@ -6224,25 +6216,7 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_No_one_except_Putin"
 			add_political_power = 75
-		    custom_effect_tooltip = RUS_No_one_except_Putin_cet
-			remove_dynamic_modifier = {
-				modifier = crisis_developed_Putinism
-			}
-			if = {
-				limit = {
-					NOT = {
-						has_dynamic_modifier = {
-							modifier = state_of_stability
-						}
-					}
-				}
-				add_dynamic_modifier = {
-					modifier = state_of_stability
-				}
-			}
-			hidden_effect = {
-				country_event = rus.142
-			}
+			add_stability = 0.05
 		}
 	}
 	focus = {
@@ -6401,7 +6375,7 @@ focus_tree = {
 		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
 		cost = 1
 		x = 1
-		y = 9
+		y = 10
 		offset = {
 			x = -1
 			trigger = {
@@ -6459,15 +6433,45 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_preparation_for_the_election_campaign
+		icon = GFX_preparation_for_the_election_campaign
+		prerequisite = { focus = RUS_No_one_except_Putin }
+		relative_position_id = RUS_Putins_course
+		cost = 1
+		x = -1
+		y = 8
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
+		available = {
+			date > 2024.03.9
+		}
+		completion_reward = {
+			custom_effect_tooltip = RUS_preparation_for_the_election_campaign_tt
+			hidden_effect = {
+				country_event = rus.142
+			}
+		}
+	}
+	focus = {
 		id = RUS_demographics
 		icon = GFX_RUS_demographics
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
 		cost = 1
 		x = -1
-		y = 9
+		y = 10
 		ai_will_do = {
 			factor = 1
+		}
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_demographics"
@@ -6540,9 +6544,15 @@ focus_tree = {
 		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
 		cost = 1
 		x = -3
-		y = 9
+		y = 10
 		ai_will_do = {
 			factor = 1
+		}
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_MROT"
@@ -6594,11 +6604,17 @@ focus_tree = {
 		id = RUS_Election_conservatism
 		icon = GFX_RUS_conservatism
 		relative_position_id = RUS_Putins_course
-		prerequisite = { focus = RUS_No_one_except_Putin }
+		prerequisite = { focus = RUS_preparation_for_the_election_campaign }
 		mutually_exclusive = { focus = RUS_Election_militarisation }
 		cost = 1
 		x = -3
-		y = 8
+		y = 9
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
 		available = {
 			custom_trigger_tooltip = {
 			    tooltip = RUS_only_events
@@ -6619,11 +6635,11 @@ focus_tree = {
 		id = RUS_Election_militarisation
 		icon = GFX_RUS_Election_militarisation
 		relative_position_id = RUS_Putins_course
-		prerequisite = { focus = RUS_No_one_except_Putin }
+		prerequisite = { focus = RUS_preparation_for_the_election_campaign }
 		mutually_exclusive = { focus = RUS_Election_conservatism }
 		cost = 1
 		x = 1
-		y = 8
+		y = 9
 		offset = {
 			x = -1
 			trigger = {
@@ -6694,7 +6710,13 @@ focus_tree = {
 		prerequisite = { focus = RUS_heros_time focus = RUS_demographics focus = RUS_MROT }
 		cost = 0.143
 		x = -1
-		y = 10
+		y = 11
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
 		ai_will_do = {
 			factor = 1
 		}
@@ -6714,7 +6736,7 @@ focus_tree = {
 		icon = GFX_RUS_Wagner_betray
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_No_one_except_Putin }
-		cost = 0.143
+		cost = 2
 		x = 3
 		y = 8
 		ai_will_do = {
@@ -6722,8 +6744,8 @@ focus_tree = {
 		}
 		allow_branch = { has_country_flag = Wagner_betray_after_march_cf }
 		completion_reward={
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_Vagner_betray"
-		    
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Wagner_betray"
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
@@ -6731,7 +6753,7 @@ focus_tree = {
 		icon = GFX_RUS_purge_unloyal_patriots
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_first_purge_MO }
-		cost = 0.143
+		cost = 2
 		x = 2
 		y = 10
 		ai_will_do = {
@@ -6747,7 +6769,7 @@ focus_tree = {
 		icon = GFX_RUS_first_purge_MO
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Wagner_betray }
-		cost = 0.143
+		cost = 2
 		x = 2
 		y = 9
 		ai_will_do = {
@@ -6755,7 +6777,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_first_purge_MO"
-		    
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
@@ -6763,15 +6785,32 @@ focus_tree = {
 		icon = GFX_RUS_delete_Wagner
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Wagner_betray }
-		cost = 0.143
+		cost = 2
 		x = 5
 		y = 9
+		available = {
+			has_dynamic_modifier = crisis_developed_Putinism
+		}
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_delete_Wagner"
-		    
+		    remove_dynamic_modifier = {
+				modifier = crisis_developed_Putinism
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = state_of_stability
+						}
+					}
+				}
+				add_dynamic_modifier = {
+					modifier = state_of_stability
+				}
+			}
 		}
 	}
 	focus = {
@@ -6779,7 +6818,7 @@ focus_tree = {
 		icon = GFX_RUS_african_corpus
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_delete_Wagner }
-		cost = 0.143
+		cost = 2
 		x = 4
 		y = 10
 		ai_will_do = {
@@ -6787,7 +6826,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_african_corpus"
-		    
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
@@ -6795,7 +6834,7 @@ focus_tree = {
 		icon = GFX_RUS_military_centralisation
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_delete_Wagner }
-		cost = 0.143
+		cost = 2
 		x = 6
 		y = 10
 		ai_will_do = {
@@ -6803,7 +6842,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_military_centralisation"
-		    
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
