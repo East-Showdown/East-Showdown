@@ -3153,7 +3153,7 @@ focus_tree = {
 	}
 	focus = {
 		id = RUS_resumption_of_active_offensive_actions
-		icon = GFX_404
+		icon = GFX_RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_prepare_for_new_campaing  }
 		cost = 2
 		x = 0
@@ -3179,16 +3179,16 @@ focus_tree = {
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_resumption_of_active_offensive_actions  }
 		mutually_exclusive = { focus = RUS_frontal_assaults}
-		cost = 1.5
+		cost = 2
 		x = 1
 		y = 1
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
+		completion_reward = {
+			add_command_power = 150
+			custom_effect_tooltip = RUS_cut_off_from_supplies_tt
+			add_to_variable = {	
+				var = RUS_VCRF_max_planning
+				value = 0.2
 			}
-		}
-		completion_reward = {	
 		}
 		ai_will_do = {
 			factor = 1
@@ -3200,16 +3200,20 @@ focus_tree = {
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_resumption_of_active_offensive_actions }
 		mutually_exclusive = { focus = RUS_cut_off_from_supplies }
-		cost = 1.5
+		cost = 2
 		x = -1
 		y = 1
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
-		}
 		completion_reward = {	
+			add_to_variable = {	
+				var = RUS_VCRF_breakthrough_factor
+				value = 0.2
+			}
+			add_to_variable = {	
+				var = RUS_VCRF_experience_loss_factor
+				value = 0.25
+			}
+			activate_mission = RUS_frontal_assaults_mission_timeout
+			custom_effect_tooltip = RUS_frontal_assaults_tt
 		}
 		ai_will_do = {
 			factor = 1
@@ -3220,16 +3224,78 @@ focus_tree = {
 		icon = GFX_404
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_frontal_assaults focus = RUS_cut_off_from_supplies }
-		cost = 1.5
+		cost = 2
 		x = 0
 		y = 2
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
+			OR = {
+				is_special_project_completed = sp:rus_umpk
+				is_special_project_completed = sp:rus_umpb
 			}
+			has_completed_focus = RUS_Modernization_of_military_aviation
 		}
-		completion_reward = {	
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						is_special_project_completed = sp:rus_umpb
+						is_special_project_completed = sp:rus_umpk
+					}
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpk
+					NOT = {
+						is_special_project_completed = sp:rus_umpb
+					}
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.25
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_1
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpb
+					NOT = {
+						is_special_project_completed = sp:rus_umpk
+					}
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.25
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_1
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpb
+					is_special_project_completed = sp:rus_umpk
+					NOT = {
+						is_special_project_completed = sp:RUS_umpk_pd
+					}
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.5
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_2
+			}
+			if = {
+				limit = {
+					is_special_project_completed = sp:rus_umpb
+					is_special_project_completed = sp:rus_umpk
+					is_special_project_completed = sp:RUS_umpk_pd
+				}
+				add_to_variable = {
+					var = RUS_VCRF_air_cas_efficiency
+					value = 0.6
+				}
+				custom_effect_tooltip = RUS_bomb_the_militants_positions_tt_3
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -3240,7 +3306,7 @@ focus_tree = {
 		icon = GFX_404
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_frontal_assaults focus = RUS_cut_off_from_supplies }
-		cost = 1.5
+		cost = 2
 		x = -2
 		y = 2
 		available = {
@@ -3260,16 +3326,29 @@ focus_tree = {
 		icon = GFX_404
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_frontal_assaults focus = RUS_cut_off_from_supplies }
-		cost = 1.5
+		cost = 2
 		x = 2
 		y = 2
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
 		}
 		completion_reward = {	
+			add_to_variable = {
+				var = RUS_VCRF_supply_node_range
+				value = 0.2
+			}
+			add_to_variable = {
+				var = RUS_VCRF_army_morale
+				value = 0.2
+			}
+			add_to_variable = {
+				var = RUS_VCRF_truck_attrition_factor
+				value = -1
+			}
+			add_to_variable = {
+				var = RUS_VCRF_supply_factor
+				value = 0.3
+			}
+			custom_effect_tooltip = RUS_protecting_our_own_logistics_tt
 		}
 		ai_will_do = {
 			factor = 1
@@ -3283,16 +3362,13 @@ focus_tree = {
 		prerequisite = { focus = RUS_philosophy_of_assaults }
 		prerequisite = { focus = RUS_bomb_the_militants_positions }
 		mutually_exclusive = { focus = RUS_massive_assaults_with_light_enginery }
-		cost = 1.5
+		cost = 2
 		x = 1
 		y = 3
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
 		}
 		completion_reward = {	
+			add_ideas = RUS_armored_assaults_idea
 		}
 		ai_will_do = {
 			factor = 1
@@ -3306,16 +3382,13 @@ focus_tree = {
 		prerequisite = { focus = RUS_philosophy_of_assaults }
 		prerequisite = { focus = RUS_bomb_the_militants_positions }
 		mutually_exclusive = { focus = RUS_armored_assaults }
-		cost = 1.5
+		cost = 2
 		x = -1
 		y = 3
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
 		}
 		completion_reward = {	
+			add_ideas = RUS_massive_assaults_with_light_enginery_idea
 		}
 		ai_will_do = {
 			factor = 1
@@ -3342,13 +3415,33 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = RUS_the_last_days_of_the_kyiv_regime
+		id = RUS_destroy_ukrainian_military_logistics
 		icon = GFX_404
 		relative_position_id = RUS_resumption_of_active_offensive_actions
-		prerequisite = { focus = RUS_army_of_drones }
+		prerequisite = { focus = RUS_massive_assaults_with_light_enginery focus = RUS_armored_assaults }
 		cost = 1.5
 		x = 0
 		y = 5
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = in_development
+				always = no
+			}
+		}
+		completion_reward = {	
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	focus = {
+		id = RUS_the_last_days_of_the_kyiv_regime
+		icon = GFX_404
+		relative_position_id = RUS_resumption_of_active_offensive_actions
+		prerequisite = { focus = RUS_destroy_ukrainian_military_logistics }
+		cost = 1.5
+		x = 0
+		y = 6
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = in_development
@@ -6113,14 +6206,6 @@ focus_tree = {
 		prerequisite = { focus = RUS_3_ways_One_country }
 		prerequisite = { focus = RUS_ideological_question }
 		available = {
-			has_dynamic_modifier = {
-				modifier = crisis_developed_Putinism
-			}
-			custom_trigger_tooltip = {
-				has_global_flag = WGN_death_prigozhin_utkin_global
-				tooltip = WGN_death_prigozhin_utkin_tooltip
-			}
-			date > 2024.03.9
 		}
 		cost = 2
 		x = -1
@@ -6131,25 +6216,7 @@ focus_tree = {
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_No_one_except_Putin"
 			add_political_power = 75
-		    custom_effect_tooltip = RUS_No_one_except_Putin_cet
-			remove_dynamic_modifier = {
-				modifier = crisis_developed_Putinism
-			}
-			if = {
-				limit = {
-					NOT = {
-						has_dynamic_modifier = {
-							modifier = state_of_stability
-						}
-					}
-				}
-				add_dynamic_modifier = {
-					modifier = state_of_stability
-				}
-			}
-			hidden_effect = {
-				country_event = rus.142
-			}
+			add_stability = 0.05
 		}
 	}
 	focus = {
@@ -6308,7 +6375,7 @@ focus_tree = {
 		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
 		cost = 1
 		x = 1
-		y = 9
+		y = 10
 		offset = {
 			x = -1
 			trigger = {
@@ -6366,15 +6433,45 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_preparation_for_the_election_campaign
+		icon = GFX_preparation_for_the_election_campaign
+		prerequisite = { focus = RUS_No_one_except_Putin }
+		relative_position_id = RUS_Putins_course
+		cost = 1
+		x = -1
+		y = 8
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
+		available = {
+			date > 2024.03.9
+		}
+		completion_reward = {
+			custom_effect_tooltip = RUS_preparation_for_the_election_campaign_tt
+			hidden_effect = {
+				country_event = rus.142
+			}
+		}
+	}
+	focus = {
 		id = RUS_demographics
 		icon = GFX_RUS_demographics
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
 		cost = 1
 		x = -1
-		y = 9
+		y = 10
 		ai_will_do = {
 			factor = 1
+		}
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_demographics"
@@ -6447,9 +6544,15 @@ focus_tree = {
 		prerequisite = { focus = RUS_Election_conservatism focus = RUS_Election_militarisation }
 		cost = 1
 		x = -3
-		y = 9
+		y = 10
 		ai_will_do = {
 			factor = 1
+		}
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_MROT"
@@ -6501,11 +6604,17 @@ focus_tree = {
 		id = RUS_Election_conservatism
 		icon = GFX_RUS_conservatism
 		relative_position_id = RUS_Putins_course
-		prerequisite = { focus = RUS_No_one_except_Putin }
+		prerequisite = { focus = RUS_preparation_for_the_election_campaign }
 		mutually_exclusive = { focus = RUS_Election_militarisation }
 		cost = 1
 		x = -3
-		y = 8
+		y = 9
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
 		available = {
 			custom_trigger_tooltip = {
 			    tooltip = RUS_only_events
@@ -6526,11 +6635,11 @@ focus_tree = {
 		id = RUS_Election_militarisation
 		icon = GFX_RUS_Election_militarisation
 		relative_position_id = RUS_Putins_course
-		prerequisite = { focus = RUS_No_one_except_Putin }
+		prerequisite = { focus = RUS_preparation_for_the_election_campaign }
 		mutually_exclusive = { focus = RUS_Election_conservatism }
 		cost = 1
 		x = 1
-		y = 8
+		y = 9
 		offset = {
 			x = -1
 			trigger = {
@@ -6601,7 +6710,13 @@ focus_tree = {
 		prerequisite = { focus = RUS_heros_time focus = RUS_demographics focus = RUS_MROT }
 		cost = 0.143
 		x = -1
-		y = 10
+		y = 11
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
 		ai_will_do = {
 			factor = 1
 		}
@@ -6621,7 +6736,7 @@ focus_tree = {
 		icon = GFX_RUS_Wagner_betray
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_No_one_except_Putin }
-		cost = 0.143
+		cost = 2
 		x = 3
 		y = 8
 		ai_will_do = {
@@ -6629,8 +6744,8 @@ focus_tree = {
 		}
 		allow_branch = { has_country_flag = Wagner_betray_after_march_cf }
 		completion_reward={
-			log = "[GetDateText]: [Root.GetName]: Focus RUS_Vagner_betray"
-		    
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Wagner_betray"
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
@@ -6638,7 +6753,7 @@ focus_tree = {
 		icon = GFX_RUS_purge_unloyal_patriots
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_first_purge_MO }
-		cost = 0.143
+		cost = 2
 		x = 2
 		y = 10
 		ai_will_do = {
@@ -6654,7 +6769,7 @@ focus_tree = {
 		icon = GFX_RUS_first_purge_MO
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Wagner_betray }
-		cost = 0.143
+		cost = 2
 		x = 2
 		y = 9
 		ai_will_do = {
@@ -6662,7 +6777,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_first_purge_MO"
-		    
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
@@ -6670,15 +6785,32 @@ focus_tree = {
 		icon = GFX_RUS_delete_Wagner
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_Wagner_betray }
-		cost = 0.143
+		cost = 2
 		x = 5
 		y = 9
+		available = {
+			has_dynamic_modifier = crisis_developed_Putinism
+		}
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_delete_Wagner"
-		    
+		    remove_dynamic_modifier = {
+				modifier = crisis_developed_Putinism
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = state_of_stability
+						}
+					}
+				}
+				add_dynamic_modifier = {
+					modifier = state_of_stability
+				}
+			}
 		}
 	}
 	focus = {
@@ -6686,7 +6818,7 @@ focus_tree = {
 		icon = GFX_RUS_african_corpus
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_delete_Wagner }
-		cost = 0.143
+		cost = 2
 		x = 4
 		y = 10
 		ai_will_do = {
@@ -6694,7 +6826,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_african_corpus"
-		    
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
@@ -6702,7 +6834,7 @@ focus_tree = {
 		icon = GFX_RUS_military_centralisation
 		relative_position_id = RUS_Putins_course
 		prerequisite = { focus = RUS_delete_Wagner }
-		cost = 0.143
+		cost = 2
 		x = 6
 		y = 10
 		ai_will_do = {
@@ -6710,7 +6842,7 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_military_centralisation"
-		    
+		    custom_effect_tooltip = in_development
 		}
 	}
 	focus = {
