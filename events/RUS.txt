@@ -1,7 +1,6 @@
 add_namespace = rus
 add_namespace = rus_wagner_path
 add_namespace = rus_hidden
-add_namespace = moa
 add_namespace = che
 add_namespace = rus_brigdes
 add_namespace = rus_unit_leader_event
@@ -1431,132 +1430,6 @@ country_event = {
 }
 
 country_event = {
-	id = rus.69
-	title = rus.69.t
-	desc = rus.69.desc
-	picture = GFX_country_event_moa_form
-	fire_only_once = yes
-	is_triggered_only = yes
-	option = {
-		name = rus.69.a
-		log = "[GetDateText]: [This.GetName]: rus.69.a executed"
-		ai_chance = {
-            base = 0       
-        }
-		custom_effect_tooltip = moa_tooltip_form
-		add_political_power = 100
-		add_stability = 0.025
-		hidden_effect = {
-			MOA = {
-				add_state_core = 413
-				set_state_owner	= 413
-				set_state_controller = 413
-			}	
-			MOA = {
-				add_ideas = {
-					no_vpk
-					extensive_conscription
-					low_economic_mobilisation
-					unrecognised_state
-				}
-			
-				add_opinion_modifier = {
-					target = UKR
-					modifier = hostile_status
-				}
-			
-				add_opinion_modifier = {
-					target = RUS
-					modifier = mother_russia
-				}
-			}
-			set_autonomy = {
-				target = MOA
-				autonomous_state = autonomy_integrated_puppet
-			}
-			MOA = {
-				set_popularities = {
-						democratic = 0
-						communism = 0
-						fascism = 0
-						neutrality = 100
-					}
-					
-					set_politics = {
-						ruling_party = neutrality
-						last_election = "2021.11.8"
-						election_frequency = 48
-						elections_allowed = No
-					}
-			}
-		}
-	}
-	option = {
-		name = rus.69.b
-		log = "[GetDateText]: [This.GetName]: rus.69.b executed"
-		ai_chance = {
-            base = 0        
-        }
-		custom_effect_tooltip = moa_tooltip_form
-		MOA = {
-			change_tag_from = ROOT
-		}
-		hidden_effect = {
-			MOA = {
-				add_state_core = 413
-				set_state_owner	= 413
-				set_state_controller = 413
-			}	
-			MOA = {
-				add_ideas = {
-					no_vpk
-					extensive_conscription
-					low_economic_mobilisation
-					unrecognised_state
-				}
-			
-				add_opinion_modifier = {
-					target = UKR
-					modifier = hostile_status
-				}
-			
-				add_opinion_modifier = {
-					target = RUS
-					modifier = mother_russia
-				}
-			}
-			set_autonomy = {
-				target = MOA
-				autonomous_state = autonomy_integrated_puppet
-			}
-			MOA = {
-				set_popularities = {
-						democratic = 0
-						communism = 0
-						fascism = 0
-						neutrality = 100
-					}
-					
-					set_politics = {
-						ruling_party = neutrality
-						last_election = "2021.11.8"
-						election_frequency = 48
-						elections_allowed = No
-					}
-			}
-		}
-	}
-	option = {
-		name = rus.69.c
-		log = "[GetDateText]: [This.GetName]: rus.69.c executed"
-		ai_chance = {
-            base = 9999       
-        }
-		add_stability = 0.01
-	}
-}
-
-country_event = {
 	id = rus.70
 	title = rus.70.t
 	desc = rus.70.d
@@ -2515,6 +2388,21 @@ country_event = {
 		add_political_power = 60
 		add_stability = -0.05
 		add_war_support = -0.1
+		remove_dynamic_modifier = {
+			modifier = crisis_developed_Putinism
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_dynamic_modifier = {
+						modifier = state_of_stability
+					}
+				}
+			}
+			add_dynamic_modifier = {
+				modifier = state_of_stability
+			}
+		}
 	}
 }
 
@@ -4833,7 +4721,6 @@ country_event = {
 					}
 				}
 			}
-			complete_national_focus = RUS_Election_2024
 			news_event = {
 				id = news.373
 				days = 1
@@ -4856,6 +4743,7 @@ country_event = {
 		hidden_effect = {
 			complete_national_focus = RUS_Election_conservatism
 		}
+		add_to_variable = { RUS_state_of_stability_factor = 0.1 }
 		ai_chance = {
 			factor = 100
 			modifier = {
@@ -4874,6 +4762,7 @@ country_event = {
 		hidden_effect = {
 			complete_national_focus = RUS_Election_militarisation
 		}
+		add_to_variable = { RUS_state_of_stability_war_support_factor = 0.1 }
 		ai_chance = {
 			factor = 100
 			modifier = {
@@ -9036,6 +8925,15 @@ country_event = {
 		custom_effect_tooltip = RUS_after_march_1
 		hidden_effect = {
 			set_country_flag = Wagner_betray_after_march_cf
+			RUS = {
+				complete_national_focus = RUS_Wagner_betray
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					complete_national_focus = RUS_delete_Wagner
+				}
+			}
 			412 = { 
 				transfer_state_to = WGN 
 				add_core_of = WGN
@@ -9142,6 +9040,15 @@ country_event = {
 		hidden_effect = {
 			set_country_flag = Wagner_betray_after_march_cf
 			mark_focus_tree_layout_dirty = yes
+			RUS = {
+				complete_national_focus = RUS_Wagner_betray
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					complete_national_focus = RUS_delete_Wagner
+				}
+			}
 		}
 	}
 }
@@ -9378,23 +9285,6 @@ country_event = {
 	}
 }
 
-#выборы 2024
-country_event = {
-	id = rus.271
-	title = rus.271.t
-	desc = rus.271.desc
-	fire_only_once = yes
-    is_triggered_only = yes
-	picture = GFX_country_event_169
-	option = {
-		name = rus.271.a
-		log = "[GetDateText]: [This.GetName]: rus.271.a executed"
-		add_political_power = 50
-		custom_effect_tooltip = RUS_event_271_tooltip
-		add_to_variable = { RUS_state_of_stability_factor = 0.1 }
-	}
-}
-
 unit_leader_event = {
 	id = rus_unit_leader_event.1
 	title = rus_unit_leader_event.1.t
@@ -9517,6 +9407,54 @@ unit_leader_event = {
 		name = rus_unit_leader_event.5.a
 		log = "[GetDateText]: [This.GetName]: rus_unit_leader_event.5.a executed"
 		add_command_power = 15
+	}
+}
+
+unit_leader_event = {
+	id = rus_unit_leader_event.6
+	title = rus_unit_leader_event.6.t
+	desc = rus_unit_leader_event.6.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			add_command_power = 15
+			michael_teplinsky = {
+				promote_leader = yes
+			}
+		}
+	}
+	option = {
+		name = rus_unit_leader_event.6.a
+		log = "[GetDateText]: [This.GetName]: rus_unit_leader_event.6.a executed"
+		effect_tooltip = {
+			add_command_power = 15
+			michael_teplinsky = {
+				add_field_marshal_role = {
+					skill = 0
+					attack_skill = 0
+					defense_skill = 0
+					planning_skill = 0
+					logistics_skill = 0
+				}
+			}
+		}
+	}
+}
+
+#смерть жидко
+unit_leader_event = {
+	id = rus_unit_leader_event.7
+	title = rus_unit_leader_event.7.t
+	desc = rus_unit_leader_event.7.d
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rus_unit_leader_event.7.a
+		log = "[GetDateText]: [This.GetName]: rus_unit_leader_event.7.a executed"
+		retire_character = genadiy_shidko
+		add_command_power = -15
 	}
 }
 
