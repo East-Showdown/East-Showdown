@@ -54,11 +54,7 @@
 #### Клонирование репозитория
 
 ```bash
-# С инструментом локализации
-git clone --recurse-submodules https://github.com/East-Showdown/East-Showdown.git
-
-# Если уже склонировали без submodules
-git submodule update --init --recursive
+git clone https://github.com/East-Showdown/East-Showdown.git
 ```
 
 #### Git Workflow
@@ -135,11 +131,7 @@ If the issue persists, contact the Discord community.
 #### Cloning the repository
 
 ```bash
-# With localization tool
-git clone --recurse-submodules https://github.com/East-Showdown/East-Showdown.git
-
-# If already cloned without submodules
-git submodule update --init --recursive
+git clone https://github.com/East-Showdown/East-Showdown.git
 ```
 
 #### Git Workflow
@@ -196,8 +188,6 @@ Located in `tools/`:
 
 EPL-2.0
 
-## 👤 Author
-
-**iAmScienceMan**
+---
 
 *Femboys rule the world*
