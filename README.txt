@@ -11,6 +11,30 @@
 
 
 
+ДЛЯ РАЗРАБОТЧИКОВ (Git):
+
+Если вы клонируете репозиторий через Git, необходимо инициализировать submodule для инструмента локализации:
+
+git clone --recurse-submodules https://github.com/East-Showdown/East-Showdown.git
+
+Или если уже склонировали:
+
+git submodule update --init --recursive
+
+
+
+FOR DEVELOPERS (Git):
+
+If you're cloning the repository via Git, you need to initialize the submodule for the localization tool:
+
+git clone --recurse-submodules https://github.com/East-Showdown/East-Showdown.git
+
+Or if already cloned:
+
+git submodule update --init --recursive
+
+
+
 GUIDE:
 
 Copy the folder East-Showdown and East-Showdown.mod from the archive to Documents\Paradox Interactive\Hearts of Iron IV\mod
