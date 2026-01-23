@@ -21,7 +21,7 @@
 
 3. Откройте `East-Showdown.mod` и добавьте в конец строку:
    ```
-   path="C:/Users/ВашИмя/Documents/Paradox Interactive/Hearts of Iron IV/mod/East-Showdown"
+   path="C:/Users/ВашеИмя/Documents/Paradox Interactive/Hearts of Iron IV/mod/East-Showdown"
    ```
    **Важно:** Используйте `/` вместо `\` и убедитесь что в пути **нет кириллицы**
 
