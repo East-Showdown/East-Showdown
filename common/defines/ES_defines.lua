@@ -432,7 +432,7 @@ NDefines.NTechnology.MAX_SUBTECHS = 10
 -- MPR
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
-NDefines.NMilitary.REINFORCE_CHANCE = 0.10 -- 0.02
+NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
 NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.005 -- 0.0015
 NDefines.NMilitary.UNIT_EXPERIENCE_SCALE = 1 --1
