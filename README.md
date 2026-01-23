@@ -76,7 +76,6 @@ common/           Основные данные игры (фокусы, реше
 events/           События (33 файла)
 interface/        UI/GUI
 localisation/     Локализация (russian/, english/, ukrainian/)
-  └── wip/        Незавершённые переводы
 gfx/              Графические ресурсы (1.4GB)
 map/              Данные карты
 history/          Стартовые конфигурации стран
@@ -153,7 +152,6 @@ common/           Core game data (focuses, decisions, ideas, AI)
 events/           Events (33 files)
 interface/        UI/GUI definitions
 localisation/     Multi-language text (russian/, english/, ukrainian/)
-  └── wip/        Work-in-progress translations
 gfx/              Graphics assets (1.4GB)
 map/              Map data
 history/          Starting country configurations
