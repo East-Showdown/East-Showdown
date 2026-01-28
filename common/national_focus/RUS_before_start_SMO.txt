@@ -3310,12 +3310,9 @@ focus_tree = {
 		x = -2
 		y = 2
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
 		}
 		completion_reward = {	
+			add_ideas = RUS_philosophy_of_assaults_idea
 		}
 		ai_will_do = {
 			factor = 1
@@ -3403,12 +3400,19 @@ focus_tree = {
 		x = 0
 		y = 4
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
+			has_tech = tech_fpv3
+			is_special_project_completed = sp:rus_fibopt_drones
 		}
 		completion_reward = {	
+			add_to_variable = {
+				var = RUS_VCRF_army_defence_factor
+				value = 0.15
+			}
+			add_to_variable = {
+				var = RUS_VCRF_army_attack_factor
+				value = 0.05
+			}
+			custom_effect_tooltip = RUS_army_of_drones_tt
 		}
 		ai_will_do = {
 			factor = 1
@@ -3423,12 +3427,24 @@ focus_tree = {
 		x = 0
 		y = 5
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = in_development
-				always = no
-			}
 		}
 		completion_reward = {	
+			UKR = {
+				add_dynamic_modifier = { modifier = UKR_raids_on_military_logistics_modifier }
+				if ={
+					limit = {
+						has_completed_focus = RUS_sponsor_private_production
+					}
+					add_to_variable = { UKR_raids_on_military_logistics_truck_attrition_factor = 0.5 }
+				}
+				if ={
+					limit = {
+						is_special_project_completed = sp:RUS_umpk_pd
+					}
+					add_to_variable = { UKR_raids_on_military_logistics_truck_attrition_factor = 0.5 }
+				}
+			}
+			custom_effect_tooltip = RUS_destroy_ukrainian_military_logistics_tt
 		}
 		ai_will_do = {
 			factor = 1
@@ -6732,6 +6748,38 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_assemble_a_winning_team
+		icon = GFX_assemble_a_winning_team
+		relative_position_id = RUS_Putins_course
+		prerequisite = { focus = RUS_Election_2024 }
+		cost = 1
+		x = -1
+		y = 12
+		offset = {
+			x = -1
+			trigger = {
+				has_country_flag = Wagner_betray_after_march_cf
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			has_completed_focus = RUS_purge_unloyal_patriots
+		}
+		completion_reward={
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_Election_2024"
+		    custom_effect_tooltip = RUS_assemble_a_winning_team_tt
+			hidden_effect = {
+				country_event = rus.271
+				country_event = {
+					days = 7
+					id = rus.272
+				}
+			}
+		}
+	}
+	focus = {
 		id = RUS_Wagner_betray
 		icon = GFX_RUS_Wagner_betray
 		relative_position_id = RUS_Putins_course
@@ -6760,7 +6808,10 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_purge_unloyal_patriots"
-		    
+			hidden_effect = {
+				country_event = rus.274
+			}
+			custom_effect_tooltip = RUS_purge_unloyal_patriots_tt
 		}
 	}
 	focus = {
@@ -6776,7 +6827,14 @@ focus_tree = {
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_first_purge_MO"
-		    custom_effect_tooltip = in_development
+			hidden_effect = {
+				country_event = rus.273
+				country_event = {
+					id = rus.269
+					days = 7
+				}
+			}
+		    custom_effect_tooltip = RUS_first_purge_MO_tt
 		}
 	}
 	focus = {
@@ -7638,6 +7696,98 @@ focus_tree = {
 		    add_political_power = 30
 			add_stability = -0.025
 			add_timed_idea = {  idea = RUS_tax_increases_idea  days = 90 } 
+		}
+	}
+	focus = {
+		id = RUS_small_business_support
+		icon = GFX_RUS_small_business_support
+		relative_position_id = RUS_call_Nabiullina
+		prerequisite = { focus = RUS_Tax_issue }
+		prerequisite = { focus = RUS_Control_the_ruble_exchange_rate }
+		prerequisite = { focus = RUS_Gradual_abandonment_of_the_dollar }
+		cost = 1.5
+		x = -2
+		y = 7
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_small_business_support"
+			add_to_variable = { economic_stagnation_consumer_goods_factor = -0.05 }
+			add_to_variable = { economic_stagnation_production_factory_efficiency_gain_factor = 0.05 }
+			add_to_variable = { economic_stagnation_production_speed_buildings_factor = 0.05 }
+			add_to_variable = { economic_stagnation_production_speed_industrial_complex_factor = 0.05 }
+			add_to_variable = { economic_stagnation_production_speed_arms_factory_factor = 0.05 }
+			add_to_variable = { economic_stagnation_production_speed_infrastructure_factor = 0.05 }
+			custom_effect_tooltip = RUS_small_business_support_tt
+		}
+	}
+	focus = {
+		id = RUS_full_scale_bypass_of_sanctions
+		icon = GFX_RUS_full_scale_bypass_of_sanctions
+		relative_position_id = RUS_call_Nabiullina
+		prerequisite = { focus = RUS_Tax_issue }
+		prerequisite = { focus = RUS_Control_the_ruble_exchange_rate }
+		prerequisite = { focus = RUS_Gradual_abandonment_of_the_dollar }
+		cost = 1.5
+		x = 0
+		y = 7
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			has_equipment = {
+				convoy > 499
+			}
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_full_scale_bypass_of_sanctions"
+			add_political_power = 100
+			add_equipment_to_stockpile = {
+				type = convoy
+				amount = -500
+			}
+			add_dynamic_modifier = {
+				modifier = RUS_circumvention_of_sanctions
+			}
+			custom_effect_tooltip = RUS_decisionetc_tooltip
+		}
+	}
+	focus = {
+		id = RUS_measures_of_the_fts
+		icon = GFX_RUS_measures_of_the_fts
+		relative_position_id = RUS_call_Nabiullina
+		prerequisite = { focus = RUS_Tax_issue }
+		prerequisite = { focus = RUS_Control_the_ruble_exchange_rate }
+		prerequisite = { focus = RUS_Gradual_abandonment_of_the_dollar }
+		cost = 1.5
+		x = 2
+		y = 7
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_measures_of_the_fts"
+			country_event = rus.280
+		}
+	}
+	focus = {
+		id = RUS_use_the_war_for_economic_purposes
+		icon = GFX_RUS_use_the_war_for_economic_purposes
+		relative_position_id = RUS_call_Nabiullina
+		prerequisite = { focus = RUS_small_business_support }
+		prerequisite = { focus = RUS_full_scale_bypass_of_sanctions }
+		prerequisite = { focus = RUS_measures_of_the_fts }
+		cost = 1.5
+		x = 0
+		y = 8
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus RUS_use_the_war_for_economic_purposes"
+			custom_effect_tooltip = RUS_use_the_war_for_economic_purposes_tt
+			add_to_variable = { economic_stagnation_production_speed_electronic_factory_factor = 0.07 }
 		}
 	}
 	focus = {
