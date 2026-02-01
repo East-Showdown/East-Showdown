@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 19								-- 0.6.2.0
+NDefines.NGame.SAVE_VERSION = 20								-- 0.6.2.0
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -432,7 +432,7 @@ NDefines.NTechnology.MAX_SUBTECHS = 10
 -- MPR
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
-NDefines.NMilitary.REINFORCE_CHANCE = 0.10 -- 0.02
+NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
 NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.005 -- 0.0015
 NDefines.NMilitary.UNIT_EXPERIENCE_SCALE = 1 --1
@@ -483,5 +483,6 @@ NDefines.NProduction.POWERED_FACTORY_SPEED_MIL = 3.5
 NDefines.NProduction.POWERED_FACTORY_SPEED_NAV = 3.5
 
 NDefines.NDoctrines.MASTERY_BANK_MAX = 0 --200
-NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 999 --50
-NDefines.NDoctrines.MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 20 --5.0
+NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 1200 --50
+NDefines.NDoctrines.MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 1 --5.0
+NDefines.NDoctrines.TRAINING_MASTERY_GAIN_FACTOR = 0.05 -- 0.1
