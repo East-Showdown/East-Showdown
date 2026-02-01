@@ -1,5 +1,18 @@
 # East-Showdown
 
+## READ THIS
+
+Dear friends and mod subscribers! We ask for a moment of your attention.
+Today a rather unusual incident happened involving us, namely: Polish television featured our mod. Unfortunately, not in the way we would have liked to see it.
+
+When we were working on Poland, we never had any intention of offending anyone. The non-historical focus branches and the possibility of bringing radicals to power are a fictional concept, created solely for gameplay purposes as an alternative reality. We would like to offer our sincere apologies to the entire Polish nation!
+
+The created focus branches were developed exclusively by the Ukrainian part of the team, which conducted clarifying discussions and consultations with enthusiasts from Poland itself. We all love Poland, and once again we emphasize: we did not want to offend anyone.
+
+The mod was, is, and will remain neutral. We strongly condemn the events / certain individuals represented in the game, and their mentions are used solely for informational purposes.
+
+---
+
 [![HOI4 Version](https://img.shields.io/badge/HOI4-1.17.*-blue.svg)](https://store.steampowered.com/app/394360/Hearts_of_Iron_IV/)
 [![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-green.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=2948642461)
 [![License](https://img.shields.io/badge/license-EPL--2.0-orange.svg)](LICENSE)
