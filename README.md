@@ -200,5 +200,3 @@ Located in `tools/`:
 EPL-2.0
 
 ---
-
-*Femboys rule the world*
