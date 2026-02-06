@@ -1,4 +1,6 @@
 #Стандартные цели фракций
+
+#Разблокировать вкладку совместных операций
 faction_goal_unlock_military = {
 	name = faction_goal_unlock_military_name
 	description = faction_goal_unlock_military_desc
@@ -75,6 +77,7 @@ faction_goal_unlock_military = {
 	}
 }
 
+#Разблокировать вкладку совместных исследований
 faction_goal_unlock_research = {
 	name = faction_goal_unlock_research_name
 	description = faction_goal_unlock_research_desc
@@ -147,6 +150,69 @@ faction_goal_unlock_research = {
 		add_faction_initiative = 1
 	}
 	ai_will_do = {
-		base = 1000 # They should always do this if they can
+		base = 1000 
+	}
+}
+
+
+# ОДКБ
+
+#Разные варианты целей союзная решимость в зависимости от плана наступления
+
+#Союзная решимость с планом
+faction_goal_allied_resolve = {
+	name = faction_goal_allied_resolve_name
+	description = faction_goal_allied_resolve_desc
+	category = short_term
+	group = FOCUS_FILTER_WAR_SUPPORT_FACTION_GOAL_FILTER
+	allowed = {
+
+	}
+	visible = {
+		has_country_flag = SMO_full_scale_invasion
+	}
+	available = {
+		OR = {
+			has_completed_focus = RUS_prevent_violations_border
+			has_completed_focus = RUS_special_operations_forces
+		}
+	}
+	completed = {
+		divisions_in_state = { state = 371 size > 3 }
+	}
+	complete_effect = {
+		add_faction_power_projection = 100
+		custom_effect_tooltip = THE_FACTION_LEADER
+		add_faction_initiative = 3
+		unlock_national_focus = RUS_Allied_Resolve
+		army_experience = 50 
+		add_doctrine_cost_reduction = {
+			name = entrenchment_focus
+			cost_reduction = 0.5
+			uses = 2
+			category = land_doctrine
+		}
+		add_timed_idea = {
+			idea = RUS_military_exercises_with_belarus
+			days = 10
+		}
+		country_event = {
+			id = smo.3
+			days = 0
+			random_days = 0
+			hours = 2
+			random_hours = 3
+		}
+		BLR = {
+			country_event = {
+				id = smo.4
+				days = 0
+				random_days = 0
+				hours = 3
+				random_hours = 3
+			}
+		}
+		news_event = { id = news.164 hours = 10 }
+		increase_escalation_by_5 = yes
 	}
 }
