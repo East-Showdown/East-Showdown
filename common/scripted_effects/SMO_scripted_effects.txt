@@ -538,6 +538,62 @@ map_apply_modifier_action = {
 	}
 }
 
+#Жестко наговнокодил
+map_apply_modifier_action_RUS = {
+	for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+		start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
+		end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
+		value = temp_region_index
+
+		set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+		for_loop_effect = { # Цикл по стейтам
+			start = global.regions_to_states_ids_start_index^temp_region_id
+			end = global.regions_to_states_ids_end_index^temp_region_id
+			value = temp_state_index
+
+			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+			var:temp_state_id = {
+				if = {
+					limit = { check_variable = { temp_modifier_type = 1 } } #Приоритетное направление 
+					add_dynamic_modifier = {
+						modifier = map_plan_priority_direction_modifier
+						scope = RUS
+						days = 90
+					}
+				}
+				else_if = {
+					limit = { check_variable = { temp_modifier_type = 2 } } #План атаки 
+					add_dynamic_modifier = {
+						modifier = map_plan_attack_modifier
+						scope = RUS
+						days = 30
+					}
+				}
+				else_if = {
+					limit = { check_variable = { temp_modifier_type = 3 } } #План защиты 
+					add_dynamic_modifier = {
+						modifier = map_plan_defence_modifier
+						scope = RUS
+						days = 60
+					}
+				}
+				else_if = {
+					limit = { check_variable = { temp_modifier_type = 4 } } #Постройка укрепов
+					add_dynamic_modifier = {
+						modifier = map_plan_build_fortifications_modifier
+						scope = RUS
+						days = 60
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
 # THIS scope is COUNTRY
 map_update_regions_status = {
 	if = {
