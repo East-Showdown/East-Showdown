@@ -809,8 +809,8 @@ add_named_threat = {
 		type = puppet_wargoal_focus
 	}
 	
-	set_stability = 0.40 # Изменить на более реальные цифры
-	set_war_support = 0.60 # Изменить на более реальные цифры
+	set_stability = 0.41 # Изменить на более реальные цифры
+	set_war_support = 0.62 # Изменить на более реальные цифры
 	army_experience = 200
 	add_command_power = 200 # Итого 100
 	#set_convoys = 250
@@ -818,9 +818,9 @@ add_named_threat = {
 	add_manpower = 2500 # Изменить на более реальные цифры
 	
 	set_popularities = {
-		democratic = 12
+		democratic = 11
 		fascism = 10
-		communism = 5
+		communism = 6
 		neutrality = 73 
 	} # Изменить на более реальные цифры
 	
@@ -838,6 +838,7 @@ add_named_threat = {
 		RUS_SAN_1
 		RUS_refuseniks_dm
 		RUS_Rostrud_idea
+		RUS_coronavires_idea_1
 	}
 
 	
@@ -913,9 +914,13 @@ add_named_threat = {
 	set_country_flag = RUS_unlock_sp_after_smo_fail_flag
 	set_country_flag = RUS_grouping_O_cf
 	set_country_flag = RUS_training_obrspn_16_cf
-	
+	set_country_flag = RUS_Drugaya_Rossia_Interbrigadi_cf
+	set_country_flag = RUS_start_SMO
 	
 	# Динамические и временные идеи
+	add_timed_idea = { idea = RUS_past_military_exercises_with_belarus days = 7 }
+	add_timed_idea = { idea = RUS_za_rossiy days = 2 }
+	
 	add_dynamic_modifier = { modifier = RUS_sic_SMO_traits	}
 	add_dynamic_modifier = { modifier = RUS_recruitment_of_volunteers }
 	
@@ -996,6 +1001,12 @@ add_named_threat = {
 	add_to_variable = { var = RUS_GRU_modifer_army_morale_factor value = 0.05 }
 	add_to_variable = { var = RUS_GRU_modifer_experience_loss_factor value = 0.1 }
 	
+	add_dynamic_modifier = { modifier = RUS_shortage_of_foreign_goods }
+	set_variable = { var = RUS_shortage_of_foreign_goods_consumer_goods_factor value = 0.045 }
+	set_variable = { var = RUS_shortage_of_foreign_stability_factor value = -0.065 }
+	set_variable = { var = RUS_shortage_of_foreign_production_factory_efficiency_gain_factor value = -0.05 }
+	set_variable = { var = RUS_shortage_of_foreign_goods_neutrality_drift value = -0.05 }
+	
 	add_dynamic_modifier = {  modifier = RUS_RUB_1 }
 	
 	add_dynamic_modifier = { modifier = RUS_propaganda }
@@ -1003,19 +1014,72 @@ add_named_threat = {
 	
 	remove_dynamic_modifier = { modifier = RUS_refuseniks_dm }
 	
-	random_list = {
-		50 = { activate_mission = RUS_fees_of_KPRF_AK }
-		50 = { activate_mission = RUS_fees_of_KPRF_support }
-	}
-	random_list = {
-		50 = { activate_mission = RUS_fees_of_LDPR_AK }
-		50 = { activate_mission = RUS_fees_of_LDPR_support }
-	}
-	random_list = {
-		50 = { activate_mission = RUS_fees_of_EDRO_AK }
-		50 = { activate_mission = RUS_fees_of_EDRO_support }
+	# Миссии и решения
+	
+	#random_list = { 50 = { activate_mission = RUS_fees_of_KPRF_AK } 50 = { activate_mission = RUS_fees_of_KPRF_support }
+	activate_mission = RUS_fees_of_KPRF_AK
+	#activate_mission = RUS_fees_of_KPRF_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_KPRF_AK
+		days = 15
 	}
 	
+	activate_mission = RUS_fees_of_LDPR_AK
+	#activate_mission = RUS_fees_of_LDPR_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_LDPR_AK
+		days = 13
+	}
+	
+	#activate_mission = RUS_fees_of_EDRO_AK
+	activate_mission = RUS_fees_of_EDRO_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_EDRO_support
+		days = 16
+	}
+	
+	#activate_mission = RUS_fees_of_NBP_AK
+	activate_mission = RUS_fees_of_NBP_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_NBP_support
+		days = 21
+	}
+	
+	activate_mission = RUS_first_otryad_veterani
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_podrazdeleniya_kazakov
+		days = 0
+	}
+	
+	activate_mission = RUS_first_otryad_podrazdeleniya_kazakov
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_podrazdeleniya_kazakov
+		days = 2
+	}
+	
+	activate_mission = RUS_first_batalion_troya
+	add_days_mission_timeout = {
+		mission = RUS_first_batalion_troya
+		days = 29
+	}
+	
+	activate_mission = RUS_first_otryad_espaniela
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_espaniela
+		days = 7
+	}
+	
+	activate_mission = RUS_coronovirus_low
+	add_days_mission_timeout = {
+		mission = RUS_coronovirus_low
+		days = 18
+	}
+	
+	activate_mission = RUS_first_otryad_Zubr
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_Zubr
+		days = 21
+	}
 	
 	#Персонажи
 	set_portraits = {
@@ -1053,7 +1117,6 @@ add_named_threat = {
 	# Остальное
 	country_event = { id = rus_hidden.9 days = 230 random_days = 120 }
 	country_event = { id = rus_hidden.10 days = 158 }
-	activate_mission = RUS_first_otryad_veterani # С этой миссии нужно поставить нужный эффект
 	
 	add_mastery = {
 		amount = 100
