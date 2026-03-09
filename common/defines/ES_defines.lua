@@ -84,7 +84,7 @@ NDefines.NMilitary.DIVISIONAL_COMMANDER_RANK_XP_THRESHOLD = { 		-- XP thresholds
 }
 NDefines.NMilitary.HOURLY_ORG_MOVEMENT_IMPACT = -0.2		--vanila -0.2 how much org is lost every hour while moving an army.
 NDefines.NMilitary.ZERO_ORG_MOVEMENT_MODIFIER = -0.8		-- speed impact at 0 org.
-NDefines.NMilitary.INFRA_ORG_IMPACT = 0.5				-- коэффициент масштабирования инфры на орг. рег.
+NDefines.NMilitary.INFRA_ORG_IMPACT = 0.25				-- коэффициент масштабирования инфры на орг. рег.
 NDefines.NMilitary.ENGAGEMENT_WIDTH_PER_WIDTH = 2.0	-- how much enemy combat width we are allowed to engage per width of our own
 NDefines.NMilitary.FIELD_EXPERIENCE_ON_DIVISION_MULT = 0.03	-- Multiply field experience gained by this when applying to divisional commander
 NDefines.NMilitary.WAR_SCORE_AIR_IC_LOSS_FACTOR = 0.1							-- war score gained for every IC of damage done to an enemy's air mission
