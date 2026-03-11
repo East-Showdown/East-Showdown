@@ -190,7 +190,7 @@ NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain w
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
 1.5, -- AIR_SUPERIORITY
 1.5, -- CAS
-1.0, -- INTERCEPTION
+0.25, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
