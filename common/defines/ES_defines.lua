@@ -66,8 +66,8 @@ NDefines.NBuildings.RADAR_RANGE_BASE = 224				-- Radar range base first level ra
 NDefines.NBuildings.RADAR_RANGE_MIN = 256				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
 NDefines.NBuildings.RADAR_RANGE_MAX = 840				-- Range is interpolated between building levels 1-15.
 NDefines.NBuildings.RADAR_INTEL_EFFECT = 100			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars then the value sums up.
-NDefines.NBuildings.BASE_FACTORY_REPAIR = 0.3			-- Default repair rate before factories are taken into account
-NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 1.8	-- Factory speed modifier when repairing.
+NDefines.NBuildings.BASE_FACTORY_REPAIR = 1			-- Default repair rate before factories are taken into account
+NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 10	-- Factory speed modifier when repairing.
 NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throughput per level of naval base lancaster
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
@@ -84,7 +84,7 @@ NDefines.NMilitary.DIVISIONAL_COMMANDER_RANK_XP_THRESHOLD = { 		-- XP thresholds
 }
 NDefines.NMilitary.HOURLY_ORG_MOVEMENT_IMPACT = -0.2		--vanila -0.2 how much org is lost every hour while moving an army.
 NDefines.NMilitary.ZERO_ORG_MOVEMENT_MODIFIER = -0.8		-- speed impact at 0 org.
-NDefines.NMilitary.INFRA_ORG_IMPACT = 0.5				-- коэффициент масштабирования инфры на орг. рег.
+NDefines.NMilitary.INFRA_ORG_IMPACT = 0.25				-- коэффициент масштабирования инфры на орг. рег.
 NDefines.NMilitary.ENGAGEMENT_WIDTH_PER_WIDTH = 2.0	-- how much enemy combat width we are allowed to engage per width of our own
 NDefines.NMilitary.FIELD_EXPERIENCE_ON_DIVISION_MULT = 0.03	-- Multiply field experience gained by this when applying to divisional commander
 NDefines.NMilitary.WAR_SCORE_AIR_IC_LOSS_FACTOR = 0.1							-- war score gained for every IC of damage done to an enemy's air mission
@@ -108,7 +108,7 @@ NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_AGILITY = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_SPEED = 3000 -- 800
-NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 1000 -- 100
+NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 4000 -- 100
 NDefines.NAir.DETECT_CHANCE_FROM_AIRCRAFTS_EFFECTIVE_COUNT = 500 -- 3000
 NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.15 -- 1 vanilla Higher value = more shot down planes
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
@@ -190,7 +190,7 @@ NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain w
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
 1.5, -- AIR_SUPERIORITY
 1.5, -- CAS
-1.0, -- INTERCEPTION
+0.25, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
@@ -430,14 +430,21 @@ NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_SUNK_MULTIPLIER_SNAP_LIMIT = 0
 NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show sunk convoy message if there was sunk convoy in this amount of days
 NDefines.NTechnology.MAX_SUBTECHS = 10
 
+NDefines.NRaids.RAID_DEFAULT_TARGET_COOLDOWN_DAYS = 7
+NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_DISASTER_MODIFIER = 0.15 --0.1
+NDefines.NRaids.RAID_HIGH_RISK_SETTING_DISASTER_MODIFIER = 0.30 --0.25
+NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_SUCCESS_MODIFIER = 0.10 --0.1
+NDefines.NRaids.RAID_HIGH_RISK_SETTING_SUCCESS_MODIFIER = 0.20 --0.25
+NDefines.NRaids.RAID_OUTCOME_REPORT_DAYS_TO_LIVE = 6 -- 30
+
 -- MPR
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
-NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.003 -- 0.0015
+NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.0045 -- 0.0015
 NDefines.NMilitary.UNIT_EXPERIENCE_SCALE = 1 --1
-NDefines.NMilitary.UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0003 --0.0001
+NDefines.NMilitary.UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0005 --0.0001
 NDefines.NMilitary.TRAINING_ATTRITION = 0.01 -- 0.05
 NDefines.NMilitary.ARMY_TRAINING_FUEL_MULT = 0.15 -- 1
 NDefines.NSupply.COOLDOWN_DAYS_AFTER_MOVING_SUPPLY_CAPITAL = 1
@@ -458,7 +465,6 @@ NDefines.NMilitary.BASE_DIVISION_BRIGADE_CHANGE_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_SUPPORT_SLOT_COST = 1 -- 10
 NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.040 -- 0.060
 NDefines.NMilitary.COHESION_IMMOBILE_PLANNING_SPEED_MULTIPLIER = 1 -- 0.5
-NDefines.NRaids.RAID_DEFAULT_TARGET_COOLDOWN_DAYS = 1
 NDefines.NProject.BREAKTHROUGH_DAILY_TECHNOLOGY_GAIN = 35
 NDefines.NProject.BREAKTHROUGH_DAILY_SCIENTIST_SKILL_GAIN = 25
 NDefines.NGame.ENERGY_RESOURCE = ""
