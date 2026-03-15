@@ -130,6 +130,7 @@ create_equipment_variant_sp_aa_tunguska = yes
 create_equipment_variant_sp_aa_pantsir_sm = yes
 create_equipment_variant_sp_aa_buk_m1 = yes
 create_equipment_variant_sp_aa_buk_m2 = yes
+create_equipment_variant_sp_aa_shilka = yes
 create_equipment_variant_arv_brem_1 = yes
 create_equipment_variant_arv_brem_2 = yes
 create_equipment_variant_light_tank_sov_2s25_sprut_sd = yes
@@ -839,9 +840,9 @@ add_named_threat = {
 	}
 	
 	set_popularities = {
-		democratic = 12
+		democratic = 11
 		fascism = 10
-		communism = 5
+		communism = 6
 		neutrality = 73 
 	} # Изменить на более реальные цифры
 	
@@ -851,14 +852,14 @@ add_named_threat = {
 		RUS_coronavires_idea_2
 		#strength_of_opposition_1
 	}
-	
+	add_dynamic_modifier = { modifier = RUS_refuseniks_dm }
 	add_ideas = {
 		society_high
 		frontline_improvisation_spirit
 		#strength_of_opposition_2
 		RUS_SAN_1
-		RUS_refuseniks_dm
 		RUS_Rostrud_idea
+		RUS_coronavires_idea_1
 	}
 
 	
@@ -921,7 +922,7 @@ add_named_threat = {
 	set_global_flag = RUS_Medvedchuk_arrested
 	
 	#Флажки - Страны
-	set_country_flag = CIS_general_staff
+	set_country_flag = CIS_Dvornikov
 	set_country_flag = SMO_offensive_on_kyiv
 	set_country_flag = RUS_failure_of_SMO
 	set_country_flag = RUS_failure_SMO # А зачем нам аж целых 2 флажка на провал СВО?
@@ -934,9 +935,13 @@ add_named_threat = {
 	set_country_flag = RUS_unlock_sp_after_smo_fail_flag
 	set_country_flag = RUS_grouping_O_cf
 	set_country_flag = RUS_training_obrspn_16_cf
-	
+	set_country_flag = RUS_Drugaya_Rossia_Interbrigadi_cf
+	set_country_flag = RUS_start_SMO
 	
 	# Динамические и временные идеи
+	add_timed_idea = { idea = RUS_past_military_exercises_with_belarus days = 7 }
+	add_timed_idea = { idea = RUS_za_rossiy days = 2 }
+	
 	add_dynamic_modifier = { modifier = RUS_sic_SMO_traits	}
 	add_dynamic_modifier = { modifier = RUS_recruitment_of_volunteers }
 	
@@ -970,10 +975,9 @@ add_named_threat = {
 	add_to_variable = { var = RUS_monthly_increase_var_add value = -1.5 }
 	add_to_variable = { var = RUS_VCRF_max_dig_in_factor value = 0.08 }
 	
-	set_variable = { RUS_sic_SMO_army_org_factor = 0.05 }
-	set_variable = { RUS_sic_SMO_max_planning_factor = -0.1 }
-	set_variable = { RUS_sic_SMO_experience_gain_army_unit_factor = 0.075 }
-	set_variable = { RUS_sic_SMO_command_power_gain_mult = -0.15 }
+	set_variable = { RUS_sic_SMO_initiative_factor = 0.05 }
+	set_variable = { RUS_sic_SMO_command_power_gain_mult = 0.15 }
+	set_variable = { RUS_sic_SMO_supply_consumption_factor = -0.05 }
 	
 	add_to_variable = { var = RUS_propaganda_political_power_cost value = 0.25 }
 	add_to_variable = { var = RUS_propaganda_stability_factor value = 0.025 }
@@ -1017,6 +1021,12 @@ add_named_threat = {
 	add_to_variable = { var = RUS_GRU_modifer_army_morale_factor value = 0.05 }
 	add_to_variable = { var = RUS_GRU_modifer_experience_loss_factor value = 0.1 }
 	
+	add_dynamic_modifier = { modifier = RUS_shortage_of_foreign_goods }
+	set_variable = { var = RUS_shortage_of_foreign_goods_consumer_goods_factor value = 0.045 }
+	set_variable = { var = RUS_shortage_of_foreign_stability_factor value = -0.065 }
+	set_variable = { var = RUS_shortage_of_foreign_production_factory_efficiency_gain_factor value = -0.05 }
+	set_variable = { var = RUS_shortage_of_foreign_goods_neutrality_drift value = -0.05 }
+	
 	add_dynamic_modifier = {  modifier = RUS_RUB_1 }
 	
 	add_dynamic_modifier = { modifier = RUS_propaganda }
@@ -1024,19 +1034,72 @@ add_named_threat = {
 	
 	remove_dynamic_modifier = { modifier = RUS_refuseniks_dm }
 	
-	random_list = {
-		50 = { activate_mission = RUS_fees_of_KPRF_AK }
-		50 = { activate_mission = RUS_fees_of_KPRF_support }
-	}
-	random_list = {
-		50 = { activate_mission = RUS_fees_of_LDPR_AK }
-		50 = { activate_mission = RUS_fees_of_LDPR_support }
-	}
-	random_list = {
-		50 = { activate_mission = RUS_fees_of_EDRO_AK }
-		50 = { activate_mission = RUS_fees_of_EDRO_support }
+	# Миссии и решения
+	
+	#random_list = { 50 = { activate_mission = RUS_fees_of_KPRF_AK } 50 = { activate_mission = RUS_fees_of_KPRF_support }
+	activate_mission = RUS_fees_of_KPRF_AK
+	#activate_mission = RUS_fees_of_KPRF_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_KPRF_AK
+		days = -15
 	}
 	
+	activate_mission = RUS_fees_of_LDPR_AK
+	#activate_mission = RUS_fees_of_LDPR_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_LDPR_AK
+		days = -13
+	}
+	
+	#activate_mission = RUS_fees_of_EDRO_AK
+	activate_mission = RUS_fees_of_EDRO_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_EDRO_support
+		days = -16
+	}
+	
+	#activate_mission = RUS_fees_of_NBP_AK
+	activate_mission = RUS_fees_of_NBP_support
+	add_days_mission_timeout = {
+		mission = RUS_fees_of_NBP_support
+		days = -21
+	}
+	
+	activate_mission = RUS_first_otryad_veterani
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_podrazdeleniya_kazakov
+		days = 0
+	}
+	
+	activate_mission = RUS_first_otryad_podrazdeleniya_kazakov
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_podrazdeleniya_kazakov
+		days = 2
+	}
+	
+	activate_mission = RUS_first_batalion_troya
+	add_days_mission_timeout = {
+		mission = RUS_first_batalion_troya
+		days = 29
+	}
+	
+	activate_mission = RUS_first_otryad_espaniela
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_espaniela
+		days = 7
+	}
+	
+	activate_mission = RUS_coronovirus_low
+	add_days_mission_timeout = {
+		mission = RUS_coronovirus_low
+		days = -18
+	}
+	
+	activate_mission = RUS_first_otryad_Zubr
+	add_days_mission_timeout = {
+		mission = RUS_first_otryad_Zubr
+		days = 21
+	}
 	
 	#Персонажи
 	set_portraits = {
@@ -1045,6 +1108,36 @@ add_named_threat = {
 			large = "GFX_RUS_vladimir_putin_smo"
 		}
 	}
+
+	vladimir_putin = {
+		add_country_leader_role = {
+			promote_leader = yes
+			country_leader = {
+				ideology = authoritarian_democracy_rus_postwar
+				expire = "1965.1.1.1"
+				traits = { popular_figurehead regent_of_russian_democracy }
+				desc = VLADIMIR_PUTIN_DESCRIPTION
+			}
+		}
+	}
+
+	aleksandr_dvornikov = {
+		promote_leader = yes
+		add_skill_level = 1
+	}
+
+	andrey_mordvichev = {
+		add_trait = {
+			trait = trait_engineer
+		}
+		add_skill_level = 1
+	}
+
+	michael_teplinsky = {
+		add_skill_level = 1
+	}
+
+
 	
 	add_field_marshal_role = {
 		Character = valery_gerasimov
@@ -1056,27 +1149,23 @@ add_named_threat = {
 		logistics_skill = 3
 	}
 	
-	alexander_lapin = {
-	    add_unit_leader_trait = brilliant_strategist
-	}
+	retire_character = vladimir_zhirinovsky
 	
-	random_army_leader = {
-		limit = { NOT = { has_trait = butcher } }
-		add_unit_leader_trait = inflexible_strategist
-	}
-	random_army_leader = {
-		limit = { NOT = { has_trait = butcher } }
-		add_unit_leader_trait = inflexible_strategist
-	}
 	
 	# Остальное
 	country_event = { id = rus_hidden.9 days = 230 random_days = 120 }
 	country_event = { id = rus_hidden.10 days = 158 }
-	activate_mission = RUS_first_otryad_veterani # С этой миссии нужно поставить нужный эффект
 	
 	country_event = {
 		id = rus.5
 		days = 10
+	}
+
+
+
+	country_event = {
+		id = rus.216
+		days = 176
 	}
 	
 	create_equipment_variant_sp_atgm_mt_lb_s_modulem_mt_12_rapira = yes
@@ -2690,6 +2779,14 @@ add_equipment_to_stockpile = {
 	amount = 40
 	producer = RUS
 }
+
+add_equipment_to_stockpile = {
+    type = sp_aa_mrv_tracked_0_equipment
+    variant_name = "Шилка"
+    amount = 150
+    producer = RUS
+}
+
 ##ARTY
 add_equipment_to_stockpile = {
 	type = sov_artillery_d30_equipment
