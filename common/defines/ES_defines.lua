@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2026.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 20								-- 0.6.2.0
+NDefines.NGame.SAVE_VERSION = 22								-- 0.7.0.1
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -50,7 +50,7 @@ NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for 
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
 NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.17 -- 0.01
-NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.04					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
+NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.03					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
 NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
 NDefines.NResistance.GARRISON_MANPOWER_LOST_BY_ATTACK = 0.016 	-- Ratio of manpower lost by garrison at each attack on garrison (this number will be reduced by the hardness of garrison template)
 NDefines.NProduction.CIC_BANK_SPEED_BOOST_FACTOR = 0.25                 -- The CIC bank can boost production speed with this factor (0.5 means 50 %)
@@ -66,10 +66,11 @@ NDefines.NBuildings.RADAR_RANGE_BASE = 224				-- Radar range base first level ra
 NDefines.NBuildings.RADAR_RANGE_MIN = 256				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
 NDefines.NBuildings.RADAR_RANGE_MAX = 840				-- Range is interpolated between building levels 1-15.
 NDefines.NBuildings.RADAR_INTEL_EFFECT = 100			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars then the value sums up.
-NDefines.NBuildings.BASE_FACTORY_REPAIR = 0.3			-- Default repair rate before factories are taken into account
-NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 1.8	-- Factory speed modifier when repairing.
+NDefines.NBuildings.BASE_FACTORY_REPAIR = 1			-- Default repair rate before factories are taken into account
+NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 10	-- Factory speed modifier when repairing.
 NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throughput per level of naval base lancaster
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
+NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
 NDefines.NMilitary.MIN_DIVISION_BRIGADE_HEIGHT = 4		-- Min height of regiments in division designer.
 NDefines.NMilitary.DIVISIONAL_COMMANDER_TRAIT_XP_REQUIREMENT = 600.0	--Get a trait if any valid options & xp gained >= this
 NDefines.NMilitary.MAX_DIVISION_SUPPORT_WIDTH = 2
@@ -83,7 +84,7 @@ NDefines.NMilitary.DIVISIONAL_COMMANDER_RANK_XP_THRESHOLD = { 		-- XP thresholds
 }
 NDefines.NMilitary.HOURLY_ORG_MOVEMENT_IMPACT = -0.2		--vanila -0.2 how much org is lost every hour while moving an army.
 NDefines.NMilitary.ZERO_ORG_MOVEMENT_MODIFIER = -0.8		-- speed impact at 0 org.
-NDefines.NMilitary.INFRA_ORG_IMPACT = 0.5				-- коэффициент масштабирования инфры на орг. рег.
+NDefines.NMilitary.INFRA_ORG_IMPACT = 0.25				-- коэффициент масштабирования инфры на орг. рег.
 NDefines.NMilitary.ENGAGEMENT_WIDTH_PER_WIDTH = 2.0	-- how much enemy combat width we are allowed to engage per width of our own
 NDefines.NMilitary.FIELD_EXPERIENCE_ON_DIVISION_MULT = 0.03	-- Multiply field experience gained by this when applying to divisional commander
 NDefines.NMilitary.WAR_SCORE_AIR_IC_LOSS_FACTOR = 0.1							-- war score gained for every IC of damage done to an enemy's air mission
@@ -107,8 +108,8 @@ NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_AGILITY = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_SPEED = 3000 -- 800
-NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 1000 -- 100
-NDefines.NAir.DETECT_CHANCE_FROM_AIRCRAFTS_EFFECTIVE_COUNT = 600 -- 3000
+NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 4000 -- 100
+NDefines.NAir.DETECT_CHANCE_FROM_AIRCRAFTS_EFFECTIVE_COUNT = 500 -- 3000
 NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.15 -- 1 vanilla Higher value = more shot down planes
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
 NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
@@ -138,10 +139,10 @@ NDefines.NMilitary.BASE_FORT_PENALTY = -0.15 					   -- vanilla -0.15 fort penal
 NDefines.NMilitary.MULTIPLE_COMBATS_PENALTY = -0.5               -- defender penalty if attacked from multiple directions
 NDefines.NMilitary.DIG_IN_FACTOR = 0.03						   --vanila 0.02 bonus factor for each dug-in level
 NDefines.NMilitary.ARMY_LEADER_XP_GAIN_PER_UNIT_IN_COMBAT = 0.1 -- #was 0.1 XP gain per unit in combat
-NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_IMPACT = -0.6          -- #was -0.35 effect on defense due to enemy air superiorty
-NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE = 0.20	       -- more AA attack will approach this amount of help (diminishing returns)
-NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112 -- how quickly defense approaches the max impact diminishing returns curve
-NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.3     -- vanila 0.3 effect on speed due to enemy air superiority
+NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_IMPACT = -0.20          -- #was -0.35 effect on defense due to enemy air superiorty
+NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE = 0.75	       -- more AA attack will approach this amount of help (diminishing returns)
+NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 625 -- how quickly defense approaches the max impact diminishing returns curve
+NDefines.NMilitary.ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.15     -- vanila 0.3 effect on speed due to enemy air superiority
 NDefines.NMilitary.ANTI_AIR_TARGETTING_TO_CHANCE = 0.02			-- Balancing value to determine the chance of ground AA hitting an attacking airplane affecting both the effective average damage done by AA to airplanes and the reduction of damage done by airplanes due to AA support
 NDefines.NMilitary.ANTI_AIR_ATTACK_TO_AMOUNT = 0				-- Balancing value to convert equipment stat anti_air_attack to the random % value of airplanes being hit.
 NDefines.NMilitary.ENCIRCLED_PENALTY = -0.30                      	-- #was -0.3 penalty when completely encircled когда окружили
@@ -189,7 +190,7 @@ NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain w
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
 1.5, -- AIR_SUPERIORITY
 1.5, -- CAS
-1.0, -- INTERCEPTION
+0.25, -- INTERCEPTION
 0.0, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
@@ -429,12 +430,19 @@ NDefines.NMarket.CONTRACT_ESTIMATE_AVERAGE_CONVOY_SUNK_MULTIPLIER_SNAP_LIMIT = 0
 NDefines.NMarket.WARNING_CONVOYS_SUNK_MAX_DAYS = 30 -- The contracts will show sunk convoy message if there was sunk convoy in this amount of days
 NDefines.NTechnology.MAX_SUBTECHS = 10
 
+NDefines.NRaids.RAID_DEFAULT_TARGET_COOLDOWN_DAYS = 7
+NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_DISASTER_MODIFIER = 0.15 --0.1
+NDefines.NRaids.RAID_HIGH_RISK_SETTING_DISASTER_MODIFIER = 0.30 --0.25
+NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_SUCCESS_MODIFIER = 0.10 --0.1
+NDefines.NRaids.RAID_HIGH_RISK_SETTING_SUCCESS_MODIFIER = 0.20 --0.25
+NDefines.NRaids.RAID_OUTCOME_REPORT_DAYS_TO_LIVE = 6 -- 30
+
 -- MPR
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
 NDefines.NMilitary.COMBAT_OVER_WIDTH_PENALTY = -1 -- original mod 1.5 -- vanilla 1
-NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.005 -- 0.0015
+NDefines.NMilitary.FIELD_EXPERIENCE_SCALE = 0.0045 -- 0.0015
 NDefines.NMilitary.UNIT_EXPERIENCE_SCALE = 1 --1
 NDefines.NMilitary.UNIT_EXPERIENCE_PER_COMBAT_HOUR = 0.0005 --0.0001
 NDefines.NMilitary.TRAINING_ATTRITION = 0.01 -- 0.05
@@ -450,14 +458,13 @@ NDefines.NMilitary.INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.05 -- -0.10
 NDefines.NMilitary.RETREAT_SPEED_FACTOR = 0.50 -- 0.25
 NDefines.NMilitary.WITHDRAWING_SPEED_FACTOR = 0.30 -- 0.15
 NDefines.NMilitary.PLANNING_MAX = 0.01 -- 0.30
-NDefines.NMilitary.TRAINING_MAX_LEVEL = 3 -- 2
-NDefines.NMilitary.EXPERIENCE_COMBAT_FACTOR = 0.15 -- 0.25
+NDefines.NMilitary.TRAINING_MAX_LEVEL = 2.5 -- 2
+NDefines.NMilitary.EXPERIENCE_COMBAT_FACTOR = 0.10 -- 0.25
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_GROUP_COST = 2 -- 5	
 NDefines.NMilitary.BASE_DIVISION_BRIGADE_CHANGE_COST = 2 -- 5
 NDefines.NMilitary.BASE_DIVISION_SUPPORT_SLOT_COST = 1 -- 10
 NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.040 -- 0.060
 NDefines.NMilitary.COHESION_IMMOBILE_PLANNING_SPEED_MULTIPLIER = 1 -- 0.5
-NDefines.NRaids.RAID_DEFAULT_TARGET_COOLDOWN_DAYS = 1
 NDefines.NProject.BREAKTHROUGH_DAILY_TECHNOLOGY_GAIN = 35
 NDefines.NProject.BREAKTHROUGH_DAILY_SCIENTIST_SKILL_GAIN = 25
 NDefines.NGame.ENERGY_RESOURCE = ""
@@ -485,4 +492,4 @@ NDefines.NProduction.POWERED_FACTORY_SPEED_NAV = 3.5
 NDefines.NDoctrines.MASTERY_BANK_MAX = 0 --200
 NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 1200 --50
 NDefines.NDoctrines.MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 1 --5.0
-NDefines.NDoctrines.TRAINING_MASTERY_GAIN_FACTOR = 0.05 -- 0.1
+NDefines.NDoctrines.TRAINING_MASTERY_GAIN_FACTOR = 0.00 -- 0.1
