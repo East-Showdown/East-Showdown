@@ -73,7 +73,7 @@ on_actions = {
 						is_ai = yes
 					}
 				}
-				RUS = {	add_timed_idea = {  idea = RUS_disruption_of_the_operation_singleplayer  days = 30 } }
+				RUS = {	add_timed_idea = {  idea = RUS_disruption_of_the_operation_singleplayer  days = 25 } }
 				RUS = { 
 					set_temp_variable = { temp_modifier_type = 1 }		
 					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index }
@@ -93,13 +93,27 @@ on_actions = {
 						is_ai = no
 					}
 				}
-				RUS = {	add_timed_idea = {  idea = RUS_disruption_of_the_operation_singleplayer  days = 30 } }
+				RUS = {	add_timed_idea = {  idea = RUS_disruption_of_the_operation  days = 25 } }
 			}
 			
 			#Выдача ивентов, прожатых решений, временых идей и т.д.
+			
+			# 15 апреля 2022 года
 			if = { limit = { has_start_date > 2022.04.14  has_start_date < 2022.04.16 }
 				set_variable = { global.ukr_information_war_var_sum = 70 }
 				set_variable = { global.rus_information_war_var_sum = 30 }
+				clamp_variable = {
+					var = global.rus_information_war_var_sum
+					min = 0
+					max = 100
+				}
+				clamp_variable = {
+					var = global.ukr_information_war_var_sum
+					min = 0
+					max = 100
+				}
+				
+				add_to_variable = {	var = global.SMO_progress_of_the_peace_talks value = 70 }
 				set_global_flag = SMO_prisoner_of_war_exchange_gf
 				set_global_flag = SMO_prisoner_of_war_exchange_cf
 				set_global_flag = SMO_exchange_prisoners_soon_gf
@@ -200,6 +214,9 @@ on_actions = {
 						days = 21
 					}
 				}
+				DPR = {
+					activate_mission = DPR_lessons_of_war_decision
+				}
 				POL = {
 					add_timed_idea = { idea = POL_small_business_aid days = 82 }
 					
@@ -237,7 +254,23 @@ on_actions = {
 					add_resistance = 50
 				}
 			}
+			# 6 сентября 2022 года
 			if = { limit = { has_start_date > 2022.09.05 has_start_date < 2022.09.07 }
+				# Глобальные измения - Информационная война
+				add_to_variable = {	var = global.rus_information_war_var_sum value = 40 }
+				add_to_variable = {	var = global.ukr_information_war_var_sum value = 60 }
+				clamp_variable = {
+					var = global.rus_information_war_var_sum
+					min = 0
+					max = 100
+				}
+				clamp_variable = {
+					var = global.ukr_information_war_var_sum
+					min = 0
+					max = 100
+				}
+				
+				add_to_variable = {	var = global.SMO_progress_of_the_peace_talks value = 70 }
 				UKR = {
 					activate_decision = UKR_Form_47
 					add_days_remove  = { decision = UKR_Form_47 days = -8 } # Итого 22 дней
@@ -263,6 +296,8 @@ on_actions = {
 					set_temp_variable = { temp_modifier_type = 3 }		
 					set_temp_variable = { temp_selected_region_index = global.selected_region_zaporozhskaya_oblast_index }
 					map_apply_modifier_action_UKR = yes
+					
+					activate_mission = UKR_start_spiderweb_operation
 				}
 				RUS = {
 					set_temp_variable = { temp_modifier_type = 2 }		
@@ -338,15 +373,135 @@ on_actions = {
 						mission = RUS_form_volunteer_battalions_si
 						days = -15
 					}
+					
+					activate_mission = RUS_first_batalion_Abhasia
+					add_days_mission_timeout = {
+						mission = RUS_first_batalion_Abhasia
+						days = 10
+					}
+					
+					activate_mission = RUS_first_batalion_Osetia
+					add_days_mission_timeout = {
+						mission = RUS_first_batalion_Abhasia
+						days = 12
+					}
+					
+					activate_mission = RUS_first_batalion_dro_tigry
+					add_days_mission_timeout = {
+						mission = RUS_first_batalion_dro_tigry
+						days = 25
+					}
+					
+					activate_mission = RUS_first_batalion_BORZ
+					add_days_mission_timeout = {
+						mission = RUS_first_batalion_BORZ
+						days = 5
+					}
 				}
 				DPR = {
 					activate_mission = DPR_fees_of_Russia
+					add_days_mission_timeout = {
+						mission = DPR_fees_of_Russia
+						days = -4
+					}
+					activate_mission = DPR_joint_meetings
+					add_days_mission_timeout = {
+						mission = DPR_joint_meetings
+						days = 9
+					}
+					
+					activate_mission = DPR_get_equipment
+					add_days_mission_timeout = {
+						mission = DPR_get_equipment
+						days = -5
+					}
+					
+					activate_mission = DPR_get_ammo
+					add_days_mission_timeout = {
+						mission = DPR_get_ammo
+						days = -5
+					}
+					
+					activate_mission = DPR_russian_spring_decision_political
+					add_days_mission_timeout = {
+						mission = DPR_russian_spring_decision_political
+						days = 2
+					}
+					
+					activate_mission = DPR_defence_the_communications_decision
+					add_days_mission_timeout = {
+						mission = DPR_defence_the_communications_decision
+						days = 2
+					}
+					
+					random_controlled_state = {
+						add_extra_state_shared_building_slots = 2
+						add_building_construction = {
+							type = industrial_complex
+							level = 1
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = arms_factory
+							level = 1
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = infrastructure
+							level = 1
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = electrical_substation
+							level = 4
+						}
+					}
+					205 = { 
+						add_resource = {
+							type = oil
+							amount = 15
+						}
+					}
 				}
 				LPR = {
 					activate_mission = LPR_fees_of_Russia
+					add_days_mission_timeout = {
+						mission = LPR_fees_of_Russia
+						days = -4
+					}
+					
+					activate_mission = LPR_russian_spring_decision_political_2
+					add_days_mission_timeout = {
+						mission = LPR_russian_spring_decision_political_2
+						days = 2
+					}
+					
+					random_controlled_state = {
+						add_extra_state_shared_building_slots = 2
+						add_building_construction = {
+							type = industrial_complex
+							level = 1
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = arms_factory
+							level = 1
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = infrastructure
+							level = 1
+							instant_build = yes
+						}
+						add_building_construction = {
+							type = electrical_substation
+							level = 4
+						}
+					}
 				}
 				POL = {
 					add_timed_idea = { idea = POL_european_investments_into_cities days = 94 }
+					add_timed_idea = { idea = POL_contribution_into_agrarian_industry days = 69 }
 				}
 				WGN = {
 					activate_mission = WGN_get_money
@@ -450,10 +605,10 @@ on_actions = {
 				
 				# Killing divisions (organization)
 				damage_units = { province = 5065 org_damage = 0.56	}
-				damage_units = { province = 570 org_damage = 0.83	}
-				damage_units = { province = 18963 org_damage = 0.83	}
-				damage_units = { province = 11066 org_damage = 0.83	}
-				damage_units = { province = 3666 org_damage = 0.83	}
+				damage_units = { province = 570 org_damage = 0.82	}
+				damage_units = { province = 18963 org_damage = 0.82	}
+				damage_units = { province = 11066 org_damage = 0.82	}
+				damage_units = { province = 3666 org_damage = 0.82	}
 				damage_units = { province = 13587 org_damage = 0.70	}
 				damage_units = { province = 7885 org_damage = 0.70	}
 				damage_units = { province = 3999 org_damage = 0.70	}
@@ -462,9 +617,9 @@ on_actions = {
 				damage_units = { province = 13701 org_damage = 0.70	}
 				damage_units = { province = 16236 org_damage = 0.70	}
 				damage_units = { province = 10763 org_damage = 0.70	}
-				damage_units = { province = 15376 org_damage = 0.83	}
-				damage_units = { province = 5919 org_damage = 0.83	}
-				damage_units = { province = 16985 org_damage = 0.83	}
+				damage_units = { province = 15376 org_damage = 0.82	}
+				damage_units = { province = 5919 org_damage = 0.82	}
+				damage_units = { province = 16985 org_damage = 0.82	}
 				damage_units = { province = 2089 org_damage = 0.50	}
 				damage_units = { province = 9659 org_damage = 0.70	}
 				damage_units = { province = 10362 org_damage = 0.60 }
@@ -477,8 +632,8 @@ on_actions = {
 				damage_units = { province = 3283 org_damage = 0.30 }
 				damage_units = { province = 3569 org_damage = 0.30 }
 				damage_units = { province = 4912 org_damage = 0.30 }
-				damage_units = { province = 9001 org_damage = 0.83 }
-				damage_units = { province = 14126 org_damage = 0.83 }
+				damage_units = { province = 9001 org_damage = 0.82 }
+				damage_units = { province = 14126 org_damage = 0.82 }
 				damage_units = { province = 13417 org_damage = 0.65 }
 				damage_units = { province = 14005 org_damage = 0.65 }
 				damage_units = { province = 3786 org_damage = 0.62 }
@@ -486,7 +641,7 @@ on_actions = {
 				damage_units = { province = 14060 org_damage = 0.62 }
 				damage_units = { province = 15533 org_damage = 0.30 }
 				damage_units = { province = 18989 org_damage = 0.30 }
-				damage_units = { province = 655 org_damage = 0.83 }
+				damage_units = { province = 655 org_damage = 0.82 }
 				damage_units = { province = 10028 org_damage = 0.20 }
 				damage_units = { province = 8723 org_damage = 0.20 }
 				damage_units = { province = 6760 org_damage = 0.20 }
@@ -524,6 +679,18 @@ on_actions = {
 				damage_units = { province = 10372 org_damage = 0.55 }
 				damage_units = { province = 3447 org_damage = 0.55 }
 				damage_units = { province = 3280 org_damage = 0.55 }
+				damage_units = { province = 18970 org_damage = 0.55 }
+				damage_units = { province = 3117 org_damage = 0.55 }
+				damage_units = { province = 7581 org_damage = 0.55 }
+				damage_units = { province = 9895 org_damage = 0.50 }
+				damage_units = { province = 6934 org_damage = 0.50 }
+				damage_units = { province = 18288 org_damage = 0.20 }
+				damage_units = { province = 1916 org_damage = 0.20 }
+				damage_units = { province = 18286 org_damage = 0.20 }
+				damage_units = { province = 1895 org_damage = 0.20 }
+				damage_units = { province = 18287 org_damage = 0.20 }
+				damage_units = { province = 14241 org_damage = 0.20 }
+				damage_units = { province = 2637 org_damage = 0.20 }
 			}
 		}
 	}

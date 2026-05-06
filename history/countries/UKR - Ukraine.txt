@@ -229,7 +229,6 @@ set_technology = {
 	sp_artillery_imv_light_2 = 1
 	sp_mlrs_imv_light_2 = 1
 	imv_light_0 = 1
-	sp_mlrs_imv_light_3 = 1
 	imv_light_4 = 1
 	sp_artillery_imv_light_4 = 1
 	imv_medium_1 = 1
@@ -876,7 +875,7 @@ set_can_be_fired_in_advisor_role = {
 	add_to_variable = {	var = UKR_escape_from_mobilization_war_support_weekly value = -0.01 }
 	add_to_variable = { UKR_Ukraines_ground_forces_max_planning = 0.05 }
 	add_to_variable = { UKR_Ukraines_ground_forces_planning_speed = 0.05 }
-	
+
 	add_dynamic_modifier = { modifier = UKR_escape_from_mobilization }
 	
 	add_dynamic_modifier = { modifier = UKR_internal_refugees }
@@ -1169,6 +1168,74 @@ set_can_be_fired_in_advisor_role = {
 	random_core_state = {
 		add_building_construction = {  type = ammunition_silo  level = 1  instant_build = yes }
 	}
+	
+	# Убираем техники со складов
+	# танки - 500
+	add_equipment_to_stockpile = {
+		type = tank_sov_t64_equipment
+		variant_name = "Т-64"
+		amount = -500
+		producer = UKR
+	}
+	
+	# ББМ - 1500
+	add_equipment_to_stockpile = {
+		type = imv_medium_1_equipment
+		variant_name = "Козак-2"
+		amount = -1500
+		producer = UKR
+	}
+	
+	# БТР - 200
+	add_equipment_to_stockpile = {
+		type = apc_sov_btr80_equipment
+		variant_name = "БТР-80"
+		amount = -200
+		producer = UKR
+	}
+	
+	# БМП - 200
+	add_equipment_to_stockpile = {
+		type = apc_sov_mtlb_equipment
+		variant_name = "МТ-ЛБ"
+		amount = -200
+		producer = UKR
+	}
+	
+	# САУ - 350
+	add_equipment_to_stockpile = {
+		type = sp_artillery_apc_sov_mtlb_equipment
+		variant_name = "2С1 Гвоздика"
+		amount = -350
+		producer = UKR
+	}
+	
+	# РСЗО - 110
+	add_equipment_to_stockpile = {
+		type = sp_mlrs_imv_heavy_0_equipment
+		variant_name = "БМ-21 Град"
+		amount = -110
+		producer = UKR
+	}
+	
+	# ЗРК - 60
+	add_equipment_to_stockpile = {
+		type = sp_aa_apc_sov_mtlb_equipment
+		variant_name = "Стрела-10"
+		amount = -60
+		producer = UKR
+	}
+	
+	# Пехотное снаряжение убираем по принципу "X значение умножаем на X месяцев войны"
+	
+	# Пехотка 4000 в месяц и добавляем ещё просто так, итого 10000
+	add_equipment_to_stockpile = {
+		type = infantry_akm_equipment
+		amount = -10000
+		producer = UKR
+	}
+	
+	# Остальное лень считать и вписывать - MXAIW
 }
 
 # 2022.09.05 Start Date politics
@@ -1198,12 +1265,20 @@ set_can_be_fired_in_advisor_role = {
 	remove_ideas = {
 		limited_exports
 		service_age_50
+		basic_police_headquarters
+		standard_funding
+		low_economic_mobilisation
 	}
 	
 	add_ideas = {
 		export_focus
 		nto_boeinge3
 		service_age_55
+		reinforced_police_headquarters
+		partial_economic_mobilisation
+		large_military_budget
+		UKR_Defenders_of_the_Motherland_idea
+		UKR_Zhovta_Strichka
 	}
 	
 	unlock_national_focus = UKR_Two_Fires
@@ -1225,6 +1300,29 @@ set_can_be_fired_in_advisor_role = {
 	unlock_national_focus = Create_a_VPO
 	unlock_national_focus = Information_war
 	unlock_national_focus = Second_wave_of_mobilization
+	unlock_national_focus = SBU
+	unlock_national_focus = GUR
+	unlock_national_focus = Reform_Intelligence
+	unlock_national_focus = Agent_Search
+	unlock_national_focus = Fighting_gunners
+	unlock_national_focus = Operations_on_the_territory_of_the_Russian_Federation
+	unlock_national_focus = Zhovta_Strichka
+	unlock_national_focus = Atesh
+	unlock_national_focus = Derussification
+	unlock_national_focus = Continue_decommunization
+	unlock_national_focus = Continuation_of_Ukrainization
+	unlock_national_focus = Transition_to_a_wartime_economy
+	unlock_national_focus = Increase_enterprise_protection
+	unlock_national_focus = UKR_Defenders_of_the_Motherland
+	unlock_national_focus = Creation_of_new_brigades
+	unlock_national_focus = Expand_TRO
+	unlock_national_focus = Expand_the_SSO_department
+	unlock_national_focus = UKR_form_RDK_LCR
+	unlock_national_focus = Tasks_for_the_SSO_from_the_Main_Intelligence_Directorate
+	unlock_national_focus = UKR_Coordination_of_MTR_with_foreign_MTR
+	unlock_national_focus = Fight_against_corruption
+	unlock_national_focus = Start_demonstrative_cases
+	unlock_national_focus = UKR_Joint_Operations_of_SBU_and_GUR
 	
 	# Динамические идеи
 	
@@ -1242,12 +1340,31 @@ set_can_be_fired_in_advisor_role = {
 	add_to_variable = { var = UKR_internal_refugees_monthly_population value = 0.01 }
 	
 	add_to_variable = { UKR_Ukraines_ground_forces_conscription = 0.005 }
+	set_variable = { level_of_ukrainization_var = 50 }
+	
+	add_to_variable = { UKR_Ukraines_ground_forces_army_org_factor = -0.0005 }	
+	
+	add_dynamic_modifier = { modifier = UKR_coordination_with_western_sso_dynamic_modifier }
+	
+	set_variable = { UKR_Joint_Operations_of_SBU_and_GUR_completed = 1 }
+	
+	# Флаги - Глобальные
+	set_global_flag = RDK
+	set_global_flag = GUR_is_activated
 	
 	# Флаги - страны
 	set_country_flag = { flag = UKR_prime_minister_timeout days = 216 } # Предполагаем, что фокус выполнен 17 апреля, значит прошло 144 дней
 	set_country_flag = { flag = UKR_economy_minister_timeout days = 216 }
 	set_country_flag = { flag = UKR_budanov_timeout days = 936 }
 	set_country_flag = UKR_nto_help_new_brigades_category_unlocked_flag
+	set_country_flag = dec_Derussification_unlock
+	set_country_flag = dec_ukrainization_unlock
+	set_country_flag = dec_decommunization_unlock
+	set_country_flag = UKR_New_brigades_category_unlocked_flag
+	set_country_flag = UKR_zhovta_strichka_unlocked
+	set_country_flag = UKR_atesh_unlocked
+	set_country_flag = UKR_spiderweb_decisions_unlocked
+	set_country_flag = UKR_spiderweb_mission_active
 	
 	# Персонажи
 	recruit_character = Julia_Sviridenko
@@ -1263,9 +1380,32 @@ set_can_be_fired_in_advisor_role = {
 	recruit_character = igor_terekhov
 	recruit_character = vitaly_kim
 	recruit_character = rinat_akhmetov
+	recruit_character = kyryl_budanov
 	
 	# Остальное
+	set_division_template_lock = {
+		division_template = "Zagin centra specialnogo pryznachennya NGU «Omega»"
+		is_locked = no
+	}
+	set_division_template_lock = {
+		division_template = "Batalion naemnikov"
+		is_locked = no
+	}
+	set_division_template_lock = {
+		division_template = "Batalion Academi"
+		is_locked = no
+	}
+				
 	upgrade_intelligence_agency = upgrade_passive_defense
+	upgrade_intelligence_agency = upgrade_passive_defense
+	upgrade_intelligence_agency = upgrade_passive_defense
+	upgrade_intelligence_agency = upgrade_army_department
+	upgrade_intelligence_agency = upgrade_training_centers
+	
+	add_opinion_modifier = {
+		target = POL
+		modifier = POL_trade_deepening_UKR
+	}
 	
 	set_technology = {
 		missile_nto_atacams = 1
@@ -1276,11 +1416,33 @@ set_can_be_fired_in_advisor_role = {
 		missile_nto_agm158 = 1
 		missile_nto_agm158clrasm = 1
 		missile_nto_taurus = 1
+		tech_fpv
+	}
+	
+	add_tech_bonus = {
+		bonus = 1
+		uses = 1
+		technology = support_equipment_2
+	}
+	add_tech_bonus = {
+		bonus = 1.25
+		uses = 1
+		technology = computers_4
+	}
+	add_tech_bonus = {
+		bonus = 1.25
+		uses = 1
+		technology = robotization_3
+	}
+	add_tech_bonus = {
+		bonus = 1.25
+		uses = 1
+		technology = development_of_ai_3
 	}
 	
 	add_to_variable = {
 		var = UKR_Economic_Collapse
-		value = -125
+		value = -130
 	}
 	add_to_variable = {
 		var = UKR_volunteerACT
@@ -1506,6 +1668,126 @@ set_can_be_fired_in_advisor_role = {
 		add_building_construction = {  type = arms_factory  level = 1  instant_build = yes }
 		add_building_construction = {  type = arms_factory  level = 1  instant_build = yes }
 	}
+	
+	# Убираем техники со складов
+	# танки - 1150
+	add_equipment_to_stockpile = {
+		type = tank_sov_t80_equipment
+		variant_name = "Т-80Б"
+		amount = -150
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = tank_sov_t64_equipment
+		variant_name = "Т-64"
+		amount = -1000
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = tank_sov_t72_equipment
+		variant_name = "Т-72"
+		amount = -100
+		producer = UKR
+	}
+	
+	# ББМ - 2800
+	add_equipment_to_stockpile = {
+		type = imv_medium_1_equipment
+		variant_name = "Козак-2"
+		amount = -2800
+		producer = UKR
+	}
+	
+	# БТР - 800
+	add_equipment_to_stockpile = {
+		type = apc_sov_btr80_equipment
+		variant_name = "БТР-80"
+		amount = -800
+		producer = UKR
+	}
+	
+	# БМП - 800
+	add_equipment_to_stockpile = {
+		type = ifv_sov_bmp2_equipment
+		variant_name = "БМП-2"	
+		amount = -100
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = ifv_sov_bmp1_equipment
+		variant_name = "БМП-1"	
+		amount = -300
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = apc_sov_mtlb_equipment
+		variant_name = "МТ-ЛБ"
+		amount = -400
+		producer = UKR
+	}
+	
+	# САУ - 650
+	add_equipment_to_stockpile = {
+		type = sp_artillery_apc_sov_mtlb_equipment
+		variant_name = "2С1 Гвоздика"
+		amount = -500
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = sp_artillery_afv_sov_bmd1_equipment
+		variant_name = "2С9 Нона-С"
+		amount = -150
+		producer = UKR
+	}
+	
+	# РСЗО - 200
+	add_equipment_to_stockpile = {
+		type = sp_mlrs_imv_heavy_0_equipment
+		variant_name = "БМ-21 Град"
+		amount = -200
+		producer = UKR
+	}
+	
+	# ЗРК - 90
+	add_equipment_to_stockpile = {
+		type = sp_aa_apc_sov_mtlb_equipment
+		variant_name = "Стрела-10"
+		amount = -90
+		producer = UKR
+	}
+	
+	# Пехотное снаряжение убираем по принципу "X значение умножаем на X месяцев войны"
+	
+	# Пехотка 4000 в месяц, итого 28000
+	add_equipment_to_stockpile = {
+		type = infantry_akm_equipment
+		amount = -28000
+		producer = UKR
+	}
+	
+	# На рандом
+	add_equipment_to_stockpile = {
+		type = engineering_equipment
+		amount = -2500 
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = arv_equipment
+		amount = -2000
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = amv_equipment 
+		amount = -2000
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = support_equipment_1		
+		amount = -3500
+		producer = UKR
+	}
+	
+	# Остальное лень считать и вписывать - MXAIW
 }
 
 #equipment variants
@@ -2201,7 +2483,7 @@ add_equipment_to_stockpile = {
 }
 
 add_equipment_to_stockpile = { 
-	type = infantry_weapons_z10_equipment
+	type = infantry_z10_equipment
 	amount = 25000
 	producer = UKR
 }
