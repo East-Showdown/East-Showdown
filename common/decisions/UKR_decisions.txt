@@ -10978,6 +10978,7 @@ UKR_New_brigades_category = {
 		}
 		fire_only_once = yes
 	}
+
 	UKR_Form_3_shturmova = {
 		icon = GFX_decision_UKR_Form_3TH
 		available = {
@@ -11011,6 +11012,42 @@ UKR_New_brigades_category = {
 		}
 		fire_only_once = yes
 	}
+
+	UKR_Form_5_shturmovyy_polk = {
+		icon = GFX_decision_UKR_Form_5TH
+		available = {
+			date > 2022.05.10
+		}
+		ai_will_do = {
+			factor = 2000
+		}
+		visible = {
+			tag = UKR
+		}
+		days_remove = 30
+		cost = 40
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_5_shturmovyy_polk"
+			custom_effect_tooltip = UKR_Form_5_shturmovyy_polk_tt
+			hidden_effect = {
+				UKR = {
+				set_country_flag = UKR_5_shturmovyy_polk_formed
+			    }
+				if = {
+					limit = {
+						UKR = {
+							controls_province = 5220
+						}
+					}
+					load_oob = UKR_5_shturmovyy_polk
+				}
+				else = {
+					load_oob = UKR_5_shturmovyy_polk_alt
+				}
+			}
+		}
+		fire_only_once = yes
+	}
 	UKR_Form_5_shturmova = {
 		icon = GFX_decision_UKR_Form_5TH
 		available = {
@@ -11021,19 +11058,46 @@ UKR_New_brigades_category = {
 		}
 		visible = {
 			tag = UKR
-			NOT = { has_start_date > 2022.09.05 }
+			NOT = { has_start_date > 2023.02.24 }
+			UKR = { 
+				has_country_flag = UKR_5_shturmovyy_polk_formed
+			}
 		}
 		days_remove = 30
-		cost = 50
+		cost = 60
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_5_shturmova"
 			custom_effect_tooltip = UKR_Form_5_shturmova_tt
 			hidden_effect = {
-				load_oob = UKR_5okremashturmova
+				clr_country_flag = UKR_5_shturmovyy_polk_formed
+				delete_unit_template_and_units = {
+					division_template = "Shturmovyy batal'yon 5-ho shturmovoho polku"
+					disband = yes
+				}
+				delete_unit_template_and_units = {
+					division_template = "Artyleriys'kyy batal'yon 5-ho shturmovoho polku"
+					disband = yes
+				}
+				delete_unit_template_and_units = {
+					division_template = "Batal'yon «Aydar»"
+					disband = yes
+				}
+				if = {
+					limit = {
+						UKR = {
+							controls_province = 5220
+						}
+					}
+					load_oob = UKR_5okremashturmova
+				}
+				else = {
+					load_oob = UKR_5okremashturmova_alt
+				}
 			}
 		}
 		fire_only_once = yes
 	}
+
 	UKR_Form_12_vazhka_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_12_vazhka_mekhanizovana
 		available = {
