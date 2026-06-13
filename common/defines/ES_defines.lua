@@ -161,6 +161,7 @@ NDefines.NMilitary.OUT_OF_FUEL_EQUIPMENT_MULT = 0.1				-- 0.1 vanilla ratio of t
 NDefines.NMilitary.OUT_OF_FUEL_SPEED_MULT = 0.4					-- vanilla 0.4 speed mult that armies get when out of fuel
 NDefines.NMilitary.OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0		-- xp gain mult from training when a unit is out of fuel
 NDefines.NMilitary.FUEL_CAPACITY_DEFAULT_HOURS = 96				-- 96 vanilla default capacity if not specified
+NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_HEIGHT = 2								-- Max height of regimental supports in division designer.
 NDefines.NAir.PORT_STRIKE_DAMAGE_FACTOR = 1.0								-- How much damage is dealt to ports during a port strike (per plane damage [complex number] * num flying planes * define)
 NDefines.NAir.THRUST_WEIGHT_AGILITY_FACTOR = 0.5								-- For plane designs additive agility bonus per point of thrust exceeding weight
 NDefines.NAir.AIR_WING_MAX_SIZE = 20 							-- Max amount of airplanes in wing
