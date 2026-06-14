@@ -1,0 +1,41 @@
+name: Check localization sync
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  localization-sync:
+    name: localization-sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check localization files
+        shell: bash
+        run: |
+          git fetch origin ${{ github.base_ref }}
+
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          EN_CHANGED=$(echo "$CHANGED_FILES" | grep -E '^localisation/english/' || true)
+          RU_CHANGED=$(echo "$CHANGED_FILES" | grep -E '^localisation/russian/' || true)
+
+          if [[ -n "$EN_CHANGED" && -z "$RU_CHANGED" ]]; then
+            echo "❌ English localization changed, but Russian localization was not updated."
+            exit 1
+          fi
+
+          if [[ -n "$EN_CHANGED" && -z "$UA_CHANGED" ]]; then
+            echo "❌ English localization changed, but Ukrainian localization was not updated."
+            exit 1
+          fi
+
+          echo "✅ Localization sync check passed."
