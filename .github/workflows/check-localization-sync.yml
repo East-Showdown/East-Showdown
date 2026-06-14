@@ -9,62 +9,73 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Check localization files
-        shell: bash
-        run: |
-          git fetch origin ${{ github.base_ref }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
 
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              {
+                owner,
+                repo,
+                pull_number,
+                per_page: 100,
+              }
+            );
 
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
+            const changedFiles = files.map(file => file.filename);
 
-          FAILED=0
+            console.log("Changed files:");
+            for (const file of changedFiles) {
+              console.log(file);
+            }
 
-          check_pair() {
-            BASE_NAME="$1"
+            const groups = new Map();
 
-            EN_FILE="localisation/english/${BASE_NAME}_l_english.yml"
-            RU_FILE="localisation/russian/${BASE_NAME}_l_russian.yml"
+            for (const file of changedFiles) {
+              const match = file.match(/^localisation\/(english|russian)\/(.+)_l_(english|russian)\.yml$/);
 
-            EN_CHANGED=$(echo "$CHANGED_FILES" | grep -Fx "$EN_FILE" || true)
-            RU_CHANGED=$(echo "$CHANGED_FILES" | grep -Fx "$RU_FILE" || true)
+              if (!match) {
+                continue;
+              }
 
-            if [[ -n "$EN_CHANGED" || -n "$RU_CHANGED" ]]; then
-              echo "Checking localization group: $BASE_NAME"
+              const folderLang = match[1];
+              const baseName = match[2];
+              const suffixLang = match[3];
 
-              if [[ -z "$EN_CHANGED" ]]; then
-                echo "❌ Missing English update: $EN_FILE"
-                FAILED=1
-              fi
+              if (folderLang !== suffixLang) {
+                console.log(`⚠️ Skipping suspicious localization path: ${file}`);
+                continue;
+              }
 
-              if [[ -z "$RU_CHANGED" ]]; then
-                echo "❌ Missing Russian update: $RU_FILE"
-                FAILED=1
-              fi
-            fi
-          }
+              if (!groups.has(baseName)) {
+                groups.set(baseName, new Set());
+              }
 
-          BASE_NAMES=$(echo "$CHANGED_FILES" \
-            | grep -E '^localisation/(english|russian)/.*_l_(english|russian)\.yml$' \
-            | sed -E 's#^localisation/(english|russian)/##' \
-            | sed -E 's#_l_(english|russian)\.yml$##' \
-            | sort -u)
+              groups.get(baseName).add(folderLang);
+            }
 
-          echo "Localization base names:"
-          echo "$BASE_NAMES"
+            let failed = false;
 
-          for BASE in $BASE_NAMES; do
-            check_pair "$BASE"
-          done
+            for (const [baseName, langs] of groups.entries()) {
+              console.log(`Checking localization group: ${baseName}`);
 
-          if [[ "$FAILED" -eq 1 ]]; then
-            echo "❌ Localization sync check failed."
-            exit 1
-          fi
+              if (!langs.has("english")) {
+                console.log(`❌ Missing English update: localisation/english/${baseName}_l_english.yml`);
+                failed = true;
+              }
 
-          echo "✅ Localization sync check passed."
+              if (!langs.has("russian")) {
+                console.log(`❌ Missing Russian update: localisation/russian/${baseName}_l_russian.yml`);
+                failed = true;
+              }
+            }
+
+            if (failed) {
+              core.setFailed("❌ Localization sync check failed.");
+            } else {
+              console.log("✅ Localization sync check passed.");
+            }
