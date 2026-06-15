@@ -1,0 +1,81 @@
+name: Check localization sync
+
+on:
+  pull_request:
+
+jobs:
+  localization-sync:
+    name: localization-sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check localization files
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              {
+                owner,
+                repo,
+                pull_number,
+                per_page: 100,
+              }
+            );
+
+            const changedFiles = files.map(file => file.filename);
+
+            console.log("Changed files:");
+            for (const file of changedFiles) {
+              console.log(file);
+            }
+
+            const groups = new Map();
+
+            for (const file of changedFiles) {
+              const match = file.match(/^localisation\/(english|russian)\/(.+)_l_(english|russian)\.yml$/);
+
+              if (!match) {
+                continue;
+              }
+
+              const folderLang = match[1];
+              const baseName = match[2];
+              const suffixLang = match[3];
+
+              if (folderLang !== suffixLang) {
+                console.log(`⚠️ Skipping suspicious localization path: ${file}`);
+                continue;
+              }
+
+              if (!groups.has(baseName)) {
+                groups.set(baseName, new Set());
+              }
+
+              groups.get(baseName).add(folderLang);
+            }
+
+            let failed = false;
+
+            for (const [baseName, langs] of groups.entries()) {
+              console.log(`Checking localization group: ${baseName}`);
+
+              if (!langs.has("english")) {
+                console.log(`❌ Missing English update: localisation/english/${baseName}_l_english.yml`);
+                failed = true;
+              }
+
+              if (!langs.has("russian")) {
+                console.log(`❌ Missing Russian update: localisation/russian/${baseName}_l_russian.yml`);
+                failed = true;
+              }
+            }
+
+            if (failed) {
+              core.setFailed("❌ Localization sync check failed.");
+            } else {
+              console.log("✅ Localization sync check passed.");
+            }
