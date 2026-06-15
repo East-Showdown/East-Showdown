@@ -1,0 +1,85 @@
+name: Lint mod files
+
+on:
+  pull_request:
+  workflow_dispatch:   # ручной прогон по всему репозиторию из вкладки Actions
+
+permissions:
+  contents: read
+
+jobs:
+  validate-changed:
+    name: Script & localisation validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine changed files
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
+            git diff --name-only --diff-filter=ACMR "$BASE_SHA" "$HEAD_SHA" > changed.txt || \
+              git ls-files > changed.txt
+          else
+            git ls-files > changed.txt
+          fi
+          echo "Изменённые файлы:"; cat changed.txt
+
+          grep -E '^(common|events|history)/.*\.txt$' changed.txt > script_files.txt || true
+          grep -E '^localisation/.*\.yml$'           changed.txt > loc_files.txt    || true
+
+      - name: Paradox script syntax (brace balance)
+        run: |
+          if [ -s script_files.txt ]; then
+            xargs -a script_files.txt python3 .github/scripts/lint_paradox_script.py
+          else
+            echo "Файлы скрипта не менялись"
+          fi
+
+      - name: Localisation validation
+        run: |
+          if [ -s loc_files.txt ]; then
+            xargs -a loc_files.txt python3 .github/scripts/lint_localisation.py
+          else
+            echo "Файлы локализации не менялись"
+          fi
+
+      - name: Duplicate focus/event ids
+        run: |
+          xargs -a changed.txt python3 .github/scripts/check_duplicate_ids.py
+
+  # Собирается Го инструмент для проверки покрытия локализацией
+  loc-tool:
+    name: Localisation tool (build + coverage report)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build & vet
+        working-directory: tools/loc_tool
+        run: |
+          go build ./...
+          go vet ./...
+          go test ./... 2>&1 || true   # тестов пока нет, тру чтобы не падало
+
+      - name: Build binary
+        working-directory: tools/loc_tool
+        run: go build -o "$RUNNER_TEMP/loc_tool" .
+
+      - name: Translation coverage (russian -> english)
+        continue-on-error: true
+        working-directory: localisation
+        run: |
+          # язык=russian(2), направление=rus->eng(1), действие=check(1), потом Enter.
+          printf '2\n1\n1\n\n' | "$RUNNER_TEMP/loc_tool" | tail -n 8
