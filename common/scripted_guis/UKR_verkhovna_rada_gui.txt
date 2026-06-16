@@ -15,7 +15,7 @@ scripted_gui = {
 				clr_country_flag = open_ukr_verkhovna_rada_screen
 				UKR_update_variable = yes
 			}
-			verkhovna_rada_solution_button_click = {
+			verkhovna_rada_browse_solutions_button_click = {
 				if = {
 					limit = { NOT = { has_country_flag = open_ukr_verkhovna_rada_solution_screen } }
 					set_country_flag = open_ukr_verkhovna_rada_solution_screen
@@ -23,6 +23,25 @@ scripted_gui = {
 				else = {
 					clr_country_flag = open_ukr_verkhovna_rada_solution_screen
 				}
+				UKR_update_variable = yes
+			}
+			ukr_verkhovna_rada_vote_button_click = {
+				# ролить радомно на основе мест которые есть в партии числа, за против удержались отсутсвуют, 
+				# и попробовать для каждого решения прописать влияение, определенный процент которые точно будут за в каждой партиии
+				# против, ну и так далее, мат формулы для каждого решения, возможно написать генератор
+				# if = {
+				# 	limit = { NOT = { has_country_flag = test } }
+				# 	set_country_flag = test
+				# }
+				# else = {
+				# 	clr_country_flag = test
+				# }
+				set_country_flag = test
+				UKR_update_variable = yes
+			}
+			verkhovna_rada_lobby_button_click = {
+				#решение на влияние которые будут влиять на процент в vote_button
+				clr_country_flag = test
 				UKR_update_variable = yes
 			}
 		}
@@ -1380,6 +1399,32 @@ scripted_gui = {
 		}
 	}
 
+	UKR_verkhovna_rada_solutions_gui_window = {
+		window_name = "UKR_verkhovna_rada_solutions_gui_window"
+		context_type = player_context
+		dirty = global.update_ukr_ui
+
+		visible = {
+			has_country_flag = open_ukr_verkhovna_rada_solution_screen
+		}
+		triggers = {
+			vr_open_button_visible = {always = yes}
+			verkhovna_rada_test_button_visible = {
+				NOT = { has_country_flag = test }
+			}
+		}
+		effects = {
+			close_button_click = {
+				clr_country_flag = open_ukr_verkhovna_rada_solution_screen
+				UKR_update_variable = yes
+			}
+			verkhovna_rada_test_button_click = {
+
+			}
+		}
+		properties = {}
+	}
+
 	open_verkhovna_rada_screen_button = {
 		context_type = player_context	
 		window_name = "verkhovna_rada_open_button"
@@ -1399,26 +1444,6 @@ scripted_gui = {
 				}
 				UKR_update_variable = yes
 			}
-		}
-	}
-	UKR_verkhovna_rada_solution_GUI_window = {
-		window_name = "UKR_verkhovna_rada_solution_gui_window"
-		context_type = player_context
-		dirty = global.update_ukr_ui
-
-		visible = {
-			has_country_flag = open_ukr_verkhovna_rada_solution_screen
-		}
-		triggers = {
-			# vr_open_button_visible = {always = yes}
-		}
-		effects = {
-			close_button_click = {
-				clr_country_flag = open_ukr_verkhovna_rada_solution_screen
-				UKR_update_variable = yes
-			}
-		}
-		properties = {
 		}
 	}
 }
