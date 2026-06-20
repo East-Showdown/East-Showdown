@@ -1,5 +1,5 @@
 name="East Showdown [DEV]"
-version="0.7.1.1"
+version="0.7.1.3"
 replace_path="history/countries"
 replace_path="history/states"
 replace_path="history/units"
