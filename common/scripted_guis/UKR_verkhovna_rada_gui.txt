@@ -15,29 +15,67 @@ scripted_gui = {
 				clr_country_flag = open_ukr_verkhovna_rada_screen
 				UKR_update_variable = yes
 			}
-			verkhovna_rada_browse_solutions_button_click = {
-				if = {
-					limit = { NOT = { has_country_flag = open_ukr_verkhovna_rada_solution_screen } }
-					set_country_flag = open_ukr_verkhovna_rada_solution_screen
-				}
-				else = {
-					clr_country_flag = open_ukr_verkhovna_rada_solution_screen
-				}
-				UKR_update_variable = yes
-			}
 			ukr_verkhovna_rada_vote_button_click = {
-				# ролить радомно на основе мест которые есть в партии числа, за против удержались отсутсвуют, 
-				# и попробовать для каждого решения прописать влияение, определенный процент которые точно будут за в каждой партиии
-				# против, ну и так далее, мат формулы для каждого решения, возможно написать генератор
-				# if = {
-				# 	limit = { NOT = { has_country_flag = test } }
-				# 	set_country_flag = test
-				# }
-				# else = {
-				# 	clr_country_flag = test
-				# }
-				set_country_flag = test
-				UKR_update_variable = yes
+			if = {
+				limit = {
+					check_variable = { ukr_vr_selected_solution = 101 }
+					UKR_VR_solution_101_requirements = yes
+				}
+
+				add_political_power = -50
+				add_to_array = { array = ukr_vr_passed_solutions value = 101 }
+				remove_from_array = { array = ukr_vr_available_solutions value = 101 }
+
+				# эффект решения 101
+			}
+
+			else_if = {
+				limit = {
+					check_variable = { ukr_vr_selected_solution = 102 }
+					UKR_VR_solution_102_requirements = yes
+				}
+
+				add_political_power = -75
+				add_to_array = { array = ukr_vr_passed_solutions value = 102 }
+				remove_from_array = { array = ukr_vr_available_solutions value = 102 }
+
+				# эффект решения 102
+			}
+
+			else_if = {
+				limit = {
+					check_variable = { ukr_vr_selected_solution = 201 }
+					UKR_VR_solution_201_requirements = yes
+				}
+
+				add_to_array = { array = ukr_vr_passed_solutions value = 201 }
+				remove_from_array = { array = ukr_vr_available_solutions value = 201 }
+
+				# эффект решения 201
+			}
+
+			clr_country_flag = open_ukr_verkhovna_rada_vote_screen
+			set_variable = { ukr_vr_selected_solution = 0 }
+
+			UKR_update_variable = yes
+			}
+			ukr_verkhovna_rada_vote_button_click_enabled = {
+				OR = {
+					AND = {
+						check_variable = { ukr_vr_selected_solution = 101 }
+						UKR_VR_solution_101_requirements = yes
+					}
+
+					AND = {
+						check_variable = { ukr_vr_selected_solution = 102 }
+						UKR_VR_solution_102_requirements = yes
+					}
+
+					AND = {
+						check_variable = { ukr_vr_selected_solution = 201 }
+						UKR_VR_solution_201_requirements = yes
+					}
+				}
 			}
 			verkhovna_rada_lobby_button_click = {
 				#решение на влияние которые будут влиять на процент в vote_button
@@ -1399,30 +1437,109 @@ scripted_gui = {
 		}
 	}
 
-	UKR_verkhovna_rada_solutions_gui_window = {
-		window_name = "UKR_verkhovna_rada_solutions_gui_window"
+	verkhovna_rada_solutions_container_list = {
+		window_name = "verkhovna_rada_solutions_container"
+		parent_scripted_gui = UKR_verkhovna_rada_GUI_window
 		context_type = player_context
 		dirty = global.update_ukr_ui
 
 		visible = {
-			has_country_flag = open_ukr_verkhovna_rada_solution_screen
+			# has_country_flag = open_ukr_verkhovna_rada_screen
+			# has_country_flag = open_ukr_verkhovna_rada_solution_screen
 		}
+
 		triggers = {
-			vr_open_button_visible = {always = yes}
-			verkhovna_rada_test_button_visible = {
-				NOT = { has_country_flag = test }
+			verkhovna_rada_category_header_bg_visible = {
+				OR = {
+					check_variable = { v = 1000 }
+					check_variable = { v = 2000 }
+					check_variable = { v = 3000 }
+					check_variable = { v = 4000 }
+					check_variable = { v = 5000 }
+					check_variable = { v = 6000 }
+				}
+			}
+
+			verkhovna_rada_category_header_text_visible = {
+				OR = {
+					check_variable = { v = 1000 }
+					check_variable = { v = 2000 }
+					check_variable = { v = 3000 }
+					check_variable = { v = 4000 }
+					check_variable = { v = 5000 }
+					check_variable = { v = 6000 }
+				}
+			}
+
+			verkhovna_rada_economic_category_icon_visible = {
+				check_variable = { v = 1000 }
+			}
+
+			verkhovna_rada_political_category_icon_visible = {
+				check_variable = { v = 2000 }
+			}
+
+			verkhovna_rada_military_category_icon_visible = {
+				check_variable = { v = 3000 }
+			}
+
+			verkhovna_rada_military_category_icon_visible = {
+				check_variable = { v = 4000 }
+			}
+
+			verkhovna_rada_military_category_icon_visible = {
+				check_variable = { v = 5000 }
+			}
+
+			verkhovna_rada_military_category_icon_visible = {
+				check_variable = { v = 6000 }
+			}
+
+			verkhovna_rada_available_solutions_button_visible = {
+				NOT = {
+					OR = {
+						check_variable = { v = 1000 }
+						check_variable = { v = 2000 }
+						check_variable = { v = 3000 }
+						check_variable = { v = 4000 }
+						check_variable = { v = 5000 }
+						check_variable = { v = 6000 }
+					}
+				}
+			}
+
+			verkhovna_rada_available_solutions_button_click_enabled = {
+				NOT = {
+					OR = {
+						check_variable = { v = 1000 }
+						check_variable = { v = 2000 }
+						check_variable = { v = 3000 }
+						check_variable = { v = 4000 }
+						check_variable = { v = 5000 }
+						check_variable = { v = 6000 }
+					}
+				}
 			}
 		}
+
 		effects = {
-			close_button_click = {
+			verkhovna_rada_available_solutions_button_click = {
+				set_variable = { ukr_vr_selected_solution = v }
+
 				clr_country_flag = open_ukr_verkhovna_rada_solution_screen
+				set_country_flag = open_ukr_verkhovna_rada_vote_screen
+
 				UKR_update_variable = yes
 			}
-			verkhovna_rada_test_button_click = {
+			
+		}
 
+		dynamic_lists = {
+			verkhovna_rada_available_solutions_list = {
+				array = ukr_vr_available_solutions
+				entry_container = "verkhovna_rada_available_solutions_list_container"
 			}
 		}
-		properties = {}
 	}
 
 	open_verkhovna_rada_screen_button = {
