@@ -807,7 +807,7 @@ on_actions = {
 						is_ai = yes
 					}
 					is_historical_focus_on = yes
-					NOT = { has_global_flag = startdate_2022_04_15 }
+					NOT = { has_start_date > 2022.04.14 }
 					OR = {
 						has_game_rule = {
 							rule = es_russian_operation_rule
@@ -833,16 +833,22 @@ on_actions = {
 
 			if = {
 				limit = {
-					NOT = { has_global_flag = startdate_2022_04_15 }
+					has_start_date < 2022.04.14
 				}
 				every_country = {
+					limit = { NOT = { tag = RUS } }
 					add_timed_idea = { idea = coronavires_idea months = 5 }
 				}
-				else = {
-					every_country = {
+			}
+			else_if = {
+				limit = {
+					has_start_date > 2022.04.14 }
+					NOT = { has_start_date > 2022.05.14 }
+				}
+				every_country = {
+					limit = { NOT = { tag = RUS } }
 						add_timed_idea = { idea = coronavires_idea days = 46 }
 					}
-				}
 			}
 
 			#set_global_flag = SMO_exchange_prisoners_soon_gf
@@ -1076,7 +1082,7 @@ on_actions = {
 					}
 					country_event = {
 						id = smo.20
-						days = 118
+						days = 78
 					}
 				}
 
@@ -2021,6 +2027,7 @@ on_actions = {
 				limit = { 
 					has_start_date > 2022.02.24 has_start_date < 2022.04.25
 					RUS = { has_country_flag = { flag = RUS_failure_of_SMO days > 9 } }
+					NOT = { has_completed_focus = nto_sign_lend_lease_to_ukr }
 				}
 				NTO = {
 					complete_national_focus = nto_sign_lend_lease_to_ukr
