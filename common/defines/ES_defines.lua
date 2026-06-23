@@ -496,16 +496,16 @@ NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 1200 --50
 NDefines.NDoctrines.MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 1 --5.0
 NDefines.NDoctrines.TRAINING_MASTERY_GAIN_FACTOR = 0.00 -- 0.1
 
-NDefines.NMilitary.COMMS_MAX_DISTANCE = 4										-- If N is >= the size of the below arrays, the last value will be considered repeated
-NDefines.NMilitary.PLANNING_CAP_COMMS_SCALING = { 1.0, 1.0, 1.0, 1.0, 0.95, 0.9, 0.85, 0.8 }		-- Value at index J is the scaling applied to planning cap when HQ is J provinces behind the frontline
-NDefines.NMilitary.PLANNING_CAP_NO_HQ_SCALING = 0.8							-- Scaling applied to planning cap when there's no HQ (no leader or leader not deployed or not the same root order)
-NDefines.NMilitary.PLANNING_SPEED_COMMS_SCALING = { 1.0, 0.95, 0.9, 0.85, 0.8 }		-- Same as PLANNING_CAP_COMMS_SCALING but for planning speed
-NDefines.NMilitary.PLANNING_SPEED_NO_HQ_SCALING = 0.8								-- Same as PLANNING_CAP_NO_HQ_SCALING but for planning speed
-NDefines.NMilitary.LEADER_MOD_COMMS_SCALING = { 1.06, 1.04, 1.02, 1.01, 1.0 }		-- Same as PLANNING_CAP_COMMS_SCALING but for leader modifiers
+NDefines.NMilitary.COMMS_MAX_DISTANCE = 10										-- If N is >= the size of the below arrays, the last value will be considered repeated
+NDefines.NMilitary.PLANNING_CAP_COMMS_SCALING = { 1.0, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6 }		-- Value at index J is the scaling applied to planning cap when HQ is J provinces behind the frontline
+NDefines.NMilitary.PLANNING_CAP_NO_HQ_SCALING = 0.6							-- Scaling applied to planning cap when there's no HQ (no leader or leader not deployed or not the same root order)
+NDefines.NMilitary.PLANNING_SPEED_COMMS_SCALING = { 1.0, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6 }		-- Same as PLANNING_CAP_COMMS_SCALING but for planning speed
+NDefines.NMilitary.PLANNING_SPEED_NO_HQ_SCALING = 0.6								-- Same as PLANNING_CAP_NO_HQ_SCALING but for planning speed
+NDefines.NMilitary.LEADER_MOD_COMMS_SCALING = { 1.10, 1.10, 1.10, 1.05, 1.05, 1.00, 1.00, 1.0, 1.0, 1.0, 1.0 }		-- Same as PLANNING_CAP_COMMS_SCALING but for leader modifiers
 NDefines.NMilitary.LEADER_MOD_NO_HQ_SCALING = 1.0								-- Same as PLANNING_CAP_NO_HQ_SCALING but for leader modifiers
-NDefines.NMilitary.ABILITY_COMMS_SCALING = { 1.06, 1.04, 1.02, 1.01, 1.0 }		-- Same as PLANNING_CAP_COMMS_SCALING but for active abilities
+NDefines.NMilitary.ABILITY_COMMS_SCALING = { 1.10, 1.10, 1.10, 1.05, 1.05, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 }	-- Same as PLANNING_CAP_COMMS_SCALING but for active abilities
 NDefines.NMilitary.ABILITY_NO_HQ_SCALING = 1.0						-- Same as PLANNING_CAP_NO_HQ_SCALING but for active abilities
 NDefines.NMilitary.GENERAL_PROXIMITY_CLOSE = 2								-- At the "close" proximity setting, the general should stay this many provinces behind the frontline
 NDefines.NMilitary.GENERAL_PROXIMITY_MEDIUM = 4									-- At the "medium" proximity setting, the general should stay this many provinces behind the frontline
 NDefines.NMilitary.GENERAL_PROXIMITY_FAR = 6									-- At the "far" proximity setting, the general should stay this many provinces behind the frontline
-NDefines.NMilitary.GENERAL_PROXIMITY_DEFAULT = 2									-- The default proximity setting for a deployed general. This number should correspond to one of the values above
+NDefines.NMilitary.GENERAL_PROXIMITY_DEFAULT = 1									-- The default proximity setting for a deployed general. This number should correspond to one of the values above
