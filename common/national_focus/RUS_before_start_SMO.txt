@@ -6068,7 +6068,7 @@ focus_tree = {
 					activate_mission = DPR_fees_of_Russia
 				}
 				
-				add_to_variable = { RUS_volunteerACT = 1.5 }
+				add_to_variable = { RUS_volunteerACT = 1 }
 				RUS_Volunteer_movement_scripted_effects = yes
 			}
 		}
@@ -7806,6 +7806,14 @@ focus_tree = {
 			custom_effect_tooltip = RUS_use_the_war_for_economic_purposes_tt
 			add_to_variable = { economic_stagnation_production_speed_electronic_factory_factor = 0.1 }
 			add_to_variable = { economic_stagnation_production_speed_arms_factory_factor = 0.07 }
+			
+			if = { limit = { NOT = { check_variable = { RUS_volunteerACT_business = 24 } } }
+				custom_effect_tooltip = RUS_volunteer_pressure_on_business_tt
+				hidden_effect = {
+					add_to_variable = { RUS_volunteerACT_business = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
+			}
 		}
 	}
 	focus = {
@@ -8170,15 +8178,11 @@ focus_tree = {
 				uses = 2
 				category = industry
 			}
-			if = { limit = { NOT = { has_country_flag = Volunteer_movement_business_start } }
-				custom_effect_tooltip = RUS_volunteer_business_start_tt
-			}
-			hidden_effect = {
-				if = { limit = { NOT = { has_country_flag = Volunteer_movement_business_start } }
-					set_country_flag = Volunteer_movement_business_start
+			if = { limit = { NOT = { check_variable = { RUS_volunteerACT_business = 24 } } }
+				custom_effect_tooltip = RUS_volunteer_pressure_on_business_tt
+				hidden_effect = {
+					add_to_variable = { RUS_volunteerACT_business = 1 }
 					RUS_Volunteer_movement_scripted_effects = yes
-					set_variable = { RUS_volunteer_movement_who_it = 3 }
-					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 				}
 			}
 		}
@@ -8321,6 +8325,13 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Domestic_trade_turnover"
 		    add_political_power = 40
 		    add_stability = 0.035
+			if = { limit = { NOT = { check_variable = { RUS_volunteerACT_business = 24 } } }
+				custom_effect_tooltip = RUS_volunteer_pressure_on_business_tt
+				hidden_effect = {
+					add_to_variable = { RUS_volunteerACT_business = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
+			}
 		}
 	}
 	focus = {
@@ -10305,6 +10316,7 @@ focus_tree = {
 			}
 			increase_escalation_by_10 = yes
 			custom_effect_tooltip = first_mobiks_tt
+			custom_effect_tooltip = RUS_volunteer_increase_2_tt
 			swap_ideas = {
 				remove_idea = limited_conscription
 				add_idea = extensive_conscription
@@ -10332,6 +10344,8 @@ focus_tree = {
 				else = {
 					country_event = { id = che.33 random_hours = 3 }
 				}
+				add_to_variable = { RUS_volunteerACT = 3 }
+				RUS_Volunteer_movement_scripted_effects = yes
 			}
 		}
 	}
