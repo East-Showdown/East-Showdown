@@ -494,3 +494,6 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	NDefines.NAI.XP_RATIO_REQUIRED_TO_RESEARCH_WITH_XP = 1.0	-- AI will at least need this amount of xp compared to cost of a tech to reserch it with XP			
 	NDefines.NAI.RESEARCH_WITH_XP_AI_WEIGHT_MULT = 1.5 		-- AI will bump score of a research with this mult if it can use XP
 	NDefines.NAI.RESEARCH_NEW_DOCTRINE_RANDOM_FACTOR = 0.0	-- How much randomness is allowed to contribute to do new research expressed as a factor of total tech weights. Higher means more random exploration.
+	NDefines_Graphics.NGraphics.COUNTRY_COLOR_SATURATION_MODIFIER = 0.30
+	NDefines_Graphics.NGraphics.COUNTRY_COLOR_BRIGHTNESS_MODIFIER = 0.65
+	NDefines_Graphics.NGraphics.MAP_MODE_TERRAIN_TRANSPARENCY = 0.60
