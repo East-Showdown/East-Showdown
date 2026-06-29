@@ -100,7 +100,7 @@ NDefines.NMilitary.CORPS_COMMANDER_DIVISIONS_CAP = 50			-- how many divisions a 
 NDefines.NMilitary.DIVISION_SIZE_FOR_XP = 8                   -- how many battalions should a division have to count as a full divisions when calculating XP stuff
 NDefines.NMilitary.CORPS_COMMANDER_ARMIES_CAP = -1			-- how many armies a corps commander is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 50			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 10				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
+NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 50				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.036    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
 NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.036    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
 NDefines.NMilitary.AIR_SUPPORT_BASE = 0.10-- 0.25 vanilla
