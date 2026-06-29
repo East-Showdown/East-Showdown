@@ -100,7 +100,7 @@ NDefines.NMilitary.CORPS_COMMANDER_DIVISIONS_CAP = 50			-- how many divisions a 
 NDefines.NMilitary.DIVISION_SIZE_FOR_XP = 8                   -- how many battalions should a division have to count as a full divisions when calculating XP stuff
 NDefines.NMilitary.CORPS_COMMANDER_ARMIES_CAP = -1			-- how many armies a corps commander is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 50			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 10				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
+NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 50				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.036    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
 NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.036    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
 NDefines.NMilitary.AIR_SUPPORT_BASE = 0.10-- 0.25 vanilla
@@ -324,7 +324,7 @@ NDefines.NAI.ORG_UNIT_WEAK = 0.15						-- Organization % for unit to be consider
 NDefines.NAI.STR_UNIT_WEAK = 0.4						-- Strength (equipment) % for unit to be considered weak
 NDefines.NAI.WANTED_UNITS_INDUSTRY_FACTOR = 1.45                        -- How many units a country wants is partially based on how much military industry that is available
 NDefines.NAI.WANTED_CARRIER_PLANES_PER_CARRIER_CAPACITY_FACTOR = 1					-- Scales how many carrier planes the AI want per carrier deck space.
-NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.1					-- How big part of the army that should be considered for upgrading
+NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0				-- How big part of the army that should be considered for upgrading
 NDefines.NAI.MISSING_CONVOYS_BOOST_FACTOR = 18.0					-- The more convoys a country is missing the more resources it diverts to cover this.
 NDefines.NAI.HOUR_BAD_COMBAT_REEVALUATE = 100                   -- if we are in combat for this amount and it goes shitty then try skipping it
 NDefines.NAI.MIN_PLAN_VALUE_TO_MICRO_INACTIVE = 0.2				-- The AI will not consider members of groups which plan is not activated AND evaluates lower than this.
@@ -439,7 +439,10 @@ NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_SUCCESS_MODIFIER = 0.10 --0.1
 NDefines.NRaids.RAID_HIGH_RISK_SETTING_SUCCESS_MODIFIER = 0.20 --0.25
 NDefines.NRaids.RAID_OUTCOME_REPORT_DAYS_TO_LIVE = 6 -- 30
 
+NDefines.NMilitary.PLAN_EXECUTE_CAREFUL_MAX_FORT = 11 -- NO LIMIT 
+
 -- MPR
+
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
