@@ -12,7 +12,7 @@ NDefines.NAI.SEND_VOLUNTEER_EVAL_BASE_DISTANCE = 175.0  -- How far away it will 
 NDefines.NAI.SEND_VOLUNTEER_EVAL_MAJOER_POWER = 1.0 	-- How willing major powers are to send volunteers.
 NDefines.NAI.SEND_VOLUNTEER_EVAL_CONTAINMENT_FACTOR = 0.9 -- How much AI containment factors into its evaluation of sending volunteers.
 NDefines.NAI.FRONT_EVAL_UNIT_ACCURACY = 1.0 
----NDefines.NAI.PLAN_ACTIVATION_SUPERIORITY_AGGRO = 10 --default 1.0		-- How aggressive a country is in activating a plan based on how superiour their force is.
+NDefines.NAI.PLAN_ACTIVATION_SUPERIORITY_AGGRO = 10 --default 1.0		-- How aggressive a country is in activating a plan based on how superiour their force is.
 	--planning
 
 NDefines.NAI.PLAN_VALUE_TO_EXECUTE = 0.0	---0.15			-- AI will typically avoid carrying out a plan it below this value (0.0 is considered balanced).
@@ -65,7 +65,7 @@ NDefines.NAI.DIVISION_DESIGN_STOCKPILE_WEIGHT = 0 --0.01
 NDefines.NAI.DIVISION_DESIGN_COMBAT_WIDTH_TARGET_WEIGHT = -10000 -- -200	        -- This score is reduced the farther the width is from the target width (if set)
 
 NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.03 --0.1
-NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 21 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
+NDefines.NAI.UPGRADES_DEFICIT_LIMIT_DAYS = 50 --50                 -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
 NDefines.NAI.DIVISION_MATCH_ROLE_BOOST_FACTOR = 1.0 --1.2                 -- When finding closest matching existing template to a target template, boost the score by this much if the template also has the correct role
 
 --------------------------------------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ NDefines.NMilitary.PLAN_EXECUTE_CAREFUL_LIMIT = 10
 
 NDefines.NAI.FALLBACK_LOSING_FACTOR = 0.0 					                    -- The lower this number  the longer the AI will hold the line before sending them to the fallback line
 
-NDefines.NAI.HOUR_BAD_COMBAT_REEVALUATE = 72                                 	-- if we are in combat for this amount and it goes shitty then try skipping it
+NDefines.NAI.HOUR_BAD_COMBAT_REEVALUATE = 48                                 	-- if we are in combat for this amount and it goes shitty then try skipping it
 
 NDefines.NAI.PLAN_ATTACK_MIN_ORG_FACTOR_LOW = 0.85							-- Minimum org % for a unit to actively attack an enemy unit when executing a plan
 NDefines.NAI.PLAN_ATTACK_MIN_STRENGTH_FACTOR_LOW = 0.85						-- Minimum strength for a unit to actively attack an enemy unit when executing a plan
@@ -401,6 +401,7 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	
 -- PRODUCTION LOGIC
  
+	NDefines.NAI.AGGRESSIVENESS_CHECK_FULLY_FORTIFIED_POCKET = 1
 	NDefines.NAI.PRODUCTION_EQUIPMENT_SURPLUS_FACTOR_GARRISON = 0.15	-- Base value for how much of currently used equipment the AI will at least strive to have in stock for garrison forces
 	NDefines.NAI.PRODUCTION_LINE_SWITCH_SURPLUS_NEEDED_MODIFIER = 0.0	-- Is modified by efficiency modifiers. WHAT THE FUCK DOES THIS DO
 	
@@ -409,7 +410,7 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	
 	NDefines.NAI.DEFAULT_SUPPLY_TRUCK_BUFFER_RATIO = 0.1	-- ai will set to truck buffer ratio to this. can be modified by wanted_supply_trucks min_wanted_supply_trucks ai strats
 	NDefines.NAI.DEFAULT_SUPPLY_TRAIN_NEED_FACTOR = 0.25     -- AI multiplies current train usage by this to determine desired nr of wanted trains. Can be modified by wanted_supply_train min_wanted_supply_trains ai strats.
-		
+	NDefines.NAI.WANTED_UNITS_INDUSTRY_FACTOR = 2.0	
 
 -- CONSTRUCTION LOGIC
 	NDefines.NAI.MAX_THREAT_FOR_FIRST_YEAR_CIVILIAN_MODE = 0 -- above this threshold, ai will leave first year civilian factory mode which bumps it civilian factory scores while building
@@ -418,7 +419,7 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	NDefines.NAI.BUILD_REFINERY_LACK_OF_RESOURCE_MODIFIER = 0.0	-- How much lack of resources are worth when evaluating what to build.
 	
 	NDefines.NAI.FIX_SUPPLY_BOTTLENECK_SATURATION_THRESHOLD = 0.75  -- Try to fix supply bottlenecks if supply node saturation exceeds this value.
-	NDefines.NAI.UPDATE_SUPPLY_BOTTLENECKS_FREQUENCY_HOURS = 720      -- Check for and try to fix supply bottlenecks this often. (168 hours = 1 week)
+	NDefines.NAI.UPDATE_SUPPLY_BOTTLENECKS_FREQUENCY_HOURS = 8      -- Check for and try to fix supply bottlenecks this often. (168 hours = 1 week)
 	
 	NDefines.NAI.BUILDING_TARGETS_BUILDING_PRIORITIES = {				-- buildings in order of pirority when considering building targets strategies. First has the greatest priority, omitted has the lowest. NOTE: not all buildings are supported by building targets strategies.
 		'arms_factory',
@@ -436,10 +437,10 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 
 	NDefines.NAI.AGGRESSIVENESS_CHECK_BASE = 2.0                            -- front comparison where ai will consider aggressive stance, unless it is already then the number above is used
 	NDefines.NAI.AGGRESSIVENESS_CHECK_EASY_TARGET = -0.4                    -- if target nation is flagged as easy target we also adjust down the front comparison needed
-	NDefines.NAI.AGGRESSIVENESS_CHECK_PARTLY_FORTIFIED = 3.0				-- if front strength balance is at or above this value versus a party fortified enemy, we do a balanced attack
-	NDefines.NAI.AGGRESSIVENESS_CHECK_PARTLY_FORTIFIED_WEAK_POINTS = 1.5	-- if front strength balance is at or above this value versus a party fortified enemy, we rush attack weak points; below this value, we are careful
+	NDefines.NAI.AGGRESSIVENESS_CHECK_PARTLY_FORTIFIED = 2.0				-- if front strength balance is at or above this value versus a party fortified enemy, we do a balanced attack
+	NDefines.NAI.AGGRESSIVENESS_CHECK_PARTLY_FORTIFIED_WEAK_POINTS = 1.4	-- if front strength balance is at or above this value versus a party fortified enemy, we rush attack weak points; below this value, we are careful
 	
-	NDefines.NAI.ATTACK_HEAVILY_DEFENDED_LIMIT = 1				-- AI will not launch attacks against heavily defended fronts unless they consider to have this level of advantage (1.0 = 100%)
+	NDefines.NAI.ATTACK_HEAVILY_DEFENDED_LIMIT = 0.1			-- AI will not launch attacks against heavily defended fronts unless they consider to have this level of advantage (1.0 = 100%)
 	NDefines.NAI.DIVISION_SUPPLY_RATIO_TO_MOTORIZE = 0.90
 	NDefines.NAI.FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.7 -- ai will consider a front fortified if this ratio of provinces has fort
 	NDefines.NAI.HEAVILY_FORTIFIED_RATIO_TO_CONSIDER_A_FRONT_FORTIFIED = 0.6 -- ai will consider a front super fortified if this ratio of provinces has lots of forts
@@ -493,3 +494,6 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	NDefines.NAI.XP_RATIO_REQUIRED_TO_RESEARCH_WITH_XP = 1.0	-- AI will at least need this amount of xp compared to cost of a tech to reserch it with XP			
 	NDefines.NAI.RESEARCH_WITH_XP_AI_WEIGHT_MULT = 1.5 		-- AI will bump score of a research with this mult if it can use XP
 	NDefines.NAI.RESEARCH_NEW_DOCTRINE_RANDOM_FACTOR = 0.0	-- How much randomness is allowed to contribute to do new research expressed as a factor of total tech weights. Higher means more random exploration.
+	NDefines_Graphics.NGraphics.COUNTRY_COLOR_SATURATION_MODIFIER = 0.30
+	NDefines_Graphics.NGraphics.COUNTRY_COLOR_BRIGHTNESS_MODIFIER = 0.65
+	NDefines_Graphics.NGraphics.MAP_MODE_TERRAIN_TRANSPARENCY = 0.60

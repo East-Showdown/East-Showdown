@@ -1,8 +1,9 @@
 name="East Showdown [DEV]"
+version="0.7.1.3"
 replace_path="history/countries"
 replace_path="history/states"
-replace_path="history/general"
 replace_path="history/units"
+replace_path="history/general"
 replace_path="map/strategicregions"
 replace_path="map/supplyareas"
 replace_path="common/abilities"
@@ -77,5 +78,5 @@ tags={
 	"Graphics"
 }
 picture="showdown.jpg"
-supported_version="1.17.*"
+supported_version="1.19.*"
 remote_file_id="2948642461"
