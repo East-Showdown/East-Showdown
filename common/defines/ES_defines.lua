@@ -1,5 +1,5 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
-NDefines.NGame.END_DATE = "2026.1.1.1"
+NDefines.NGame.END_DATE = "2036.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
 NDefines.NGame.SAVE_VERSION = 27								-- 0.7.1.4
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
