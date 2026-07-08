@@ -24637,10 +24637,6 @@ RUS_cooperation_with_the_dprk_category = {
 			has_army_experience > 74
 		}
 
-		modifier = {
-			
-		}
-
 		complete_effect = {
 			army_experience = -75
 		}
@@ -24655,6 +24651,25 @@ RUS_cooperation_with_the_dprk_category = {
 				var = RUS_dprk_overall_max_supplies_num
 				value = 2
 			}
+		}
+	}
+
+	RUS_testing_of_equipment_samples_dprk = {
+		icon = GFX_RUS_DPRK_cooperation
+		fire_only_once = yes
+		cost = 30
+		days_remove = 7
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_kim_jong_uns_main_striking_force
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_testing_of_equipment_samples_dprk"
+			country_event = rus.286
 		}
 	}
 
@@ -24724,6 +24739,66 @@ RUS_cooperation_with_the_dprk_category = {
 					has_country_flag = RUS_supplies_of_ammo_from_the_dprk_flag
 				}
 				add_to_variable = { ammunition_value_k = 50 }
+			}
+		}
+	}
+
+	RUS_dprk_atgm_supplies = {
+		icon = GFX_RUS_DPRK_cooperation
+		cost = 10
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_country_flag = RUS_testing_of_equipment_samples_dprk_flag
+			NOT = {
+				check_variable = { RUS_dprk_atgm_supplies_num = 3 }
+			}
+		}
+
+		available = {
+			check_variable = { RUS_dprk_overall_supplies_num < RUS_dprk_overall_max_supplies_num }
+		}
+
+		complete_effect = {
+			add_to_variable = {
+				var = RUS_dprk_overall_supplies_num
+				value = 1
+			}
+			add_to_variable = {
+				var = RUS_dprk_atgm_supplies_num
+				value = 1
+		    }
+		}
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_dprk_atgm_supplies_supplies"
+			if = { limit = { check_variable = { RUS_dprk_atgm_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = sp_atgm_apc_sov_btr80_equipment
+					variant_name = "Bulsae 4"
+					amount = 10
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_atgm_supplies_num = 1 } }			
+				add_equipment_to_stockpile = {
+					type = sp_atgm_apc_sov_btr80_equipment
+					variant_name = "Bulsae 4"
+					amount = 15
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_atgm_supplies_num = 2 } }
+				add_equipment_to_stockpile = {
+					type = sp_atgm_apc_sov_btr80_equipment
+					variant_name = "Bulsae 4"
+					amount = 20
+					producer = NKA
+				}			
 			}
 		}
 	}
