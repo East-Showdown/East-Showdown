@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
-NDefines.NGame.END_DATE = "2026.1.1.1"
+NDefines.NGame.END_DATE = "2036.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 22								-- 0.7.0.1
+NDefines.NGame.SAVE_VERSION = 27								-- 0.7.1.4
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
@@ -66,8 +66,8 @@ NDefines.NBuildings.RADAR_RANGE_BASE = 224				-- Radar range base first level ra
 NDefines.NBuildings.RADAR_RANGE_MIN = 256				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
 NDefines.NBuildings.RADAR_RANGE_MAX = 840				-- Range is interpolated between building levels 1-15.
 NDefines.NBuildings.RADAR_INTEL_EFFECT = 100			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars then the value sums up.
-NDefines.NBuildings.BASE_FACTORY_REPAIR = 1			-- Default repair rate before factories are taken into account
-NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 10	-- Factory speed modifier when repairing.
+NDefines.NBuildings.BASE_FACTORY_REPAIR = 0.7			-- Default repair rate before factories are taken into account
+NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 7	-- Factory speed modifier when repairing.
 NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throughput per level of naval base lancaster
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
@@ -99,10 +99,10 @@ NDefines.NMilitary.WAR_SCORE_LEND_LEASE_RECEIVED_FUEL_FACTOR = 0.001 		-- war sc
 NDefines.NMilitary.CORPS_COMMANDER_DIVISIONS_CAP = 50			-- how many divisions a corps commander is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.DIVISION_SIZE_FOR_XP = 8                   -- how many battalions should a division have to count as a full divisions when calculating XP stuff
 NDefines.NMilitary.CORPS_COMMANDER_ARMIES_CAP = -1			-- how many armies a corps commander is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 100			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
+NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 50			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 10				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.036    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
-NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.036    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
+NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.040    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
+NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.040    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
 NDefines.NMilitary.AIR_SUPPORT_BASE = 0.10-- 0.25 vanilla
 NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
@@ -161,6 +161,8 @@ NDefines.NMilitary.OUT_OF_FUEL_EQUIPMENT_MULT = 0.1				-- 0.1 vanilla ratio of t
 NDefines.NMilitary.OUT_OF_FUEL_SPEED_MULT = 0.4					-- vanilla 0.4 speed mult that armies get when out of fuel
 NDefines.NMilitary.OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0		-- xp gain mult from training when a unit is out of fuel
 NDefines.NMilitary.FUEL_CAPACITY_DEFAULT_HOURS = 96				-- 96 vanilla default capacity if not specified
+NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_HEIGHT = 2			-- Max height of regimental supports in division designer.
+NDefines.NMilitary.REGIMENTAL_SUPPORT_REQUIRED_BATTALIONS = { 2 } 					-- For each regimental support row, how many battalions are required in the regiment to be able to place a support in that row.
 NDefines.NAir.PORT_STRIKE_DAMAGE_FACTOR = 1.0								-- How much damage is dealt to ports during a port strike (per plane damage [complex number] * num flying planes * define)
 NDefines.NAir.THRUST_WEIGHT_AGILITY_FACTOR = 0.5								-- For plane designs additive agility bonus per point of thrust exceeding weight
 NDefines.NAir.AIR_WING_MAX_SIZE = 20 							-- Max amount of airplanes in wing
@@ -206,39 +208,11 @@ NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane t
 0.0 -- NAVAL_PATROL
 }
 NDefines.NAir.THRUST_WEIGHT_SPEED_FACTOR = 3								-- For plane designs additive Km/h max speed bonus per point of thrust exceeding weight
-NDefines.NNavy.RESOURCE_PURCHASE_PRIORITY = 6									-- Default convoy priority for export equipment purchase
-NDefines.NNavy.NAVY_PIERCING_THRESHOLD_DAMAGE_VALUES = {	-- 0 armor will always receive maximum damage (so add overmatching at your own peril). the system expects at least 2 values with no upper limit.
-1.00,
-1.00,
-0.70,
-0.40,
-0.30,
-0.10 -- 
-}
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_SHIP_MANPOWER_FACTOR = 0.001			-- war score gained for every manpower killed when sinking a ship
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_SHIP_PRODUCTION_COST_FACTOR = 0.004		-- war score gained for every IC of the sunk ship
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_CONVOY = 0.05							-- war score gained for every sunk convoy
-NDefines.NNavy.WAR_SCORE_DECAY_FOR_BUILT_CONVOY = 0.03  						-- war score deducted when convoy-raided enemy produces one new convoy
-NDefines.NNavy.COMBAT_ARMOR_PIERCING_DAMAGE_REDUCTION = -0.9					-- All damage reduction % when target armor is >= then shooter armor piercing.
 NDefines.NNavy.AMPHIBIOUS_LANDING_PENALTY = -0.1								-- amphibious landing penalty
 NDefines.NNavy.AMPHIBIOUS_INVADE_ATTACK_LOW = 0.8 							-- low and high cap of attack modifier scale. Scale interpolated by invasion progress.
-NDefines.NNavy.NAVAL_SPEED_MODIFIER = 2.0	                    				-- basic speed control
-NDefines.NNavy.NAVAL_MINES_INTEL_DIFF_FACTOR = 0.1					-- Better our decryption over enemy encryption will reduce the penalties from the enemy mines in the region. This value is a factor to be used for balancing.
-NDefines.NNavy.NAVAL_MINES_ACCIDENT_STRENGTH_LOSS = 75.0						-- Amount of strength loss when hit by naval mine
-NDefines.NNavy.NAVAL_MINES_ACCIDENT_ORG_LOSS_FACTOR = 0.6						-- Amount of strength loss when hit by naval mine
-NDefines.NNavy.AIR_SPOTTER_NORMALIZED_AIRWING_SIZE = 20						-- each plane will contribute 1/this of the air-wing's detection stat
-NDefines.NNavy.BASE_JOIN_COMBAT_HOURS						= 8				-- the taskforces that wants to join existing combats will wait for at least this amount
-NDefines.NNavy.ANTI_AIR_POW_ON_INCOMING_AIR_DAMAGE								= 0.25	-- received air damage is calculated using following: 1 - ( (ship_anti_air + fleet_anti_air * SHIP_TO_FLEET_ANTI_AIR_RATIO )^ANTI_AIR_POW_ON_INCOMING_AIR_DAMAGE ) * ANTI_AIR_MULT_ON_INCOMING_AIR_DAMAGE
-NDefines.NNavy.ANTI_AIR_MULT_ON_INCOMING_AIR_DAMAGE							= 0.2
-NDefines.NNavy.GUN_HIT_PROFILES = { -- hit profiles for guns if target ih profile is lower the gun will have lower accuracy
-80.0,	-- big guns
-145.0,	-- torpedoes
-45.0	-- small guns
-}
-NDefines.NNavy.CONVOY_HIT_PROFILE												= 120.0  	-- convoys has this contant hit profile
-NDefines.NNavy.HIT_PROFILE_MULT 												= 100.0  	-- multiplies hit profile of every ship
-NDefines.NNavy.HIT_PROFILE_SPEED_FACTOR										= 2		-- factors speed value when determining it profile (Vis * HIT_PROFILE_MULT * Ship Hit Profile Mult)
-NDefines.NRailwayGun.DISTRIBUTION_HOLD_POSITION_SCORE = 35							-- Score for staying in the same province when distributing Railway Guns
+NDefines.NNavy.NAVAL_INVASION_PREPARE_DAYS = 10 --60
+NDefines.NNavy.NAVAL_INVASION_PLAN_CAP = 0									-- base cap of naval invasions can be planned at the same time
+NDefines.NNavy.BASE_NAVAL_INVASION_DIVISION_CAP = 0							-- base cap of divisions that can be assigned in a naval invasion
 NDefines.NAI.DIPLOMACY_PURCHASE_EQUIPMENT_MONTHS = 2
 NDefines.NAI.EQUIPMENT_MARKET_UPDATE_FREQUENCY_DAYS = 11                    -- How often the AI runs its market logic
 NDefines.NAI.EQUIPMENT_MARKET_MAX_CIVS_FOR_PURCHASES_RATIO = 0.1            -- Ratio of available civilian factories to max use for equipment purchases (0.2 = 20 % so 50 available civs would mean max ca 10 civs to spend on purchases at any one time). Gets modified by equipment_market_spend_factories AI strategy.
@@ -322,7 +296,7 @@ NDefines.NAI.ORG_UNIT_WEAK = 0.15						-- Organization % for unit to be consider
 NDefines.NAI.STR_UNIT_WEAK = 0.4						-- Strength (equipment) % for unit to be considered weak
 NDefines.NAI.WANTED_UNITS_INDUSTRY_FACTOR = 1.45                        -- How many units a country wants is partially based on how much military industry that is available
 NDefines.NAI.WANTED_CARRIER_PLANES_PER_CARRIER_CAPACITY_FACTOR = 1					-- Scales how many carrier planes the AI want per carrier deck space.
-NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.1					-- How big part of the army that should be considered for upgrading
+NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0				-- How big part of the army that should be considered for upgrading
 NDefines.NAI.MISSING_CONVOYS_BOOST_FACTOR = 18.0					-- The more convoys a country is missing the more resources it diverts to cover this.
 NDefines.NAI.HOUR_BAD_COMBAT_REEVALUATE = 100                   -- if we are in combat for this amount and it goes shitty then try skipping it
 NDefines.NAI.MIN_PLAN_VALUE_TO_MICRO_INACTIVE = 0.2				-- The AI will not consider members of groups which plan is not activated AND evaluates lower than this.
@@ -437,7 +411,10 @@ NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_SUCCESS_MODIFIER = 0.10 --0.1
 NDefines.NRaids.RAID_HIGH_RISK_SETTING_SUCCESS_MODIFIER = 0.20 --0.25
 NDefines.NRaids.RAID_OUTCOME_REPORT_DAYS_TO_LIVE = 6 -- 30
 
+NDefines.NMilitary.PLAN_EXECUTE_CAREFUL_MAX_FORT = 11 -- NO LIMIT 
+
 -- MPR
+
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
@@ -493,3 +470,17 @@ NDefines.NDoctrines.MASTERY_BANK_MAX = 0 --200
 NDefines.NDoctrines.MAX_MONTHLY_MASTERY_GAIN = 1200 --50
 NDefines.NDoctrines.MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 1 --5.0
 NDefines.NDoctrines.TRAINING_MASTERY_GAIN_FACTOR = 0.00 -- 0.1
+
+NDefines.NMilitary.COMMS_MAX_DISTANCE = 10										-- If N is >= the size of the below arrays, the last value will be considered repeated
+NDefines.NMilitary.PLANNING_CAP_COMMS_SCALING = { 1.0, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6 }		-- Value at index J is the scaling applied to planning cap when HQ is J provinces behind the frontline
+NDefines.NMilitary.PLANNING_CAP_NO_HQ_SCALING = 0.6							-- Scaling applied to planning cap when there's no HQ (no leader or leader not deployed or not the same root order)
+NDefines.NMilitary.PLANNING_SPEED_COMMS_SCALING = { 1.0, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6 }		-- Same as PLANNING_CAP_COMMS_SCALING but for planning speed
+NDefines.NMilitary.PLANNING_SPEED_NO_HQ_SCALING = 0.6								-- Same as PLANNING_CAP_NO_HQ_SCALING but for planning speed
+NDefines.NMilitary.LEADER_MOD_COMMS_SCALING = { 1.10, 1.10, 1.10, 1.05, 1.05, 1.00, 1.00, 1.0, 1.0, 1.0, 1.0 }		-- Same as PLANNING_CAP_COMMS_SCALING but for leader modifiers
+NDefines.NMilitary.LEADER_MOD_NO_HQ_SCALING = 1.0								-- Same as PLANNING_CAP_NO_HQ_SCALING but for leader modifiers
+NDefines.NMilitary.ABILITY_COMMS_SCALING = { 1.10, 1.10, 1.10, 1.05, 1.05, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 }	-- Same as PLANNING_CAP_COMMS_SCALING but for active abilities
+NDefines.NMilitary.ABILITY_NO_HQ_SCALING = 1.0						-- Same as PLANNING_CAP_NO_HQ_SCALING but for active abilities
+NDefines.NMilitary.GENERAL_PROXIMITY_CLOSE = 2								-- At the "close" proximity setting, the general should stay this many provinces behind the frontline
+NDefines.NMilitary.GENERAL_PROXIMITY_MEDIUM = 4									-- At the "medium" proximity setting, the general should stay this many provinces behind the frontline
+NDefines.NMilitary.GENERAL_PROXIMITY_FAR = 6									-- At the "far" proximity setting, the general should stay this many provinces behind the frontline
+NDefines.NMilitary.GENERAL_PROXIMITY_DEFAULT = 1									-- The default proximity setting for a deployed general. This number should correspond to one of the values above
