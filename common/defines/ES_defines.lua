@@ -453,7 +453,7 @@ NDefines.NAI.MIN_FACTORIES_TO_WANT_TO_IMPORT = { -- minimum number of civilian f
     0, --tungsten
     0, --steel
     0, --chromium
-    0, --gas
+    0, --fuel_resource
 }
 NDefines.NMapIcons.SUPPLY_AREAS_PRIORITY_ADJACENCY_RULE = 3
 NDefines.NGraphics.RAILWAY_CAMERA_CUTOFF = 200.0
