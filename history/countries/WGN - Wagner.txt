@@ -543,7 +543,6 @@ set_variable = { WGN_successful_stormings = 0 }
 set_variable = { WGN_failed_stormings = 0 }
 
 #WGN_shell_hunger_modifier
-set_variable = { WGN_hunger_weekly_manpower = -50 }
 set_variable = { WGN_hunger_supply_consumption_factor = 0.25 }
 set_variable = { WGN_hunger_command_power_gain_mult = -0.15 }
 set_variable = { WGN_hunger_army_org_factor = -0.1 }
@@ -853,6 +852,8 @@ add_equipment_to_stockpile = {
 	
 	army_experience = 20
 	add_command_power = 48 # Итого 100
+	add_fuel = 250000
+	add_to_variable = { ammunition_value_k = 1000 }
 	
 	remove_ideas = { 
 		WGN_african_resources
@@ -901,11 +902,11 @@ add_equipment_to_stockpile = {
 		}
 	}
 	
-	# Флажки
+	#Флаги
 	
 	set_country_flag = WGN_operations_in_timbykty_cf
 	
-	# Остальное
+	#Остальное
 	
 	#Бюджет Вагнера (+доход и +расход)
 	add_to_variable = { WGN_kempering_plus = 3.300 } # Такое число взято из: add_to_variable = { WGN_kempering_plus = 2.23 } add_to_variable = { WGN_kempering_plus = 1.059 } add_to_variable = { WGN_realty_plus = 0.11 }
@@ -934,7 +935,7 @@ add_equipment_to_stockpile = {
 		technology = infantry_improvements_4
 	}
 	
-	# Снаряжение
+	#Снаряжение
 	add_equipment_to_stockpile = {
 		type = imv_light_1_equipment
 		variant_name = "Урал-4350"
@@ -1021,6 +1022,15 @@ add_equipment_to_stockpile = {
 	
 	add_political_power = 150
 	add_manpower = 7751
+	add_to_variable = { ammunition_value_k = 1200 }
+	
+	remove_ideas = {
+		WGN_Codex
+	}
+	
+	add_ideas = {
+		WGN_Codex_1
+	}
 	
 	unlock_national_focus = WGN_materialsupport
 	unlock_national_focus = WGN_internalaffairs
@@ -1050,10 +1060,54 @@ add_equipment_to_stockpile = {
 		tech_fpv = 1
 	}
 	
+	set_global_flag = WGN_prigozhin_troll_factory_CF
+	set_country_flag = WGN_project_K_allow
+	
+	add_trait = {  character = evgeniy_prigozhin  ideology = wgn  trait = Hero_of_Russia }
+	
+	random_army_leader = {
+		limit = { is_field_marshal = no }
+		add_unit_leader_trait = prisoners_commander
+	}
+	
+	#Динамические идеи и числовые значения
+	
+	add_to_variable = { var = WGN_political_power_factor value = 0.1 }
+	add_to_variable = { var = WGN_weekly_manpower value = 150 }
+	
+	add_dynamic_modifier = {
+		modifier = WGN_information_war_BOP_modifier
+	}
+	add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
+	
+	add_to_variable = { var = WGN_political_power_factor value = 0.15 }
+	
+	add_to_variable = { var = WGN_army_morale_factor value = 0.15 }
+	add_to_variable = { var = WGN_political_power_factor value = 0.05 }
+	
+	add_to_variable = { var = WGN_max_planning value = 0.15 }
+	add_to_variable = { var = WGN_planning_speed value = 0.2 }
+	
+	add_to_variable = { var = WGN_air_mission_xp_gain_factor value = 0.1 }
+	add_to_variable = { var = WGN_air_mission_efficiency value = 0.2 }
+	
+	add_to_variable = {	var = WGN_recon_factor value = 0.2	}
+	add_to_variable = {	var = WGN_army_org_factor value = 0.1 }
+	
+	add_to_variable = { WGN_budget_var = 0.11 } # Чтобы циферки отличались :)
+	
+	add_to_variable = {
+		var = WGN_prisoner_recruitment_var2
+		value = 1
+	}
+	
+	
+	#Армия
+	
 	set_sub_doctrine = wagner_abilities_artillery
 	add_mastery = {
 		amount = 100
-		track = wagner_abilities_artillery
+		track = tier_0_artillery_wgn
 	}
 	add_mastery = {
 		amount = 350
@@ -1088,47 +1142,7 @@ add_equipment_to_stockpile = {
 		sub_doctrine = basic_special_forces_expertise
 	}
 	
-	add_trait = {  character = evgeniy_prigozhin  ideology = wgn  trait = Hero_of_Russia }
-	
-	#Временные и динамические идеи
-	
-	add_to_variable = { var = WGN_political_power_factor value = 0.1 }
-	add_to_variable = { var = WGN_weekly_manpower value = 150 }
-	
-	set_global_flag = WGN_prigozhin_troll_factory_CF
-	add_dynamic_modifier = {
-		modifier = WGN_information_war_BOP_modifier
-	}
-	add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
-	
-	add_to_variable = { var = WGN_political_power_factor value = 0.15 }
-	
-	add_to_variable = { var = WGN_army_morale_factor value = 0.15 }
-	add_to_variable = { var = WGN_political_power_factor value = 0.05 }
-	
-	add_to_variable = { var = WGN_max_planning value = 0.15 }
-	add_to_variable = { var = WGN_planning_speed value = 0.2 }
-	
-	add_to_variable = { var = WGN_air_mission_xp_gain_factor value = 0.1 }
-	add_to_variable = { var = WGN_air_mission_efficiency value = 0.2 }
-	
-	add_to_variable = {	var = WGN_recon_factor value = 0.2	}
-	add_to_variable = {	var = WGN_army_org_factor value = 0.1 }
-	
-	add_to_variable = { WGN_budget_var = 0.11 } # Чтобы циферки отличались :)
-	
-	# Другое
-	set_country_flag = WGN_project_K_allow
-	
-	random_army_leader = {
-		limit = { is_field_marshal = no }
-		add_unit_leader_trait = prisoners_commander
-	}
-	
-	add_to_variable = {
-		var = WGN_prisoner_recruitment_var2
-		value = 1
-	}
+	#Другое
 	
 	add_to_variable = { WGN_successful_stormings = 2 } #Попасное, а также Северодонецка с Попасная
 	
@@ -1189,12 +1203,6 @@ add_equipment_to_stockpile = {
 	}
 	add_units_to_division_template = {
 		template_name = "Serbian Volunteers"
-		support = {
-			fpv_team = 1
-		}
-	}
-	add_units_to_division_template = {
-		template_name = "ISIS Hunters"
 		support = {
 			fpv_team = 1
 		}
