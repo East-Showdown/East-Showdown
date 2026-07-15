@@ -408,6 +408,7 @@ map_plan_priority_direction_set = {
 		set_country_flag = {
 			flag = map_plan_priority_direction_cooldown_flag
 			days = 90
+			value = 1
 		}
 		
 		set_variable = { temp_selected_region_index = selected_region }
@@ -434,6 +435,7 @@ map_plan_attack_prepare = {
 		set_country_flag = {
 			flag = map_plan_attack_cooldown_flag
 			days = 45
+			value = 1
 		}
 	}
 }
@@ -456,6 +458,7 @@ map_plan_defence_prepare = {
 		set_country_flag = {
 			flag = map_plan_defence_cooldown_flag
 			days = 75
+			value = 1
 		}
 		
 	}
@@ -473,6 +476,7 @@ map_plan_build_fortifications_prepare_set = {
 		set_country_flag = {
 			flag = map_plan_build_fortifications_cooldown_flag
 			days = 45
+			value = 1
 		}
 
 		set_variable = { temp_selected_region_index = selected_region }
@@ -538,16 +542,57 @@ map_apply_modifier_action = {
 	}
 }
 
-#Жестко наговнокодил
-map_apply_modifier_action_RUS = {
-	for_loop_effect = { # Цикл по страт. регионам внутри региона карты
-		start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
-		end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
-		value = temp_region_index
+#THIS scope is COUNTRY
+# Must contain temp vars:
+# 1. temp_selected_region_id OR temp_region_id  (PRIORITY: temp_selected_region_id)
+# 2. temp_cooldown_days
+# 3. temp_duration_days
+map_plan_priority_direction_set_scripted = {
 
-		set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+	# Cooldown
+	set_variable = { map_plan_priority_direction_cooldown = global.num_days }
+	add_to_variable = { map_plan_priority_direction_cooldown = temp_cooldown_days }
+	meta_effect = {
+		text = {
+			set_country_flag = {
+				flag = map_plan_priority_direction_cooldown_flag
+				days = [DAYS]
+				value = 1
+			}
+		}
+		DAYS = "[?temp_cooldown_days]"
+	}
+	
 
-		for_loop_effect = { # Цикл по стейтам
+	if = {
+		limit = { has_variable = temp_selected_region_id }
+
+		for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+			start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
+			end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
+			value = temp_region_index
+
+			set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+			for_loop_effect = { # Цикл по стейтам региона
+				start = global.regions_to_states_ids_start_index^temp_region_id
+				end = global.regions_to_states_ids_end_index^temp_region_id
+				value = temp_state_index
+
+				set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+				var:temp_state_id = {
+					add_dynamic_modifier = {
+						modifier = map_plan_priority_direction_modifier
+						scope = ROOT
+						days = temp_duration_days
+					}
+				}
+			}
+		}
+	}
+	else = {		
+		for_loop_effect = { # Цикл по стейтам региона
 			start = global.regions_to_states_ids_start_index^temp_region_id
 			end = global.regions_to_states_ids_end_index^temp_region_id
 			value = temp_state_index
@@ -555,85 +600,67 @@ map_apply_modifier_action_RUS = {
 			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
 
 			var:temp_state_id = {
-				if = {
-					limit = { check_variable = { temp_modifier_type = 1 } } #Приоритетное направление 
-					add_dynamic_modifier = {
-						modifier = map_plan_priority_direction_modifier
-						scope = RUS
-						days = 90
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 2 } } #План атаки 
-					add_dynamic_modifier = {
-						modifier = map_plan_attack_modifier
-						scope = RUS
-						days = 30
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 3 } } #План защиты 
-					add_dynamic_modifier = {
-						modifier = map_plan_defence_modifier
-						scope = RUS
-						days = 60
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 4 } } #Постройка укрепов
-					add_dynamic_modifier = {
-						modifier = map_plan_build_fortifications_modifier
-						scope = RUS
-						days = 60
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 5 } } #План атаки, но ещё со скоростью
-					add_dynamic_modifier = {
-						modifier = map_plan_attack_scenario_modifier
-						scope = RUS
-						days = 30
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 6 } } #План атаки для ИИ, но ещё со скоростью
-					add_dynamic_modifier = {
-						modifier = map_plan_attack_scenario_ai_modifier
-						scope = RUS
-						days = 35
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 7 } } #План защиты с меньшим времени
-					add_dynamic_modifier = {
-						modifier = map_plan_defence_modifier
-						scope = RUS
-						days = 25
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 8 } } #Приоритетное направление с меньшем времени 
-					add_dynamic_modifier = {
-						modifier = map_plan_priority_direction_modifier
-						scope = RUS
-						days = 45
-					}
+				add_dynamic_modifier = {
+					modifier = map_plan_priority_direction_modifier
+					scope = ROOT
+					days = temp_duration_days
 				}
 			}
 		}
 	}
 }
 
-#Жестко скопировал с прошлого говнокода
-map_apply_modifier_action_UKR = {
-	for_loop_effect = { # Цикл по страт. регионам внутри региона карты
-		start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
-		end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
-		value = temp_region_index
+#THIS scope is COUNTRY
+# Must contain temp vars:
+# 1. temp_selected_region_id OR temp_region_id  (PRIORITY: temp_selected_region_id)
+# 2. temp_cooldown_days
+# 3. temp_duration_days
+map_plan_attack_prepare_scripted = {
 
-		set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+	# Cooldown
+	set_variable = { map_plan_attack_cooldown = global.num_days }
+	add_to_variable = { map_plan_attack_cooldown = temp_cooldown_days }
+	meta_effect = {
+		text = {
+			set_country_flag = {
+				flag = map_plan_attack_cooldown_flag
+				days = [DAYS]
+				value = 1
+			}
+		}
+		DAYS = "[?temp_cooldown_days]"
+	}
+	
 
-		for_loop_effect = { # Цикл по стейтам
+	if = {
+		limit = { has_variable = temp_selected_region_id }
+
+		for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+			start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
+			end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
+			value = temp_region_index
+
+			set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+			for_loop_effect = { # Цикл по стейтам региона
+				start = global.regions_to_states_ids_start_index^temp_region_id
+				end = global.regions_to_states_ids_end_index^temp_region_id
+				value = temp_state_index
+
+				set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+				var:temp_state_id = {
+					add_dynamic_modifier = {
+						modifier = map_plan_attack_modifier
+						scope = ROOT
+						days = temp_duration_days
+					}
+				}
+			}
+		}
+	}
+	else = {		
+		for_loop_effect = { # Цикл по стейтам региона
 			start = global.regions_to_states_ids_start_index^temp_region_id
 			end = global.regions_to_states_ids_end_index^temp_region_id
 			value = temp_state_index
@@ -641,74 +668,154 @@ map_apply_modifier_action_UKR = {
 			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
 
 			var:temp_state_id = {
-				if = {
-					limit = { check_variable = { temp_modifier_type = 1 } } #Приоритетное направление 
-					add_dynamic_modifier = {
-						modifier = map_plan_priority_direction_modifier
-						scope = UKR
-						days = 90
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 2 } } #План атаки 
-					add_dynamic_modifier = {
-						modifier = map_plan_attack_modifier
-						scope = UKR
-						days = 30
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 3 } } #План защиты 
-					add_dynamic_modifier = {
-						modifier = map_plan_defence_modifier
-						scope = UKR
-						days = 60
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 4 } } #Постройка укрепов
-					add_dynamic_modifier = {
-						modifier = map_plan_build_fortifications_modifier
-						scope = UKR
-						days = 60
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 5 } } #План атаки, но ещё со скоростью
-					add_dynamic_modifier = {
-						modifier = map_plan_attack_scenario_modifier
-						scope = UKR
-						days = 30
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 6 } } #План атаки для ИИ, но ещё со скоростью
-					add_dynamic_modifier = {
-						modifier = map_plan_attack_scenario_ai_modifier
-						scope = UKR
-						days = 35
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 7 } } #План защиты с меньшим времени
-					add_dynamic_modifier = {
-						modifier = map_plan_defence_modifier
-						scope = UKR
-						days = 25
-					}
-				}
-				else_if = {
-					limit = { check_variable = { temp_modifier_type = 8 } } #Приоритетное направление с меньшем времени 
-					add_dynamic_modifier = {
-						modifier = map_plan_priority_direction_modifier
-						scope = UKR
-						days = 45
-					}
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = ROOT
+					days = temp_duration_days
 				}
 			}
 		}
 	}
 }
+
+#THIS scope is COUNTRY
+# Must contain temp vars:
+# 1. temp_selected_region_id OR temp_region_id  (PRIORITY: temp_selected_region_id)
+# 2. temp_cooldown_days
+# 3. temp_duration_days
+map_plan_defence_prepare_scripted = {
+
+	# Cooldown
+	set_variable = { map_plan_defence_cooldown = global.num_days }
+	add_to_variable = { map_plan_defence_cooldown = temp_cooldown_days }
+	meta_effect = {
+		text = {
+			set_country_flag = {
+				flag = map_plan_defence_cooldown_flag
+				days = [DAYS]
+				value = 1
+			}
+		}
+		DAYS = "[?temp_cooldown_days]"
+	}
+	
+
+	if = {
+		limit = { has_variable = temp_selected_region_id }
+
+		for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+			start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
+			end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
+			value = temp_region_index
+
+			set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+			for_loop_effect = { # Цикл по стейтам региона
+				start = global.regions_to_states_ids_start_index^temp_region_id
+				end = global.regions_to_states_ids_end_index^temp_region_id
+				value = temp_state_index
+
+				set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+				var:temp_state_id = {
+					add_dynamic_modifier = {
+						modifier = map_plan_defence_modifier
+						scope = ROOT
+						days = temp_duration_days
+					}
+				}
+			}
+		}
+	}
+	else = {		
+		for_loop_effect = { # Цикл по стейтам региона
+			start = global.regions_to_states_ids_start_index^temp_region_id
+			end = global.regions_to_states_ids_end_index^temp_region_id
+			value = temp_state_index
+
+			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+			var:temp_state_id = {
+				add_dynamic_modifier = {
+					modifier = map_plan_defence_modifier
+					scope = ROOT
+					days = temp_duration_days
+				}
+			}
+		}
+	}
+}
+
+
+#THIS scope is COUNTRY
+# Must contain temp vars:
+# 1. temp_selected_region_id OR temp_region_id  (PRIORITY: temp_selected_region_id)
+# 2. temp_cooldown_days
+# 3. temp_duration_days
+map_plan_build_fortifications_prepare_set_scripted = {
+
+	# Cooldown
+	set_variable = { map_plan_build_fortifications_cooldown = global.num_days }
+	add_to_variable = { map_plan_build_fortifications_cooldown = temp_cooldown_days }
+	meta_effect = {
+		text = {
+			set_country_flag = {
+				flag = map_plan_build_fortifications_cooldown_flag
+				days = [DAYS]
+				value = 1
+			}
+		}
+		DAYS = "[?temp_cooldown_days]"
+	}
+	
+	
+	if = {
+		limit = { has_variable = temp_selected_region_id }
+
+		for_loop_effect = { # Цикл по страт. регионам внутри региона карты
+			start = global.selected_region_to_regions_ids_start_index^temp_selected_region_index
+			end = global.selected_region_to_regions_ids_end_index^temp_selected_region_index
+			value = temp_region_index
+
+			set_temp_variable = { temp_region_id = global.selected_region_to_regions_ids^temp_region_index }
+
+			for_loop_effect = { # Цикл по стейтам региона
+				start = global.regions_to_states_ids_start_index^temp_region_id
+				end = global.regions_to_states_ids_end_index^temp_region_id
+				value = temp_state_index
+
+				set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+				var:temp_state_id = {
+					add_dynamic_modifier = {
+						modifier = map_plan_build_fortifications_modifier
+						scope = ROOT
+						days = temp_duration_days
+					}
+				}
+			}
+		}
+	}
+	else = {		
+		for_loop_effect = { # Цикл по стейтам региона
+			start = global.regions_to_states_ids_start_index^temp_region_id
+			end = global.regions_to_states_ids_end_index^temp_region_id
+			value = temp_state_index
+
+			set_temp_variable = { temp_state_id = global.regions_to_states_ids^temp_state_index }
+
+			var:temp_state_id = {
+				add_dynamic_modifier = {
+					modifier = map_plan_build_fortifications_modifier
+					scope = ROOT
+					days = temp_duration_days
+				}
+			}
+		}
+	}
+}
+
+###УДАЛИТЬ
 
 
 
