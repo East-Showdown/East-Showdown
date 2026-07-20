@@ -479,7 +479,7 @@ focus_tree = {
 			add_doctrine_cost_reduction = {
 				name = elastic_defense
 				cost_reduction = 0.5
-				uses = 2
+				uses = 2xx
 				category = land_doctrine
 			}
 			custom_effect_tooltip = Conduct_military_exercises_of_the_AFU_cet
@@ -8136,7 +8136,7 @@ focus_tree = {
                 planning_skill = 3
                 logistics_skill = 2
             }				
-			custom_effect_tooltip = focus_in_dev_effect_tt	
+			
 										
 		}
 	}
@@ -8164,11 +8164,55 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_Personnel_changes_in_General_Staff
-		cost = 10
+		cost = 0
 
 		completion_reward = {
-			add_army_experience = 25
-			add_command_power = 20
+		   
+		remove_ideas = UKR_old_school_doc_1
+
+	    remove_ideas = UKR_zaluzhniu_doc_1
+	   
+	    set_variable = { UKR_zaluzhny_doc_army_attack = 0.08 }
+	    set_variable = { UKR_zaluzhny_doc_breakthrough = 0 }
+	    set_variable = { UKR_zaluzhny_doc_armor_attack = 0 }
+	    set_variable = { UKR_zaluzhny_doc_mechanized_attack = 0 }
+
+		set_variable = { UKR_zaluzhny_doc_armor_defence = 0 }
+        set_variable = { UKR_zaluzhny_doc_mechanized_defence = 0 }
+
+
+	    set_variable = { UKR_zaluzhny_doc_dig_in_speed = 0.25 }
+	    set_variable = { UKR_zaluzhny_doc_max_dig_in = -0.05 }
+        set_variable = { UKR_zaluzhny_doc_max_dig_in_flat = 0 }
+	   
+	    set_variable = { UKR_zaluzhny_doc_recovery_rate = 0.10 }
+	    set_variable = { UKR_zaluzhny_doc_reinforce_rate = 0 }
+        
+	    set_variable = { UKR_zaluzhny_doc_army_speed = 0.15 }
+	    set_variable = { UKR_zaluzhny_doc_armor_speed = 0 }
+
+	    set_variable = { UKR_zaluzhny_doc_planning_speed = 0.20 }
+	    set_variable = { UKR_zaluzhny_doc_max_planning = 0 }
+
+	    set_variable = { UKR_zaluzhny_doc_no_supply_grace = 36 }
+	    set_variable = { UKR_zaluzhny_doc_supply_consumption = 0 }
+
+		
+
+	   if = {
+		limit = {
+			NOT = {
+				has_dynamic_modifier = UKR_zaluzhny_dynamic_doctrine
+			}
+		}
+		add_dynamic_modifier = {
+			modifier = UKR_zaluzhny_dynamic_doctrine
+		}
+	
+
+	    
+	   }
+	  force_update_dynamic_modifier = yes	
 		}
 	}
 
@@ -8183,11 +8227,15 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_branch_start
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 20
+		   add_timed_idea = {
+			idea = UKR_general_staff_reorganization_spirit
+			days = 30
+		   }
 		}
+		
 	}
 
 	focus = {
@@ -8197,14 +8245,32 @@ focus_tree = {
 		prerequisite = {
 			focus = UKR_zaluzhny_gsh_reorganization
 		}
-
+        available = {
+	        NOT = {
+		      has_idea = UKR_general_staff_reorganization_spirit
+	        }
+        }
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_gsh_reorganization
-		cost = 10
+		cost = 3
 
 		completion_reward = {
-			add_army_experience = 35
+			log = "[GetDateText]: [Root.GetName]: UKR_zaluzhny_lessons_of_past_campaigns"
+		    add_mastery = {
+				amount = 200
+				track = tier_2_infantry
+			}
+			add_mastery = {
+				amount = 200
+				track = tier_3_infantry
+			}	
+			add_doctrine_cost_reduction = {
+		        name = UKR_zaluzhny_lessons_doctrine_bonus
+		        cost_reduction = 0.35
+		        uses = 1
+		        category = land_doctrine
+	        }
 		}
 	}
 
@@ -8219,12 +8285,24 @@ focus_tree = {
 		x = -2
 		y = 1
 		relative_position_id = UKR_zaluzhny_lessons_of_past_campaigns
-		cost = 10
+		cost =4
 
 		completion_reward = {
-			add_army_experience = 25
-			add_command_power = 15
-		}
+			add_timed_idea = {
+				idea = UKR_zaluzhny_corps_reorganization_spirit
+				days = 90
+		    }
+
+			custom_effect_tooltip = UKR_zaluzhny_corps_division_brigade_model_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_recovery_rate = 0.12 }
+	        add_to_variable = { UKR_zaluzhny_doc_reinforce_rate = 0.06 }
+	        add_to_variable = { UKR_zaluzhny_doc_max_planning = 0.15 }
+			}
+
+	        force_update_dynamic_modifier = yes
+        }
 	}
 
 	focus = {
@@ -8238,11 +8316,17 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_corps_division_brigade_model
-		cost = 10
+		cost = 4
 
 		completion_reward = {
-			add_army_experience = 20
-			add_command_power = 25
+			custom_effect_tooltip = UKR_zaluzhny_maneuver_group_hq_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_armor_speed = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_planning_speed = 0.20 }
+			}
+
+	        force_update_dynamic_modifier = yes
 		}
 	}
 
@@ -8257,11 +8341,17 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_maneuver_group_hq
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 25
-			add_command_power = 20
+			custom_effect_tooltip = UKR_zaluzhny_main_effort_concentration_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_breakthrough = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_supply_consumption = 0.04 }
+			}
+
+	        force_update_dynamic_modifier = yes
 		}
 	}
 
@@ -8276,10 +8366,18 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = UKR_zaluzhny_lessons_of_past_campaigns
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 25
+			custom_effect_tooltip = UKR_zaluzhny_heavy_mechanized_strike_formations_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_armor_attack = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_mechanized_attack = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_armor_speed = 0.10 }
+
+	        force_update_dynamic_modifier = yes
+			}
 		}
 	}
 
@@ -8294,13 +8392,36 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_heavy_mechanized_strike_formations
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 20
-		}
-	}
+	    add_unit_bonus = {
+		engineer_heavy = {
+			name = UKR_heavy_engineer_bonus
 
+			fort = {
+				attack = 0.08
+			}
+
+			river = {
+				attack = 0.02
+			}
+
+			urban = {
+				attack = 0.02
+			}
+
+			village = {
+				attack = 0.02
+			}
+
+			industrial = {
+				attack = 0.02
+	        }
+		}
+	   }
+	  }
+	}
 	focus = {
 		id = UKR_zaluzhny_mobile_repair_evacuation_groups
 		icon = GFX_goal_generic_army_motorized
@@ -8312,13 +8433,23 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_engineering_breakthrough_vehicles
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 20
-		}
-	}
+	    add_unit_bonus = {
+		heavy_maintenance_company = {
+			name = UKR_heavy_repair_platoon_bonus
 
+			equipment_capture_factor = 0.10
+
+			battalion_mult = {
+				category = category_all_armor
+				max_strength = 0.30
+			}
+		}
+	  }
+	}
+  }
 	focus = {
 		id = UKR_zaluzhny_final_rejection_of_static_defense
 		icon = GFX_goal_generic_position_armies
@@ -8331,12 +8462,19 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = UKR_zaluzhny_main_effort_concentration
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 30
-			add_command_power = 20
+		   custom_effect_tooltip = UKR_zaluzhny_final_rejection_of_static_defense_effect_tt
+		   hidden_effect = {
+	       add_to_variable = { UKR_zaluzhny_doc_max_dig_in_flat = -3 }
+	       add_to_variable = { UKR_zaluzhny_doc_armor_defence = 0.10 }
+	       add_to_variable = { UKR_zaluzhny_doc_mechanized_defence = 0.10 }
+		   }
+           
+		   	force_update_dynamic_modifier = yes
 		}
+
 	}
 
 	focus = {
@@ -8350,11 +8488,16 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_final_rejection_of_static_defense
-		cost = 10
+		cost = 5
 
 		completion_reward = {
-			add_army_experience = 50
-			add_command_power = 30
+			custom_effect_tooltip = UKR_zaluzhny_operational_maneuver_doctrine_effect_tt
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_army_attack = 0.04 }
+	        add_to_variable = { UKR_zaluzhny_doc_no_supply_grace = 12 }
+			}
+
+	        force_update_dynamic_modifier = yes
 		}
 	}
 
@@ -8370,6 +8513,7 @@ focus_tree = {
 		}
 
 		allow_branch = {
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
 			has_country_flag = CIS_Sirskyy
 		}
 
