@@ -479,7 +479,7 @@ focus_tree = {
 			add_doctrine_cost_reduction = {
 				name = elastic_defense
 				cost_reduction = 0.5
-				uses = 2xx
+				uses = 2
 				category = land_doctrine
 			}
 			custom_effect_tooltip = Conduct_military_exercises_of_the_AFU_cet
@@ -8167,10 +8167,13 @@ focus_tree = {
 		cost = 0
 
 		completion_reward = {
-		   
-		remove_ideas = UKR_old_school_doc_1
+		custom_effect_tooltip = UKR_zaluzhny_branch_start_effect_tt
 
+
+		hidden_effect{	 
+		remove_ideas = UKR_old_school_doc_1
 	    remove_ideas = UKR_zaluzhniu_doc_1
+		}
 	   
 	    set_variable = { UKR_zaluzhny_doc_army_attack = 0.08 }
 	    set_variable = { UKR_zaluzhny_doc_breakthrough = 0 }
@@ -8182,7 +8185,6 @@ focus_tree = {
 
 
 	    set_variable = { UKR_zaluzhny_doc_dig_in_speed = 0.25 }
-	    set_variable = { UKR_zaluzhny_doc_max_dig_in = -0.05 }
         set_variable = { UKR_zaluzhny_doc_max_dig_in_flat = 0 }
 	   
 	    set_variable = { UKR_zaluzhny_doc_recovery_rate = 0.10 }
@@ -8289,7 +8291,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_timed_idea = {
-				idea = UKR_zaluzhny_corps_reorganization_spirit
+				idea = UKR_corps_reorganization_spirit
 				days = 90
 		    }
 
@@ -8488,7 +8490,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_zaluzhny_final_rejection_of_static_defense
-		cost = 5
+		cost = 4
 
 		completion_reward = {
 			custom_effect_tooltip = UKR_zaluzhny_operational_maneuver_doctrine_effect_tt
@@ -8525,12 +8527,57 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_Personnel_changes_in_General_Staff
-		cost = 10
+		cost = 0
 
 		completion_reward = {
-			add_army_experience = 25
-			add_command_power = 20
-		}
+			custom_effect_tooltip = UKR_sirskyy_branch_start_effect_tt
+
+		    hidden_effect = {
+			remove_ideas = UKR_old_school_doc_1
+	        remove_ideas = UKR_zaluzhniu_doc_1
+
+	
+	        set_variable = { UKR_sirskyy_doc_army_speed = -0.05 }
+	        set_variable = { UKR_sirskyy_doc_supply_consumption = -0.05 }
+	        set_variable = { UKR_sirskyy_doc_core_defence = 0.12 }
+	        set_variable = { UKR_sirskyy_doc_planning_speed = -0.15 }
+	        set_variable = { UKR_sirskyy_doc_max_dig_in = 0.20 }
+	        set_variable = { UKR_sirskyy_doc_bunker_construction_speed = 0.20 }
+
+	
+	        set_variable = { UKR_sirskyy_doc_reinforce_rate = 0 }
+	        set_variable = { UKR_sirskyy_doc_recovery_rate = 0 }
+	        set_variable = { UKR_sirskyy_doc_max_planning = 0 }
+
+	        set_variable = { UKR_sirskyy_doc_assault_infantry_attack = 0 }
+	        set_variable = { UKR_sirskyy_doc_assault_infantry_org = 0 }
+	        set_variable = { UKR_sirskyy_doc_assault_infantry_strength = 0 }
+
+			set_variable = { UKR_sirskyy_doc_experience_loss = 0 }
+	        set_variable = { UKR_sirskyy_doc_max_dig_in_flat = 0 }
+	        set_variable = { UKR_sirskyy_doc_encirclement_penalty = 0 }
+	        set_variable = { UKR_sirskyy_doc_army_org = 0 }
+
+			set_variable = { UKR_sirskyy_doc_combat_intel = 0 }
+			set_variable = { UKR_sirskyy_doc_weekly_manpower = 0 }
+
+			set_variable = { UKR_sirskyy_doc_imv_defense = 0 }
+            set_variable = { UKR_sirskyy_doc_imv_breakthrough = 0 }
+
+	        if = {
+		    limit = {
+			   NOT = {
+				 has_dynamic_modifier = UKR_Sirskyy_dynamic_doctrine
+			    }
+		    }
+		    add_dynamic_modifier = {
+			    modifier = UKR_Sirskyy_dynamic_doctrine
+		    }
+		    } 
+		  }
+	    }
+
+	    force_update_dynamic_modifier = yes
 	}
 
 	focus = {
@@ -8544,10 +8591,13 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_branch_start
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 20
+			add_timed_idea = {
+			idea = UKR_general_staff_reorganization_spirit
+			days = 30
+		   }
 		}
 	}
 
@@ -8558,14 +8608,31 @@ focus_tree = {
 		prerequisite = {
 			focus = UKR_sirskyy_gsh_reorganization
 		}
-
+        available = {
+          NOT = {
+          has_idea = UKR_general_staff_reorganization_spirit
+          }
+        }
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_gsh_reorganization
-		cost = 10
+		cost = 3
 
 		completion_reward = {
-			add_army_experience = 35
+			add_mastery = {
+            amount = 200
+            track = tier_2_infantry
+            }
+            add_mastery = {
+            amount = 200
+            track = tier_3_infantry
+            }  
+            add_doctrine_cost_reduction = {
+            name = UKR_zaluzhny_lessons_doctrine_bonus
+            cost_reduction = 0.35
+            uses = 1
+            category = land_doctrine
+            }
 		}
 	}
 
@@ -8580,11 +8647,23 @@ focus_tree = {
 		x = -2
 		y = 1
 		relative_position_id = UKR_sirskyy_lessons_of_past_campaigns
-		cost = 10
+		cost = 4
 
 		completion_reward = {
-			add_army_experience = 25
-			add_command_power = 15
+
+			add_timed_idea = {
+				idea = UKR_corps_reorganization_spirit
+				days = 45
+		    }
+			custom_effect_tooltip = UKR_sirskyy_corps_brigade_vertical_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_sirskyy_doc_recovery_rate = 0.06 }
+	        add_to_variable = { UKR_sirskyy_doc_reinforce_rate = 0.04 }
+	        add_to_variable = { UKR_sirskyy_doc_max_planning = 0.10 }
+			}
+
+	        force_update_dynamic_modifier = yes
 		}
 	}
 
@@ -8595,15 +8674,21 @@ focus_tree = {
 		prerequisite = {
 			focus = UKR_sirskyy_corps_brigade_vertical
 		}
-
+        
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_corps_brigade_vertical
-		cost = 10
+		cost = 3
 
 		completion_reward = {
-			add_army_experience = 25
-		}
+			custom_effect_tooltip = UKR_sirskyy_assault_training_centers_effect_tt
+
+			hidden_effect = {
+		    add_to_variable = { UKR_sirskyy_doc_assault_infantry_org = 0.10 }
+
+		    force_update_dynamic_modifier = yes
+		    }
+	    }
 	}
 
 	focus = {
@@ -8617,11 +8702,15 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_assault_training_centers
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 30
-			add_command_power = 15
+            custom_effect_tooltip = UKR_sirskyy_form_assault_troops_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_sirskyy_doc_assault_infantry_attack = 0.08 }
+		    add_to_variable = { UKR_sirskyy_doc_assault_infantry_strength = -0.20 }
+			}
 		}
 	}
 
@@ -8636,12 +8725,25 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = UKR_sirskyy_lessons_of_past_campaigns
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 25
+			custom_effect_tooltip = UKR_sirskyy_assault_afv_support_effect_tt
+
+	        hidden_effect = {
+		    if = {
+			limit = {
+				NOT = {
+					has_idea = UKR_sirskyy_imv_assault_afv_bonus
+				}
+			}
+			add_ideas = UKR_sirskyy_imv_assault_afv_bonus
+		     }
+	        }
+			
 		}
 	}
+	
 
 	focus = {
 		id = UKR_sirskyy_recon_fire_assault_loop
@@ -8654,11 +8756,26 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_assault_afv_support
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 25
-			add_command_power = 10
+			custom_effect_tooltip = UKR_sirskyy_recon_fire_assault_loop_effect_tt
+
+	        hidden_effect = {
+		    add_to_variable = { UKR_sirskyy_doc_combat_intel = 0.10 }
+
+		    force_update_dynamic_modifier = yes
+	        }
+
+			add_unit_bonus = {
+				artillery ={
+					name = UKR_artillery_bonus
+
+					fort{
+						attack = 0.05
+					}
+				}
+			}
 		}
 	}
 
@@ -8673,10 +8790,22 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_recon_fire_assault_loop
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 30
+			
+		    add_unit_bonus = {
+				fpv_team= {
+					name = FPV_assault_infantry_bonus
+					battalion_mult = {
+						category = category_all_infantry
+						soft_attack = 0.05
+						hard_attack = 0.05
+						breakthrough = 0.05			
+					}
+				}
+			}
+			    
 		}
 	}
 
@@ -8692,11 +8821,17 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = UKR_sirskyy_form_assault_troops
-		cost = 10
+		cost = 2
 
 		completion_reward = {
-			add_army_experience = 30
-			add_command_power = 20
+           custom_effect_tooltip = UKR_sirskyy_fortress_cities_tactics_effect_tt
+
+		   hidden_effect = {
+		   add_to_variable = { UKR_sirskyy_doc_experience_loss = 0.25 }
+		   add_to_variable = { UKR_sirskyy_doc_max_dig_in_flat = 2 }
+		   add_to_variable = { UKR_sirskyy_doc_encirclement_penalty = -0.10 }
+		
+		   }
 		}
 	}
 
@@ -8711,11 +8846,15 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = UKR_sirskyy_fortress_cities_tactics
-		cost = 10
+		cost = 3
 
 		completion_reward = {
-			add_army_experience = 50
-			add_command_power = 30
+			custom_effect_tooltip = UKR_sirskyy_war_of_attrition_effect_tt
+
+			hidden_effect = {
+				add_to_variable = { UKR_sirskyy_doc_army_org = 0.12 }
+				add_to_variable = { UKR_sirskyy_doc_weekly_manpower = -200 }
+			}
 		}
 	}
 
