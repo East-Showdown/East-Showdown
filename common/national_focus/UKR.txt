@@ -479,7 +479,7 @@ focus_tree = {
 			add_doctrine_cost_reduction = {
 				name = elastic_defense
 				cost_reduction = 0.5
-				uses = 2
+				uses = 2xx
 				category = land_doctrine
 			}
 			custom_effect_tooltip = Conduct_military_exercises_of_the_AFU_cet
@@ -7986,7 +7986,7 @@ focus_tree = {
 		available = {
 			power_balance_value = {
 				id = UKR_power_balance
-				value > 0.4
+				value > 1
 			}
 		}
 		prerequisite = {
@@ -7997,6 +7997,7 @@ focus_tree = {
 		y = 1
 		cost = 1.429
 		completion_reward = {
+             country_event = ukr.800
 			log = "[GetDateText]: [Root.GetName]: Focus Army_question"
 			add_doctrine_cost_reduction = {
 				name = army_question_ukr
@@ -8135,278 +8136,801 @@ focus_tree = {
                 planning_skill = 3
                 logistics_skill = 2
             }				
-			custom_effect_tooltip = focus_in_dev_effect_tt								
+			
+										
 		}
 	}
+    # ВЕТКА ЗАЛУЖНОГО
+	# Открывается, если в ивенте ukr.800 поставлен флаг CIS_Zalyuzhny
 	focus = {
-		id = UKR_Give_recruitment_freedom_to_well_known_brigades
-		icon = GFX_UKR_Give_recruitment_freedom_to_well_known_brigades
+		id = UKR_zaluzhny_branch_start
+		icon = GFX_goal_generic_army_doctrines
+
 		prerequisite = {
 			focus = UKR_Personnel_changes_in_General_Staff
 		}
+
+		allow_branch = {
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
+			has_country_flag = CIS_Zalyuzhny
+			
+		}
+
+		available = {
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
+			has_country_flag = CIS_Zalyuzhny
+		}
+
 		x = 0
 		y = 1
-		cost = 1.429
 		relative_position_id = UKR_Personnel_changes_in_General_Staff
-		x = -1
-		y = 1
 		cost = 0
-		mutually_exclusive = {
-			focus = UKR_Ukrainian_PMC
-		}
-		available = {
-			has_country_flag = {
-				flag = UKR_Personnel_changes_in_General_Staff_flag
-				days > 100
-			}
-			custom_trigger_tooltip = {
-				tooltip = UKR_Personnel_changes_in_General_Staff_flag_tt
-				has_country_flag = {
-					flag = UKR_Personnel_changes_in_General_Staff_flag
-					days > 100
-				}
-			}
-		}
+
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus Reorganize_the_General_Staff"
-			add_mastery = {
-				amount = 200
-				track = tier_1_infantry
+		   
+		remove_ideas = UKR_old_school_doc_1
+
+	    remove_ideas = UKR_zaluzhniu_doc_1
+	   
+	    set_variable = { UKR_zaluzhny_doc_army_attack = 0.08 }
+	    set_variable = { UKR_zaluzhny_doc_breakthrough = 0 }
+	    set_variable = { UKR_zaluzhny_doc_armor_attack = 0 }
+	    set_variable = { UKR_zaluzhny_doc_mechanized_attack = 0 }
+
+		set_variable = { UKR_zaluzhny_doc_armor_defence = 0 }
+        set_variable = { UKR_zaluzhny_doc_mechanized_defence = 0 }
+
+
+	    set_variable = { UKR_zaluzhny_doc_dig_in_speed = 0.25 }
+	    set_variable = { UKR_zaluzhny_doc_max_dig_in = -0.05 }
+        set_variable = { UKR_zaluzhny_doc_max_dig_in_flat = 0 }
+	   
+	    set_variable = { UKR_zaluzhny_doc_recovery_rate = 0.10 }
+	    set_variable = { UKR_zaluzhny_doc_reinforce_rate = 0 }
+        
+	    set_variable = { UKR_zaluzhny_doc_army_speed = 0.15 }
+	    set_variable = { UKR_zaluzhny_doc_armor_speed = 0 }
+
+	    set_variable = { UKR_zaluzhny_doc_planning_speed = 0.20 }
+	    set_variable = { UKR_zaluzhny_doc_max_planning = 0 }
+
+	    set_variable = { UKR_zaluzhny_doc_no_supply_grace = 36 }
+	    set_variable = { UKR_zaluzhny_doc_supply_consumption = 0 }
+
+		
+
+	   if = {
+		limit = {
+			NOT = {
+				has_dynamic_modifier = UKR_zaluzhny_dynamic_doctrine
 			}
-			add_mastery = {
+		}
+		add_dynamic_modifier = {
+			modifier = UKR_zaluzhny_dynamic_doctrine
+		}
+	
+
+	    
+	   }
+	  force_update_dynamic_modifier = yes	
+		}
+	}
+
+	focus = {
+		id = UKR_zaluzhny_gsh_reorganization
+		icon = GFX_goal_generic_staff_office
+
+		prerequisite = {
+			focus = UKR_zaluzhny_branch_start
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_branch_start
+		cost = 2
+
+		completion_reward = {
+		   add_timed_idea = {
+			idea = UKR_general_staff_reorganization_spirit
+			days = 30
+		   }
+		}
+		
+	}
+
+	focus = {
+		id = UKR_zaluzhny_lessons_of_past_campaigns
+		icon = GFX_goal_generic_army_doctrines
+
+		prerequisite = {
+			focus = UKR_zaluzhny_gsh_reorganization
+		}
+        available = {
+	        NOT = {
+		      has_idea = UKR_general_staff_reorganization_spirit
+	        }
+        }
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_gsh_reorganization
+		cost = 3
+
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: UKR_zaluzhny_lessons_of_past_campaigns"
+		    add_mastery = {
 				amount = 200
 				track = tier_2_infantry
 			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_political_power_factor
-				value = -0.05
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_org_factor
-				value = 0.03
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_morale_factor
-				value = 0.03
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_core_defence_factor
-				value = 0.02
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_breakthrough_against_minor_factor
-				value = 0.03
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_breakthrough_against_major_factor
-				value = 0.03
-			}
-			set_country_flag = UKR_Give_recruitment_freedom_to_well_known_brigades_flag
-		}
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
+			add_mastery = {
+				amount = 200
+				track = tier_3_infantry
+			}	
+			add_doctrine_cost_reduction = {
+		        name = UKR_zaluzhny_lessons_doctrine_bonus
+		        cost_reduction = 0.35
+		        uses = 1
+		        category = land_doctrine
+	        }
 		}
 	}
+
 	focus = {
-		id = UKR_Ukrainian_PMC
-		icon = GFX_UKR_Ukrainian_PMC
+		id = UKR_zaluzhny_corps_division_brigade_model
+		icon = GFX_goal_generic_army_doctrines
+
 		prerequisite = {
+			focus = UKR_zaluzhny_lessons_of_past_campaigns
+		}
+
+		x = -2
+		y = 1
+		relative_position_id = UKR_zaluzhny_lessons_of_past_campaigns
+		cost =4
+
+		completion_reward = {
+			add_timed_idea = {
+				idea = UKR_zaluzhny_corps_reorganization_spirit
+				days = 90
+		    }
+
+			custom_effect_tooltip = UKR_zaluzhny_corps_division_brigade_model_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_recovery_rate = 0.12 }
+	        add_to_variable = { UKR_zaluzhny_doc_reinforce_rate = 0.06 }
+	        add_to_variable = { UKR_zaluzhny_doc_max_planning = 0.15 }
+			}
+
+	        force_update_dynamic_modifier = yes
+        }
+	}
+
+	focus = {
+		id = UKR_zaluzhny_maneuver_group_hq
+		icon = GFX_goal_generic_staff_office
+
+		prerequisite = {
+			focus = UKR_zaluzhny_corps_division_brigade_model
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_corps_division_brigade_model
+		cost = 4
+
+		completion_reward = {
+			custom_effect_tooltip = UKR_zaluzhny_maneuver_group_hq_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_armor_speed = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_planning_speed = 0.20 }
+			}
+
+	        force_update_dynamic_modifier = yes
+		}
+	}
+
+	focus = {
+		id = UKR_zaluzhny_main_effort_concentration
+		icon = GFX_goal_generic_major_war
+
+		prerequisite = {
+			focus = UKR_zaluzhny_maneuver_group_hq
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_maneuver_group_hq
+		cost = 2
+
+		completion_reward = {
+			custom_effect_tooltip = UKR_zaluzhny_main_effort_concentration_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_breakthrough = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_supply_consumption = 0.04 }
+			}
+
+	        force_update_dynamic_modifier = yes
+		}
+	}
+
+	focus = {
+		id = UKR_zaluzhny_heavy_mechanized_strike_formations
+		icon = GFX_goal_generic_army_tanks
+
+		prerequisite = {
+			focus = UKR_zaluzhny_lessons_of_past_campaigns
+		}
+
+		x = 2
+		y = 1
+		relative_position_id = UKR_zaluzhny_lessons_of_past_campaigns
+		cost = 2
+
+		completion_reward = {
+			custom_effect_tooltip = UKR_zaluzhny_heavy_mechanized_strike_formations_effect_tt
+
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_armor_attack = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_mechanized_attack = 0.10 }
+	        add_to_variable = { UKR_zaluzhny_doc_armor_speed = 0.10 }
+
+	        force_update_dynamic_modifier = yes
+			}
+		}
+	}
+
+	focus = {
+		id = UKR_zaluzhny_engineering_breakthrough_vehicles
+		icon = GFX_goal_generic_construct_military
+
+		prerequisite = {
+			focus = UKR_zaluzhny_heavy_mechanized_strike_formations
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_heavy_mechanized_strike_formations
+		cost = 2
+
+		completion_reward = {
+	    add_unit_bonus = {
+		engineer_heavy = {
+			name = UKR_heavy_engineer_bonus
+
+			fort = {
+				attack = 0.08
+			}
+
+			river = {
+				attack = 0.02
+			}
+
+			urban = {
+				attack = 0.02
+			}
+
+			village = {
+				attack = 0.02
+			}
+
+			industrial = {
+				attack = 0.02
+	        }
+		}
+	   }
+	  }
+	}
+	focus = {
+		id = UKR_zaluzhny_mobile_repair_evacuation_groups
+		icon = GFX_goal_generic_army_motorized
+
+		prerequisite = {
+			focus = UKR_zaluzhny_engineering_breakthrough_vehicles
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_engineering_breakthrough_vehicles
+		cost = 2
+
+		completion_reward = {
+	    add_unit_bonus = {
+		heavy_maintenance_company = {
+			name = UKR_heavy_repair_platoon_bonus
+
+			equipment_capture_factor = 0.10
+
+			battalion_mult = {
+				category = category_all_armor
+				max_strength = 0.30
+			}
+		}
+	  }
+	}
+  }
+	focus = {
+		id = UKR_zaluzhny_final_rejection_of_static_defense
+		icon = GFX_goal_generic_position_armies
+
+		prerequisite = {
+			focus = UKR_zaluzhny_main_effort_concentration
+			focus = UKR_zaluzhny_mobile_repair_evacuation_groups
+		}
+
+		x = 2
+		y = 1
+		relative_position_id = UKR_zaluzhny_main_effort_concentration
+		cost = 2
+
+		completion_reward = {
+		   custom_effect_tooltip = UKR_zaluzhny_final_rejection_of_static_defense_effect_tt
+		   hidden_effect = {
+	       add_to_variable = { UKR_zaluzhny_doc_max_dig_in_flat = -3 }
+	       add_to_variable = { UKR_zaluzhny_doc_armor_defence = 0.10 }
+	       add_to_variable = { UKR_zaluzhny_doc_mechanized_defence = 0.10 }
+		   }
+           
+		   	force_update_dynamic_modifier = yes
+		}
+
+	}
+
+	focus = {
+		id = UKR_zaluzhny_operational_maneuver_doctrine
+		icon = GFX_goal_generic_army_doctrines
+
+		prerequisite = {
+			focus = UKR_zaluzhny_final_rejection_of_static_defense
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_zaluzhny_final_rejection_of_static_defense
+		cost = 5
+
+		completion_reward = {
+			custom_effect_tooltip = UKR_zaluzhny_operational_maneuver_doctrine_effect_tt
+			hidden_effect = {
+			add_to_variable = { UKR_zaluzhny_doc_army_attack = 0.04 }
+	        add_to_variable = { UKR_zaluzhny_doc_no_supply_grace = 12 }
+			}
+
+	        force_update_dynamic_modifier = yes
+		}
+	}
+
+    # ВЕТКА СЫРСКОГО
+	# Открывается, если в ивенте ukr.800 поставлен флаг CIS_Sirskyy
+	focus = {
+		id = UKR_sirskyy_branch_start
+		icon = GFX_goal_generic_army_doctrines
+
+		prerequisite = {
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
 			focus = UKR_Personnel_changes_in_General_Staff
 		}
-		relative_position_id = UKR_Personnel_changes_in_General_Staff
-		x = 1
-		y = 1
-		cost = 0
-		mutually_exclusive = {
-			focus = UKR_Give_recruitment_freedom_to_well_known_brigades
+
+		allow_branch = {
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
+			has_country_flag = CIS_Sirskyy
 		}
+
 		available = {
-			has_country_flag = {
-				flag = UKR_Personnel_changes_in_General_Staff_flag
-				days > 100
-			}
-			custom_trigger_tooltip = {
-				tooltip = UKR_Personnel_changes_in_General_Staff_flag_tt
-				has_country_flag = {
-					flag = UKR_Personnel_changes_in_General_Staff_flag
-					days > 100
-				}
-			}
-			power_balance_value = {
-				id = UKR_power_balance
-				value > -0.7
-			}
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
+			has_country_flag = CIS_Sirskyy
 		}
-		completion_reward = {
-			country_event = {
-				id = ukr.802
-				days = 0
-			}
-			add_popularity = {
-				ideology = democratic
-				popularity = -0.1
-			}
-			add_stability = -0.05
-			set_country_flag = UKR_Ukrainian_PMC_flag
-		}
-	}
-	focus = {
-		id = UKR_Transition_to_corps_structure
-		icon = GFX_UKR_Transition_to_corps_structure
-		prerequisite = {
-			focus = UKR_Give_recruitment_freedom_to_well_known_brigades
-			focus = UKR_Ukrainian_PMC
-		}
-		available = {
-			OR = {
-				has_country_flag = {
-					flag = UKR_Ukrainian_PMC_flag
-					days > 150
-				}
-				custom_trigger_tooltip = {
-					tooltip = UKR_Ukrainian_PMC_flag_tt
-					has_country_flag = {
-						flag = UKR_Ukrainian_PMC_flag
-						days > 150
-					}
-				}
-				has_country_flag = {
-					flag = UKR_Give_recruitment_freedom_to_well_known_brigades_flag
-					days > 150
-				}
-				custom_trigger_tooltip = {
-					tooltip = UKR_Give_recruitment_freedom_to_well_known_brigades_flag_tt
-					has_country_flag = {
-						flag = UKR_Give_recruitment_freedom_to_well_known_brigades_flag
-						days > 150
-					}
-				}
-			}
-		}
-		relative_position_id = UKR_Personnel_changes_in_General_Staff
+
 		x = 0
-		y = 2
-		cost = 1
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = TRO_central_tt
-				has_country_flag = TRO_central
-			}
-			custom_trigger_tooltip = {
-				tooltip = TRO_Eastern_tt
-				has_country_flag = TRO_Eastern
-			}
-			custom_trigger_tooltip = {
-				tooltip = TRO_southern_tt
-				has_country_flag = TRO_southern
-			}
-			custom_trigger_tooltip = {
-				tooltip = TRO_western_tt
-				has_country_flag = TRO_western
-			}
-		}
-		completion_reward = {
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_core_attack_factor
-				value = 0.025
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_core_defence_factor
-				value = 0.025
-			}
-			set_country_flag = UKR_Transition_to_corps_structure_flag
-		}
-	}
-	focus = {
-		id = UKR_Staff_reduction
-		icon = GFX_UKR_Staff_reduction
-		prerequisite = {
-			focus = UKR_Transition_to_corps_structure
-		}
-		available = {
-			has_country_flag = {
-				flag = UKR_Transition_to_corps_structure_flag
-				days > 150
-			}
-			custom_trigger_tooltip = {
-				tooltip = UKR_Transition_to_corps_structure_flag_tt
-				has_country_flag = {
-					flag = UKR_Transition_to_corps_structure_flag
-					days > 150
-				}
-			}
-		}
+		y = 1
 		relative_position_id = UKR_Personnel_changes_in_General_Staff
-		x = -1
-		y = 3
-		cost = 0
-		mutually_exclusive = {
-			focus = UKR_Reforming_Operational_Command
-		}
+		cost = 10
+
 		completion_reward = {
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_command_power_gain
-				value = 0.05
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_breakthrough_against_major_factor
-				value = 0.025
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_army_breakthrough_against_minor_factor
-				value = 0.025
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_dig_in_speed_factor
-				value = 0.05
-			}
+			add_army_experience = 25
+			add_command_power = 20
 		}
 	}
+
 	focus = {
-		id = UKR_Reforming_Operational_Command
-		icon = GFX_UKR_Reforming_Operational_Command
+		id = UKR_sirskyy_gsh_reorganization
+		icon = GFX_goal_generic_staff_office
+
 		prerequisite = {
-			focus = UKR_Transition_to_corps_structure
+			focus = UKR_sirskyy_branch_start
 		}
-		available = {
-			has_country_flag = {
-				flag = UKR_Transition_to_corps_structure_flag
-				days > 150
-			}
-			custom_trigger_tooltip = {
-				tooltip = UKR_Transition_to_corps_structure_flag_tt
-				has_country_flag = {
-					flag = UKR_Transition_to_corps_structure_flag
-					days > 150
-				}
-			}
-		}
-		relative_position_id = UKR_Personnel_changes_in_General_Staff
-		x = 1
-		y = 3
-		cost = 0
-		mutually_exclusive = {
-			focus = UKR_Staff_reduction
-		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_branch_start
+		cost = 10
+
 		completion_reward = {
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_planning_speed
-				value = 0.05
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_max_planning
-				value = 0.05
-			}
-			add_to_variable = {
-				var = UKR_Ukraines_ground_forces_command_power_gain
-				value = 0.02
-			}
-			add_to_variable = {
-				var = army_core_defence_factor
-				value = 0.05
-			}
+			add_army_experience = 20
 		}
 	}
+
+	focus = {
+		id = UKR_sirskyy_lessons_of_past_campaigns
+		icon = GFX_goal_generic_army_doctrines
+
+		prerequisite = {
+			focus = UKR_sirskyy_gsh_reorganization
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_gsh_reorganization
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 35
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_corps_brigade_vertical
+		icon = GFX_goal_generic_army_doctrines
+
+		prerequisite = {
+			focus = UKR_sirskyy_lessons_of_past_campaigns
+		}
+
+		x = -2
+		y = 1
+		relative_position_id = UKR_sirskyy_lessons_of_past_campaigns
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 25
+			add_command_power = 15
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_assault_training_centers
+		icon = GFX_goal_generic_training
+
+		prerequisite = {
+			focus = UKR_sirskyy_corps_brigade_vertical
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_corps_brigade_vertical
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 25
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_form_assault_troops
+		icon = GFX_goal_generic_allies_build_infantry
+
+		prerequisite = {
+			focus = UKR_sirskyy_assault_training_centers
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_assault_training_centers
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 30
+			add_command_power = 15
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_assault_afv_support
+		icon = GFX_goal_generic_army_motorized
+
+		prerequisite = {
+			focus = UKR_sirskyy_lessons_of_past_campaigns
+		}
+
+		x = 2
+		y = 1
+		relative_position_id = UKR_sirskyy_lessons_of_past_campaigns
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 25
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_recon_fire_assault_loop
+		icon = GFX_goal_generic_artillery
+
+		prerequisite = {
+			focus = UKR_sirskyy_assault_afv_support
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_assault_afv_support
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 25
+			add_command_power = 10
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_fpv_saturation_assault_brigades
+		icon = GFX_goal_generic_air_production
+
+		prerequisite = {
+			focus = UKR_sirskyy_recon_fire_assault_loop
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_recon_fire_assault_loop
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 30
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_fortress_cities_tactics
+		icon = GFX_goal_generic_fortify_city
+
+		prerequisite = {
+			focus = UKR_sirskyy_form_assault_troops
+			focus = UKR_sirskyy_fpv_saturation_assault_brigades
+		}
+
+		x = 2
+		y = 1
+		relative_position_id = UKR_sirskyy_form_assault_troops
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 30
+			add_command_power = 20
+		}
+	}
+
+	focus = {
+		id = UKR_sirskyy_war_of_attrition
+		icon = GFX_goal_generic_position_armies
+
+		prerequisite = {
+			focus = UKR_sirskyy_fortress_cities_tactics
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_sirskyy_fortress_cities_tactics
+		cost = 10
+
+		completion_reward = {
+			add_army_experience = 50
+			add_command_power = 30
+		}
+	}
+
+
+
+ # ВЕТКА БИЛЕЦКОГО
+ # Открывается, если в ивенте поставлен флаг CIS_Biletsky
+ 
+
+ focus = {
+	id = UKR_biletsky_branch_start
+	icon = GFX_goal_generic_special_forces
+
+	prerequisite = {
+		focus = UKR_Personnel_changes_in_General_Staff
+	}
+
+	allow_branch = {
+		has_country_flag = CIS_Biletsky
+	}
+
+	available = {
+		has_country_flag = CIS_Biletsky
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_Personnel_changes_in_General_Staff
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 25
+		add_command_power = 20
+	}
+
+	search_filters = {
+		FOCUS_FILTER_ARMY
+	}
+ }
+
+ focus = {
+	id = UKR_biletsky_gsh_reorganization
+	icon = GFX_goal_generic_staff_office
+
+	prerequisite = {
+		focus = UKR_biletsky_branch_start
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_biletsky_branch_start
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 20
+	}
+ }
+
+ focus = {
+	id = UKR_biletsky_volunteer_assault_core
+	icon = GFX_goal_generic_military_sphere
+
+	prerequisite = {
+		focus = UKR_biletsky_gsh_reorganization
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_biletsky_gsh_reorganization
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 30
+	}
+ }
+
+ # ВЕТКА ПРОКОПЕНКО
+ # Открывается, если в ивенте поставлен флаг CIS_Prokopenko
+ focus = {
+	id = UKR_prokopenko_branch_start
+	icon = GFX_goal_generic_special_forces
+
+	prerequisite = {
+		focus = UKR_Personnel_changes_in_General_Staff
+	}
+
+	allow_branch = {
+		has_country_flag = CIS_Prokopenko
+	}
+
+	available = {
+		has_country_flag = CIS_Prokopenko
+	}
+
+	x = 4
+	y = 1
+	relative_position_id = UKR_Personnel_changes_in_General_Staff
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 25
+		add_command_power = 20
+	}
+
+	search_filters = {
+		FOCUS_FILTER_ARMY
+	}
+ }
+
+ focus = {
+	id = UKR_prokopenko_gsh_reorganization
+	icon = GFX_goal_generic_staff_office
+
+	prerequisite = {
+		focus = UKR_prokopenko_branch_start
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_prokopenko_branch_start
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 20
+	}
+ }
+
+ focus = {
+	id = UKR_prokopenko_elite_assault_units
+	icon = GFX_goal_generic_special_forces
+
+	prerequisite = {
+		focus = UKR_prokopenko_gsh_reorganization
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_prokopenko_gsh_reorganization
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 30
+	}
+ }
+
+ # ВЕТКА ДРАПАТОГО
+ # Открывается, если в ивенте поставлен флаг CIS_Drapatiy
+ focus = {
+	id = UKR_drapatiy_branch_start
+	icon = GFX_goal_generic_army_doctrines
+
+	prerequisite = {
+		focus = UKR_Personnel_changes_in_General_Staff
+	}
+
+	allow_branch = {
+		has_country_flag = CIS_Drapatiy
+	}
+
+	available = {
+		has_country_flag = CIS_Drapatiy
+	}
+
+	x = 8
+	y = 1
+	relative_position_id = UKR_Personnel_changes_in_General_Staff
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 25
+		add_command_power = 20
+	}
+
+	search_filters = {
+		FOCUS_FILTER_ARMY
+	}
+ }
+
+ focus = {
+
+	id = UKR_drapatiy_gsh_reorganization
+	icon = GFX_goal_generic_staff_office
+
+	prerequisite = {
+		focus = UKR_drapatiy_branch_start
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_drapatiy_branch_start
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 20
+	}
+ }
+
+    focus = {
+	id = UKR_drapatiy_frontline_command_reform
+	icon = GFX_goal_generic_military_sphere
+
+	prerequisite = {
+		focus = UKR_drapatiy_gsh_reorganization
+	}
+
+	x = 0
+	y = 1
+	relative_position_id = UKR_drapatiy_gsh_reorganization
+	cost = 10
+
+	completion_reward = {
+		add_army_experience = 30
+	}
+  }
+	
 	focus = {
 		id = Avto_dla_ZSY
 		icon = GFX_Avto_dla_ZSY
