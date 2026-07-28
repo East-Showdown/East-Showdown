@@ -8994,7 +8994,7 @@ focus_tree = {
 	   id = UKR_sirskyy_war_of_attrition
 	   icon = GFX_goal_generic_position_armies
 
-	   prerequisite = {
+	prerequisite = {
 		focus = UKR_sirskyy_fortress_cities_tactics
 	}
 
@@ -9011,85 +9011,408 @@ focus_tree = {
 			add_to_variable = { UKR_sirskyy_doc_reinforce_rate = 0.06 }
 			add_to_variable = { UKR_sirskyy_doc_max_planning = 0.12 }
 			add_to_variable = { UKR_sirskyy_doc_weekly_manpower = -200 }
-			
+
 			force_update_dynamic_modifier = yes
 		}
 		
 	}
     }
+ 	# ВЕТКА БИЛЕЦКОГО
+	# Открывается, если в ивенте ukr.800 поставлен флаг CIS_Biletsky
 
-
-
- # ВЕТКА БИЛЕЦКОГО
- # Открывается, если в ивенте поставлен флаг CIS_Biletsky
- 
-
- focus = {
-	id = UKR_biletsky_branch_start
-	icon = GFX_goal_generic_special_forces
+	focus = {
+		id = UKR_biletsky_branch_start
+		icon = GFX_goal_generic_special_forces
 
 	prerequisite = {
 		focus = UKR_Personnel_changes_in_General_Staff
 	}
 
-	allow_branch = {
-		has_country_flag = CIS_Biletsky
-	}
+		allow_branch = {
+			has_completed_focus = UKR_Personnel_changes_in_General_Staff
+			has_country_flag = CIS_Biletsky
+		}
 
 	available = {
+		has_completed_focus = UKR_Personnel_changes_in_General_Staff
 		has_country_flag = CIS_Biletsky
 	}
 
 	x = 0
 	y = 1
 	relative_position_id = UKR_Personnel_changes_in_General_Staff
-	cost = 10
+	cost = 0
 
-	completion_reward = {
-		add_army_experience = 25
-		add_command_power = 20
+		completion_reward = {
+			custom_effect_tooltip = UKR_biletsky_branch_start_effect_tt
+			hidden_effect = {
+				remove_ideas = UKR_old_school_doc_1
+				remove_ideas = UKR_zaluzhniu_doc_1
+				set_variable = { UKR_biletsky_doc_army_org = 0.02 }
+				set_variable = { UKR_biletsky_doc_experience_loss = -0.05 }
+
+				set_variable = { UKR_biletsky_doc_training_time = 0 }
+
+				set_variable = { UKR_biletsky_doc_infantry_org = 0.03 }
+				set_variable = { UKR_biletsky_doc_infantry_attack = 0.03 }
+				set_variable = { UKR_biletsky_doc_infantry_defence = 0.05 }
+
+				set_variable = { UKR_biletsky_doc_division_attack = 0 }
+				set_variable = { UKR_biletsky_doc_division_defence = 0 }
+
+				set_variable = { UKR_biletsky_doc_recovery_rate = 0 }
+
+				set_variable = { UKR_biletsky_doc_supply_consumption = 0 }
+
+				set_variable = { UKR_biletsky_doc_army_hp = 0 }
+
+				set_variable = { UKR_biletsky_doc_max_planning = 0 }
+				set_variable = { UKR_biletsky_doc_planning_speed = 0 }
+
+				set_variable = { UKR_biletsky_doc_reinforce_rate = 0 }
+
+				if = {
+					limit = {
+						NOT = {
+						has_dynamic_modifier = UKR_Biletsky_dynamic_doctrine
+						}
+					}
+					add_dynamic_modifier = {
+						modifier = UKR_Biletsky_dynamic_doctrine
+					}
+				}	
+				force_update_dynamic_modifier = yes
+			}
+		}
 	}
 
-	search_filters = {
-		FOCUS_FILTER_ARMY
-	}
- }
+	focus = {
+		id = UKR_biletsky_gsh_reorganization
+		icon = GFX_goal_generic_staff_office
 
- focus = {
-	id = UKR_biletsky_gsh_reorganization
-	icon = GFX_goal_generic_staff_office
-
-	prerequisite = {
+		prerequisite = {
 		focus = UKR_biletsky_branch_start
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_branch_start
+		cost = 2
+
+		completion_reward = {
+			add_timed_idea = {
+				idea = UKR_general_staff_reorganization_spirit
+				days = 30
+			}
+		}
 	}
 
-	x = 0
-	y = 1
-	relative_position_id = UKR_biletsky_branch_start
-	cost = 10
+	focus = {
+		id = UKR_biletsky_lessons_of_past_campaigns
+		icon = GFX_goal_generic_army_doctrines
 
-	completion_reward = {
-		add_army_experience = 20
-	}
- }
-
- focus = {
-	id = UKR_biletsky_volunteer_assault_core
-	icon = GFX_goal_generic_military_sphere
-
-	prerequisite = {
+		prerequisite = {
 		focus = UKR_biletsky_gsh_reorganization
+		}
+		available = {
+			NOT = {
+				has_idea = UKR_general_staff_reorganization_spirit
+			}
+		}	
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_gsh_reorganization
+		cost = 3
+
+		completion_reward = {
+		
+			add_mastery = {
+			amount = 200
+			track = tier_2_infantry
+			}
+
+			add_mastery = {
+			amount = 200
+			track = tier_3_infantry
+			}
+
+			add_doctrine_cost_reduction = {
+			cost_reduction = 0.35
+			uses = 1
+			category = land_doctrine
+			}
+		}
 	}
 
-	x = 0
-	y = 1
-	relative_position_id = UKR_biletsky_gsh_reorganization
-	cost = 10
+	focus = {
+		id = UKR_biletsky_corps_reform_donor_brigades
+		icon = GFX_goal_generic_army_doctrines
 
-	completion_reward = {
-		add_army_experience = 30
+		prerequisite = {
+			focus = UKR_biletsky_lessons_of_past_campaigns
+		}
+
+		x = -2
+		y = 1
+		relative_position_id = UKR_biletsky_lessons_of_past_campaigns
+		cost = 3
+
+		completion_reward = {
+		
 	}
- }
+	}
+
+	focus = {
+		id = UKR_biletsky_nco_corps_reform
+		icon = GFX_goal_generic_military_sphere
+
+		prerequisite = {
+		focus = UKR_biletsky_corps_reform_donor_brigades
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_corps_reform_donor_brigades
+		cost = 2
+
+		completion_reward = {
+
+			custom_effect_tooltip = UKR_biletsky_nco_corps_reform_effect_tt
+			hidden_effect = {
+				add_to_variable = {UKR_biletsky_doc_army_org = 0.06}
+				add_to_variable = {UKR_biletsky_doc_experience_loss = -0.05}
+				add_to_variable = {UKR_biletsky_doc_training_time = -0.25}
+
+				force_update_dynamic_modifier = yes
+			}
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_infantry_training_schools
+		icon = GFX_goal_generic_training
+
+		prerequisite = {
+		focus = UKR_biletsky_nco_corps_reform
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_nco_corps_reform
+		cost = 2
+
+		completion_reward = {
+			add_unit_bonus = {
+				infantry = {
+
+					forest = {
+						attack = 0.10
+					}
+					industrial = {
+						attack = 0.04
+					}
+					urban = {
+						attack = 0.04
+					}
+					village = {
+						attack = 0.04
+					}
+					residential = {
+						attack = 0.04
+					}
+
+					max_strength = 8.0
+				}
+			}
+			custom_effect_tooltip = UKR_biletsky_infantry_training_schools_effect_tt
+			hidden_effect = {
+				add_to_variable = {	UKR_biletsky_doc_infantry_org = 0.12}
+
+				force_update_dynamic_modifier = yes
+			}	
+		}
+	}
+	focus = {
+		id = UKR_biletsky_infantry_of_new_war
+		icon = GFX_goal_generic_allies_build_infantry
+
+		prerequisite = {
+		focus = UKR_biletsky_infantry_training_schools
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_infantry_training_schools
+		cost = 2
+
+		completion_reward = {
+
+			custom_effect_tooltip = UKR_biletsky_infantry_of_new_war_effect_tt
+			hidden_effect = {
+				add_to_variable = {UKR_biletsky_doc_infantry_attack = 0.12}
+				add_to_variable = {	UKR_biletsky_doc_infantry_defence = 0.15}
+				
+				force_update_dynamic_modifier = yes
+			}
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_fpv_operator_schools
+		icon = GFX_goal_generic_air_production
+
+		prerequisite = {
+			focus = UKR_biletsky_lessons_of_past_campaigns
+		}
+
+		x = 2
+		y = 1
+		relative_position_id = UKR_biletsky_lessons_of_past_campaigns
+		cost = 2
+
+		completion_reward = {
+			add_ideas = FPV_drone_operator_schools_1
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_integrate_unmanned_units
+		icon = GFX_goal_generic_intelligence_exchange
+
+		prerequisite = {
+			focus = UKR_biletsky_fpv_operator_schools
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_fpv_operator_schools
+		cost = 2
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = FPV_drone_operator_schools_1
+		    	add_idea = FPV_drone_operator_schools_2
+			}	
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_ugv_on_frontline
+		icon = GFX_goal_generic_construct_military
+
+		prerequisite = {
+			focus = UKR_biletsky_integrate_unmanned_units
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_integrate_unmanned_units
+		cost = 2
+
+		completion_reward = {
+
+			custom_effect_tooltip = UKR_biletsky_ugv_on_frontline_effect_tt
+			hidden_effect = {
+
+				add_to_variable = {	UKR_biletsky_doc_supply_consumption	= -0.05}
+				add_to_variable = {	UKR_biletsky_doc_army_hp = 4.0}
+				force_update_dynamic_modifier = yes
+			}
+		
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_mobile_frontline_air_defense_groups
+		icon = GFX_goal_generic_air_defense
+
+		prerequisite = {
+			focus = UKR_biletsky_ugv_on_frontline
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_ugv_on_frontline
+		cost = 2
+
+		completion_reward = {
+		add_ideas = UKR_biletsky_mobile_frontline_air_defense_groups_1
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_here_to_live
+		icon = GFX_goal_generic_position_armies
+
+		prerequisite = {
+		focus = UKR_biletsky_infantry_of_new_war
+		focus = UKR_biletsky_mobile_frontline_air_defense_groups
+	}	
+
+		x = 2
+		y = 1
+		relative_position_id = UKR_biletsky_infantry_of_new_war
+		cost = 2
+
+		completion_reward = {
+
+			custom_effect_tooltip = UKR_biletsky_here_to_live_effect_tt
+			hidden_effect = {
+				add_to_variable = {UKR_biletsky_doc_recovery_rate = 0.06}
+				add_to_variable = {UKR_biletsky_doc_experience_loss = -0.15}
+			
+				force_update_dynamic_modifier = yes
+			}
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_quality_army_not_mass
+		icon = GFX_goal_generic_army_doctrines
+
+		prerequisite = {
+			focus = UKR_biletsky_here_to_live
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_here_to_live
+		cost = 3
+
+		completion_reward = {
+
+			custom_effect_tooltip = UKR_biletsky_quality_army_not_mass_effect_tt
+			hidden_effect = {
+				add_to_variable = {UKR_biletsky_doc_division_attack = 0.04}
+				add_to_variable = {UKR_biletsky_doc_division_defence = 0.04}
+				force_update_dynamic_modifier = yes
+			}
+		}
+	}
+
+	focus = {
+		id = UKR_biletsky_asymmetric_superiority
+		icon = GFX_goal_generic_special_forces
+
+		prerequisite = {
+			focus = UKR_biletsky_quality_army_not_mass
+		}
+
+		x = 0
+		y = 1
+		relative_position_id = UKR_biletsky_quality_army_not_mass
+		cost = 4
+
+		completion_reward = {
+
+			custom_effect_tooltip = UKR_biletsky_asymmetric_superiority_effect_tt
+			hidden_effect = {
+				add_to_variable = {UKR_biletsky_doc_max_planning = 0.10}
+				add_to_variable = {UKR_biletsky_doc_planning_speed = 0.15}
+				add_to_variable = {UKR_biletsky_doc_reinforce_rate = 0.04}
+			}
+		}
+	}
 
  # ВЕТКА ПРОКОПЕНКО
  # Открывается, если в ивенте поставлен флаг CIS_Prokopenko
