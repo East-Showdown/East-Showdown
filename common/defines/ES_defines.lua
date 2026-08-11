@@ -1,5 +1,5 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
-NDefines.NGame.END_DATE = "2026.1.1.1"
+NDefines.NGame.END_DATE = "2036.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
 NDefines.NGame.SAVE_VERSION = 27								-- 0.7.1.4
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
@@ -66,8 +66,8 @@ NDefines.NBuildings.RADAR_RANGE_BASE = 224				-- Radar range base first level ra
 NDefines.NBuildings.RADAR_RANGE_MIN = 256				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
 NDefines.NBuildings.RADAR_RANGE_MAX = 840				-- Range is interpolated between building levels 1-15.
 NDefines.NBuildings.RADAR_INTEL_EFFECT = 100			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars then the value sums up.
-NDefines.NBuildings.BASE_FACTORY_REPAIR = 1			-- Default repair rate before factories are taken into account
-NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 10	-- Factory speed modifier when repairing.
+NDefines.NBuildings.BASE_FACTORY_REPAIR = 0.7			-- Default repair rate before factories are taken into account
+NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 7	-- Factory speed modifier when repairing.
 NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throughput per level of naval base lancaster
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
@@ -100,9 +100,9 @@ NDefines.NMilitary.CORPS_COMMANDER_DIVISIONS_CAP = 50			-- how many divisions a 
 NDefines.NMilitary.DIVISION_SIZE_FOR_XP = 8                   -- how many battalions should a division have to count as a full divisions when calculating XP stuff
 NDefines.NMilitary.CORPS_COMMANDER_ARMIES_CAP = -1			-- how many armies a corps commander is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 50			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 50				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.036    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
-NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.036    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
+NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 10				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
+NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.040    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
+NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.040    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
 NDefines.NMilitary.AIR_SUPPORT_BASE = 0.10-- 0.25 vanilla
 NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
@@ -208,39 +208,11 @@ NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane t
 0.0 -- NAVAL_PATROL
 }
 NDefines.NAir.THRUST_WEIGHT_SPEED_FACTOR = 3								-- For plane designs additive Km/h max speed bonus per point of thrust exceeding weight
-NDefines.NNavy.RESOURCE_PURCHASE_PRIORITY = 6									-- Default convoy priority for export equipment purchase
-NDefines.NNavy.NAVY_PIERCING_THRESHOLD_DAMAGE_VALUES = {	-- 0 armor will always receive maximum damage (so add overmatching at your own peril). the system expects at least 2 values with no upper limit.
-1.00,
-1.00,
-0.70,
-0.40,
-0.30,
-0.10 -- 
-}
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_SHIP_MANPOWER_FACTOR = 0.001			-- war score gained for every manpower killed when sinking a ship
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_SHIP_PRODUCTION_COST_FACTOR = 0.004		-- war score gained for every IC of the sunk ship
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_CONVOY = 0.05							-- war score gained for every sunk convoy
-NDefines.NNavy.WAR_SCORE_DECAY_FOR_BUILT_CONVOY = 0.03  						-- war score deducted when convoy-raided enemy produces one new convoy
-NDefines.NNavy.COMBAT_ARMOR_PIERCING_DAMAGE_REDUCTION = -0.9					-- All damage reduction % when target armor is >= then shooter armor piercing.
 NDefines.NNavy.AMPHIBIOUS_LANDING_PENALTY = -0.1								-- amphibious landing penalty
 NDefines.NNavy.AMPHIBIOUS_INVADE_ATTACK_LOW = 0.8 							-- low and high cap of attack modifier scale. Scale interpolated by invasion progress.
-NDefines.NNavy.NAVAL_SPEED_MODIFIER = 2.0	                    				-- basic speed control
-NDefines.NNavy.NAVAL_MINES_INTEL_DIFF_FACTOR = 0.1					-- Better our decryption over enemy encryption will reduce the penalties from the enemy mines in the region. This value is a factor to be used for balancing.
-NDefines.NNavy.NAVAL_MINES_ACCIDENT_STRENGTH_LOSS = 75.0						-- Amount of strength loss when hit by naval mine
-NDefines.NNavy.NAVAL_MINES_ACCIDENT_ORG_LOSS_FACTOR = 0.6						-- Amount of strength loss when hit by naval mine
-NDefines.NNavy.AIR_SPOTTER_NORMALIZED_AIRWING_SIZE = 20						-- each plane will contribute 1/this of the air-wing's detection stat
-NDefines.NNavy.BASE_JOIN_COMBAT_HOURS						= 8				-- the taskforces that wants to join existing combats will wait for at least this amount
-NDefines.NNavy.ANTI_AIR_POW_ON_INCOMING_AIR_DAMAGE								= 0.25	-- received air damage is calculated using following: 1 - ( (ship_anti_air + fleet_anti_air * SHIP_TO_FLEET_ANTI_AIR_RATIO )^ANTI_AIR_POW_ON_INCOMING_AIR_DAMAGE ) * ANTI_AIR_MULT_ON_INCOMING_AIR_DAMAGE
-NDefines.NNavy.ANTI_AIR_MULT_ON_INCOMING_AIR_DAMAGE							= 0.2
-NDefines.NNavy.GUN_HIT_PROFILES = { -- hit profiles for guns if target ih profile is lower the gun will have lower accuracy
-80.0,	-- big guns
-145.0,	-- torpedoes
-45.0	-- small guns
-}
-NDefines.NNavy.CONVOY_HIT_PROFILE												= 120.0  	-- convoys has this contant hit profile
-NDefines.NNavy.HIT_PROFILE_MULT 												= 100.0  	-- multiplies hit profile of every ship
-NDefines.NNavy.HIT_PROFILE_SPEED_FACTOR										= 2		-- factors speed value when determining it profile (Vis * HIT_PROFILE_MULT * Ship Hit Profile Mult)
-NDefines.NRailwayGun.DISTRIBUTION_HOLD_POSITION_SCORE = 35							-- Score for staying in the same province when distributing Railway Guns
+NDefines.NNavy.NAVAL_INVASION_PREPARE_DAYS = 10 --60
+NDefines.NNavy.NAVAL_INVASION_PLAN_CAP = 0									-- base cap of naval invasions can be planned at the same time
+NDefines.NNavy.BASE_NAVAL_INVASION_DIVISION_CAP = 0							-- base cap of divisions that can be assigned in a naval invasion
 NDefines.NAI.DIPLOMACY_PURCHASE_EQUIPMENT_MONTHS = 2
 NDefines.NAI.EQUIPMENT_MARKET_UPDATE_FREQUENCY_DAYS = 11                    -- How often the AI runs its market logic
 NDefines.NAI.EQUIPMENT_MARKET_MAX_CIVS_FOR_PURCHASES_RATIO = 0.1            -- Ratio of available civilian factories to max use for equipment purchases (0.2 = 20 % so 50 available civs would mean max ca 10 civs to spend on purchases at any one time). Gets modified by equipment_market_spend_factories AI strategy.
