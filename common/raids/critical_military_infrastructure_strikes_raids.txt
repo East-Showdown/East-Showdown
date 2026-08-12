@@ -58,7 +58,7 @@ types ={
 	
 		success_factors = {
 			success = {
-				base = 0.4
+				base = 0.1
 				strategic_bomber = {
 					weight = 1
 					reference = 1000
@@ -84,14 +84,14 @@ types ={
 			}
 
 			disaster = {
-				base = 0
+				base = 0.05
 				anti_air = {
 					reference = 6
-					weight = 0.20
+					weight = 0.30
 				}
 				interception = {
 					reference = 5 
-					weight = 0.10
+					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -115,6 +115,7 @@ types ={
 		}
 
 		success_levels = {
+
 			failure = {
 				actor_effects = {
 					set_temp_variable = { raid_planes_lost = 8 }
@@ -132,6 +133,7 @@ types ={
 					}
 				}
 			}
+
 			limited_success = {
 				victim_effects = {
 
@@ -209,56 +211,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 1 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult  }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 6 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 6 } 
-					}
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost = 0 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 3 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -266,7 +220,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -350,55 +304,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					set_temp_variable_to_random = {
-						var = raid_planes_lost
-						max = 2
-						integer = yes
-					}
-
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 4 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 4 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -406,7 +313,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -490,49 +397,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 2 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 2 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -540,7 +406,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -605,7 +471,7 @@ types ={
 
 		success_factors = {
 			success = {
-				base = 0.4
+				base = 0.1
 				strategic_bomber = {
 					weight = 1
 					reference = 1000
@@ -631,14 +497,14 @@ types ={
 			}
 
 			disaster = {
-				base = 0
+				base = 0.05
 				anti_air = {
 					reference = 6
-					weight = 0.20
+					weight = 0.30
 				}
 				interception = {
 					reference = 5 
-					weight = 0.10
+					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -756,47 +622,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 1 }
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-					round_temp_variable = raid_planes_lost
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 4 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 4 } 
-					}
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost = 0 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 3 } 
-					}
+					set_temp_variable = { raid_planes_lost = 4 }  
+
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -804,7 +631,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -888,55 +715,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 1 }
+					set_temp_variable = { raid_planes_lost = 4 }  
 
-					set_temp_variable_to_random = {
-						var = raid_planes_lost
-						max = 2
-						integer = yes
-					}
-
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 2 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 2 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -944,7 +724,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -1028,49 +808,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 4 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 1 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 1 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -1078,7 +817,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -1150,7 +889,7 @@ types ={
 	
 		success_factors = {
 			success = {
-				base = 0.4
+				base = 0.1
 				strategic_bomber = {
 					weight = 1
 					reference = 1000
@@ -1176,14 +915,14 @@ types ={
 			}
 
 			disaster = {
-				base = 0
+				base = 0.05
 				anti_air = {
 					reference = 6
-					weight = 0.20
+					weight = 0.30
 				}
 				interception = {
 					reference = 5 
-					weight = 0.10
+					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -1301,56 +1040,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 1 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 6 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 6 } 
-					}
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost = 0 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 3 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -1358,7 +1049,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -1441,55 +1132,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					set_temp_variable_to_random = {
-						var = raid_planes_lost
-						max = 2
-						integer = yes
-					}
-
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 4 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 4 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -1497,7 +1141,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -1580,49 +1224,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 2 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 2 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -1630,7 +1233,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -1695,7 +1298,7 @@ types ={
 
 		success_factors = {
 			success = {
-				base = 0.4
+				base = 0.1
 				strategic_bomber = {
 					weight = 1
 					reference = 1000
@@ -1721,14 +1324,14 @@ types ={
 			}
 
 			disaster = {
-				base = 0
+				base = 0.05
 				anti_air = {
 					reference = 6
-					weight = 0.20
+					weight = 0.30
 				}
 				interception = {
 					reference = 5 
-					weight = 0.10
+					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -1846,47 +1449,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 1 }
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-					round_temp_variable = raid_planes_lost
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 4 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 4 } 
-					}
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost = 0 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 3 } 
-					}
+					set_temp_variable = { raid_planes_lost = 4 }  
+
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -1894,7 +1458,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -1978,55 +1542,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 1 }
+					set_temp_variable = { raid_planes_lost = 4 }  
 
-					set_temp_variable_to_random = {
-						var = raid_planes_lost
-						max = 2
-						integer = yes
-					}
-
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 2 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 2 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -2034,7 +1551,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -2118,49 +1635,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 4 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 1 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 1 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -2168,7 +1644,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -2240,7 +1716,7 @@ types ={
 	
 		success_factors = {
 			success = {
-				base = 0.4
+				base = 0.1
 				strategic_bomber = {
 					weight = 0.8
 					reference = 1000
@@ -2266,14 +1742,14 @@ types ={
 			}
 
 			disaster = {
-				base = 0
+				base = 0.05
 				anti_air = {
 					reference = 6
-					weight = 0.20
+					weight = 0.30
 				}
 				interception = {
 					reference = 5 
-					weight = 0.10
+					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -2391,56 +1867,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 1 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 6 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 6 } 
-					}
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost = 0 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 3 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -2448,7 +1876,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -2531,55 +1959,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					set_temp_variable_to_random = {
-						var = raid_planes_lost
-						max = 2
-						integer = yes
-					}
-
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 4 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 4 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -2587,7 +1968,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -2670,49 +2051,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 8 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 8 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 2 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 2 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -2720,7 +2060,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -2786,7 +2126,7 @@ types ={
 
 		success_factors = {
 			success = {
-				base = 0.4
+				base = 0.1
 				strategic_bomber = {
 					weight = 1
 					reference = 1000
@@ -2812,14 +2152,14 @@ types ={
 			}
 
 			disaster = {
-				base = 0
+				base = 0.05
 				anti_air = {
 					reference = 6
-					weight = 0.20
+					weight = 0.30
 				}
 				interception = {
 					reference = 5 
-					weight = 0.10
+					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -2937,47 +2277,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 1 }
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-					round_temp_variable = raid_planes_lost
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 4 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 4 } 
-					}
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost = 0 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 3 } 
-					}
+					set_temp_variable = { raid_planes_lost = 4 }  
+
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -2985,7 +2286,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -3069,55 +2370,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 1 }
+					set_temp_variable = { raid_planes_lost = 4 }  
 
-					set_temp_variable_to_random = {
-						var = raid_planes_lost
-						max = 2
-						integer = yes
-					}
-
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 2 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 2 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -3125,7 +2379,7 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
@@ -3209,49 +2463,8 @@ types ={
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lostt = 4 }
-					set_temp_variable = { raid_planes_lost = 0 }
+					set_temp_variable = { raid_planes_lost = 4 }  
 
-					var:target_state = {
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
-
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-
-					multiply_temp_variable = { raid_planes_lost = aa_defense integer = yes }
-
-					#clamp after round, just in case some black magic made this negative
-					clamp_temp_variable = {
-						var = raid_planes_lost
-						min = 0
-					}
-
-					round_temp_variable = raid_planes_lost
-
-					if = { 
-						limit = { 
-							check_variable = { raid_planes_lost > 1 } 
-						} 
-						set_temp_variable = { raid_planes_lost = 1 } 
-					}
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -3259,7 +2472,758 @@ types ={
 
 					hidden_effect = {
 						raid_damage_units = {
-							plane_loss = raid_planes_lostt
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+		}
+	}
+	mass_arms_industry_strike_bs = { 
+		days_to_prepare = 5
+		days_re_enable = 14	
+		category = mass_critical_military_infrastructure_strikes
+		command_power = 3
+		ai_will_do = {
+			base = 1.0
+			modifier = { factor = 5.0 date > 2022.5.1 }
+			modifier = { factor = 1 date < 2022.5.1 }
+		}
+		allowed = { has_dlc = "Gotterdammerung" }
+		
+		show_target = { has_war_with = FROM }
+		available = { has_war_with = FROM }
+	
+		target_type = {
+			state = {
+				set_temp_variable = { building_types = 0 }
+
+				if = { limit = { arms_factory > 0 }       add_to_temp_variable = { building_types = 1 } }
+				if = { limit = { ammunition_plant > 0 }   add_to_temp_variable = { building_types = 1 } }
+				if = { limit = { ammunition_silo > 0 }    add_to_temp_variable = { building_types = 1 } }
+
+				check_variable = { building_types > 1 } 
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+		arrow = { type = air }
+	
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis  }
+				amount = { min = 8 }
+			}
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 1
+					reference = 1000
+					start_weight = -0.4
+				}
+				air_agility = {
+					reference = 200
+					weight = 0.4	
+					start_weight = -0.4
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.5
+				}
+				interception = {
+					reference = 5 
+					weight = -0.15
+				}
+				intel = {
+					weight = 0.1
+					reference = 100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				interception = {
+					reference = 5 
+					weight = 0.15
+				}
+				air_agility = {
+					reference = 200
+					weight = -0.30
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					reference = 200
+					start_reference = 100
+					weight = 0.05
+				}
+				strategic_bomber = {
+					weight = 0.50
+					reference = 3000
+					start_reference = 1100
+				}
+			}
+		}
+
+		success_levels = {
+				failure = {
+					actor_effects = {
+						set_temp_variable = { raid_planes_lost = 8 }
+						custom_effect_tooltip = {
+							localization_key = plane_raid_losses_tt
+							LOSSES = [?raid_planes_lost]
+						}
+						hidden_effect = {
+							raid_damage_units = {
+								plane_loss = raid_planes_lost
+								ratio = no
+							}
+						}
+					}
+				}
+
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+
+						add_to_temp_variable = { radar_mult = 0.5 }
+						multiply_temp_variable = { aa_defense = radar_mult }
+						multiply_temp_variable = { rocket_mult = radar_mult }
+
+						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
+							multiply_temp_variable = { aa_defense = rocket_mult }
+							if = { limit = { check_variable = { aa_defense = 0 } } 
+								add_to_temp_variable = { aa_defense = rocket_mult }
+							}
+						}
+
+						set_temp_variable = { building_damage = 2 }
+						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
+						multiply_temp_variable = { building_damage = luck }
+
+						if = { limit = { check_variable = { aa_defense > 0 } } 
+							divide_temp_variable = { building_damage = aa_defense }
+						}
+						multiply_temp_variable = { building_damage = 3 }
+
+						set_temp_variable = { targets = 0 }
+						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
+
+						if = { limit = { check_variable = { targets > 0 } } 
+							divide_temp_variable = { building_damage = targets }
+						}
+
+						clamp_temp_variable = { var = building_damage min = 1 max = 4 }
+
+						if = { limit = { arms_factory > 0 }
+							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { infrastructure > 0 }
+							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+
+						add_to_temp_variable = { radar_mult = 0.5 }
+						multiply_temp_variable = { aa_defense = radar_mult }
+						multiply_temp_variable = { rocket_mult = radar_mult }
+
+						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
+							multiply_temp_variable = { aa_defense = rocket_mult }
+							if = { limit = { check_variable = { aa_defense = 0 } } add_to_temp_variable = { aa_defense = rocket_mult } }
+						}
+
+						set_temp_variable = { building_damage = 2.5 }
+						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
+						multiply_temp_variable = { building_damage = luck }
+
+						if = { limit = { check_variable = { aa_defense > 0 } } 
+							divide_temp_variable = { building_damage = aa_defense }
+						}
+						multiply_temp_variable = { building_damage = 3 }
+
+						set_temp_variable = { targets = 0 }
+						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
+
+						if = { limit = { check_variable = { targets > 0 } } 
+							divide_temp_variable = { building_damage = targets }
+						}
+
+						clamp_temp_variable = { var = building_damage min = 1.5 max = 5 }
+
+						if = { limit = { arms_factory > 0 }
+							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { infrastructure > 0 }
+							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+					}
+				}
+				actor_effects = {
+
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+
+						add_to_temp_variable = { radar_mult = 0.5 }
+						multiply_temp_variable = { aa_defense = radar_mult }
+						multiply_temp_variable = { rocket_mult = radar_mult }
+
+						if = {
+							limit = {
+								NOT = { check_variable = { rocket_mult = 0 } }
+							}
+							multiply_temp_variable = { aa_defense = rocket_mult }
+
+							if = {
+								limit = {
+									check_variable = { aa_defense = 0 }
+								}
+								add_to_temp_variable = { aa_defense = rocket_mult }
+							}
+						}
+
+						set_temp_variable = { building_damage = 5 }
+
+						set_temp_variable_to_random = {
+							var = luck
+							min = 0.4
+							max = 0.6
+						}
+
+						multiply_temp_variable = { building_damage = luck }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense > 0 }
+							}
+							divide_temp_variable = { building_damage = aa_defense }
+						}
+
+						multiply_temp_variable = { building_damage = 3 }
+
+						set_temp_variable = { targets = 0 }
+						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
+
+
+						if = { 
+							limit = { check_variable = { targets > 0 } } 
+							divide_temp_variable = { building_damage = targets }
+						}
+
+						clamp_temp_variable = {
+							var = building_damage
+							min = 2.5
+							max = 8
+						}
+
+						if = { limit = { arms_factory > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage]"
+							}
+						}
+						if = { limit = { ammunition_plant > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage]"
+							}
+						}
+						if = { limit = { ammunition_silo > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage]"
+							}
+						}
+						if = { limit = { infrastructure > 0 }
+							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+					}
+				}
+
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+		}
+	}
+
+	mass_arms_industry_strike_rc = { 
+		days_to_prepare = 5
+		days_re_enable = 14	
+		category = mass_critical_military_infrastructure_strikes
+		command_power = 3
+		ai_will_do = {
+			base = 1.0
+			modifier = { factor = 5.0 date > 2022.5.1 }
+			modifier = { factor = 1 date < 2022.5.1 }
+		}
+		allowed = { has_dlc = "Gotterdammerung" }
+		
+		show_target = { has_war_with = FROM }
+		available = { has_war_with = FROM }
+	
+		target_type = {
+			state = {
+				set_temp_variable = { building_types = 0 }
+
+				if = { limit = { arms_factory > 0 }       add_to_temp_variable = { building_types = 1 } }
+				if = { limit = { ammunition_plant > 0 }   add_to_temp_variable = { building_types = 1 } }
+				if = { limit = { ammunition_silo > 0 }    add_to_temp_variable = { building_types = 1 } }
+
+				check_variable = { building_types > 1 } 
+			}
+		}
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+		arrow = { type = air }
+	
+		unit_requirements = {
+			equipment = {
+				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
+				amount = { min = 12 }
+			}
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 1
+					reference = 1000
+					start_weight = -0.4
+				}
+				air_agility = {
+					reference = 200
+					weight = 0.4	
+					start_weight = -0.4
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.5
+				}
+				interception = {
+					reference = 5 
+					weight = -0.15
+				}
+				intel = {
+					weight = 0.1
+					reference = 100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				interception = {
+					reference = 5 
+					weight = 0.15
+				}
+				air_agility = {
+					reference = 200
+					weight = -0.30
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					reference = 200
+					start_reference = 100
+					weight = 0.05
+				}
+				strategic_bomber = {
+					weight = 0.50
+					reference = 3000
+					start_reference = 1100
+				}
+			}
+		}
+
+		success_levels = {
+				failure = {
+					actor_effects = {
+						set_temp_variable = { raid_planes_lost = 12 }
+						custom_effect_tooltip = {
+							localization_key = plane_raid_losses_tt
+							LOSSES = [?raid_planes_lost]
+						}
+						hidden_effect = {
+							raid_damage_units = {
+								plane_loss = raid_planes_lost
+								ratio = no
+							}
+						}
+					}
+				}
+
+			limited_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+
+						add_to_temp_variable = { radar_mult = 0.5 }
+						multiply_temp_variable = { aa_defense = radar_mult }
+						multiply_temp_variable = { rocket_mult = radar_mult }
+
+						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
+							multiply_temp_variable = { aa_defense = rocket_mult }
+							if = { limit = { check_variable = { aa_defense = 0 } } 
+								add_to_temp_variable = { aa_defense = rocket_mult }
+							}
+						}
+
+						set_temp_variable = { building_damage = 2 }
+						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
+						multiply_temp_variable = { building_damage = luck }
+
+						if = { limit = { check_variable = { aa_defense > 0 } } 
+							divide_temp_variable = { building_damage = aa_defense }
+						}
+						multiply_temp_variable = { building_damage = 3 }
+
+						set_temp_variable = { targets = 0 }
+						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
+
+						if = { limit = { check_variable = { targets > 0 } } 
+							divide_temp_variable = { building_damage = targets }
+						}
+
+						clamp_temp_variable = { var = building_damage min = 1 max = 4 }
+
+						if = { limit = { arms_factory > 0 }
+							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { infrastructure > 0 }
+							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 12 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+
+			success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+
+						add_to_temp_variable = { radar_mult = 0.5 }
+						multiply_temp_variable = { aa_defense = radar_mult }
+						multiply_temp_variable = { rocket_mult = radar_mult }
+
+						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
+							multiply_temp_variable = { aa_defense = rocket_mult }
+							if = { limit = { check_variable = { aa_defense = 0 } } add_to_temp_variable = { aa_defense = rocket_mult } }
+						}
+
+						set_temp_variable = { building_damage = 2.5 }
+						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
+						multiply_temp_variable = { building_damage = luck }
+
+						if = { limit = { check_variable = { aa_defense > 0 } } 
+							divide_temp_variable = { building_damage = aa_defense }
+						}
+						multiply_temp_variable = { building_damage = 3 }
+
+						set_temp_variable = { targets = 0 }
+						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
+
+						if = { limit = { check_variable = { targets > 0 } } 
+							divide_temp_variable = { building_damage = targets }
+						}
+
+						clamp_temp_variable = { var = building_damage min = 1.5 max = 5 }
+
+						if = { limit = { arms_factory > 0 }
+							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_plant > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { ammunition_silo > 0 }
+							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+						if = { limit = { infrastructure > 0 }
+							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+					}
+				}
+				actor_effects = {
+
+					set_temp_variable = { raid_planes_lost = 12 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+
+			critical_success = {
+				victim_effects = {
+					var:target_state = {
+						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+
+						add_to_temp_variable = { radar_mult = 0.5 }
+						multiply_temp_variable = { aa_defense = radar_mult }
+						multiply_temp_variable = { rocket_mult = radar_mult }
+
+						if = {
+							limit = {
+								NOT = { check_variable = { rocket_mult = 0 } }
+							}
+							multiply_temp_variable = { aa_defense = rocket_mult }
+
+							if = {
+								limit = {
+									check_variable = { aa_defense = 0 }
+								}
+								add_to_temp_variable = { aa_defense = rocket_mult }
+							}
+						}
+
+						set_temp_variable = { building_damage = 5 }
+
+						set_temp_variable_to_random = {
+							var = luck
+							min = 0.4
+							max = 0.6
+						}
+
+						multiply_temp_variable = { building_damage = luck }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense > 0 }
+							}
+							divide_temp_variable = { building_damage = aa_defense }
+						}
+
+						multiply_temp_variable = { building_damage = 3 }
+
+						set_temp_variable = { targets = 0 }
+						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
+						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
+
+
+						if = { 
+							limit = { check_variable = { targets > 0 } } 
+							divide_temp_variable = { building_damage = targets }
+						}
+
+						clamp_temp_variable = {
+							var = building_damage
+							min = 2.5
+							max = 8
+						}
+
+						if = { limit = { arms_factory > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = arms_factory
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage]"
+							}
+						}
+						if = { limit = { ammunition_plant > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_plant
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage]"
+							}
+						}
+						if = { limit = { ammunition_silo > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = ammunition_silo
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage]"
+							}
+						}
+						if = { limit = { infrastructure > 0 }
+							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+						}
+					}
+				}
+
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 12 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
 							ratio = no
 						}
 					}
