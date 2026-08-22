@@ -1504,6 +1504,17 @@ focus_tree = {
 							hours = 5
 						}
 					}
+					RUS = {
+						set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index}
+						set_temp_variable = { temp_cooldown_days = 90 }
+						set_temp_variable = { temp_duration_days = 90 }
+						map_plan_priority_direction_set_scripted = yes
+
+						set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index}
+						set_temp_variable = { temp_cooldown_days = 45 }
+						set_temp_variable = { temp_duration_days = 30 }
+						map_plan_attack_prepare_scripted = yes
+					}
 				}
 
 
@@ -3078,11 +3089,11 @@ focus_tree = {
 			custom_effect_tooltip = RUS_new_decisions
 			
 			add_mastery = {
-				amount = 120
+				amount = 200
 				track = tier_1_artillery
 			}
 			add_mastery = {
-				amount = 120
+				amount = 200
 				track = tier_2_artillery
 			}
 		}
@@ -3118,14 +3129,21 @@ focus_tree = {
 				amount = 80
 				track = tier_2_sso
 			}
+			add_mastery = {
+				amount = 120
+				track = tier_1_infantry
+			}
+			add_mastery = {
+				amount = 120
+				track = tier_2_infantry
+			}	
 			random_army_leader = {
 				limit = { NOT = { has_trait = butcher } }
 				add_unit_leader_trait = assault_infantry_commander
 			}
 			add_to_variable = { RUS_VCRF_army_strength_factor = 0.05 }
 			add_to_variable = { RUS_VCRF_breakthrough_factor = 0.075 }
-			add_to_variable = { RUS_VCRF_experience_loss_factor = 0.1 }
-			add_to_variable = { RUS_VCRF_modifier_command_power_gain_mult = -0.05 }
+			add_to_variable = { RUS_VCRF_experience_loss_factor = 0.05 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -3155,7 +3173,6 @@ focus_tree = {
 			}
 			custom_effect_tooltip = RUS_stabilize_the_front_cet
 			add_to_variable = { RUS_VCRF_army_org_factor = 0.1 }
-			add_to_variable = { RUS_VCRF_army_org_regain = 0.075 }
 			add_to_variable = { RUS_VCRF_modifier_command_power_gain_mult = 0.05 }
 		}
 		ai_will_do = {
@@ -3174,7 +3191,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_stabilize_the_front"
 			hidden_effect = {
 				remove_ideas = armored_columns_spirit
-				add_to_variable = { var = RUS_VCRF_max_dig_in_factor value = 0.08 }
+				add_to_variable = { var = RUS_VCRF_max_dig_in_factor value = 0.15 }
 			}
 			add_command_power = 25
 			army_experience = 25
@@ -3263,7 +3280,7 @@ focus_tree = {
 			custom_effect_tooltip = RUS_cut_off_from_supplies_tt
 			add_to_variable = {	
 				var = RUS_VCRF_max_planning
-				value = 0.1
+				value = 0.08
 			}
 		}
 		ai_will_do = {
@@ -3283,6 +3300,10 @@ focus_tree = {
 			add_to_variable = {	
 				var = RUS_VCRF_breakthrough_factor
 				value = 0.15
+			}
+			add_to_variable = {
+				var = RUS_VCRF_army_morale_factor 
+				value = 0.15 
 			}
 			add_to_variable = {	
 				var = RUS_VCRF_experience_loss_factor
@@ -5067,18 +5088,10 @@ focus_tree = {
 					    has_completed_focus = RUS_real_man_business
 					}
 					hidden_effect = {
-						random_list = {
-							50 = { activate_mission = RUS_fees_of_KPRF_AK }
-							50 = { activate_mission = RUS_fees_of_KPRF_support }
-						}
-						random_list = {
-							50 = { activate_mission = RUS_fees_of_LDPR_AK }
-							50 = { activate_mission = RUS_fees_of_LDPR_support }
-						}
-						random_list = {
-							50 = { activate_mission = RUS_fees_of_EDRO_AK }
-							50 = { activate_mission = RUS_fees_of_EDRO_support }
-						}
+						RUS_Volunteer_movement_scripted_effects = yes
+						set_variable = { RUS_volunteer_movement_who_it = 4 }
+						RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+						RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 					}
 				}
 			}
@@ -5393,6 +5406,18 @@ focus_tree = {
 				}
 			}
 			custom_effect_tooltip = RUS_Humanitarian_aid_LDPR_cet
+			custom_effect_tooltip = RUS_volunteer_increase_tt
+			hidden_effect={
+				LPR = {
+					activate_mission = LPR_fees_of_Russia
+				}
+				DPR = {
+					activate_mission = DPR_fees_of_Russia
+				}
+				
+				add_to_variable = { RUS_volunteerACT = 1 }
+				RUS_Volunteer_movement_scripted_effects = yes
+			}
 		}
 	}
 	focus = {
@@ -6901,10 +6926,18 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Reanimating_the_economy"
 		    custom_effect_tooltip = RUS_Reanimating_the_economy_cet
+			if = { limit = { NOT = { has_country_flag = Volunteer_movement_business_start } }
+				custom_effect_tooltip = RUS_volunteer_business_start_tt
+			}
 			hidden_effect = { 
 				add_to_variable = { RUS_RUB_1_consumer_goods_factor = -0.05 }
 				add_to_variable = { RUS_RUB_1_stability_factor = 0.05 }
 				add_to_variable = { RUS_RUB_1_neutrality_drift = 0.01 }
+				if = { limit = { NOT = { has_country_flag = Volunteer_movement_business_start } }
+					set_country_flag = Volunteer_movement_business_start
+					set_variable = { RUS_volunteer_movement_who_it = 3 }
+					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+				}
 			}
 		}
 	}
@@ -7120,6 +7153,14 @@ focus_tree = {
 			custom_effect_tooltip = RUS_use_the_war_for_economic_purposes_tt
 			add_to_variable = { economic_stagnation_production_speed_electronic_factory_factor = 0.1 }
 			add_to_variable = { economic_stagnation_production_speed_arms_factory_factor = 0.07 }
+			
+			if = { limit = { NOT = { check_variable = { RUS_volunteerACT_business = 24 } } }
+				custom_effect_tooltip = RUS_volunteer_pressure_on_business_tt
+				hidden_effect = {
+					add_to_variable = { RUS_volunteerACT_business = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
+			}
 		}
 	}
 	focus = {
@@ -7484,6 +7525,13 @@ focus_tree = {
 				uses = 2
 				category = industry
 			}
+			if = { limit = { NOT = { check_variable = { RUS_volunteerACT_business = 24 } } }
+				custom_effect_tooltip = RUS_volunteer_pressure_on_business_tt
+				hidden_effect = {
+					add_to_variable = { RUS_volunteerACT_business = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -7624,6 +7672,13 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Domestic_trade_turnover"
 		    add_political_power = 40
 		    add_stability = 0.035
+			if = { limit = { NOT = { check_variable = { RUS_volunteerACT_business = 24 } } }
+				custom_effect_tooltip = RUS_volunteer_pressure_on_business_tt
+				hidden_effect = {
+					add_to_variable = { RUS_volunteerACT_business = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
+			}
 		}
 	}
 	focus = {
@@ -7972,6 +8027,12 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Intensify_advocacy"
 		    add_political_power = 25
 			custom_effect_tooltip = RUS_Intensify_advocacy_cet
+			if = { limit = { NOT = { has_country_flag = Volunteer_movement_start } } 
+				custom_effect_tooltip = RUS_volunteer_start_tt
+			}
+			else = {
+				custom_effect_tooltip = RUS_volunteer_increase_1_tt
+			}
 			hidden_effect={
 				add_dynamic_modifier = { modifier = RUS_propaganda }
 				add_to_variable = { var = RUS_propaganda_political_power_factor value = 0.075 }
@@ -7990,6 +8051,16 @@ focus_tree = {
 				add_to_variable = { var = RUS_inf_war_making_bet_political_power_factor value = 0.1 }
 				add_to_variable = { var = RUS_inf_war_making_bet_stability_factor value = 0.05 }
 				add_to_variable = { var = RUS_monthly_increase_var_add value = -1.5 }
+				if = { limit = { NOT = { has_country_flag = Volunteer_movement_start } } 
+					set_country_flag = Volunteer_movement_start
+					RUS_Volunteer_movement_scripted_effects = yes
+					set_variable = { RUS_volunteer_movement_who_it = 1 }
+					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+				}
+				else = {
+					add_to_variable = { RUS_volunteerACT = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
 			}
 		}
 	}
@@ -8154,14 +8225,9 @@ focus_tree = {
 				}
 				custom_effect_tooltip = RUS_loyal_military_journalists_fees
 				hidden_effect ={
-					random_list = {
-						16 = { activate_mission = RUS_fees_of_voenkory_AK_74 }
-						16 = { activate_mission = RUS_fees_of_voenkory_support }
-						16 = { activate_mission = RUS_fees_of_voenkory_AK_12 }
-						16 = { activate_mission = RUS_fees_of_voenkory_RPG }
-						16 = { activate_mission = RUS_fees_of_voenkory_PZRK }
-						16 = { activate_mission = RUS_fees_of_voenkory_car }
-					}
+					set_country_flag = Volunteer_movement_voenkory_start
+					set_variable = { RUS_volunteer_movement_who_it = 5 } 
+					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 				}
 			}
 		}
@@ -8207,11 +8273,14 @@ focus_tree = {
 			add_stability = -0.035
 			add_war_support = 0.05
 			custom_effect_tooltip = RUS_Controversy_on_TV_cet
+			custom_effect_tooltip = RUS_volunteer_increase_1_tt
 			hidden_effect={
 				add_to_variable = { var = RUS_propaganda_stability_weekly value = -0.002 }
 				add_to_variable = { var = RUS_propaganda_war_support_weekly value = 0.002 }
 				add_to_variable = { var = RUS_propaganda_political_power_factor value = 0.025 }
 				add_to_variable = { var = RUS_propaganda_war_stability_factor value = 0.025 }
+				add_to_variable = { RUS_volunteerACT = 0.5 }
+				RUS_Volunteer_movement_scripted_effects = yes
 			}
 		}
 	}
@@ -8444,30 +8513,13 @@ focus_tree = {
 					    has_completed_focus = RUS_for_russia_for_truth
 					}
 					hidden_effect = {
-						random_list = {
-							50 = { activate_mission = RUS_fees_of_KPRF_AK }
-							50 = { activate_mission = RUS_fees_of_KPRF_support }
-						}
-						random_list = {
-							50 = { activate_mission = RUS_fees_of_LDPR_AK }
-							50 = { activate_mission = RUS_fees_of_LDPR_support }
-						}
-						random_list = {
-							50 = { activate_mission = RUS_fees_of_EDRO_AK }
-							50 = { activate_mission = RUS_fees_of_EDRO_support }
-						}
+						RUS_Volunteer_movement_scripted_effects = yes
+						set_variable = { RUS_volunteer_movement_who_it = 4 }
+						RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+						RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 					}
 				}
-				if = {
-					limit = { 
-						has_country_flag = RUS_Drugaya_Rossia_cf
-					}
-					random_list = {
-						50 = { activate_mission = RUS_fees_of_NBP_AK }
-						50 = { activate_mission = RUS_fees_of_NBP_support }
-					}
-					add_to_variable = { var = RUS_recruitment_of_volunteers_weekly_manpower value = 30 }
-				}
+				add_to_variable = { var = RUS_recruitment_of_volunteers_weekly_manpower value = 30 }
 			}
 		}
 	}
@@ -8691,6 +8743,12 @@ focus_tree = {
 		    add_political_power = 30
 			add_stability = 0.025
 			custom_effect_tooltip = RUS_Social_support_participants_cet
+			if = { limit = { NOT = { has_country_flag = Volunteer_movement_start } } 
+				custom_effect_tooltip = RUS_volunteer_start_tt
+			}
+			else = {
+				custom_effect_tooltip = RUS_volunteer_increase_1_tt
+			}
 			hidden_effect = {
 			    add_dynamic_modifier = { modifier = RUS_assistance_to_veterans }
 			    add_to_variable = { var = RUS_recruitment_of_volunteers_weekly_manpower value = 100 }
@@ -8698,6 +8756,16 @@ focus_tree = {
 				add_to_variable = { var = RUS_assistance_to_veterans_consumer_goods_factor value = 0.05 }
 				add_to_variable = { var = RUS_assistance_to_veterans_stability_weekly value = 0.005 }
 				add_to_variable = { var = RUS_assistance_to_veterans_political_power_cost value = 0.5 }
+				if = { limit = { NOT = { has_country_flag = Volunteer_movement_start } } 
+					set_country_flag = Volunteer_movement_start
+					RUS_Volunteer_movement_scripted_effects = yes
+					set_variable = { RUS_volunteer_movement_who_it = 1 }
+					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+				}
+				else = {
+					add_to_variable = { RUS_volunteerACT = 1 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
 			}
 		}
 	}
@@ -8738,28 +8806,19 @@ focus_tree = {
 			hidden_effect = {
 			    add_to_variable = { var = RUS_assistance_to_veterans_political_power_cost value = 0.25 }
 				add_to_variable = { var = RUS_assistance_to_veterans_army_org_factor value = 0.02 }
-				random_list = {
-					16 = { activate_mission = RUS_fees_of_volunteer_organizations_AK_74 }
-					16 = { activate_mission = RUS_fees_of_volunteer_organizations_support }
-					16 = { activate_mission = RUS_fees_of_volunteer_organizations_AK_12 }
-					16 = { activate_mission = RUS_fees_of_volunteer_organizations_RPG }
-					16 = { activate_mission = RUS_fees_of_volunteer_organizations_PZRK }
-					16 = { activate_mission = RUS_fees_of_volunteer_organizations_car }
-				}
+				RUS_Volunteer_movement_scripted_effects = yes
+				set_variable = { RUS_volunteer_movement_who_it = 2 }
+				RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 			}
 			if={
 				limit={
 					has_completed_focus = RUS_loyal_military_journalists
 				}
+				custom_effect_tooltip = RUS_loyal_military_journalists_fees
 				hidden_effect ={
-					random_list = {
-						16 = { activate_mission = RUS_fees_of_voenkory_AK_74 }
-						16 = { activate_mission = RUS_fees_of_voenkory_support }
-						16 = { activate_mission = RUS_fees_of_voenkory_AK_12 }
-						16 = { activate_mission = RUS_fees_of_voenkory_RPG }
-						16 = { activate_mission = RUS_fees_of_voenkory_PZRK }
-						16 = { activate_mission = RUS_fees_of_voenkory_car }
-					}
+					set_country_flag = Volunteer_movement_voenkory_start
+					set_variable = { RUS_volunteer_movement_who_it = 5 } 
+					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 				}
 			}
 		}
@@ -8780,6 +8839,12 @@ focus_tree = {
 		    add_command_power = 20
 			add_war_support = 0.03
 			custom_effect_tooltip = RUS_Union_of_Veterans_cet
+			if = { limit = { has_country_flag = Volunteer_movement_start } 
+				custom_effect_tooltip = RUS_volunteer_increase_tt
+			}
+			else = {
+				custom_effect_tooltip = RUS_volunteer_start_tt
+			}
 			hidden_effect = {
 			    add_to_variable = { var = RUS_recruitment_of_volunteers_weekly_manpower value = 50 }
 				add_to_variable = { var = RUS_assistance_to_veterans_army_org_factor value = 0.025 }
@@ -8787,6 +8852,16 @@ focus_tree = {
 				add_to_variable = { var = RUS_assistance_to_veterans_political_power_cost value = 0.5 }
 				add_to_variable = { var = RUS_assistance_to_veterans_command_power_gain_mult value = 0.25 }
 				add_to_variable = { var = RUS_assistance_to_veterans_stability_factor value = 0.035 }
+				if = { limit = { has_country_flag = Volunteer_movement_start } 
+					add_to_variable = { RUS_volunteerACT = 1.5 }
+					RUS_Volunteer_movement_scripted_effects = yes
+				}
+				else = {
+					set_country_flag = Volunteer_movement_start
+					RUS_Volunteer_movement_scripted_effects = yes
+					set_variable = { RUS_volunteer_movement_who_it = 1 }
+					RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+				}
 			}
 		}
 	}
@@ -9589,6 +9664,7 @@ focus_tree = {
 			}
 			increase_escalation_by_10 = yes
 			custom_effect_tooltip = first_mobiks_tt
+			custom_effect_tooltip = RUS_volunteer_increase_2_tt
 			swap_ideas = {
 				remove_idea = limited_conscription
 				add_idea = extensive_conscription
@@ -9616,6 +9692,8 @@ focus_tree = {
 				else = {
 					country_event = { id = che.33 random_hours = 3 }
 				}
+				add_to_variable = { RUS_volunteerACT = 3 }
+				RUS_Volunteer_movement_scripted_effects = yes
 			}
 		}
 	}
@@ -9658,7 +9736,10 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			has_war_with = NTO
+			OR = {
+				surrender_progress > 0.1
+				has_war_with = NTO
+			}
 		}
 		completion_reward={
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_general_mobilization"
