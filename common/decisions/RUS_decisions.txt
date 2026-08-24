@@ -25269,7 +25269,7 @@ RUS_VPK_categories = {
 	
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_VPK_restore_old_artillery_production: remove_effect"
-			add_idea = RUS_VPK_old_artillery_bonus
+			add_ideas = RUS_VPK_old_artillery_bonus
 		}
 	}
 	RUS_VPK_expand_ammunition_production_1 = {
@@ -25291,10 +25291,10 @@ RUS_VPK_categories = {
 			factor = 1
 		}
 	
-		custom_effect_tooltip = RUS_VPK_expand_ammunition_production_1_tt
 	
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_VPK_expand_ammunition_production_1: remove_effect"
+			custom_effect_tooltip = RUS_VPK_expand_ammunition_production_1_tt
 			add_ideas = RUS_VPK_ammunition_production_bonus_1
 			set_country_flag = RUS_VPK_ammunition_stage_1
 		}
@@ -25319,11 +25319,10 @@ RUS_VPK_categories = {
 			factor = 1
 		}
 	
-		custom_effect_tooltip = RUS_VPK_expand_ammunition_production_2_tt
 	
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_VPK_expand_ammunition_production_2: remove_effect"
-		
+			custom_effect_tooltip = RUS_VPK_expand_ammunition_production_2_tt
 			swap_ideas = {
 				remove_idea = RUS_VPK_ammunition_production_bonus_1
 				add_idea = RUS_VPK_ammunition_production_bonus_2
@@ -25352,11 +25351,10 @@ RUS_VPK_categories = {
 			factor = 1
 		}
 	
-		custom_effect_tooltip = RUS_VPK_expand_ammunition_production_3_tt
 		
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision RUS_VPK_expand_ammunition_production_3: remove_effect"
-		
+			custom_effect_tooltip = RUS_VPK_expand_ammunition_production_3_tt
 			swap_ideas = {
 				remove_idea = RUS_VPK_ammunition_production_bonus_2
 				add_idea = RUS_VPK_ammunition_production_bonus_3
@@ -25364,8 +25362,7 @@ RUS_VPK_categories = {
 		
 			set_country_flag = RUS_VPK_ammunition_stage_3
 		}
-	
-}
+	}
 	RUS_VPK_ammunition_restrictions = {
 		icon = generic_formable_nations
 	
@@ -25427,7 +25424,7 @@ RUS_VPK_categories = {
 			}
 		}
 	}
-
+}
 RUS_forced_measures_category = {
 	RUS_additional_business_trips_to_the_SMO_zone = {
 		icon = GFX_RUS_trips
@@ -32185,5 +32182,705 @@ RUS_cooperation_with_the_dprk_category = {
 			}
 		}
 	}
+	RUS_dprk_atgm_supplies = {
+		icon = GFX_RUS_DPRK_cooperation
+		cost = 10
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
 
+		visible = {
+			has_country_flag = RUS_testing_of_equipment_samples_dprk_flag
+			NOT = {
+				check_variable = { RUS_dprk_atgm_supplies_num = 3 }
+			}
+		}
+
+		available = {
+			check_variable = { RUS_dprk_overall_supplies_num < RUS_dprk_overall_max_supplies_num }
+		}
+
+		complete_effect = {
+			add_to_variable = {
+				var = RUS_dprk_overall_supplies_num
+				value = 1
+			}
+			add_to_variable = {
+				var = RUS_dprk_atgm_supplies_num
+				value = 1
+		    }
+		}
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_dprk_atgm_supplies_supplies"
+			if = { limit = { check_variable = { RUS_dprk_atgm_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = sp_atgm_apc_sov_btr80_equipment
+					variant_name = "Bulsae 4"
+					amount = 10
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_atgm_supplies_num = 1 } }			
+				add_equipment_to_stockpile = {
+					type = sp_atgm_apc_sov_btr80_equipment
+					variant_name = "Bulsae 4"
+					amount = 15
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_atgm_supplies_num = 2 } }
+				add_equipment_to_stockpile = {
+					type = sp_atgm_apc_sov_btr80_equipment
+					variant_name = "Bulsae 4"
+					amount = 20
+					producer = NKA
+				}			
+			}
+		}
+	}
+
+	RUS_dprk_artillery_supplies = {
+		icon = GFX_RUS_DPRK_cooperation
+		cost = 15
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_kim_jong_uns_main_striking_force
+			NOT = {
+				check_variable = { RUS_dprk_artillery_supplies_num = 5 }
+			}
+		}
+
+		available = {
+			check_variable = { RUS_dprk_overall_supplies_num < RUS_dprk_overall_max_supplies_num }
+		}
+
+		complete_effect = {
+			add_to_variable = {
+				var = RUS_dprk_overall_supplies_num
+				value = 1
+			}
+			add_to_variable = {
+				var = RUS_dprk_artillery_supplies_num
+				value = 1
+		    }
+		}
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_dprk_artillery_supplies"
+			if = { limit = { check_variable = { RUS_dprk_artillery_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = sov_artillery_d74_equipment
+					amount = 80
+					producer = NKA
+				}
+				add_equipment_to_stockpile = {
+					type = sp_heavy_artillery_mrv_tracked_1_equipment
+					variant_name = "М1978 Коксан"
+					amount = 20
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_artillery_supplies_num = 1 } }			
+				add_equipment_to_stockpile = {
+					type = sov_artillery_d74_equipment
+					amount = 100
+					producer = NKA
+				}
+				add_equipment_to_stockpile = {
+					type = sp_heavy_artillery_mrv_tracked_1_equipment
+					variant_name = "М1978 Коксан"
+					amount = 25
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_artillery_supplies_num = 2 } }			
+				add_equipment_to_stockpile = {
+					type = sov_artillery_d74_equipment
+					amount = 140
+					producer = NKA
+				}
+				add_equipment_to_stockpile = {
+					type = sp_heavy_artillery_mrv_tracked_1_equipment
+					variant_name = "М1978 Коксан"
+					amount = 30
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_artillery_supplies_num = 3 } }			
+				add_equipment_to_stockpile = {
+					type = sov_artillery_d74_equipment
+					amount = 180
+					producer = NKA
+				}
+				add_equipment_to_stockpile = {
+					type = sp_heavy_artillery_mrv_tracked_1_equipment
+					variant_name = "М1978 Коксан"
+					amount = 35
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_artillery_supplies_num = 4 } }			
+				add_equipment_to_stockpile = {
+					type = sov_artillery_d74_equipment
+					amount = 200
+					producer = NKA
+				}
+				add_equipment_to_stockpile = {
+					type = sp_heavy_artillery_mrv_tracked_1_equipment
+					variant_name = "М1978 Коксан"
+					amount = 40
+					producer = NKA
+				}
+			}
+		}
+	}
+
+	RUS_dprk_mlrs_supplies = {
+		icon = GFX_RUS_DPRK_cooperation
+		cost = 20
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_kim_jong_uns_main_striking_force
+			NOT = {
+				check_variable = { RUS_dprk_mlrs_supplies_num = 5 }
+			}
+		}
+
+		available = {
+			check_variable = { RUS_dprk_overall_supplies_num < RUS_dprk_overall_max_supplies_num }
+		}
+
+		complete_effect = {
+			add_to_variable = {
+				var = RUS_dprk_overall_supplies_num
+				value = 1
+			}
+			add_to_variable = {
+				var = RUS_dprk_mlrs_supplies_num
+				value = 1
+		    }
+		}
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_dprk_mlrs_supplies"
+			if = { limit = { check_variable = { RUS_dprk_mlrs_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = sp_mlrs_imv_light_1_equipment
+					variant_name = "М1991"
+					amount = 10
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_mlrs_supplies_num = 1 } }			
+				add_equipment_to_stockpile = {
+					type = sp_mlrs_imv_light_1_equipment
+					variant_name = "М1991"
+					amount = 20
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_mlrs_supplies_num = 2 } }			
+				add_equipment_to_stockpile = {
+					type = sp_mlrs_imv_light_1_equipment
+					variant_name = "М1991"
+					amount = 30
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_mlrs_supplies_num = 3 } }			
+				add_equipment_to_stockpile = {
+					type = sp_mlrs_imv_light_1_equipment
+					variant_name = "М1991"
+					amount = 40
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_mlrs_supplies_num = 4 } }			
+				add_equipment_to_stockpile = {
+					type = sp_mlrs_imv_light_1_equipment
+					variant_name = "М1991"
+					amount = 50
+					producer = NKA
+				}
+			}
+		}
+	}
+
+	RUS_dprk_missile_supplies = {
+		icon = GFX_RUS_DPRK_cooperation
+		cost = 15
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_kim_jong_uns_main_striking_force
+			NOT = {
+				check_variable = { RUS_dprk_missile_supplies_num = 5 }
+			}
+		}
+
+		available = {
+			check_variable = { RUS_dprk_overall_supplies_num < RUS_dprk_overall_max_supplies_num }
+		}
+
+		modifier = {
+			country_resource_electronic = -5
+		}
+
+		complete_effect = {
+			add_to_variable = {
+				var = RUS_dprk_overall_supplies_num
+				value = 1
+			}
+		}
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_dprk_artillery_supplies"
+			add_to_variable = {
+				var = RUS_dprk_missile_supplies_num
+				value = 1
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-1"
+					amount = 20
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 1 } NOT = { has_country_flag = KN_23_modernized } }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-1"
+					amount = 30
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 1 } has_country_flag = KN_23_modernized }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-2"
+					amount = 30
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 2 } NOT = { has_country_flag = KN_23_modernized } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-1"
+					amount = 40
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 2 } has_country_flag = KN_23_modernized }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-2"
+					amount = 40
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 3 } NOT = { has_country_flag = KN_23_modernized } }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-1"
+					amount = 50
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 3 } has_country_flag = KN_23_modernized }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-2"
+					amount = 50
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 4 } NOT = { has_country_flag = KN_23_modernized } }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-1"
+					amount = 60
+					producer = NKA
+				}
+			}
+			if = { limit = { check_variable = { RUS_dprk_missile_supplies_num = 4 } has_country_flag = KN_23_modernized }				
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					variant_name = "Hwasong-11Ga KN-23-2"
+					amount = 60
+					producer = NKA
+				}
+			}
+		}
+	}
+
+	RUS_exchange_of_military_experience_dprk = {
+		icon = GFX_RUS_DPRK_cooperation
+		days_remove = 7
+		custom_cost_text = decision_cost_AE_50
+		custom_cost_trigger = { 
+			has_army_experience > 49  
+			has_political_power > 9
+		}
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_investments_in_dprk
+			check_variable = { RUS_exchange_of_military_experience_dprk_num < 3 }
+		}
+
+
+		complete_effect = {
+			army_experience = -50
+			add_political_power = -10
+		}
+
+		modifier = {
+			experience_gain_army_factor = 0.1
+		}
+		
+		remove_effect = {
+			custom_effect_tooltip = RUS_max_amount_of_supplies_tt
+			add_to_variable = {
+				var = RUS_exchange_of_military_experience_dprk_num
+				value = 1
+			}
+			add_to_variable = {
+				var = RUS_dprk_overall_max_supplies_num
+				value = 2
+			}
+		}
+	}
+
+	RUS_supply_of_components_dprk = {
+		icon = GFX_RUS_DPRK_cooperation
+		cost = 10
+		days_remove = 21
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_investments_in_dprk
+			check_variable = { RUS_supply_of_components_dprk_num < 3 }
+		}
+
+		modifier = {
+			country_resource_electronic = -20
+		}
+
+		
+		remove_effect = {
+			custom_effect_tooltip = RUS_max_amount_of_supplies_tt
+			add_to_variable = {
+				var = RUS_supply_of_components_dprk_num
+				value = 1
+			}
+			add_to_variable = {
+				var = RUS_dprk_overall_max_supplies_num
+				value = 3
+			}
+		}
+	}
+}
+
+#иран
+RUS_cooperation_with_the_iran_category = {
+	RUS_visit_iran = {
+		icon = GFX_RUS_visit_iran
+		cost = 10
+		days_remove = 14
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_diplomacy_with_allies
+			NOT = { check_variable = { global.SCENARIO_SELECTED > 2 } }
+		}
+
+		available = {
+			date > 2022.06.1
+		}
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_visit_iran"
+			country_event = rus.287
+		}
+	}
+
+    RUS_iran_drones_supplies = {
+		icon = GFX_RUS_iran_drones_supplies
+		cost = 10
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_Iranian_drones
+			NOT = {
+				check_variable = { RUS_iran_drones_supplies_num = 5 }
+			}
+		}
+
+		modifier = {
+			country_resource_electronic = -3
+		}
+
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_iran_drones_supplies"
+			add_to_variable = {
+				var = RUS_iran_drones_supplies_num
+				value = 1
+			}
+			if = { limit = { check_variable = { RUS_iran_drones_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = rus_irn_guided_uav_shahed131
+					amount = 200
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_drones_supplies_num = 1 } }			
+				add_equipment_to_stockpile = {
+					type = rus_irn_guided_uav_shahed131
+					amount = 300
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_drones_supplies_num = 2 } }			
+				add_equipment_to_stockpile = {
+					type = rus_irn_guided_uav_shahed131
+					amount = 350
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_drones_supplies_num = 3 } }			
+				add_equipment_to_stockpile = {
+					type = rus_irn_guided_uav_shahed131
+					amount = 400
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_drones_supplies_num = 4 } }			
+				add_equipment_to_stockpile = {
+					type = rus_irn_guided_uav_shahed131
+					amount = 450
+					producer = IRN
+				}
+			}
+		}
+	}
+	RUS_iran_missiles_supplies = {
+		icon = GFX_RUS_iran_missiles_supplies
+		cost = 15
+		days_remove = 14
+		ai_will_do = {
+			factor = 110
+		}
+
+		visible = {
+			has_completed_focus = RUS_import_of_ballistic_missiles
+			NOT = {
+				check_variable = { RUS_iran_missiles_supplies_num = 5 }
+			}
+		}
+
+		modifier = {
+			country_resource_electronic = -3
+		}
+
+		
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_iran_missiles_supplies"
+			add_to_variable = {
+				var = RUS_iran_missiles_supplies_num
+				value = 1
+			}
+			if = { limit = { check_variable = { RUS_iran_missiles_supplies_num = 0 } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					amount = 20
+					variant_name = "Fath 360"
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_missiles_supplies_num = 1 } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					amount = 25
+					variant_name = "Fath 360"
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_missiles_supplies_num = 2 } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					amount = 30
+					variant_name = "Fath 360"
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_missiles_supplies_num = 3 } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					amount = 35
+					variant_name = "Fath 360"
+					producer = IRN
+				}
+			}
+			if = { limit = { check_variable = { RUS_iran_missiles_supplies_num = 4 } }			
+				add_equipment_to_stockpile = {
+					type = ballistic_missile_rus_generation_3_chassis
+					amount = 40
+					variant_name = "Fath 360"
+					producer = IRN
+				}
+			}
+		}
+	}
+}
+
+RUS_alabuga_category = {
+	RUS_alabuga_production_start = {
+		icon = GFX_RUS_alabuga_production_start
+		
+		cost = 10
+		fire_only_once = yes
+		days_remove = 20
+		
+		ai_will_do = { factor = 30 }
+		visible = { has_completed_focus = RUS_alabuga_sez }
+
+		available = {
+			original_tag = RUS
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_alabuga_production_start"
+			swap_ideas = {
+				remove_idea = RUS_mass_drones_production_idea
+				add_idea = RUS_mass_drones_production_idea_1
+			}
+			hidden_effect = {
+				set_country_flag = RUS_alabuga_production_start_flag
+			}
+		}
+	}
+	RUS_alabuga_iranian_component_termination = {
+		icon = GFX_RUS_alabuga_iranian_component_termination
+		
+		cost = 10
+		fire_only_once = yes
+		days_remove = 14
+		
+		ai_will_do = { factor = 30 }
+		visible = { has_completed_focus = RUS_alabuga_sez }
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = RUS_alabuga_tt
+				has_country_flag = RUS_alabuga_production_start_flag
+			}
+		}
+		modifier = {
+			country_resource_electronic = -5
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_alabuga_iranian_component_termination"
+			swap_ideas = {
+				remove_idea = RUS_mass_drones_production_idea_1
+				add_idea = RUS_mass_drones_production_idea_2
+			}
+			hidden_effect = {
+				set_country_flag = RUS_alabuga_iranian_component_termination_flag
+			}
+		}
+	}
+	RUS_alabuga_new_workshop = {
+		icon = GFX_RUS_alabuga_new_workshop
+		
+		cost = 15
+		fire_only_once = yes
+		days_remove = 21
+		
+		ai_will_do = { factor = 30 }
+		visible = { has_completed_focus = RUS_alabuga_sez }
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = RUS_alabuga_tt
+				has_country_flag = RUS_alabuga_iranian_component_termination_flag
+			}
+		}
+		modifier = {
+			consumer_goods_factor = 0.03
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_alabuga_new_workshop"
+			swap_ideas = {
+				remove_idea = RUS_mass_drones_production_idea_2
+				add_idea = RUS_mass_drones_production_idea_3
+			}
+			hidden_effect = {
+				set_country_flag = RUS_alabuga_new_workshop_flag
+			}
+		}
+	}
+	RUS_alabuga_full_iranian_dependency_break = {
+		icon = GFX_RUS_alabuga_full_iranian_dependency_break
+		
+		cost = 25
+		fire_only_once = yes
+		days_remove = 20
+		
+		ai_will_do = { factor = 30 }
+		visible = { has_completed_focus = RUS_alabuga_sez }
+
+		available = {
+			original_tag = RUS
+			custom_trigger_tooltip = {
+				tooltip = RUS_alabuga_tt
+				has_country_flag = RUS_alabuga_new_workshop_flag
+			}
+		}
+		modifier = {
+			country_resource_electronic = -10
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_alabuga_full_iranian_dependency_break"
+			swap_ideas = {
+				remove_idea = RUS_mass_drones_production_idea_3
+				add_idea = RUS_mass_drones_production_idea_4
+			}
+			hidden_effect = {
+				set_country_flag = RUS_alabuga_full_iranian_dependency_break_flag
+			}
+		}
+	}
 }
