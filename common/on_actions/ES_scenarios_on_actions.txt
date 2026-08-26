@@ -74,18 +74,40 @@ on_actions = {
 					}
 				}
 				RUS = {	add_timed_idea = {  idea = RUS_disruption_of_the_operation_singleplayer  days = 25 } }
-				RUS = { 
-					set_temp_variable = { temp_modifier_type = 1 }		
-					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index }
-					map_apply_modifier_action_RUS = yes
-				}
-				RUS = { 
-					set_temp_variable = { temp_modifier_type = 2 }		
-					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index }
-					map_apply_modifier_action_RUS = yes
-				}
+				RUS = {
+					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 90 }
+					set_temp_variable = { temp_duration_days = 90 }
+					map_plan_priority_direction_set_scripted = yes
 
+					set_temp_variable = { temp_selected_region_index = global.selected_region_khersonskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 45 }
+					set_temp_variable = { temp_duration_days = 30 }
+					map_plan_attack_prepare_scripted = yes
+				}
 			}
+
+			if = { 
+				limit = { 
+					has_start_date > 2022.04.14  has_start_date < 2022.04.16
+					UKR = { 
+						is_ai = yes
+					}
+				}
+				UKR = {
+					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 90 }
+					set_temp_variable = { temp_duration_days = 90 }
+					map_plan_priority_direction_set_scripted = yes
+
+					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 45 }
+					set_temp_variable = { temp_duration_days = 30 }
+					map_plan_defence_prepare_scripted = yes
+				}
+			}
+
+
 			if = {
 				limit = { 
 					has_start_date > 2022.04.14  has_start_date < 2022.04.16
@@ -101,8 +123,8 @@ on_actions = {
 			# 15 апреля 2022 года
 			if = { limit = { has_start_date > 2022.04.14  has_start_date < 2022.04.16 }
 				
-				set_variable = { global.ukr_information_war_var_sum = 70 }
-				set_variable = { global.rus_information_war_var_sum = 30 }
+				#set_variable = { global.ukr_information_war_var_sum = 70 }
+				#set_variable = { global.rus_information_war_var_sum = 30 }
 				clamp_variable = {
 					var = global.rus_information_war_var_sum
 					min = 0
@@ -148,6 +170,9 @@ on_actions = {
 				set_variable = { global.dnipro_obj_current_hp^23 = 300 } # Антоновский мост
 				
 				UKR = {
+					activate_decision = UKR_Form_46_aeromobylna
+					add_days_remove  = { decision = UKR_Form_46_aeromobylna days = -20 } # Итого 60 дней
+					add_to_variable = { ammunition_value_k = 12000 }
 					add_dynamic_modifier = { modifier = UKR_partisanship days = 29 }
 					add_dynamic_modifier = { modifier = UKR_Ammo_Prod days = 51 }
 					country_event = { id = ukr.71 days = 26 } # Создание ПЗЖМ
@@ -171,6 +196,7 @@ on_actions = {
 					add_days_mission_timeout = { mission = UKR_volunteer_movement_ammunition_weapons_1 days = -4 } 
 				}
 				RUS = {
+					add_to_variable = { ammunition_value_k = 12000 }
 					add_timed_idea = { idea = RUS_past_military_exercises_with_belarus days = 7 }
 					add_timed_idea = { idea = RUS_za_rossiy days = 2 }
 					country_event = { id = rus_hidden.9 days = 230 random_days = 120 }
@@ -185,34 +211,92 @@ on_actions = {
 						id = rus.216
 						days = 176
 					}
-					#random_list = { 50 = { activate_mission = RUS_fees_of_KPRF_AK } 50 = { activate_mission = RUS_fees_of_KPRF_support }
-					activate_mission = RUS_fees_of_KPRF_AK
-					#activate_mission = RUS_fees_of_KPRF_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_KPRF_AK
-						days = -15
-					}
 					
-					activate_mission = RUS_fees_of_LDPR_AK
-					#activate_mission = RUS_fees_of_LDPR_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_LDPR_AK
-						days = -13
-					}
+					#Волонтёрские организации. Убавляем дней для ВСЕХ миссий, поскольку миссия выбирается рандомно и мы не знаем какая нам попадётся
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_all days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_all_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_radio days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_radio_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_engineer days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_engineer_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_arv days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_arv_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_amv days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_amv_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_support days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_support_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car_2 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car_3 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_ammunition days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_ammunition_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_drone days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_drone_1 days = -14 }
 					
-					#activate_mission = RUS_fees_of_EDRO_AK
-					activate_mission = RUS_fees_of_EDRO_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_EDRO_support
-						days = -16
-					}
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_all days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_all_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_radio days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_radio_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_engineer days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_engineer_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_arv days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_arv_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_amv days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_amv_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_support days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_support_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car_2 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car_3 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_ammunition days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_ammunition_1 days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_drone days = -8 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_drone_1 days = -8 }
 					
-					#activate_mission = RUS_fees_of_NBP_AK
-					activate_mission = RUS_fees_of_NBP_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_NBP_support
-						days = -21
-					}
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_all days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_support days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_engineer days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_arv days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_amv days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_radio days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car_1 days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car_2 days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car_3 days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_ammunition days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_ammunition_1 days = -13 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_drone days = -13 }
+					
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_all days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_support days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_engineer days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_arv days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_amv days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_radio days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car_1 days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car_2 days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car_3 days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_ammunition days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_ammunition_1 days = -3 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_drone days = -3 }
+					
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_all days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_support days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_engineer days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_arv days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_amv days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_radio days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car_1 days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car_2 days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car_3 days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_ammunition days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_ammunition_1 days = -5 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_drone days = -5 }
+					
 					
 					activate_mission = RUS_first_otryad_veterani
 					add_days_mission_timeout = {
@@ -251,7 +335,11 @@ on_actions = {
 					}
 				}
 				DPR = {
+					add_to_variable = { ammunition_value_k = 1000 }
 					activate_decision = DPR_lessons_of_war_decision
+				}
+				LPR = {
+					add_to_variable = { ammunition_value_k = 1000 }
 				}
 				POL = {
 					add_timed_idea = { idea = POL_small_business_aid days = 82 }
@@ -260,6 +348,13 @@ on_actions = {
 					add_timed_idea = { idea = POL_contribution_into_agrarian_industry days = 78 }
 				}
 				WGN = {
+					add_to_variable = { ammunition_value_k = 1000 }
+					
+					add_timed_idea = {
+						idea = WGN_long_haul_flight_syndrome_idea
+						days = 40
+					}
+
 					activate_mission = WGN_get_money
 					add_days_mission_timeout = {
 						mission = WGN_get_money
@@ -350,12 +445,52 @@ on_actions = {
 				damage_units = { province = 18122 org_damage = 0.30 } 
 				damage_units = { province = 18500 org_damage = 0.30 } 
 			}
+
+
+			if = { 
+				limit = { 
+					has_start_date > 2022.09.05 has_start_date < 2022.09.07
+				}  
+		
+			 	RUS = {
+					set_temp_variable = { temp_selected_region_index = global.selected_region_khersonskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 90 }
+					set_temp_variable = { temp_duration_days = 90 }
+					map_plan_priority_direction_set_scripted = yes
+
+					set_temp_variable = { temp_selected_region_index = global.selected_region_khersonskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 45 }
+					set_temp_variable = { temp_duration_days = 30 }
+					map_plan_defence_prepare_scripted = yes
+				}
+			
+			}
+
+			if = { 
+				limit = { 
+					has_start_date > 2022.09.05 has_start_date < 2022.09.07
+				}  
+		
+			 	UKR = {
+					set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 90 }
+					set_temp_variable = { temp_duration_days = 90 }
+					map_plan_priority_direction_set_scripted = yes
+
+					set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index}
+					set_temp_variable = { temp_cooldown_days = 45 }
+					set_temp_variable = { temp_duration_days = 30 }
+					map_plan_attack_prepare_scripted = yes
+				}
+			} 
+
+
 			# 6 сентября 2022 года
 			if = { limit = { has_start_date > 2022.09.05 has_start_date < 2022.09.07 }
 				
 				# Глобальные измения - Информационная война
-				add_to_variable = {	var = global.rus_information_war_var_sum value = 40 }
-				add_to_variable = {	var = global.ukr_information_war_var_sum value = 60 }
+				#set_variable = {	var = global.rus_information_war_var_sum value = 40 }
+				#set_variable = {	var = global.ukr_information_war_var_sum value = 60 }
 				
 				clamp_variable = {
 					var = global.rus_information_war_var_sum
@@ -390,7 +525,8 @@ on_actions = {
 				}
 				
 				add_to_variable = {	var = global.SMO_progress_of_the_peace_talks value = 70 }
-				UKR = {					
+				UKR = {	
+					add_to_variable = { ammunition_value_k = 12000 }				
 					activate_decision = UKR_East_Defense_of_triangle_S_B_K
 					
 					country_event = { id =  ukr_ntoAID.7 days = 67 }
@@ -423,30 +559,12 @@ on_actions = {
 					activate_mission = UKR_volunteer_movement_NTO_drones
 					add_days_mission_timeout = { mission = UKR_volunteer_movement_NTO_drones days = -5 } 
 					
-					if = {
-						limit = { UKR = { is_ai = yes } }
-						set_temp_variable = { temp_modifier_type = 6 }		
-						set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-						map_apply_modifier_action_UKR = yes
-					}
-					else = {						
-						set_temp_variable = { temp_modifier_type = 5 }		
-						set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-						map_apply_modifier_action_UKR = yes
-					}
-					
-					set_temp_variable = { temp_modifier_type = 1 }		
-					set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-					map_apply_modifier_action_UKR = yes
-					
-					set_temp_variable = { temp_modifier_type = 3 }		
-					set_temp_variable = { temp_selected_region_index = global.selected_region_zaporozhskaya_oblast_index }
-					map_apply_modifier_action_UKR = yes
 					
 					activate_mission = UKR_start_spiderweb_operation
 				}
 				RUS = {
-					add_manpower = -150000 # По факту у него всё равно дофига людей...
+					add_to_variable = { ammunition_value_k = 12000 }
+					add_manpower = -1450000 # По факту у него всё равно дофига людей...
 					country_event = { id = rus_hidden.9 days = 86 random_days = 120 }
 					country_event = { id = rus_hidden.10 days = 14 }
 					country_event = {
@@ -454,75 +572,115 @@ on_actions = {
 						days = 377
 					}
 					
-					set_temp_variable = { temp_modifier_type = 2 }		
-					set_temp_variable = { temp_selected_region_index = global.selected_region_donetskaya_oblast_index }
-					map_apply_modifier_action_RUS = yes
-					
-					if = {
-						limit = { RUS = { is_ai = yes } }
-						set_temp_variable = { temp_modifier_type = 1 }		
-						set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-						map_apply_modifier_action_RUS = yes
-						
-						set_temp_variable = { temp_modifier_type = 3 }		
-						set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-						map_apply_modifier_action_RUS = yes
-					}
-					else = {
-						set_temp_variable = { temp_modifier_type = 8 }		
-						set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-						map_apply_modifier_action_RUS = yes
-						
-						set_temp_variable = { temp_modifier_type = 7 }		
-						set_temp_variable = { temp_selected_region_index = global.selected_region_kharkovskaya_oblast_index }
-						map_apply_modifier_action_RUS = yes
-					}
 					
 					add_timed_idea = { idea = RUS_Development_of_road_infrastructure_idea days = 110 }
 					add_timed_idea = { idea = RUS_Renovation_program days = 255 }
-					#random_list = { 50 = { activate_mission = RUS_fees_of_KPRF_AK } 50 = { activate_mission = RUS_fees_of_KPRF_support }
-					#activate_mission = RUS_fees_of_KPRF_AK
-					activate_mission = RUS_fees_of_KPRF_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_KPRF_support
-						days = -17
-					}
 					
-					activate_mission = RUS_fees_of_LDPR_AK
-					#activate_mission = RUS_fees_of_LDPR_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_LDPR_AK
-						days = -14
-					}
+					#Волонтёрские организации. Убавляем дней для ВСЕХ миссий, поскольку миссия выбирается рандомно и мы не знаем какая нам попадётся
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_all days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_all_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_radio days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_radio_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_engineer days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_engineer_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_arv days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_arv_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_amv days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_amv_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_support days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_support_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car_2 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_car_3 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_ammunition days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_ammunition_1 days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_drone days = -9 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_minnor_drone_1 days = -9 }
 					
-					#activate_mission = RUS_fees_of_EDRO_AK
-					activate_mission = RUS_fees_of_EDRO_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_EDRO_support
-						days = -20
-					}
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_all days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_all_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_radio days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_radio_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_engineer days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_engineer_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_arv days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_arv_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_amv days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_amv_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_support days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_support_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_car days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_car_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_car_2 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_car_3 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_ammunition days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_ammunition_1 days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_drone days = -11 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_business_drone_1 days = -11 }
 					
-					activate_mission = RUS_fees_of_NBP_AK
-					#activate_mission = RUS_fees_of_NBP_support
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_NBP_AK
-						days = -6
-					}
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_all days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_all_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_radio days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_radio_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_engineer days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_engineer_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_arv days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_arv_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_amv days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_amv_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_support days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_support_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car_2 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_car_3 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_ammunition days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_ammunition_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_drone days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_volunteer_organizations_drone_1 days = -14 }
 					
-					activate_mission = RUS_monthly_increase_information_influence
-					add_days_mission_timeout  = { mission = RUS_monthly_increase_information_influence days = -5 } # Итого 1
-					# activate_mission = RUS_fees_of_voenkory_AK_74  activate_mission = RUS_fees_of_voenkory_support activate_mission = RUS_fees_of_voenkory_AK_12 activate_mission = RUS_fees_of_voenkory_RPG activate_mission = RUS_fees_of_voenkory_PZRK activate_mission = RUS_fees_of_voenkory_car }
-					activate_mission = RUS_fees_of_voenkory_car
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_voenkory_car
-						days = -1
-					}
-					# activate_mission = RUS_fees_of_volunteer_organizations_AK_74 activate_mission = RUS_fees_of_volunteer_organizations_support activate_mission = RUS_fees_of_volunteer_organizations_AK_12 activate_mission = RUS_fees_of_volunteer_organizations_RPG activate_mission = RUS_fees_of_volunteer_organizations_PZRK activate_mission = RUS_fees_of_volunteer_organizations_car
-					activate_mission = RUS_fees_of_volunteer_organizations_RPG
-					add_days_mission_timeout = {
-						mission = RUS_fees_of_volunteer_organizations_RPG
-						days = -2
-					}
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_all days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_support days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_engineer days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_arv days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_amv days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_radio days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car_1 days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car_2 days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_car_3 days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_ammunition days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_ammunition_1 days = -2 }
+					add_days_mission_timeout = { mission = RUS_fees_of_EDRO_drone days = -2 }
+					
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_all days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_support days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_engineer days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_arv days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_amv days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_radio days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car_1 days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car_2 days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_car_3 days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_ammunition days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_ammunition_1 days = -10 }
+					add_days_mission_timeout = { mission = RUS_fees_of_KPRF_drone days = -10 }
+					
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_all days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_support days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_engineer days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_arv days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_amv days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_radio days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car_2 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_car_3 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_ammunition days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_ammunition_1 days = -14 }
+					add_days_mission_timeout = { mission = RUS_fees_of_LDPR_drone days = -14 }
 					
 					activate_mission = RUS_form_volunteer_battalions_eu
 					add_days_mission_timeout = {
@@ -565,6 +723,7 @@ on_actions = {
 					}
 				}
 				DPR = {
+					add_to_variable = { ammunition_value_k = 1000 }
 					activate_mission = LPR_fees_of_Russia
 					add_days_mission_timeout = {
 						mission = LPR_fees_of_Russia
@@ -615,6 +774,7 @@ on_actions = {
 					}
 				}
 				LPR = {
+					add_to_variable = { ammunition_value_k = 1000 }
 					activate_mission = LPR_fees_of_Russia
 					add_days_mission_timeout = {
 						mission = LPR_fees_of_Russia
@@ -652,6 +812,7 @@ on_actions = {
 					add_timed_idea = { idea = Domestic_orders days = 188 }
 				}
 				WGN = {
+					add_to_variable = { ammunition_value_k = 1000 }
 					activate_mission = WGN_get_money
 					add_days_mission_timeout = {
 						mission = WGN_get_money
@@ -733,6 +894,32 @@ on_actions = {
 					add_resistance = 10
 					add_compliance = -30 # Result: 40
 				}
+				build_railway = {
+					level = 2
+					build_only_on_allied = yes
+					start_province = 1661
+					target_province = 18897
+				}
+				build_railway = {
+					level = 2
+					build_only_on_allied = yes
+					start_province = 15806
+					target_province = 18897
+				}
+				205 = {
+					add_building_construction = {
+						type = supply_node
+						level = 1
+						province = 18154
+					}
+				}
+				189 = {
+					add_building_construction = {
+						type = supply_node
+						level = 1
+						province = 8187
+					}
+				}
 				every_state = {
 					limit = {
 						OR = {
@@ -799,17 +986,18 @@ on_actions = {
 				damage_units = { province = 15533 org_damage = 0.32 }
 				damage_units = { province = 18989 org_damage = 0.32 }
 				damage_units = { province = 655 org_damage = 0.62 } # 0.70
-				damage_units = { province = 10028 org_damage = 0.25 }
+				damage_units = { province = 10028 org_damage = 0.80 }
 				damage_units = { province = 8723 org_damage = 0.80 }
-				damage_units = { province = 6760 org_damage = 0.25 }
-				damage_units = { province = 14259 org_damage = 0.25 }
-				damage_units = { province = 18987 org_damage = 0.30 }
-				damage_units = { province = 18137 org_damage = 0.30 }
-				damage_units = { province = 2451 org_damage = 0.30 }
-				damage_units = { province = 1555 org_damage = 0.30 }
-				damage_units = { province = 25 org_damage = 0.30 }
-				damage_units = { province = 12226 org_damage = 0.30 }
-				damage_units = { province = 14438 org_damage = 0.30 }
+				damage_units = { province = 6760 org_damage = 0.80 }
+				damage_units = { province = 1411 org_damage = 0.80 }
+				damage_units = { province = 14259 org_damage = 0.80 }
+				damage_units = { province = 18987 org_damage = 0.35 }
+				damage_units = { province = 18137 org_damage = 0.35 }
+				damage_units = { province = 2451 org_damage = 0.35 }
+				damage_units = { province = 1555 org_damage = 0.35 }
+				damage_units = { province = 25 org_damage = 0.80 }
+				damage_units = { province = 12226 org_damage = 0.35 }
+				damage_units = { province = 14438 org_damage = 0.35 }
 				damage_units = { province = 2721 org_damage = 0.32 }
 				damage_units = { province = 12178 org_damage = 0.32 }
 				damage_units = { province = 6212 org_damage = 0.32 }
@@ -847,7 +1035,21 @@ on_actions = {
 				damage_units = { province = 1895 org_damage = 0.80 }
 				damage_units = { province = 18287 org_damage = 0.80 }
 				damage_units = { province = 14241 org_damage = 0.80 }
-				damage_units = { province = 2637 org_damage = 0.80 }
+				damage_units = { province = 18659 org_damage = 0.50 }
+				damage_units = { province = 18653 org_damage = 0.32 }
+				damage_units = { province = 10879 org_damage = 0.32 }
+				damage_units = { province = 5770 org_damage = 0.32 }
+				damage_units = { province = 14234 org_damage = 0.32 }
+				damage_units = { province = 18314 org_damage = 0.32 }
+				damage_units = { province = 14265 org_damage = 0.32 }
+				damage_units = { province = 18608 org_damage = 0.32 }
+				damage_units = { province = 18660 org_damage = 0.32 }
+				damage_units = { province = 18704 org_damage = 0.32 }
+				damage_units = { province = 15156 org_damage = 0.32 }
+				damage_units = { province = 18304 org_damage = 0.32 }
+				damage_units = { province = 2503 org_damage = 0.32 }
+				damage_units = { province = 18606 org_damage = 0.32 }
+				damage_units = { province = 18607 org_damage = 0.32 }
 				
 				damage_units = { province = 158870 org_damage = 0.80 }
 				damage_units = { province = 14193 org_damage = 0.80 }
@@ -898,81 +1100,103 @@ on_actions = {
 				damage_units = { province = 6025 org_damage = 0.80 }
 				damage_units = { province = 15870 org_damage = 0.80 }
 				damage_units = { province = 18399 org_damage = 0.80 }
+				damage_units = { province = 18345 org_damage = 0.80 }
+				damage_units = { province = 13944 org_damage = 0.80 }
 				damage_units = { province = 18807 org_damage = 0.50 }
 				damage_units = { province = 16444 org_damage = 0.50 }
 				damage_units = { province = 18808 org_damage = 0.50 }
 				damage_units = { province = 2340 org_damage = 0.50 }
 				damage_units = { province = 17196 org_damage = 0.50 }
+				damage_units = { province = 18153 org_damage = 0.50 }
+				damage_units = { province = 17962 org_damage = 0.80 }
+				damage_units = { province = 936 org_damage = 0.80 }
+				damage_units = { province = 18349 org_damage = 0.80 }
+				damage_units = { province = 15168 org_damage = 0.80 }
+				damage_units = { province = 18865 org_damage = 0.80 }
+				damage_units = { province = 4366 org_damage = 0.80 }
+				damage_units = { province = 7333 org_damage = 0.80 }
+				damage_units = { province = 18146 org_damage = 0.80 }
+				damage_units = { province = 17761 org_damage = 0.80 }
+				damage_units = { province = 6780 org_damage = 0.80 }
+				damage_units = { province = 10632 org_damage = 0.80 }
+				damage_units = { province = 633 org_damage = 0.80 }
+				damage_units = { province = 6369 org_damage = 0.80 }
+				damage_units = { province = 18680 org_damage = 0.80 }
+				damage_units = { province = 18348 org_damage = 0.80 }
+				damage_units = { province = 8655 org_damage = 0.80 }
 				
-				damage_units = { province = 9086 org_damage = 0.30 }
-				damage_units = { province = 18136 org_damage = 0.30 }
-				damage_units = { province = 8149 org_damage = 0.30 }
-				damage_units = { province = 10054 org_damage = 0.30 }
-				damage_units = { province = 18135 org_damage = 0.30 }
-				damage_units = { province = 13373 org_damage = 0.30 }
-				damage_units = { province = 2971 org_damage = 0.30 }
-				damage_units = { province = 9824 org_damage = 0.30 }
-				damage_units = { province = 18483 org_damage = 0.30 }
-				damage_units = { province = 6796 org_damage = 0.30 }
-				damage_units = { province = 15677 org_damage = 0.30 }
-				damage_units = { province = 18484 org_damage = 0.30 }
-				damage_units = { province = 11829 org_damage = 0.30 }
-				damage_units = { province = 18479 org_damage = 0.30 }
-				damage_units = { province = 18526 org_damage = 0.30 }
-				damage_units = { province = 15982 org_damage = 0.30 }
-				damage_units = { province = 10558 org_damage = 0.30 }
-				damage_units = { province = 1081 org_damage = 0.30 }
-				damage_units = { province = 10871 org_damage = 0.30 }
-				damage_units = { province = 18449 org_damage = 0.30 }
-				damage_units = { province = 4451 org_damage = 0.30 }
-				damage_units = { province = 18467 org_damage = 0.30 }
-				damage_units = { province = 13363 org_damage = 0.30 }
-				damage_units = { province = 6512 org_damage = 0.30 }
-				damage_units = { province = 6846 org_damage = 0.30 }
-				damage_units = { province = 15079 org_damage = 0.30 }
-				damage_units = { province = 18664 org_damage = 0.30 }
-				damage_units = { province = 18673 org_damage = 0.30 }
-				damage_units = { province = 16433 org_damage = 0.30 }
-				damage_units = { province = 14697 org_damage = 0.30 }
-				damage_units = { province = 5532 org_damage = 0.30 }
-				damage_units = { province = 8103 org_damage = 0.30 }
-				damage_units = { province = 6824 org_damage = 0.30 }
-				damage_units = { province = 12910 org_damage = 0.30 }
-				damage_units = { province = 7942 org_damage = 0.30 }
-				damage_units = { province = 9582 org_damage = 0.30 }
-				damage_units = { province = 4047 org_damage = 0.30 }
-				damage_units = { province = 3759 org_damage = 0.30 }
-				damage_units = { province = 6246 org_damage = 0.30 }
-				damage_units = { province = 3144 org_damage = 0.30 }
-				damage_units = { province = 16286 org_damage = 0.30 }
-				damage_units = { province = 16251 org_damage = 0.30 }
-				damage_units = { province = 3759 org_damage = 0.30 }
-				damage_units = { province = 3956 org_damage = 0.30 }
-				damage_units = { province = 6619 org_damage = 0.30 }
-				damage_units = { province = 13477 org_damage = 0.30 }
+				damage_units = { province = 12609 org_damage = 0.35 }
+				damage_units = { province = 18136 org_damage = 0.35 }
+				damage_units = { province = 8149 org_damage = 0.35 }
+				damage_units = { province = 10054 org_damage = 0.35 }
+				damage_units = { province = 18135 org_damage = 0.35 }
+				damage_units = { province = 13373 org_damage = 0.35 }
+				damage_units = { province = 2971 org_damage = 0.35 }
+				damage_units = { province = 9824 org_damage = 0.35 }
+				damage_units = { province = 18483 org_damage = 0.35 }
+				damage_units = { province = 6796 org_damage = 0.35 }
+				damage_units = { province = 15677 org_damage = 0.35 }
+				damage_units = { province = 18484 org_damage = 0.35 }
+				damage_units = { province = 11829 org_damage = 0.35 }
+				damage_units = { province = 18479 org_damage = 0.35 }
+				damage_units = { province = 18526 org_damage = 0.35 }
+				damage_units = { province = 15982 org_damage = 0.35 }
+				damage_units = { province = 10558 org_damage = 0.35 }
+				damage_units = { province = 1081 org_damage = 0.35 }
+				damage_units = { province = 10871 org_damage = 0.35 }
+				damage_units = { province = 18449 org_damage = 0.35 }
+				damage_units = { province = 4451 org_damage = 0.35 }
+				damage_units = { province = 18467 org_damage = 0.35 }
+				damage_units = { province = 13363 org_damage = 0.35 }
+				damage_units = { province = 6512 org_damage = 0.35 }
+				damage_units = { province = 6846 org_damage = 0.35 }
+				damage_units = { province = 15079 org_damage = 0.35 }
+				damage_units = { province = 18664 org_damage = 0.35 }
+				damage_units = { province = 18673 org_damage = 0.35 }
+				damage_units = { province = 16433 org_damage = 0.35 }
+				damage_units = { province = 14697 org_damage = 0.35 }
+				damage_units = { province = 5532 org_damage = 0.35 }
+				damage_units = { province = 8103 org_damage = 0.35 }
+				damage_units = { province = 6824 org_damage = 0.35 }
+				damage_units = { province = 12910 org_damage = 0.35 }
+				damage_units = { province = 7942 org_damage = 0.35 }
+				damage_units = { province = 9582 org_damage = 0.35 }
+				damage_units = { province = 4047 org_damage = 0.35 }
+				damage_units = { province = 3759 org_damage = 0.35 }
+				damage_units = { province = 6246 org_damage = 0.35 }
+				damage_units = { province = 3144 org_damage = 0.35 }
+				damage_units = { province = 16286 org_damage = 0.35 }
+				damage_units = { province = 16251 org_damage = 0.35 }
+				damage_units = { province = 3759 org_damage = 0.35 }
+				damage_units = { province = 3956 org_damage = 0.35 }
+				damage_units = { province = 6619 org_damage = 0.35 }
+				damage_units = { province = 13477 org_damage = 0.35 }
 				damage_units = { province = 10104 org_damage = 0.50 }
-				damage_units = { province = 4205 org_damage = 0.30 }
-				damage_units = { province = 16169 org_damage = 0.30 }
-				damage_units = { province = 5681 org_damage = 0.30 }
-				damage_units = { province = 12682 org_damage = 0.30 }
-				
-				damage_units = { province = 18692 org_damage = 0.30 }
-				damage_units = { province = 18802 org_damage = 0.30 }
-				damage_units = { province = 18693 org_damage = 0.30 }
-				damage_units = { province = 16133 org_damage = 0.30 }
-				damage_units = { province = 12393 org_damage = 0.30 }
-				damage_units = { province = 18462 org_damage = 0.30 }
-				damage_units = { province = 10288 org_damage = 0.30 }
-				damage_units = { province = 18443 org_damage = 0.30 }
+				damage_units = { province = 4205 org_damage = 0.35 }
+				damage_units = { province = 16169 org_damage = 0.35 }
+				damage_units = { province = 5681 org_damage = 0.35 }
+				damage_units = { province = 12682 org_damage = 0.35 }
+				damage_units = { province = 7185 org_damage = 0.35 }
+				damage_units = { province = 7763 org_damage = 0.35 }
+				damage_units = { province = 18692 org_damage = 0.35 }
+				damage_units = { province = 18802 org_damage = 0.35 }
+				damage_units = { province = 18693 org_damage = 0.35 }
+				damage_units = { province = 16133 org_damage = 0.35 }
+				damage_units = { province = 12393 org_damage = 0.35 }
+				damage_units = { province = 18462 org_damage = 0.35 }
+				damage_units = { province = 10288 org_damage = 0.35 }
+				damage_units = { province = 18443 org_damage = 0.35 }
 				damage_units = { province = 18432 org_damage = 0.50 }
-				damage_units = { province = 9178 org_damage = 0.30 }
-				damage_units = { province = 162 org_damage = 0.30 }
-				damage_units = { province = 18452 org_damage = 0.30 }
-				damage_units = { province = 18452 org_damage = 0.30 }
-				damage_units = { province = 17428 org_damage = 0.30 }
-				damage_units = { province = 6919 org_damage = 0.30 }
-				damage_units = { province = 17645 org_damage = 0.30 }
-				damage_units = { province = 10213 org_damage = 0.30 }
+				damage_units = { province = 9178 org_damage = 0.35 }
+				damage_units = { province = 162 org_damage = 0.35 }
+				damage_units = { province = 18452 org_damage = 0.35 }
+				damage_units = { province = 18452 org_damage = 0.35 }
+				damage_units = { province = 17428 org_damage = 0.35 }
+				damage_units = { province = 6919 org_damage = 0.35 }
+				damage_units = { province = 17645 org_damage = 0.35 }
+				damage_units = { province = 10213 org_damage = 0.35 }
+				damage_units = { province = 18148 org_damage = 0.35 }
+				damage_units = { province = 18152 org_damage = 0.35 }
 				
 				# Killing UKR divisions (organization) ! NO BUG !
 				damage_units = { province = 18624 org_damage = 0.60 }
