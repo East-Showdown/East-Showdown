@@ -41,7 +41,7 @@ focus_tree = {
 			subtract_from_variable = {	
 				var = WGN_budget_var
 				value = 1.2
-				tooltip = WGN_budget_var_remove16
+				tooltip = WGN_budget_var_remove_1.2_bil
 			}
 			add_equipment_to_stockpile = {
 				type = infantry_ak12_equipment
@@ -54,7 +54,7 @@ focus_tree = {
 				producer = RUS
 			}
 			add_equipment_to_stockpile = {
-				type = body_armor_6b1_equipment
+				type = body_armor_ratnik_equipment
 				amount = 1000
 				producer = RUS
 			}
@@ -178,7 +178,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_newcontingent"
 			add_manpower = 750
 			add_equipment_to_stockpile = {
-				type = infantry_ak74_equipment
+				type = infantry_ak74m_equipment
 				amount = 1000
 				producer = RUS
 			}
@@ -188,7 +188,7 @@ focus_tree = {
 				producer = RUS
 			}
 			add_equipment_to_stockpile = {
-				type = body_armor_6b1_equipment
+				type = body_armor_6b23_equipment
 				amount = 200
 				producer = RUS
 			}
@@ -279,7 +279,7 @@ focus_tree = {
 			subtract_from_variable = {	
 				var = WGN_budget_var
 				value = 0.5
-				tooltip = WGN_budget_var_remove7
+				tooltip = WGN_budget_var_remove_500_mil
 			}
 			custom_effect_tooltip = WGN_buysattelites_tooltip
 		}	
@@ -317,34 +317,34 @@ focus_tree = {
 					fpv_team = 1
 				}
 			}
-			add_units_to_division_template = {
-				template_name = "Serbian Volunteers"
-				support = {
-					fpv_team = 1
+			if = { limit = { has_template = "Serbian Volunteers" }
+				add_units_to_division_template = {
+					template_name = "Serbian Volunteers"
+					support = {
+						fpv_team = 1
+					}
 				}
 			}
-			add_units_to_division_template = {
-				template_name = "ISIS Hunters"
-				support = {
-					fpv_team = 1
+			if = { limit = { has_template = "CHVK Liga" }
+				add_units_to_division_template = {
+					template_name = "CHVK Liga"
+					support = {
+						fpv_team = 1
+					}
 				}
 			}
-			add_units_to_division_template = {
-				template_name = "CHVK Liga"
-				support = {
-					fpv_team = 1
-				}
-			}
-			add_units_to_division_template = {
-				template_name = "Wagner Tank Battalion"
-				support = {
-					fpv_team = 1
+			if = { limit = { has_template = "Wagner Tank Battalion" }
+				add_units_to_division_template = {
+					template_name = "Wagner Tank Battalion"
+					support = {
+						fpv_team = 1
+					}
 				}
 			}
 			subtract_from_variable = {	
 				var = WGN_budget_var
 				value = 0.3
-				tooltip = WGN_budget_var_remove9
+				tooltip = WGN_budget_var_remove_300_mil
 			}
 			add_equipment_to_stockpile = {
 				type = support_equipment_1		
@@ -428,6 +428,7 @@ focus_tree = {
 		y = 5
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_redeployment"
+			add_manpower = 1500
 			add_equipment_to_stockpile = {
 				type = RUS_cas_equipment_su24m
 				amount = 12
@@ -435,10 +436,19 @@ focus_tree = {
 			}
 			add_equipment_to_stockpile = {
 				type = RUS_fighter_equipment_mig29
+				amount = 6
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = RUS_cas_equipment_su25	
 				amount = 12
 				producer = RUS
 			}
 			custom_effect_tooltip = WGN_redeployment_tooltip
+			add_timed_idea = {
+				idea = WGN_long_haul_flight_syndrome_idea
+				days = 50
+			}
 		}
 	}
 	focus = {
@@ -452,7 +462,7 @@ focus_tree = {
 		y = 5
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_shapinglogistics"
-			add_to_variable = {	var = WGN_supply_factor value = 0.15	}
+			add_to_variable = {	var = WGN_supply_consumption_factor value = -0.10 }
 			custom_effect_tooltip = WGN_shapinglogistics_tooltip
 		}
 	}
@@ -575,7 +585,7 @@ focus_tree = {
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_agreementwiththegovernmentvolunteerrecruitment"
-			add_to_variable = { var = WGN_weekly_manpower value = 50 }
+			add_to_variable = { var = WGN_weekly_manpower value = 100 }
 			custom_effect_tooltip = WGN_agreementwiththegovernmentvolunteerrecruitment_tooltip
 		}
 	}
@@ -596,7 +606,7 @@ focus_tree = {
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_recruitmentcentresinrussia"
-			add_to_variable = { var = WGN_weekly_manpower value = 75 }
+			add_to_variable = { var = WGN_weekly_manpower value = 125 }
 			custom_effect_tooltip = WGN_recruitmentcentresinrussia_tooltip
 		}
 	}
@@ -617,7 +627,7 @@ focus_tree = {
 		y = 11
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_thebestchoice"
-			add_to_variable = { var = WGN_weekly_manpower value = 125 }
+			add_to_variable = { var = WGN_weekly_manpower value = 150 }
 			custom_effect_tooltip = WGN_thebestchoice_tooltip
 		}
 	}
@@ -647,12 +657,16 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_newbattlefieldenvironment"
 			army_experience = 75
+			modify_timed_idea = {
+				idea = WGN_long_haul_flight_syndrome_idea
+				days = -10
+			}
 		}
 	}
 	focus = {
 		id = WGN_optimalwarfightingstrategy
 		icon = GFX_WGN_optimalwarfightingstrategy
-		cost = 0.8
+		cost = 1
 		prerequisite = {
 			focus = WGN_newbattlefieldenvironment
 		}
@@ -660,17 +674,20 @@ focus_tree = {
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_optimalwarfightingstrategy"
-			set_technology = {
-				basic_doctrines = 1
+			add_mastery = {
+				amount = 50
+				track = tier_0_sso_wgn
 			}
-			enable_tactic = wgn_urban_tactic
-			army_experience = 25
+			modify_timed_idea = {
+				idea = WGN_long_haul_flight_syndrome_idea
+				days = -15
+			}
 		}
 	}
 	focus = {
 		id = WGN_encirclementattacktactics
 		icon = GFX_WGN_encirclementattacktactics
-		cost = 0.8
+		cost = 2
 		prerequisite = {
 			focus = WGN_optimalwarfightingstrategy
 		}
@@ -679,6 +696,7 @@ focus_tree = {
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_encirclementattacktactics"
+			set_sub_doctrine = wagner_abilities_infantry
 			add_mastery = {
 				amount = 200
 				track = tier_1_infantry
@@ -700,7 +718,7 @@ focus_tree = {
 	focus = {
 		id = WGN_lightningfastcaptureoftheflanks
 		icon = GFX_WGN_lightningfastcaptureoftheflanks
-		cost = 0.8
+		cost = 1
 		prerequisite = {
 			focus = WGN_encirclementattacktactics
 		}
@@ -708,12 +726,16 @@ focus_tree = {
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_lightningfastcaptureoftheflanks"
+			add_mastery = {
+				amount = 100
+				track = tier_0_infantry_wgn
+			}
 		}
 	}
 	focus = {
 		id = WGN_tacticsofthefiringshaft
 		icon = GFX_WGN_tacticsofthefiringshaft
-		cost = 0.8
+		cost = 2
 		prerequisite = {
 			focus = WGN_optimalwarfightingstrategy
 		}
@@ -722,12 +744,13 @@ focus_tree = {
 		y = 9
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_tacticsofthefiringshaft"
+			set_sub_doctrine = wagner_abilities_artillery
 			add_mastery = {
-				amount = 200
+				amount = 350
 				track = tier_1_artillery
 			}
 			add_mastery = {
-				amount = 200
+				amount = 350
 				track = tier_2_artillery
 			}
 		}
@@ -735,7 +758,7 @@ focus_tree = {
 	focus = {
 		id = WGN_continuousstorming
 		icon = GFX_WGN_continuousstorming
-		cost = 0.8
+		cost = 1
 		prerequisite = {
 			focus = WGN_tacticsofthefiringshaft
 		}
@@ -743,12 +766,16 @@ focus_tree = {
 		y = 10
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_сontinuousstorming"
+			add_mastery = {
+				amount = 100
+				track = tier_0_artillery_wgn
+			}
 		}
 	}
 	focus = {
 		id = WGN_approvalofoptimaltacticsforwar
 		icon = GFX_WGN_approvalofoptimaltacticsforwar
-		cost = 0.8
+		cost = 2
 		prerequisite = {
 			focus = WGN_continuousstorming
 			focus = WGN_lightningfastcaptureoftheflanks
@@ -757,11 +784,9 @@ focus_tree = {
 		y = 11
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_approvalofoptimaltacticsforwar"
-			army_experience = 75
-			add_doctrine_cost_reduction = {
-				cost_reduction = 0.4
-				uses = 1
-				category = land_doctrine
+			add_mastery = {
+				amount = 100
+				track = tier_0_sso_wgn
 			}
 		}
 	}
@@ -779,7 +804,7 @@ focus_tree = {
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_expansionofthecontingent"
-			add_to_variable = { var = WGN_weekly_manpower value = 25 }
+			add_to_variable = { var = WGN_weekly_manpower value = 50 }
 			army_experience = -50
 			custom_effect_tooltip = WGN_expansionofthecontingent_tooltip
 		}
@@ -809,6 +834,14 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_formationofartillerybrigades"
+			add_mastery = {
+				amount = 150
+				track = tier_1_artillery
+			}
+			add_mastery = {
+				amount = 150
+				track = tier_2_artillery
+			}
 			hidden_effect = {
 				load_oob = WGN_artillery
 			}
@@ -826,6 +859,14 @@ focus_tree = {
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_formationoftankbrigades"
+			add_mastery = {
+				amount = 200
+				track = tier_1_armour
+			}
+			add_mastery = {
+				amount = 200
+				track = tier_2_armour
+			}
 			hidden_effect = {
 				load_oob = WGN_tanks
 			}
@@ -896,6 +937,7 @@ focus_tree = {
 		y = 8
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_ownmedals"
+			add_political_power = 20
 			custom_effect_tooltip = WGN_ownmedals_tooltip
 		}
 	}
@@ -912,6 +954,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: WGN_privatecemeteries"
 			add_to_variable = { var = WGN_army_morale_factor value = 0.15 }
 			add_to_variable = { var = WGN_political_power_factor value = 0.05 }
+			add_political_power = 25
 			custom_effect_tooltip = WGN_privatecemeteries_tooltip
 		}
 	}
@@ -927,6 +970,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: WGN_memorialcomplexes"
 			add_to_variable = { var = WGN_political_power_factor value = 0.15 }
+			add_political_power = 20
 			custom_effect_tooltip = WGN_memorialcomplexes_tooltip
 		}
 	}
@@ -977,7 +1021,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: WGN_expandarmycooperation"
 			army_experience = 25
 			add_command_power = 50
-			add_to_variable = { var = WGN_max_planning value = 0.1 }
+			add_to_variable = { var = WGN_max_planning value = 0.15 }
 			add_to_variable = { var = WGN_planning_speed value = 0.2 }
 			custom_effect_tooltip = WGN_expandarmycooperation_tooltip
 		}
@@ -1006,7 +1050,7 @@ focus_tree = {
 					}
 					add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
 					add_to_variable = { var = WGN_BOP_fascism_drift value = 0.01 }
-					add_to_variable = { var = WGN_BOP_stability_weekly_factor value = -0.1 }
+					add_to_variable = { var = WGN_BOP_stability_weekly value = -0.002 }
 				}
 				add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
 			}
@@ -1022,7 +1066,7 @@ focus_tree = {
 				tooltip = WGN_bestpmc_trigger_tt
 				check_variable = {
 					var = WGN_successful_stormings
-					value = 3
+					value = 1
 					compare = greater_than_or_equals
 				}
 				check_variable = {
@@ -1392,7 +1436,7 @@ focus_tree = {
 					country_event = { id = rus.244 hours = 10 }
 					add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
 					add_to_variable = { var = WGN_BOP_fascism_drift value = 0.01 }
-					add_to_variable = { var = WGN_BOP_stability_weekly_factor value = -0.1 }
+					add_to_variable = { var = WGN_BOP_stability_weekly value = -0.002 }
 				}
 			}
 		}
@@ -1426,13 +1470,15 @@ focus_tree = {
 			}
 			add_command_power = 35
 			custom_effect_tooltip = WGN_military_improvisation_tooltip
-			add_to_variable = { WGN_hunger_supply_factor = 0.2 }
-			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.1 }
-			add_to_variable = { WGN_hunger_weekly_manpower = -50 }
-			add_to_variable = { WGN_hunger_army_org_factor = 0.15 }
+			add_to_variable = { WGN_hunger_supply_consumption_factor = -0.15 }
+			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.05 }
+			add_to_variable = { WGN_hunger_army_org_factor = 0.05 }
+			add_to_variable = { WGN_hunger_experience_loss_factor = -0.15 }
+			add_to_variable = { WGN_hunger_political_power_factor = 0.05 }
+			add_to_variable = { WGN_hunger_org_loss_when_moving = -0.05 }
 			add_to_variable = { WGN_shell_hunger_modifier_army_attack_factor = 0.05 }
 			add_to_variable = { WGN_shell_hunger_modifier_breakthrough_factor = 0.1 }
-			add_to_variable = { WGN_hunger_experience_loss_factor = 0.05 }
+
 			random_army_leader = {
 			    limit = { is_field_marshal = yes NOT = { has_trait = logistics_wizard } }
 				add_unit_leader_trait = logistics_wizard
