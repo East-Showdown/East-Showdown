@@ -33,8 +33,8 @@ if = {
 	}
 }
 
-unlock_national_focus = RUS_nato_advance_threat
-unlock_national_focus = RUS_escalation_of_conflict
+#unlock_national_focus = RUS_nato_advance_threat
+#unlock_national_focus = RUS_escalation_of_conflict
 		
 set_variable = {
 	var = ally_state_inf
@@ -44,7 +44,7 @@ set_variable = {
 #WGN_information_war_BOP_modifier
 set_variable = { var = WGN_BOP_power_balance_weekly value = 0 }
 set_variable = { var = WGN_BOP_fascism_drift value = 0 }
-set_variable = { var = WGN_BOP_stability_weekly_factor value = 0 }
+set_variable = { var = WGN_BOP_stability_weekly value = 0 }
 
 #equipment variants
 create_equipment_variant_tank_sov_t_55 = yes
@@ -751,6 +751,15 @@ add_ideas = {
 	armored_columns_spirit
 }
 
+add_dynamic_modifier = { modifier = RUS_Vpk_dynamic_mod }
+set_variable = { RUS_Vpk_dynamic_mod_political_power_cost = 0.50 }
+set_variable = { RUS_Vpk_dynamic_mod_consumer_goods_factor = -0.025 }
+set_variable = { RUS_Vpk_dynamic_mod_production_factory_efficiency_gain_factor = -0.25 }
+set_variable = { RUS_Vpk_dynamic_mod_production_factory_max_efficiency_factor = 0.05 }
+set_variable = { RUS_Vpk_dynamic_mod_production_speed_arms_factory_factor = -0.075 }
+set_variable = { RUS_Vpk_dynamic_mod_equipment_conversion_speed = -0.15 }
+set_variable = { RUS_Vpk_dynamic_mod_ammunition_plants_efficiency_factor = 0.2 }
+
 create_faction_from_template = faction_template_collective_security_treaty_organization
 add_to_faction = CHE
 add_to_faction = BLR
@@ -847,6 +856,7 @@ recruit_character = alexey_nechaev
 
 #Democracy
 recruit_character = alexey_navalny
+recruit_character = yulia_navalnaya
 recruit_character = leonid_volkov
 recruit_character = grigory_yavlinsky
 recruit_character = nikolai_rybakov
@@ -875,10 +885,7 @@ recruit_character = RUS_evgeniy_prigozhin
 #Military
 recruit_character = valery_gerasimov
 activate_advisor = RUS_valery_gerasimov
-recruit_character = anatoly_kornukov
 recruit_character = sergey_kisel
-recruit_character = vladimir_mikhaylov
-recruit_character = alexander_zelin
 recruit_character = pavel_popov
 recruit_character = sergei_shoigy
 activate_advisor = RUS_sergei_shoigy
@@ -928,12 +935,14 @@ recruit_character = evgeny_poplavsky
 recruit_character = ivan_popov
 recruit_character = sergey_rudskoy
 recruit_character = aleksey_kondratiev
-recruit_character = genadiy_shidko
+recruit_character = genadiy_zhidko
 recruit_character = alexandr_kornev
 recruit_character = viktor_astapov
 recruit_character = ramil_ibatullin
 recruit_character = mikhail_matveevsky
 recruit_character = dmitry_klimenko
+recruit_character = alexander_zhuravlyov
+recruit_character = roman_berdnikov
 
 recruit_character = RUS_Ruslan_Chlalyan
 recruit_character = RUS_Andrey_Ivanov
@@ -969,7 +978,6 @@ add_equipment_to_stockpile = {
 	amount = 150 #150 more with deconservation
 	producer = RUS
 }
-
 
 ##BMP-2##
 #1500 BMP-2 in reserve
@@ -3123,13 +3131,14 @@ add_equipment_production = {
 		type = puppet_wargoal_focus
 	}
 	
-	set_stability = 0.35 # Изменить на более реальные цифры
-	set_war_support = 0.45 # Изменить на более реальные цифры
+	set_stability = 0.35
+	set_war_support = 0.45
 	army_experience = 50
 	add_command_power = 250 # Итого 100
 	#set_convoys = 250
-	add_political_power = 30 # Изменить на более реальные цифры
+	add_political_power = 30
 	add_manpower = 5000 #по факту 2500
+	add_fuel = 5635712
 	
 	set_popularities = {
 		democratic = 10
@@ -3230,6 +3239,7 @@ add_equipment_production = {
 	set_country_flag = RUS_training_obrspn_16_cf
 	set_country_flag = RUS_Drugaya_Rossia_Interbrigadi_cf
 	set_country_flag = RUS_start_SMO
+	set_country_flag = Volunteer_movement_start
 	
 	#Динамические идеи и симловые значения
 	
@@ -3301,8 +3311,24 @@ add_equipment_production = {
 	
 	remove_dynamic_modifier = { modifier = RUS_refuseniks_dm }
 	
+	add_to_variable = { RUS_volunteerACT = 2 }
+	
+	RUS_Volunteer_movement_scripted_effects = yes
+	set_variable = { RUS_volunteer_movement_who_it = 1 }
+	RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+	
+	set_variable = { RUS_volunteer_movement_who_it = 4 }
+	RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+	RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
 	
 	#Персонажи
+
+	activate_advisor = RUS_vladimir_solovyov
+	activate_advisor = RUS_igor_konashenkov
+
+	retire_character = vladimir_zhirinovsky
+	retire_character = sergey_kisel
+
 	set_portraits = {
 		character = vladimir_putin
 		civilian = {
@@ -3324,14 +3350,13 @@ add_equipment_production = {
 
 	add_field_marshal_role = {
 		Character = valery_gerasimov
-		traits={ infantry_officer organizer war_theorist }
+		traits={ skilled_staffer organizer war_theorist }
 		skill=5
-		attack_skill = 5
-		defense_skill = 2
-		planning_skill = 6
+		attack_skill = 4
+		defense_skill = 4
+		planning_skill = 7
 		logistics_skill = 4
 	}
-
 
 	aleksandr_dvornikov = {
 		promote_leader = yes
@@ -3339,9 +3364,6 @@ add_equipment_production = {
 	}
 
 	andrey_mordvichev = {
-		add_trait = {
-			trait = trait_engineer
-		}
 		add_skill_level = 1
 	}
 
@@ -3354,9 +3376,6 @@ add_equipment_production = {
 		add_skill_level = 1
 	}
 	
-	
-	retire_character = vladimir_zhirinovsky
-	retire_character = sergey_kisel
 	
 	#Армия
 	
@@ -3381,6 +3400,7 @@ add_equipment_production = {
 	}
 	
 	#Остальное
+	upgrade_intelligence_agency = upgrade_form_department
 	
 	create_equipment_variant_sp_atgm_mt_lb_s_modulem_mt_12_rapira = yes
 	add_equipment_to_stockpile = {
@@ -3417,6 +3437,12 @@ add_equipment_production = {
 	
 	send_embargo = UKR
 	
+	set_technology = {
+		electronics_manufacturing_2 = 1
+		infantry_improvements_4 = 1
+		printers_4 = 1
+	}
+	
 	add_breakthrough_progress = {
 		specialization = specialization_air
 		value = 1
@@ -3425,6 +3451,7 @@ add_equipment_production = {
 		specialization = specialization_land
 		value = 1
 	}
+	
 	add_tech_bonus = {
 		bonus = 5
 		uses = 1
@@ -3654,10 +3681,10 @@ add_equipment_production = {
 	random_core_state = {
 		limit = { 
 			is_owned_by = RUS  
-			free_building_slots = { building = infrastructure size > 1  include_locked = yes }
+			free_building_slots = { building = electronic_factory size > 1  include_locked = yes }
 			free_building_slots = { building = industrial_complex size > 1  include_locked = yes }
 		}
-		add_building_construction = {  type = infrastructure  level = 1  instant_build = yes }
+		add_building_construction = {  type = electronic_factory  level = 1  instant_build = yes }
 		add_building_construction = {  type = industrial_complex  level = 1  instant_build = yes }
 	}
 	random_core_state = {
@@ -3744,9 +3771,9 @@ add_equipment_production = {
 	random_core_state = {
 		limit = { 
 			is_owned_by = RUS  
-			free_building_slots = { building = arms_factory size > 1  include_locked = yes }
+			free_building_slots = { building = electronic_factory size > 1  include_locked = yes }
 		}
-		add_building_construction = {  type = arms_factory  level = 2 instant_build = yes }
+		add_building_construction = {  type = electronic_factory  level = 2 instant_build = yes }
 	}
 	random_core_state = {
 		limit = { 
@@ -3768,19 +3795,19 @@ add_equipment_production = {
 	add_equipment_to_stockpile = {
 		type = tank_sov_t80_equipment
 		variant_name = "Т-80Б"
-		amount = -150
+		amount = -100
 		producer = RUS
 	}
 	add_equipment_to_stockpile = {
 		type = tank_sov_t72_equipment
 		variant_name = "Т-72А"
-		amount = -300
+		amount = -150
 		producer = RUS
 	}
 	add_equipment_to_stockpile = {
 		type = tank_sov_t72_equipment
 		variant_name = "Т-72"
-		amount = -300
+		amount = -150
 		producer = RUS
 	}
 	
@@ -3930,6 +3957,9 @@ add_equipment_production = {
 	unlock_national_focus = RUS_Resisting_sanctions
 	unlock_national_focus = RUS_Sanctions_policy_against_the_West
 	unlock_national_focus = RUS_Reanimating_the_economy
+	unlock_national_focus = RUS_diplomacy_with_allies
+	unlock_national_focus = RUS_Negotiations_with_Islamic_partners
+	unlock_national_focus = RUS_Iranian_drones
 	
 	set_popularities = {
 		democratic = 4
@@ -3974,6 +4004,8 @@ add_equipment_production = {
 	set_country_flag = Kherson_cma_cf
 	set_country_flag = Zaporozhye_cma_cf
 	set_country_flag = Kharkov_cma_cf
+	set_country_flag = Volunteer_movement_voenkory_start
+	set_country_flag = Volunteer_movement_business_start
 	
 	#Динамические идеи и числовые значения
 	add_to_variable = { RUS_VCRF_training_time_army_factor = -0.1 }
@@ -3993,7 +4025,7 @@ add_equipment_production = {
 	add_dynamic_modifier = { modifier = RUS_military_patriotic_education }
 	add_to_variable = {	var = RUS_military_patriotic_education_political_power_factor value = 0.035 }
 	add_to_variable = {	var = RUS_military_patriotic_education_war_support_factor value = 0.05 }
-	add_to_variable = {	var = RUS_military_patriotic_education_war_support_weekly_factor value = 0.003 }
+	add_to_variable = {	var = RUS_military_patriotic_education_war_support_weekly value = 0.003 }
 	
 	add_to_variable = { var = RUS_military_patriotic_education_drift_defence_factor value = 0.045 }
 	add_to_variable = {	var = RUS_military_patriotic_education_neutrality_drift value = 0.05 }
@@ -4017,8 +4049,8 @@ add_equipment_production = {
 	add_to_variable = { var = RUS_propaganda_political_power_cost value = 0.50 } #по 0.25 с двух фокусов
 	
 	add_to_variable = { var = RUS_propaganda_drift_defence_factor value = 0.035 }
-	add_to_variable = { var = RUS_propaganda_war_support_weekly_factor value = 0.007 } #0.005 и 0.002 
-	add_to_variable = { var = RUS_propaganda_stability_weekly_factor value = 0.003 } #0.005 и -0.002
+	add_to_variable = { var = RUS_propaganda_war_support_weekly value = 0.007 } #0.005 и 0.002 
+	add_to_variable = { var = RUS_propaganda_stability_weekly value = 0.003 } #0.005 и -0.002
 	
 	add_to_variable = { var = RUS_propaganda_political_power_factor value = 0.025 }
 	add_to_variable = { var = RUS_propaganda_war_stability_factor value = 0.025 }
@@ -4041,7 +4073,7 @@ add_equipment_production = {
 	}
 	add_to_variable = { var = WGN_BOP_power_balance_weekly value = -0.025 }
 	add_to_variable = { var = WGN_BOP_fascism_drift value = 0.01 }
-	add_to_variable = { var = WGN_BOP_stability_weekly_factor value = -0.1 }
+	add_to_variable = { var = WGN_BOP_stability_weekly value = -0.002 }
 	
 	set_variable = { var = RUS_deconservation_tank_t55_cost value = 20 }
 	set_variable = { var = RUS_deconservation_tank_t62_cost value = 50 }
@@ -4071,7 +4103,23 @@ add_equipment_production = {
 		value = 3
 	}
 	
+	add_to_variable = { RUS_volunteerACT = 2 }
+	add_to_variable = { RUS_volunteerACT_business = 5 }
+	
+	RUS_Volunteer_movement_scripted_effects = yes
+	set_variable = { RUS_volunteer_movement_who_it = 2 }
+	RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+	
+	set_variable = { RUS_volunteer_movement_who_it = 5 } 
+	RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+	
+	set_variable = { RUS_volunteer_movement_who_it = 3 } 
+	RUS_Volunteer_movement_selected_next_fees_scripted_effects = yes
+	
 	#Персонажи
+
+	activate_advisor = alexander_lapin
+	activate_advisor = RUS_viacheslav_volodin
 
 	add_trait = {  character = vladimir_putin  ideology = authoritarian_democracy_rus_postwar trait = defender_of_traditional_values }
 
@@ -4101,10 +4149,6 @@ add_equipment_production = {
 		logistics_skill = 2
 	}
 	
-	random_army_leader = {
-		limit = { NOT = { has_trait = butcher } }
-		add_unit_leader_trait = assault_infantry_commander
-	}
 	
 	valery_gerasimov = {
 		add_attack = 1
@@ -4121,13 +4165,17 @@ add_equipment_production = {
 
 	andrey_mordvichev = {
 		add_skill_level = 1
+		add_trait = {
+			trait = assault_infantry_commander
+		}
 	}
 
-	alexander_sanchik = {
+	alexander_lapin = {
 		add_skill_level = 1
 	}
 	
 	#Армия
+	
 	#С фокусов:
 	add_mastery = {
 		amount = 120
@@ -4165,15 +4213,35 @@ add_equipment_production = {
 	}
 	
 	#Другое
+	add_breakthrough_progress = {
+		specialization = specialization_air
+		value = 2
+	}
+	add_breakthrough_progress = {
+		specialization = specialization_land
+		value = 2
+	}
 	
 	set_technology = {
 		tech_fpv = 1
+		electronics_manufacturing_3 = 1
+		infantry_improvements_4 = 1
+		tech_sniper2 = 1
+		building_4 = 1
+		missile_rus_guided_shahed131 = 1
+		tech_maintenance_company3 = 1
+		tech_engineers3 = 1
 	}
 	
 	add_tech_bonus = {
 		bonus = 1
 		uses = 1
 		technology = tech_support_1
+	}
+	add_tech_bonus = {
+		bonus = 1
+		uses = 1
+		technology = tech_recon3
 	}
 	add_tech_bonus = {
 		bonus = 1.50
@@ -4188,17 +4256,24 @@ add_equipment_production = {
 	add_tech_bonus = {
 		bonus = 1.50
 		uses = 1
-		technology = electronics_manufacturing_2
+		technology = tech_sniper3
 	}
 	add_tech_bonus = {
 		bonus = 1.25
 		uses = 1
-		technology = infantry_improvements_4
+		technology = electronics_manufacturing_3
 	}
 	
 	upgrade_intelligence_agency = upgrade_passive_defense
 	upgrade_intelligence_agency = upgrade_passive_defense
-	
+	upgrade_intelligence_agency = upgrade_army_department
+	upgrade_intelligence_agency = upgrade_decryption_boost
+
+	add_equipment_to_stockpile = {
+		type = rus_irn_guided_uav_shahed131
+		producer = IRN
+		amount = 100
+	}
 	add_equipment_to_stockpile = {  
 		type = imv_civil_0_equipment
 		amount = 2000
@@ -4427,10 +4502,10 @@ add_equipment_production = {
 	random_core_state = {
 		limit = { 
 			is_owned_by = RUS  
-			free_building_slots = { building = infrastructure size > 1  include_locked = yes }
+			free_building_slots = { building = electronic_factory size > 1  include_locked = yes }
 			free_building_slots = { building = industrial_complex size > 1  include_locked = yes }
 		}
-		add_building_construction = {  type = infrastructure  level = 1  instant_build = yes }
+		add_building_construction = {  type = electronic_factory  level = 1  instant_build = yes }
 		add_building_construction = {  type = industrial_complex  level = 1  instant_build = yes }
 	}
 	random_core_state = {
@@ -4489,9 +4564,9 @@ add_equipment_production = {
 	random_core_state = {
 		limit = { 
 			is_owned_by = RUS  
-			free_building_slots = { building = arms_factory size > 1  include_locked = yes }
+			free_building_slots = { building = electronic_factory size > 1  include_locked = yes }
 		}
-		add_building_construction = {  type = arms_factory  level = 1  instant_build = yes }
+		add_building_construction = {  type = electronic_factory  level = 1  instant_build = yes }
 	}
 	random_core_state = {
 		limit = { 
@@ -4526,13 +4601,13 @@ add_equipment_production = {
 	add_equipment_to_stockpile = {
 		type = tank_sov_t72_equipment
 		variant_name = "Т-72А"
-		amount = -300
+		amount = -100
 		producer = RUS
 	}
 	add_equipment_to_stockpile = {
 		type = tank_sov_t72_equipment
 		variant_name = "Т-72"
-		amount = -300
+		amount = -100
 		producer = RUS
 	}
 	

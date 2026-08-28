@@ -1,5 +1,5 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
-NDefines.NGame.END_DATE = "2026.1.1.1"
+NDefines.NGame.END_DATE = "2036.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
 NDefines.NGame.SAVE_VERSION = 27								-- 0.7.1.4
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
@@ -51,7 +51,7 @@ NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum com
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
 NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.17 -- 0.01
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.03					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
-NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 36					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
+NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 0					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
 NDefines.NResistance.GARRISON_MANPOWER_LOST_BY_ATTACK = 0.016 	-- Ratio of manpower lost by garrison at each attack on garrison (this number will be reduced by the hardness of garrison template)
 NDefines.NProduction.CIC_BANK_SPEED_BOOST_FACTOR = 0.25                 -- The CIC bank can boost production speed with this factor (0.5 means 50 %)
 NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_VALUE = 1		-- The minimum number of factories we have to put on consumer goods by value.
@@ -66,8 +66,8 @@ NDefines.NBuildings.RADAR_RANGE_BASE = 224				-- Radar range base first level ra
 NDefines.NBuildings.RADAR_RANGE_MIN = 256				-- Radar range (from state center to province center) in measure of map pixels. Exluding techs.
 NDefines.NBuildings.RADAR_RANGE_MAX = 840				-- Range is interpolated between building levels 1-15.
 NDefines.NBuildings.RADAR_INTEL_EFFECT = 100			-- Province covered by radar increases intel by 10 (where 255 is max). Province may be covered by multiple radars then the value sums up.
-NDefines.NBuildings.BASE_FACTORY_REPAIR = 1			-- Default repair rate before factories are taken into account
-NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 10	-- Factory speed modifier when repairing.
+NDefines.NBuildings.BASE_FACTORY_REPAIR = 0.7			-- Default repair rate before factories are taken into account
+NDefines.NBuildings.BASE_FACTORY_REPAIR_FACTOR = 7	-- Factory speed modifier when repairing.
 NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throughput per level of naval base lancaster
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
@@ -101,18 +101,9 @@ NDefines.NMilitary.DIVISION_SIZE_FOR_XP = 8                   -- how many battal
 NDefines.NMilitary.CORPS_COMMANDER_ARMIES_CAP = -1			-- how many armies a corps commander is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_DIVISIONS_CAP = 50			-- how many divisions a field marshall is limited to. 0 = inf < 0 = blocked
 NDefines.NMilitary.FIELD_MARSHAL_ARMIES_CAP = 10				-- how many armies a field marshall is limited to. 0 = inf < 0 = blocked
-NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.036    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
-NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.036    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
+NDefines.NMilitary.LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.040    -- was 0.025 pre air attack changes 0.032 vanilla   air global damage modifier
+NDefines.NMilitary.LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.040    --was 0.030 pre air attack changes 0.032 vanilla   global damage modifie
 NDefines.NMilitary.AIR_SUPPORT_BASE = 0.10-- 0.25 vanilla
-NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
-NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
-NDefines.NAir.AIR_WING_MAX_STATS_AGILITY = 500 -- 100
-NDefines.NAir.AIR_WING_MAX_STATS_SPEED = 3000 -- 800
-NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 4000 -- 100
-NDefines.NAir.DETECT_CHANCE_FROM_AIRCRAFTS_EFFECTIVE_COUNT = 500 -- 3000
-NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.15 -- 1 vanilla Higher value = more shot down planes
-NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
-NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
 NDefines.NMilitary.LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 1 -- vanial 3 how many CAS/TAC can enter a combat depending on enemy width there
 NDefines.NMilitary.ATTRITION_DAMAGE_ORG = 0.08					   -- vanila 0.08 ущерб от истощения Организации
 NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.002   -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
@@ -163,43 +154,46 @@ NDefines.NMilitary.OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0		-- xp gain mult from
 NDefines.NMilitary.FUEL_CAPACITY_DEFAULT_HOURS = 96				-- 96 vanilla default capacity if not specified
 NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_HEIGHT = 2			-- Max height of regimental supports in division designer.
 NDefines.NMilitary.REGIMENTAL_SUPPORT_REQUIRED_BATTALIONS = { 2 } 					-- For each regimental support row, how many battalions are required in the regiment to be able to place a support in that row.
-NDefines.NAir.PORT_STRIKE_DAMAGE_FACTOR = 1.0								-- How much damage is dealt to ports during a port strike (per plane damage [complex number] * num flying planes * define)
+NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
+NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
+NDefines.NAir.AIR_WING_MAX_STATS_AGILITY = 500 -- 100
+NDefines.NAir.AIR_WING_MAX_STATS_SPEED = 3000 -- 800
+NDefines.NAir.AIR_WING_MAX_STATS_BOMBING = 4000 -- 100
+NDefines.NAir.DETECT_CHANCE_FROM_AIRCRAFTS_EFFECTIVE_COUNT = 500 -- 3000
+NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.15 -- 1 vanilla Higher value = more shot down planes
+NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
+NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
 NDefines.NAir.THRUST_WEIGHT_AGILITY_FACTOR = 0.5								-- For plane designs additive agility bonus per point of thrust exceeding weight
 NDefines.NAir.AIR_WING_MAX_SIZE = 20 							-- Max amount of airplanes in wing
 NDefines.NAir.AIR_WING_AVERAGE_SIZE = 20 						-- Eyeballed average amount of airplanes in wing. Used when calculating air volunteer.
-NDefines.NAir.AIR_WING_BOMB_DAMAGE_FACTOR = 2					-- Used to balance the damage done while bombing.
+NDefines.NAir.AIR_WING_BOMB_DAMAGE_FACTOR = 0.5					-- Used to balance the damage done while bombing.
 NDefines.NAir.BIGGEST_AGILITY_FACTOR_DIFF = 3.0					-- biggest factor difference in agility for doing damage (caps to this)
 NDefines.NAir.BIGGEST_SPEED_FACTOR_DIFF = 2.5					-- biggest factor difference in speed for doing damage (caps to this)
 NDefines.NAir.TOP_SPEED_DAMAGE_BONUS_FACTOR = 0.025				-- A factor for scaling the top speed of a plane into damage buff. If an attacking wing has a speed advantage of any form their speed value will be converted into a percentage bonus with this modifier
 NDefines.NAir.COMBAT_DAMAGE_STATS_MULTILPIER = 0.2
 NDefines.NAir.COMBAT_BETTER_AGILITY_DAMAGE_REDUCTION = 0.30 		-- How much the better agility (than opponent's) can reduce their damage to us.
 NDefines.NAir.COMBAT_BETTER_SPEED_DAMAGE_INCREASE = 0.60 		-- How much the better Speed (than opponent's) can reduce increase our damage to them.
-NDefines.NAir.NAVAL_STRIKE_CARRIER_MULTIPLIER = 5.0              -- damage bonus when planes are in naval combat where their carrier is present (and can thus sortie faster and more effectively)
-NDefines.NAir.ACCIDENT_CHANCE_BASE = 0.05							-- Base chance % (0 - 100) for accident to happen. Reduced with higher reliability stat.
-NDefines.NAir.ACCIDENT_CHANCE_CARRIER_MULT = 2.0					-- The total accident chance is scaled up when it happens on the carrier ship.
+NDefines.NAir.ACCIDENT_CHANCE_BASE = 0.01							-- Base chance % (0 - 100) for accident to happen. Reduced with higher reliability stat.
 NDefines.NAir.ACCIDENT_CHANCE_BALANCE_MULT = 0.5					-- Multiplier for balancing how often the air accident really happens. The higher mult the more often.
 NDefines.NAir.ACCIDENT_EFFECT_MULT = 0.005						-- Multiplier for balancing the effect of accidents
 NDefines.NAir.ACE_DEATH_CHANCE_BASE = 0.003						-- Base chance % for ace pilot die when an airplane is shot down in the Ace wing.
 NDefines.NAir.ACE_DEATH_BY_OTHER_ACE_CHANCE = 1.0				-- chance to an ace dying by another ace if it was hit by ace in combat
 NDefines.NAir.ACE_DEATH_CHANCE_PLANES_MULT = 0.001				-- The more airplanes was lost in a single airplanes (more bloody it was) the higher chance of Ace to die.
-NDefines.NAir.AIR_AGILITY_TO_NAVAL_STRIKE_AGILITY = 0.01         		-- conversion factor to bring agility in line with ship AA
-NDefines.NAir.ACE_WING_SIZE =	20								-- size of wing ace bonuses are set up for. if lower more bonus if higher less bonus
-NDefines.NAir.AA_INDUSTRY_AIR_DAMAGE_FACTOR = -0.05				-- 5x levels = 60% defense from bombing
-NDefines.NAir.NAVAL_STRIKE_DETECTION_BALANCE_FACTOR = 0.7		-- Value used to scale the surface_visibility stats to balance the gameplay so 100% detection chance still won't spam the strikes.
-NDefines.NAir.NAVAL_RECON_DETECTION_BALANCE_FACTOR = 0.7			-- Value used to scale the surface_visibility stats to balance the gameplay so 100% detection chance still won't spam spotting.
+NDefines.NAir.ACE_WING_SIZE = 20								-- size of wing ace bonuses are set up for. if lower more bonus if higher less bonus
+NDefines.NAir.AA_INDUSTRY_AIR_DAMAGE_FACTOR = -0.12				-- 5x levels = 60% defense from bombing
 NDefines.NAir.AIR_MORE_GROUND_CREWS_COST = 5.0					-- CP cost to maintain more ground crews
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_GAIN_DAILY = 3.0 						--Daily gain when running training exercise mission
 NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane to create a mission
 1.5, -- AIR_SUPERIORITY
 1.5, -- CAS
 0.25, -- INTERCEPTION
-0.0, -- STRATEGIC_BOMBER
+1.5, -- STRATEGIC_BOMBER
 0.0, -- NAVAL_BOMBER
 0.0, -- DROP_NUKE
 0.0, -- PARADROP
 0.0, -- NAVAL_KAMIKAZE
 0.0, -- PORT_STRIKE
-0.0, -- ATTACK_LOGISTICS
+1.0, -- ATTACK_LOGISTICS
 0.2, -- AIR_SUPPLY
 0.0, -- TRAINING
 0.0, -- NAVAL_MINES_PLANTING
@@ -208,39 +202,11 @@ NDefines.NAir.MISSION_COMMAND_POWER_COSTS = {  -- command power cost per plane t
 0.0 -- NAVAL_PATROL
 }
 NDefines.NAir.THRUST_WEIGHT_SPEED_FACTOR = 3								-- For plane designs additive Km/h max speed bonus per point of thrust exceeding weight
-NDefines.NNavy.RESOURCE_PURCHASE_PRIORITY = 6									-- Default convoy priority for export equipment purchase
-NDefines.NNavy.NAVY_PIERCING_THRESHOLD_DAMAGE_VALUES = {	-- 0 armor will always receive maximum damage (so add overmatching at your own peril). the system expects at least 2 values with no upper limit.
-1.00,
-1.00,
-0.70,
-0.40,
-0.30,
-0.10 -- 
-}
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_SHIP_MANPOWER_FACTOR = 0.001			-- war score gained for every manpower killed when sinking a ship
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_SHIP_PRODUCTION_COST_FACTOR = 0.004		-- war score gained for every IC of the sunk ship
-NDefines.NNavy.WAR_SCORE_GAIN_FOR_SUNK_CONVOY = 0.05							-- war score gained for every sunk convoy
-NDefines.NNavy.WAR_SCORE_DECAY_FOR_BUILT_CONVOY = 0.03  						-- war score deducted when convoy-raided enemy produces one new convoy
-NDefines.NNavy.COMBAT_ARMOR_PIERCING_DAMAGE_REDUCTION = -0.9					-- All damage reduction % when target armor is >= then shooter armor piercing.
 NDefines.NNavy.AMPHIBIOUS_LANDING_PENALTY = -0.1								-- amphibious landing penalty
 NDefines.NNavy.AMPHIBIOUS_INVADE_ATTACK_LOW = 0.8 							-- low and high cap of attack modifier scale. Scale interpolated by invasion progress.
-NDefines.NNavy.NAVAL_SPEED_MODIFIER = 2.0	                    				-- basic speed control
-NDefines.NNavy.NAVAL_MINES_INTEL_DIFF_FACTOR = 0.1					-- Better our decryption over enemy encryption will reduce the penalties from the enemy mines in the region. This value is a factor to be used for balancing.
-NDefines.NNavy.NAVAL_MINES_ACCIDENT_STRENGTH_LOSS = 75.0						-- Amount of strength loss when hit by naval mine
-NDefines.NNavy.NAVAL_MINES_ACCIDENT_ORG_LOSS_FACTOR = 0.6						-- Amount of strength loss when hit by naval mine
-NDefines.NNavy.AIR_SPOTTER_NORMALIZED_AIRWING_SIZE = 20						-- each plane will contribute 1/this of the air-wing's detection stat
-NDefines.NNavy.BASE_JOIN_COMBAT_HOURS						= 8				-- the taskforces that wants to join existing combats will wait for at least this amount
-NDefines.NNavy.ANTI_AIR_POW_ON_INCOMING_AIR_DAMAGE								= 0.25	-- received air damage is calculated using following: 1 - ( (ship_anti_air + fleet_anti_air * SHIP_TO_FLEET_ANTI_AIR_RATIO )^ANTI_AIR_POW_ON_INCOMING_AIR_DAMAGE ) * ANTI_AIR_MULT_ON_INCOMING_AIR_DAMAGE
-NDefines.NNavy.ANTI_AIR_MULT_ON_INCOMING_AIR_DAMAGE							= 0.2
-NDefines.NNavy.GUN_HIT_PROFILES = { -- hit profiles for guns if target ih profile is lower the gun will have lower accuracy
-80.0,	-- big guns
-145.0,	-- torpedoes
-45.0	-- small guns
-}
-NDefines.NNavy.CONVOY_HIT_PROFILE												= 120.0  	-- convoys has this contant hit profile
-NDefines.NNavy.HIT_PROFILE_MULT 												= 100.0  	-- multiplies hit profile of every ship
-NDefines.NNavy.HIT_PROFILE_SPEED_FACTOR										= 2		-- factors speed value when determining it profile (Vis * HIT_PROFILE_MULT * Ship Hit Profile Mult)
-NDefines.NRailwayGun.DISTRIBUTION_HOLD_POSITION_SCORE = 35							-- Score for staying in the same province when distributing Railway Guns
+NDefines.NNavy.NAVAL_INVASION_PREPARE_DAYS = 10 --60
+NDefines.NNavy.NAVAL_INVASION_PLAN_CAP = 0									-- base cap of naval invasions can be planned at the same time
+NDefines.NNavy.BASE_NAVAL_INVASION_DIVISION_CAP = 0							-- base cap of divisions that can be assigned in a naval invasion
 NDefines.NAI.DIPLOMACY_PURCHASE_EQUIPMENT_MONTHS = 2
 NDefines.NAI.EQUIPMENT_MARKET_UPDATE_FREQUENCY_DAYS = 11                    -- How often the AI runs its market logic
 NDefines.NAI.EQUIPMENT_MARKET_MAX_CIVS_FOR_PURCHASES_RATIO = 0.1            -- Ratio of available civilian factories to max use for equipment purchases (0.2 = 20 % so 50 available civs would mean max ca 10 civs to spend on purchases at any one time). Gets modified by equipment_market_spend_factories AI strategy.
@@ -324,7 +290,7 @@ NDefines.NAI.ORG_UNIT_WEAK = 0.15						-- Organization % for unit to be consider
 NDefines.NAI.STR_UNIT_WEAK = 0.4						-- Strength (equipment) % for unit to be considered weak
 NDefines.NAI.WANTED_UNITS_INDUSTRY_FACTOR = 1.45                        -- How many units a country wants is partially based on how much military industry that is available
 NDefines.NAI.WANTED_CARRIER_PLANES_PER_CARRIER_CAPACITY_FACTOR = 1					-- Scales how many carrier planes the AI want per carrier deck space.
-NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0.1					-- How big part of the army that should be considered for upgrading
+NDefines.NAI.UPGRADE_PERCENTAGE_OF_FORCES = 0				-- How big part of the army that should be considered for upgrading
 NDefines.NAI.MISSING_CONVOYS_BOOST_FACTOR = 18.0					-- The more convoys a country is missing the more resources it diverts to cover this.
 NDefines.NAI.HOUR_BAD_COMBAT_REEVALUATE = 100                   -- if we are in combat for this amount and it goes shitty then try skipping it
 NDefines.NAI.MIN_PLAN_VALUE_TO_MICRO_INACTIVE = 0.2				-- The AI will not consider members of groups which plan is not activated AND evaluates lower than this.
@@ -439,7 +405,10 @@ NDefines.NRaids.RAID_MEDIUM_RISK_SETTING_SUCCESS_MODIFIER = 0.10 --0.1
 NDefines.NRaids.RAID_HIGH_RISK_SETTING_SUCCESS_MODIFIER = 0.20 --0.25
 NDefines.NRaids.RAID_OUTCOME_REPORT_DAYS_TO_LIVE = 6 -- 30
 
+NDefines.NMilitary.PLAN_EXECUTE_CAREFUL_MAX_FORT = 11 -- NO LIMIT 
+
 -- MPR
+
 NDefines.NMilitary.ARMOR_VS_AVERAGE = 0.1 -- 0.4
 NDefines.NMilitary.SLOWEST_SPEED = 3 -- 4
 NDefines.NMilitary.REINFORCE_CHANCE = 0.05 -- 0.02
