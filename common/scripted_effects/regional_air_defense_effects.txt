@@ -1,0 +1,219 @@
+@SAM_S300_AMMO_PER_BATTERY = 8
+@SAM_S300_AIR_DEFENSE = 20
+@SAM_S300_CRUISE_DEFENSE = 18
+@SAM_S300_BALLISTIC_DEFENSE = 7
+
+@SAM_BUK_AMMO_PER_BATTERY = 6
+@SAM_BUK_AIR_DEFENSE = 15
+@SAM_BUK_CRUISE_DEFENSE = 14
+@SAM_BUK_BALLISTIC_DEFENSE = 2
+
+@SAM_NASAMS_AMMO_PER_BATTERY = 8
+@SAM_NASAMS_AIR_DEFENSE = 16
+@SAM_NASAMS_CRUISE_DEFENSE = 18
+
+@SAM_PATRIOT_AMMO_PER_BATTERY = 8
+@SAM_PATRIOT_AIR_DEFENSE = 22
+@SAM_PATRIOT_CRUISE_DEFENSE = 24
+@SAM_PATRIOT_BALLISTIC_DEFENSE = 25
+
+# State scope. Recalculate only after a regional SAM state variable changes.
+recalculate_state_air_defense = {
+	set_variable = { SAM_air_defense = 0 }
+	set_variable = { SAM_cruise_defense = 0 }
+	set_variable = { SAM_ballistic_defense = 0 }
+
+	set_variable = { SAM_total_battery_count = SAM_s300_count }
+	add_to_variable = { SAM_total_battery_count = SAM_buk_count }
+	add_to_variable = { SAM_total_battery_count = SAM_nasams_count }
+	add_to_variable = { SAM_total_battery_count = SAM_patriot_count }
+
+	if = {
+		limit = { check_variable = { SAM_s300_count > 0 } check_variable = { SAM_s300_ammo > 0 } }
+		set_temp_variable = { SAM_s300_required_ammo = SAM_s300_count }
+		multiply_temp_variable = { SAM_s300_required_ammo = @SAM_S300_AMMO_PER_BATTERY }
+		set_temp_variable = { SAM_s300_readiness = SAM_s300_ammo }
+		divide_temp_variable = { SAM_s300_readiness = SAM_s300_required_ammo }
+		clamp_temp_variable = { var = SAM_s300_readiness min = 0 max = 1 }
+
+		set_temp_variable = { SAM_s300_air_contribution = SAM_s300_count }
+		multiply_temp_variable = { SAM_s300_air_contribution = @SAM_S300_AIR_DEFENSE }
+		multiply_temp_variable = { SAM_s300_air_contribution = SAM_s300_readiness }
+		add_to_variable = { SAM_air_defense = SAM_s300_air_contribution }
+		set_temp_variable = { SAM_s300_cruise_contribution = SAM_s300_count }
+		multiply_temp_variable = { SAM_s300_cruise_contribution = @SAM_S300_CRUISE_DEFENSE }
+		multiply_temp_variable = { SAM_s300_cruise_contribution = SAM_s300_readiness }
+		add_to_variable = { SAM_cruise_defense = SAM_s300_cruise_contribution }
+		set_temp_variable = { SAM_s300_ballistic_contribution = SAM_s300_count }
+		multiply_temp_variable = { SAM_s300_ballistic_contribution = @SAM_S300_BALLISTIC_DEFENSE }
+		multiply_temp_variable = { SAM_s300_ballistic_contribution = SAM_s300_readiness }
+		add_to_variable = { SAM_ballistic_defense = SAM_s300_ballistic_contribution }
+	}
+
+	if = {
+		limit = { check_variable = { SAM_buk_count > 0 } check_variable = { SAM_buk_ammo > 0 } }
+		set_temp_variable = { SAM_buk_required_ammo = SAM_buk_count }
+		multiply_temp_variable = { SAM_buk_required_ammo = @SAM_BUK_AMMO_PER_BATTERY }
+		set_temp_variable = { SAM_buk_readiness = SAM_buk_ammo }
+		divide_temp_variable = { SAM_buk_readiness = SAM_buk_required_ammo }
+		clamp_temp_variable = { var = SAM_buk_readiness min = 0 max = 1 }
+
+		set_temp_variable = { SAM_buk_air_contribution = SAM_buk_count }
+		multiply_temp_variable = { SAM_buk_air_contribution = @SAM_BUK_AIR_DEFENSE }
+		multiply_temp_variable = { SAM_buk_air_contribution = SAM_buk_readiness }
+		add_to_variable = { SAM_air_defense = SAM_buk_air_contribution }
+		set_temp_variable = { SAM_buk_cruise_contribution = SAM_buk_count }
+		multiply_temp_variable = { SAM_buk_cruise_contribution = @SAM_BUK_CRUISE_DEFENSE }
+		multiply_temp_variable = { SAM_buk_cruise_contribution = SAM_buk_readiness }
+		add_to_variable = { SAM_cruise_defense = SAM_buk_cruise_contribution }
+		set_temp_variable = { SAM_buk_ballistic_contribution = SAM_buk_count }
+		multiply_temp_variable = { SAM_buk_ballistic_contribution = @SAM_BUK_BALLISTIC_DEFENSE }
+		multiply_temp_variable = { SAM_buk_ballistic_contribution = SAM_buk_readiness }
+		add_to_variable = { SAM_ballistic_defense = SAM_buk_ballistic_contribution }
+	}
+
+	if = {
+		limit = { check_variable = { SAM_nasams_count > 0 } check_variable = { SAM_nasams_ammo > 0 } }
+		set_temp_variable = { SAM_nasams_required_ammo = SAM_nasams_count }
+		multiply_temp_variable = { SAM_nasams_required_ammo = @SAM_NASAMS_AMMO_PER_BATTERY }
+		set_temp_variable = { SAM_nasams_readiness = SAM_nasams_ammo }
+		divide_temp_variable = { SAM_nasams_readiness = SAM_nasams_required_ammo }
+		clamp_temp_variable = { var = SAM_nasams_readiness min = 0 max = 1 }
+
+		set_temp_variable = { SAM_nasams_air_contribution = SAM_nasams_count }
+		multiply_temp_variable = { SAM_nasams_air_contribution = @SAM_NASAMS_AIR_DEFENSE }
+		multiply_temp_variable = { SAM_nasams_air_contribution = SAM_nasams_readiness }
+		add_to_variable = { SAM_air_defense = SAM_nasams_air_contribution }
+		set_temp_variable = { SAM_nasams_cruise_contribution = SAM_nasams_count }
+		multiply_temp_variable = { SAM_nasams_cruise_contribution = @SAM_NASAMS_CRUISE_DEFENSE }
+		multiply_temp_variable = { SAM_nasams_cruise_contribution = SAM_nasams_readiness }
+		add_to_variable = { SAM_cruise_defense = SAM_nasams_cruise_contribution }
+	}
+
+	if = {
+		limit = { check_variable = { SAM_patriot_count > 0 } check_variable = { SAM_patriot_ammo > 0 } }
+		set_temp_variable = { SAM_patriot_required_ammo = SAM_patriot_count }
+		multiply_temp_variable = { SAM_patriot_required_ammo = @SAM_PATRIOT_AMMO_PER_BATTERY }
+		set_temp_variable = { SAM_patriot_readiness = SAM_patriot_ammo }
+		divide_temp_variable = { SAM_patriot_readiness = SAM_patriot_required_ammo }
+		clamp_temp_variable = { var = SAM_patriot_readiness min = 0 max = 1 }
+
+		set_temp_variable = { SAM_patriot_air_contribution = SAM_patriot_count }
+		multiply_temp_variable = { SAM_patriot_air_contribution = @SAM_PATRIOT_AIR_DEFENSE }
+		multiply_temp_variable = { SAM_patriot_air_contribution = SAM_patriot_readiness }
+		add_to_variable = { SAM_air_defense = SAM_patriot_air_contribution }
+		set_temp_variable = { SAM_patriot_cruise_contribution = SAM_patriot_count }
+		multiply_temp_variable = { SAM_patriot_cruise_contribution = @SAM_PATRIOT_CRUISE_DEFENSE }
+		multiply_temp_variable = { SAM_patriot_cruise_contribution = SAM_patriot_readiness }
+		add_to_variable = { SAM_cruise_defense = SAM_patriot_cruise_contribution }
+		set_temp_variable = { SAM_patriot_ballistic_contribution = SAM_patriot_count }
+		multiply_temp_variable = { SAM_patriot_ballistic_contribution = @SAM_PATRIOT_BALLISTIC_DEFENSE }
+		multiply_temp_variable = { SAM_patriot_ballistic_contribution = SAM_patriot_readiness }
+		add_to_variable = { SAM_ballistic_defense = SAM_patriot_ballistic_contribution }
+	}
+
+	if = {
+		limit = { check_variable = { SAM_total_battery_count > 0 } }
+		if = {
+			limit = { NOT = { has_dynamic_modifier = { modifier = regional_air_defense } } }
+			add_dynamic_modifier = { modifier = regional_air_defense }
+		}
+	}
+	else = {
+		if = {
+			limit = { has_dynamic_modifier = { modifier = regional_air_defense } }
+			remove_dynamic_modifier = { modifier = regional_air_defense }
+		}
+	}
+}
+
+# State scope. Deterministic expenditure; every eligible deployed type can fire.
+consume_state_SAM_ammunition_air = {
+	if = {
+		limit = { check_variable = { SAM_s300_count > 0 } check_variable = { SAM_s300_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_s300_ammo > 1 } } subtract_from_variable = { SAM_s300_ammo = 2 } }
+		else = { set_variable = { SAM_s300_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_buk_count > 0 } check_variable = { SAM_buk_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_buk_ammo > 1 } } subtract_from_variable = { SAM_buk_ammo = 2 } }
+		else = { set_variable = { SAM_buk_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_nasams_count > 0 } check_variable = { SAM_nasams_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_nasams_ammo > 1 } } subtract_from_variable = { SAM_nasams_ammo = 2 } }
+		else = { set_variable = { SAM_nasams_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_patriot_count > 0 } check_variable = { SAM_patriot_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_patriot_ammo > 1 } } subtract_from_variable = { SAM_patriot_ammo = 2 } }
+		else = { set_variable = { SAM_patriot_ammo = 0 } }
+	}
+	recalculate_state_air_defense = yes
+}
+
+# State scope. All four prototype systems have non-zero cruise defense.
+consume_state_SAM_ammunition_cruise = {
+	if = {
+		limit = { check_variable = { SAM_s300_count > 0 } check_variable = { SAM_s300_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_s300_ammo > 1 } } subtract_from_variable = { SAM_s300_ammo = 2 } }
+		else = { set_variable = { SAM_s300_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_buk_count > 0 } check_variable = { SAM_buk_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_buk_ammo > 1 } } subtract_from_variable = { SAM_buk_ammo = 2 } }
+		else = { set_variable = { SAM_buk_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_nasams_count > 0 } check_variable = { SAM_nasams_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_nasams_ammo > 1 } } subtract_from_variable = { SAM_nasams_ammo = 2 } }
+		else = { set_variable = { SAM_nasams_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_patriot_count > 0 } check_variable = { SAM_patriot_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_patriot_ammo > 1 } } subtract_from_variable = { SAM_patriot_ammo = 2 } }
+		else = { set_variable = { SAM_patriot_ammo = 0 } }
+	}
+	recalculate_state_air_defense = yes
+}
+
+# State scope. NASAMS is excluded because its prototype ballistic defense is zero.
+consume_state_SAM_ammunition_ballistic = {
+	if = {
+		limit = { check_variable = { SAM_s300_count > 0 } check_variable = { SAM_s300_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_s300_ammo > 1 } } subtract_from_variable = { SAM_s300_ammo = 2 } }
+		else = { set_variable = { SAM_s300_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_buk_count > 0 } check_variable = { SAM_buk_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_buk_ammo > 1 } } subtract_from_variable = { SAM_buk_ammo = 2 } }
+		else = { set_variable = { SAM_buk_ammo = 0 } }
+	}
+	if = {
+		limit = { check_variable = { SAM_patriot_count > 0 } check_variable = { SAM_patriot_ammo > 0 } }
+		if = { limit = { check_variable = { SAM_patriot_ammo > 1 } } subtract_from_variable = { SAM_patriot_ammo = 2 } }
+		else = { set_variable = { SAM_patriot_ammo = 0 } }
+	}
+	recalculate_state_air_defense = yes
+}
+
+# State scope. First-version capture rule: deployed systems and local ammunition are destroyed.
+clear_state_regional_air_defense = {
+	set_variable = { SAM_s300_count = 0 }
+	set_variable = { SAM_s300_ammo = 0 }
+	set_variable = { SAM_buk_count = 0 }
+	set_variable = { SAM_buk_ammo = 0 }
+	set_variable = { SAM_nasams_count = 0 }
+	set_variable = { SAM_nasams_ammo = 0 }
+	set_variable = { SAM_patriot_count = 0 }
+	set_variable = { SAM_patriot_ammo = 0 }
+	set_variable = { SAM_total_battery_count = 0 }
+	set_variable = { SAM_air_defense = 0 }
+	set_variable = { SAM_cruise_defense = 0 }
+	set_variable = { SAM_ballistic_defense = 0 }
+
+	if = {
+		limit = { has_dynamic_modifier = { modifier = regional_air_defense } }
+		remove_dynamic_modifier = { modifier = regional_air_defense }
+	}
+}

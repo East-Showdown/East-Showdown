@@ -1,0 +1,314 @@
+@SAM_S300_RELOAD_AMOUNT = 8
+@SAM_S300_RELOAD_STOCKPILE_COST = -8
+@SAM_BUK_RELOAD_AMOUNT = 6
+@SAM_BUK_RELOAD_STOCKPILE_COST = -6
+@SAM_NASAMS_RELOAD_AMOUNT = 8
+@SAM_NASAMS_RELOAD_STOCKPILE_COST = -8
+@SAM_PATRIOT_RELOAD_AMOUNT = 8
+@SAM_PATRIOT_RELOAD_STOCKPILE_COST = -8
+
+regional_air_defense_category = {
+	regional_sam_deploy_s300 = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = { check_variable = { available_s300_batteries > 0 } }
+		target_trigger = { FROM = { is_controlled_by = ROOT } }
+		visible = { check_variable = { available_s300_batteries > 0 } }
+		available = {
+			check_variable = { available_s300_batteries > 0 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			subtract_from_variable = { available_s300_batteries = 1 }
+			FROM = {
+				add_to_variable = { SAM_s300_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_withdraw_s300 = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			any_controlled_state = { check_variable = { SAM_s300_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_s300_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_s300_count > 0 } } }
+		available = {
+			FROM = {
+				is_controlled_by = ROOT
+				check_variable = { SAM_s300_count > 0 }
+			}
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			FROM = {
+				subtract_from_variable = { SAM_s300_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+			add_to_variable = { available_s300_batteries = 1 }
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_reload_s300 = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			has_equipment = { sam_5v55r_equipment > 7 }
+			any_controlled_state = { check_variable = { SAM_s300_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_s300_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_s300_count > 0 } } }
+		available = {
+			has_equipment = { sam_5v55r_equipment > 7 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			add_equipment_to_stockpile = { type = sam_5v55r_equipment amount = @SAM_S300_RELOAD_STOCKPILE_COST }
+			FROM = {
+				add_to_variable = { SAM_s300_ammo = @SAM_S300_RELOAD_AMOUNT }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_deploy_buk = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = { check_variable = { available_buk_batteries > 0 } }
+		target_trigger = { FROM = { is_controlled_by = ROOT } }
+		visible = { check_variable = { available_buk_batteries > 0 } }
+		available = {
+			check_variable = { available_buk_batteries > 0 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			subtract_from_variable = { available_buk_batteries = 1 }
+			FROM = {
+				add_to_variable = { SAM_buk_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_withdraw_buk = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			any_controlled_state = { check_variable = { SAM_buk_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_buk_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_buk_count > 0 } } }
+		available = {
+			FROM = {
+				is_controlled_by = ROOT
+				check_variable = { SAM_buk_count > 0 }
+			}
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			FROM = {
+				subtract_from_variable = { SAM_buk_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+			add_to_variable = { available_buk_batteries = 1 }
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_reload_buk = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			has_equipment = { sam_9m38_equipment > 5 }
+			any_controlled_state = { check_variable = { SAM_buk_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_buk_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_buk_count > 0 } } }
+		available = {
+			has_equipment = { sam_9m38_equipment > 5 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			add_equipment_to_stockpile = { type = sam_9m38_equipment amount = @SAM_BUK_RELOAD_STOCKPILE_COST }
+			FROM = {
+				add_to_variable = { SAM_buk_ammo = @SAM_BUK_RELOAD_AMOUNT }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_deploy_nasams = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = { check_variable = { available_nasams_batteries > 0 } }
+		target_trigger = { FROM = { is_controlled_by = ROOT } }
+		visible = { check_variable = { available_nasams_batteries > 0 } }
+		available = {
+			check_variable = { available_nasams_batteries > 0 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			subtract_from_variable = { available_nasams_batteries = 1 }
+			FROM = {
+				add_to_variable = { SAM_nasams_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_withdraw_nasams = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			any_controlled_state = { check_variable = { SAM_nasams_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_nasams_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_nasams_count > 0 } } }
+		available = {
+			FROM = {
+				is_controlled_by = ROOT
+				check_variable = { SAM_nasams_count > 0 }
+			}
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			FROM = {
+				subtract_from_variable = { SAM_nasams_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+			add_to_variable = { available_nasams_batteries = 1 }
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_reload_nasams = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			has_equipment = { nasams_missile_equipment > 7 }
+			any_controlled_state = { check_variable = { SAM_nasams_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_nasams_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_nasams_count > 0 } } }
+		available = {
+			has_equipment = { nasams_missile_equipment > 7 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			add_equipment_to_stockpile = { type = nasams_missile_equipment amount = @SAM_NASAMS_RELOAD_STOCKPILE_COST }
+			FROM = {
+				add_to_variable = { SAM_nasams_ammo = @SAM_NASAMS_RELOAD_AMOUNT }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_deploy_patriot = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = { check_variable = { available_patriot_batteries > 0 } }
+		target_trigger = { FROM = { is_controlled_by = ROOT } }
+		visible = { check_variable = { available_patriot_batteries > 0 } }
+		available = {
+			check_variable = { available_patriot_batteries > 0 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			subtract_from_variable = { available_patriot_batteries = 1 }
+			FROM = {
+				add_to_variable = { SAM_patriot_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_withdraw_patriot = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			any_controlled_state = { check_variable = { SAM_patriot_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_patriot_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_patriot_count > 0 } } }
+		available = {
+			FROM = {
+				is_controlled_by = ROOT
+				check_variable = { SAM_patriot_count > 0 }
+			}
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			FROM = {
+				subtract_from_variable = { SAM_patriot_count = 1 }
+				recalculate_state_air_defense = yes
+			}
+			add_to_variable = { available_patriot_batteries = 1 }
+		}
+		ai_will_do = { base = 0 }
+	}
+
+	regional_sam_reload_patriot = {
+		icon = generic_construction
+		state_target = any_controlled_state
+		target_root_trigger = {
+			has_equipment = { pac3_equipment > 7 }
+			any_controlled_state = { check_variable = { SAM_patriot_count > 0 } }
+		}
+		target_trigger = { FROM = { check_variable = { SAM_patriot_count > 0 } } }
+		visible = { FROM = { check_variable = { SAM_patriot_count > 0 } } }
+		available = {
+			has_equipment = { pac3_equipment > 7 }
+			FROM = { is_controlled_by = ROOT }
+		}
+		on_map_mode = map_and_decisions_view
+		cost = 0
+		fire_only_once = no
+		complete_effect = {
+			add_equipment_to_stockpile = { type = pac3_equipment amount = @SAM_PATRIOT_RELOAD_STOCKPILE_COST }
+			FROM = {
+				add_to_variable = { SAM_patriot_ammo = @SAM_PATRIOT_RELOAD_AMOUNT }
+				recalculate_state_air_defense = yes
+			}
+		}
+		ai_will_do = { base = 0 }
+	}
+}
