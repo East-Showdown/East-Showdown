@@ -945,4 +945,235 @@ debug_category = {
 			}
 		}
 	}
+	# =========================================================
+	# TEST — DEPLOY S-300PS
+	# =========================================================
+
+	UKR_deploy_test_S300PS_battery = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				check_variable = {
+					var = SAM_s300ps_count
+					value = 4
+					compare = less_than
+				}
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+				add_to_variable = {
+					var = SAM_s300ps_count
+					value = 1
+				}
+
+				UKR_recalculate_state_SAM = yes
+
+				log = "SAM TEST DEPLOY S300PS: count = [?SAM_s300ps_count] ammo = [?SAM_s300ps_ammo]"
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+
+	# =========================================================
+	# TEST — DEPLOY PATRIOT PAC-3 MSE
+	# =========================================================
+
+	UKR_deploy_test_Patriot_PAC3_battery = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				check_variable = {
+					var = SAM_patriot_pac3_count
+					value = 4
+					compare = less_than
+				}
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+				add_to_variable = {
+					var = SAM_patriot_pac3_count
+					value = 1
+				}
+
+				UKR_recalculate_state_SAM = yes
+
+				log = "SAM TEST DEPLOY PATRIOT PAC3: count = [?SAM_patriot_pac3_count] ammo = [?SAM_patriot_pac3_ammo]"
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+
+	# =========================================================
+	# TEST — ADD S-300PS MISSILES
+	# =========================================================
+
+	UKR_test_replenish_S300PS_ammo = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				check_variable = {
+					var = SAM_s300ps_count
+					value = 0
+					compare = greater_than
+				}
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+				add_to_variable = {
+					var = SAM_s300ps_ammo
+					value = 24
+				}
+
+				UKR_recalculate_state_SAM = yes
+
+				log = "SAM TEST REPLENISH S300PS: count = [?SAM_s300ps_count] ammo = [?SAM_s300ps_ammo]"
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+
+	# =========================================================
+	# TEST — ADD PATRIOT PAC-3 MSE MISSILES
+	# =========================================================
+
+	UKR_test_replenish_Patriot_PAC3_ammo = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				check_variable = {
+					var = SAM_patriot_pac3_count
+					value = 0
+					compare = greater_than
+				}
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+				add_to_variable = {
+					var = SAM_patriot_pac3_ammo
+					value = 24
+				}
+
+				UKR_recalculate_state_SAM = yes
+
+				log = "SAM TEST REPLENISH PATRIOT PAC3: count = [?SAM_patriot_pac3_count] ammo = [?SAM_patriot_pac3_ammo]"
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+
+	# =========================================================
+	# TEST — RESET REGIONAL AIR DEFENSE
+	# =========================================================
+
+	UKR_reset_test_SAM = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				OR = {
+					check_variable = {
+						var = SAM_s300ps_count
+						value = 0
+						compare = greater_than
+					}
+					check_variable = {
+						var = SAM_patriot_pac3_count
+						value = 0
+						compare = greater_than
+					}
+					check_variable = {
+						var = SAM_s300ps_ammo
+						value = 0
+						compare = greater_than
+					}
+					check_variable = {
+						var = SAM_patriot_pac3_ammo
+						value = 0
+						compare = greater_than
+					}
+				}
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+				set_variable = {
+					var = SAM_s300ps_count
+					value = 0
+				}
+
+				set_variable = {
+					var = SAM_s300ps_ammo
+					value = 0
+				}
+
+				set_variable = {
+					var = SAM_patriot_pac3_count
+					value = 0
+				}
+
+				set_variable = {
+					var = SAM_patriot_pac3_ammo
+					value = 0
+				}
+
+				UKR_recalculate_state_SAM = yes
+
+				log = "SAM TEST RESET: S300 count = [?SAM_s300ps_count] ammo = [?SAM_s300ps_ammo] | Patriot count = [?SAM_patriot_pac3_count] ammo = [?SAM_patriot_pac3_ammo]"
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
 }

@@ -1,0 +1,1002 @@
+# =========================================================
+# REGIONAL AIR DEFENSE
+# Scripted effects
+# =========================================================
+
+# =========================================================
+# SYSTEM RECALCULATION
+# =========================================================
+
+UKR_recalculate_S300PS = {
+
+	set_variable = {
+		var = SAM_s300ps_cruise_capacity
+		value = 0
+	}
+
+	set_variable = {
+		var = SAM_s300ps_ballistic_capacity
+		value = 0
+	}
+
+	set_variable = {
+		var = SAM_s300ps_drone_capacity
+		value = 0
+	}
+
+	set_variable = {
+		var = SAM_s300ps_drone_defense
+		value = 0
+	}
+	set_variable = {
+		var = SAM_s300ps_cruise_defense
+		value = 0
+	}
+	set_variable = {
+		var = SAM_s300ps_ballistic_defense
+		value = 0
+	}
+
+	# Базовая сила
+	set_variable = {
+		var = SAM_s300ps_drone_defense
+		value = SAM_s300ps_count
+	}
+	multiply_variable = {
+		var = SAM_s300ps_drone_defense
+		value = 8
+	}
+
+	set_variable = {
+		var = SAM_s300ps_cruise_defense
+		value = SAM_s300ps_count
+	}
+	multiply_variable = {
+		var = SAM_s300ps_cruise_defense
+		value = 18
+	}
+
+	set_variable = {
+		var = SAM_s300ps_ballistic_defense
+		value = SAM_s300ps_count
+	}
+	multiply_variable = {
+		var = SAM_s300ps_ballistic_defense
+		value = 8
+	}
+
+	# Нет ЗУР — комплекс не работает
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_s300ps_ammo
+				value = 1
+				compare = less_than
+			}
+		}
+
+		set_variable = {
+			var = SAM_s300ps_drone_defense
+			value = 0
+		}
+		set_variable = {
+			var = SAM_s300ps_cruise_defense
+			value = 0
+		}
+		set_variable = {
+			var = SAM_s300ps_ballistic_defense
+			value = 0
+		}
+	}
+
+	# Пропускная способность против КР
+	set_temp_variable = {
+		SAM_s300ps_cruise_capacity_temp = SAM_s300ps_count
+	}
+
+	multiply_temp_variable = {
+		var = SAM_s300ps_cruise_capacity_temp
+		value = 4
+	}
+
+	clamp_temp_variable = {
+		var = SAM_s300ps_cruise_capacity_temp
+		min = 0
+		max = SAM_s300ps_ammo
+	}
+
+	set_variable = {
+		var = SAM_s300ps_cruise_capacity
+		value = SAM_s300ps_cruise_capacity_temp
+	}
+
+	# Баллистические ракеты
+	set_temp_variable = {
+		SAM_s300ps_ballistic_capacity_temp = SAM_s300ps_count
+	}
+
+	multiply_temp_variable = {
+		var = SAM_s300ps_ballistic_capacity_temp
+		value = 2
+	}
+
+	clamp_temp_variable = {
+		var = SAM_s300ps_ballistic_capacity_temp
+		min = 0
+		max = SAM_s300ps_ammo
+	}
+
+	set_variable = {
+		var = SAM_s300ps_ballistic_capacity
+		value = SAM_s300ps_ballistic_capacity_temp
+	}
+
+	# БПЛА
+	set_temp_variable = {
+		SAM_s300ps_drone_capacity_temp = SAM_s300ps_count
+	}
+
+	multiply_temp_variable = {
+		var = SAM_s300ps_drone_capacity_temp
+		value = 2
+	}
+
+	clamp_temp_variable = {
+		var = SAM_s300ps_drone_capacity_temp
+		min = 0
+		max = SAM_s300ps_ammo
+	}
+
+	set_variable = {
+		var = SAM_s300ps_drone_capacity
+		value = SAM_s300ps_drone_capacity_temp
+	}
+}
+
+UKR_recalculate_Patriot_PAC3 = {
+
+	set_variable = {
+		var = SAM_patriot_pac3_cruise_capacity
+		value = 0
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_ballistic_capacity
+		value = 0
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_drone_capacity
+		value = 0
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_drone_defense
+		value = SAM_patriot_pac3_count
+	}
+	multiply_variable = {
+		var = SAM_patriot_pac3_drone_defense
+		value = 8
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_cruise_defense
+		value = SAM_patriot_pac3_count
+	}
+	multiply_variable = {
+		var = SAM_patriot_pac3_cruise_defense
+		value = 25
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_ballistic_defense
+		value = SAM_patriot_pac3_count
+	}
+	multiply_variable = {
+		var = SAM_patriot_pac3_ballistic_defense
+		value = 30
+	}
+
+	# Нет ЗУР — комплекс не работает
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_patriot_pac3_ammo
+				value = 1
+				compare = less_than
+			}
+		}
+
+		set_variable = {
+			var = SAM_patriot_pac3_drone_defense
+			value = 0
+		}
+		set_variable = {
+			var = SAM_patriot_pac3_cruise_defense
+			value = 0
+		}
+		set_variable = {
+			var = SAM_patriot_pac3_ballistic_defense
+			value = 0
+		}
+	}
+
+	# 1 батарея Patriot = до 6 целей за Raid
+	set_temp_variable = {
+		SAM_patriot_pac3_cruise_capacity_temp = SAM_patriot_pac3_count
+	}
+
+	multiply_temp_variable = {
+		var = SAM_patriot_pac3_cruise_capacity_temp
+		value = 6
+	}
+
+	clamp_temp_variable = {
+		var = SAM_patriot_pac3_cruise_capacity_temp
+		min = 0
+		max = SAM_patriot_pac3_ammo
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_cruise_capacity
+		value = SAM_patriot_pac3_cruise_capacity_temp
+	}
+
+	# Баллистические ракеты
+	set_temp_variable = {
+		SAM_patriot_pac3_ballistic_capacity_temp = SAM_patriot_pac3_count
+	}
+
+	multiply_temp_variable = {
+		var = SAM_patriot_pac3_ballistic_capacity_temp
+		value = 4
+	}
+
+	clamp_temp_variable = {
+		var = SAM_patriot_pac3_ballistic_capacity_temp
+		min = 0
+		max = SAM_patriot_pac3_ammo
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_ballistic_capacity
+		value = SAM_patriot_pac3_ballistic_capacity_temp
+	}
+
+	# БПЛА
+	set_temp_variable = {
+		SAM_patriot_pac3_drone_capacity_temp = SAM_patriot_pac3_count
+	}
+
+	multiply_temp_variable = {
+		var = SAM_patriot_pac3_drone_capacity_temp
+		value = 2
+	}
+
+	clamp_temp_variable = {
+		var = SAM_patriot_pac3_drone_capacity_temp
+		min = 0
+		max = SAM_patriot_pac3_ammo
+	}
+
+	set_variable = {
+		var = SAM_patriot_pac3_drone_capacity
+		value = SAM_patriot_pac3_drone_capacity_temp
+	}
+}
+
+# =========================================================
+# STATE AGGREGATION
+# =========================================================
+
+UKR_recalculate_state_SAM = {
+
+    UKR_recalculate_S300PS = yes
+    UKR_recalculate_Patriot_PAC3 = yes
+
+    set_variable = { var = SAM_drone_defense value = 0 }
+    set_variable = { var = SAM_cruise_defense value = 0 }
+    set_variable = { var = SAM_ballistic_defense value = 0 }
+
+	set_variable = { var = SAM_cruise_capacity value = 0 }
+	set_variable = { var = SAM_ballistic_capacity value = 0 }
+	set_variable = { var = SAM_drone_capacity value = 0 }
+
+
+    # С-300ПС
+    add_to_variable = {
+        var = SAM_drone_defense
+        value = SAM_s300ps_drone_defense
+    }
+    add_to_variable = {
+        var = SAM_cruise_defense
+        value = SAM_s300ps_cruise_defense
+    }
+    add_to_variable = {
+        var = SAM_ballistic_defense
+        value = SAM_s300ps_ballistic_defense
+    }
+	add_to_variable = {
+		var = SAM_cruise_capacity
+		value = SAM_s300ps_cruise_capacity
+	}
+	add_to_variable = {
+		var = SAM_ballistic_capacity
+		value = SAM_s300ps_ballistic_capacity
+	}
+	add_to_variable = {
+		var = SAM_drone_capacity
+		value = SAM_s300ps_drone_capacity
+	}
+
+    # Patriot PAC-3
+    add_to_variable = {
+        var = SAM_drone_defense
+        value = SAM_patriot_pac3_drone_defense
+    }
+    add_to_variable = {
+        var = SAM_cruise_defense
+        value = SAM_patriot_pac3_cruise_defense
+    }
+    add_to_variable = {
+        var = SAM_ballistic_defense
+        value = SAM_patriot_pac3_ballistic_defense
+    }
+	add_to_variable = {
+		var = SAM_cruise_capacity
+		value = SAM_patriot_pac3_cruise_capacity
+	}
+	add_to_variable = {
+		var = SAM_ballistic_capacity
+		value = SAM_patriot_pac3_ballistic_capacity
+	}
+	add_to_variable = {
+		var = SAM_drone_capacity
+		value = SAM_patriot_pac3_drone_capacity
+	}
+
+    # Считаем общее число батарей/систем
+    set_temp_variable = {
+        SAM_total_batteries = 0
+    }
+
+    add_to_temp_variable = {
+        SAM_total_batteries = SAM_s300ps_count
+    }
+
+    add_to_temp_variable = {
+        SAM_total_batteries = SAM_patriot_pac3_count
+    }
+
+	# =========================================================
+	# Средневзвешенное качество перехвата КР
+	# =========================================================
+
+	set_variable = {
+		var = SAM_cruise_quality
+		value = 0
+	}
+
+	set_temp_variable = {
+		SAM_cruise_quality_weighted = 0
+	}
+
+	# С-300ПС
+	set_temp_variable = {
+		SAM_s300ps_quality_contribution = SAM_s300ps_cruise_capacity
+	}
+
+	multiply_temp_variable = {
+		var = SAM_s300ps_quality_contribution
+		value = 18
+	}
+
+	add_to_temp_variable = {
+		SAM_cruise_quality_weighted = SAM_s300ps_quality_contribution
+	}
+
+	# Patriot PAC-3
+	set_temp_variable = {
+		SAM_patriot_quality_contribution = SAM_patriot_pac3_cruise_capacity
+	}
+
+	multiply_temp_variable = {
+		var = SAM_patriot_quality_contribution
+		value = 25
+	}
+
+	add_to_temp_variable = {
+		SAM_cruise_quality_weighted = SAM_patriot_quality_contribution
+	}
+
+	# Делим только если реально есть чем стрелять
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_cruise_capacity
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		divide_temp_variable = {
+			var = SAM_cruise_quality_weighted
+			value = SAM_cruise_capacity
+		}
+
+		set_variable = {
+			var = SAM_cruise_quality
+			value = SAM_cruise_quality_weighted
+		}
+	}
+
+	# =========================================================
+	# Средневзвешенное качество перехвата БР
+	# =========================================================
+
+	set_variable = {
+		var = SAM_ballistic_quality
+		value = 0
+	}
+
+	set_temp_variable = {
+		SAM_ballistic_quality_weighted = 0
+	}
+
+	# С-300ПС — quality 8
+	set_temp_variable = {
+		SAM_s300ps_ballistic_quality_contribution = SAM_s300ps_ballistic_capacity
+	}
+
+	multiply_temp_variable = {
+		var = SAM_s300ps_ballistic_quality_contribution
+		value = 8
+	}
+
+	add_to_temp_variable = {
+		SAM_ballistic_quality_weighted = SAM_s300ps_ballistic_quality_contribution
+	}
+
+	# Patriot PAC-3 — quality 30
+	set_temp_variable = {
+		SAM_patriot_ballistic_quality_contribution = SAM_patriot_pac3_ballistic_capacity
+	}
+
+	multiply_temp_variable = {
+		var = SAM_patriot_ballistic_quality_contribution
+		value = 30
+	}
+
+	add_to_temp_variable = {
+		SAM_ballistic_quality_weighted = SAM_patriot_ballistic_quality_contribution
+	}
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_ballistic_capacity
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		divide_temp_variable = {
+			var = SAM_ballistic_quality_weighted
+			value = SAM_ballistic_capacity
+		}
+
+		set_variable = {
+			var = SAM_ballistic_quality
+			value = SAM_ballistic_quality_weighted
+		}
+	}
+
+	# =========================================================
+	# Средневзвешенное качество перехвата БПЛА
+	# =========================================================
+
+	set_variable = {
+		var = SAM_drone_quality
+		value = 0
+	}
+
+	set_temp_variable = {
+		SAM_drone_quality_weighted = 0
+	}
+
+	# С-300ПС — quality 8
+	set_temp_variable = {
+		SAM_s300ps_drone_quality_contribution = SAM_s300ps_drone_capacity
+	}
+
+	multiply_temp_variable = {
+		var = SAM_s300ps_drone_quality_contribution
+		value = 8
+	}
+
+	add_to_temp_variable = {
+		SAM_drone_quality_weighted = SAM_s300ps_drone_quality_contribution
+	}
+
+	# Patriot — quality 8
+	set_temp_variable = {
+		SAM_patriot_drone_quality_contribution = SAM_patriot_pac3_drone_capacity
+	}
+
+	multiply_temp_variable = {
+		var = SAM_patriot_drone_quality_contribution
+		value = 8
+	}
+
+	add_to_temp_variable = {
+		SAM_drone_quality_weighted = SAM_patriot_drone_quality_contribution
+	}
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_drone_capacity
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		divide_temp_variable = {
+			var = SAM_drone_quality_weighted
+			value = SAM_drone_capacity
+		}
+
+		set_variable = {
+			var = SAM_drone_quality
+			value = SAM_drone_quality_weighted
+		}
+	}
+
+    # Есть хотя бы одна система ПВО
+    if = {
+        limit = {
+            check_variable = {
+                var = SAM_total_batteries
+                value = 0
+                compare = greater_than
+            }
+        }
+
+        if = {
+            limit = {
+                NOT = {
+                    has_dynamic_modifier = UKR_regional_air_defense
+                }
+            }
+
+            add_dynamic_modifier = {
+                modifier = UKR_regional_air_defense
+            }
+        }
+    }
+
+    # Не осталось вообще ничего
+    else = {
+        if = {
+            limit = {
+                has_dynamic_modifier = UKR_regional_air_defense
+            }
+
+            remove_dynamic_modifier = {
+                modifier = UKR_regional_air_defense
+            }
+        }
+    }
+
+    force_update_dynamic_modifier = yes
+
+    log = "SAM TOTAL: cruise_capacity = [?SAM_cruise_capacity] cruise_quality = [?SAM_cruise_quality] | ballistic_capacity = [?SAM_ballistic_capacity] ballistic_quality = [?SAM_ballistic_quality] | drone_capacity = [?SAM_drone_capacity] drone_quality = [?SAM_drone_quality]"
+}
+
+# =========================================================
+# RAID AMMUNITION CONSUMPTION — CRUISE MISSILES
+# =========================================================
+
+UKR_consume_cruise_SAM_ammunition = {
+
+	# Сколько целей пришло в текущем Raid
+	set_temp_variable = {
+		SAM_targets_remaining = SAM_raid_size
+	}
+
+	# Сколько целей ПВО суммарно попыталось обработать
+	set_temp_variable = {
+		SAM_targets_engaged = 0
+	}
+
+	log = "SAM CRUISE START: incoming = [?SAM_raid_size]"
+
+	# =========================================================
+	# С-300ПС
+	# 1 батарея может обработать до 4 целей за один Raid
+	# =========================================================
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_s300ps_count
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_s300ps_ammo
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_targets_remaining
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		# Берём уже рассчитанную пропускную способность системы
+		set_temp_variable = {
+			SAM_s300ps_targets_engaged = SAM_s300ps_cruise_capacity
+		}
+
+		# Нельзя выпустить больше ЗУР, чем реально есть
+		clamp_temp_variable = {
+			var = SAM_s300ps_targets_engaged
+			min = 0
+			max = SAM_s300ps_ammo
+		}
+
+		# И нельзя обработать больше целей, чем осталось в налёте
+		clamp_temp_variable = {
+			var = SAM_s300ps_targets_engaged
+			min = 0
+			max = SAM_targets_remaining
+		}
+
+		subtract_from_variable = {
+			var = SAM_s300ps_ammo
+			value = SAM_s300ps_targets_engaged
+		}
+
+		subtract_from_temp_variable = {
+			var = SAM_targets_remaining
+			value = SAM_s300ps_targets_engaged
+		}
+
+		add_to_temp_variable = {
+			SAM_targets_engaged = SAM_s300ps_targets_engaged
+		}
+
+		log = "SAM CRUISE S300: engaged = [?SAM_s300ps_targets_engaged] ammo = [?SAM_s300ps_ammo] remaining = [?SAM_targets_remaining]"
+	}
+
+	# =========================================================
+	# Patriot PAC-3 MSE
+	# 1 батарея может обработать до 6 целей за один Raid
+	# =========================================================
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_patriot_pac3_count
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_patriot_pac3_ammo
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_targets_remaining
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		set_temp_variable = {
+			SAM_patriot_pac3_targets_engaged = SAM_patriot_pac3_cruise_capacity
+		}
+
+		clamp_temp_variable = {
+			var = SAM_patriot_pac3_targets_engaged
+			min = 0
+			max = SAM_patriot_pac3_ammo
+		}
+
+		clamp_temp_variable = {
+			var = SAM_patriot_pac3_targets_engaged
+			min = 0
+			max = SAM_targets_remaining
+		}
+
+		subtract_from_variable = {
+			var = SAM_patriot_pac3_ammo
+			value = SAM_patriot_pac3_targets_engaged
+		}
+
+		subtract_from_temp_variable = {
+			var = SAM_targets_remaining
+			value = SAM_patriot_pac3_targets_engaged
+		}
+
+		add_to_temp_variable = {
+			SAM_targets_engaged = SAM_patriot_pac3_targets_engaged
+		}
+
+		log = "SAM CRUISE PATRIOT: engaged = [?SAM_patriot_pac3_targets_engaged] ammo = [?SAM_patriot_pac3_ammo] remaining = [?SAM_targets_remaining]"
+	}
+
+	# После расхода пересчитываем состояние регионального ПВО
+	UKR_recalculate_state_SAM = yes
+
+	log = "SAM CRUISE END: incoming = [?SAM_raid_size] engaged = [?SAM_targets_engaged] overloaded = [?SAM_targets_remaining] | S300 ammo = [?SAM_s300ps_ammo] | Patriot ammo = [?SAM_patriot_pac3_ammo]"
+}
+
+# =========================================================
+# RAID AMMUNITION CONSUMPTION — BALLISTIC MISSILES
+# =========================================================
+
+UKR_consume_ballistic_SAM_ammunition = {
+
+	set_temp_variable = {
+		SAM_targets_remaining = SAM_raid_size
+	}
+
+	set_temp_variable = {
+		SAM_targets_engaged = 0
+	}
+
+	log = "SAM BALLISTIC START: incoming = [?SAM_raid_size]"
+
+	# =========================================================
+	# Patriot PAC-3 MSE
+	# =========================================================
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_patriot_pac3_count
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_patriot_pac3_ammo
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_targets_remaining
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		set_temp_variable = {
+			SAM_patriot_ballistic_targets_engaged = SAM_patriot_pac3_ballistic_capacity
+		}
+
+		clamp_temp_variable = {
+			var = SAM_patriot_ballistic_targets_engaged
+			min = 0
+			max = SAM_patriot_pac3_ammo
+		}
+
+		clamp_temp_variable = {
+			var = SAM_patriot_ballistic_targets_engaged
+			min = 0
+			max = SAM_targets_remaining
+		}
+
+		subtract_from_variable = {
+			var = SAM_patriot_pac3_ammo
+			value = SAM_patriot_ballistic_targets_engaged
+		}
+
+		subtract_from_temp_variable = {
+			var = SAM_targets_remaining
+			value = SAM_patriot_ballistic_targets_engaged
+		}
+
+		add_to_temp_variable = {
+			SAM_targets_engaged = SAM_patriot_ballistic_targets_engaged
+		}
+
+		log = "SAM BALLISTIC PATRIOT: engaged = [?SAM_patriot_ballistic_targets_engaged] ammo = [?SAM_patriot_pac3_ammo] remaining = [?SAM_targets_remaining]"
+	}
+
+	# =========================================================
+	# С-300ПС
+	# =========================================================
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_s300ps_count
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_s300ps_ammo
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_targets_remaining
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		set_temp_variable = {
+			SAM_s300ps_ballistic_targets_engaged = SAM_s300ps_ballistic_capacity
+		}
+
+		clamp_temp_variable = {
+			var = SAM_s300ps_ballistic_targets_engaged
+			min = 0
+			max = SAM_s300ps_ammo
+		}
+
+		clamp_temp_variable = {
+			var = SAM_s300ps_ballistic_targets_engaged
+			min = 0
+			max = SAM_targets_remaining
+		}
+
+		subtract_from_variable = {
+			var = SAM_s300ps_ammo
+			value = SAM_s300ps_ballistic_targets_engaged
+		}
+
+		subtract_from_temp_variable = {
+			var = SAM_targets_remaining
+			value = SAM_s300ps_ballistic_targets_engaged
+		}
+
+		add_to_temp_variable = {
+			SAM_targets_engaged = SAM_s300ps_ballistic_targets_engaged
+		}
+
+		log = "SAM BALLISTIC S300: engaged = [?SAM_s300ps_ballistic_targets_engaged] ammo = [?SAM_s300ps_ammo] remaining = [?SAM_targets_remaining]"
+	}
+
+	UKR_recalculate_state_SAM = yes
+
+	log = "SAM BALLISTIC END: incoming = [?SAM_raid_size] engaged = [?SAM_targets_engaged] overloaded = [?SAM_targets_remaining] | S300 ammo = [?SAM_s300ps_ammo] | Patriot ammo = [?SAM_patriot_pac3_ammo]"
+}
+
+# =========================================================
+# RAID AMMUNITION CONSUMPTION — UAV
+# =========================================================
+
+UKR_consume_drone_SAM_ammunition = {
+
+	set_temp_variable = {
+		SAM_targets_remaining = SAM_raid_size
+	}
+
+	set_temp_variable = {
+		SAM_targets_engaged = 0
+	}
+
+	log = "SAM DRONE START: incoming = [?SAM_raid_size]"
+
+	# =========================================================
+	# С-300ПС
+	# Пока тестово. Потом перед ним будут дешёвые системы.
+	# =========================================================
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_s300ps_count
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_s300ps_ammo
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_targets_remaining
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		set_temp_variable = {
+			SAM_s300ps_drone_targets_engaged = SAM_s300ps_drone_capacity
+		}
+
+		clamp_temp_variable = {
+			var = SAM_s300ps_drone_targets_engaged
+			min = 0
+			max = SAM_s300ps_ammo
+		}
+
+		clamp_temp_variable = {
+			var = SAM_s300ps_drone_targets_engaged
+			min = 0
+			max = SAM_targets_remaining
+		}
+
+		subtract_from_variable = {
+			var = SAM_s300ps_ammo
+			value = SAM_s300ps_drone_targets_engaged
+		}
+
+		subtract_from_temp_variable = {
+			var = SAM_targets_remaining
+			value = SAM_s300ps_drone_targets_engaged
+		}
+
+		add_to_temp_variable = {
+			SAM_targets_engaged = SAM_s300ps_drone_targets_engaged
+		}
+
+		log = "SAM DRONE S300: engaged = [?SAM_s300ps_drone_targets_engaged] ammo = [?SAM_s300ps_ammo] remaining = [?SAM_targets_remaining]"
+	}
+
+	# =========================================================
+	# Patriot PAC-3 MSE
+	# =========================================================
+
+	if = {
+		limit = {
+			check_variable = {
+				var = SAM_patriot_pac3_count
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_patriot_pac3_ammo
+				value = 0
+				compare = greater_than
+			}
+			check_variable = {
+				var = SAM_targets_remaining
+				value = 0
+				compare = greater_than
+			}
+		}
+
+		set_temp_variable = {
+			SAM_patriot_drone_targets_engaged = SAM_patriot_pac3_drone_capacity
+		}
+
+		clamp_temp_variable = {
+			var = SAM_patriot_drone_targets_engaged
+			min = 0
+			max = SAM_patriot_pac3_ammo
+		}
+
+		clamp_temp_variable = {
+			var = SAM_patriot_drone_targets_engaged
+			min = 0
+			max = SAM_targets_remaining
+		}
+
+		subtract_from_variable = {
+			var = SAM_patriot_pac3_ammo
+			value = SAM_patriot_drone_targets_engaged
+		}
+
+		subtract_from_temp_variable = {
+			var = SAM_targets_remaining
+			value = SAM_patriot_drone_targets_engaged
+		}
+
+		add_to_temp_variable = {
+			SAM_targets_engaged = SAM_patriot_drone_targets_engaged
+		}
+
+		log = "SAM DRONE PATRIOT: engaged = [?SAM_patriot_drone_targets_engaged] ammo = [?SAM_patriot_pac3_ammo] remaining = [?SAM_targets_remaining]"
+	}
+
+	UKR_recalculate_state_SAM = yes
+
+	log = "SAM DRONE END: incoming = [?SAM_raid_size] engaged = [?SAM_targets_engaged] overloaded = [?SAM_targets_remaining] | S300 ammo = [?SAM_s300ps_ammo] | Patriot ammo = [?SAM_patriot_pac3_ammo]"
+}

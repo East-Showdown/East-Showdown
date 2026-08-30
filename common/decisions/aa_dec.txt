@@ -1,0 +1,188 @@
+UKR_SAM_decisions = {
+
+	UKR_deploy_test_SAM_battery = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				check_variable = {
+					var = SAM_battery_count
+					value = 4
+					compare = less_than
+				}
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+
+				if = {
+					limit = {
+						check_variable = {
+							var = SAM_battery_count
+							value = 0
+							compare = less_than_or_equals
+						}
+					}
+
+					set_variable = {
+						var = SAM_battery_model
+						value = 5
+					}
+
+					set_variable = {
+						var = SAM_ammo
+						value = 0
+					}
+
+					set_variable = {
+						var = SAM_ammo
+						value = 48
+					}
+				}
+
+				add_to_variable = {
+					var = SAM_battery_count
+					value = 1
+				}
+
+				UKR_recalculate_state_SAM = yes
+
+				force_update_dynamic_modifier = yes
+
+				log = "SAM TEST: batteries = [?SAM_battery_count] model = [?SAM_battery_model] ammo = [?SAM_ammo]"
+
+				if = {
+					limit = {
+						NOT = {
+							has_dynamic_modifier = UKR_regional_air_defense
+						}
+					}
+
+					UKR_add_correct_SAM_modifier = yes
+				}
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+
+	UKR_reset_test_SAM = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		target_trigger = {
+			FROM = {
+				has_variable = SAM_battery_count
+			}
+		}
+
+		complete_effect = {
+			FROM = {
+				set_variable = {
+					var = SAM_battery_count
+					value = 0
+				}
+
+				set_variable = {
+					var = SAM_battery_model
+					value = 0
+				}
+
+				set_variable = {
+					var = SAM_ammo
+					value = 0
+				}
+
+				if = {
+					limit = {
+						has_dynamic_modifier = UKR_regional_air_defense
+					}
+
+					remove_dynamic_modifier = {
+						modifier = UKR_regional_air_defense
+					}
+
+					clear_variable = SAM_battery_count
+					clear_variable = SAM_battery_model
+					clear_variable = SAM_ammo
+					# clear_variable = SAM_defense_power
+
+					clear_variable = SAM_air_defense
+					clear_variable = SAM_cruise_defense
+					clear_variable = SAM_ballistic_defense
+				}
+			}
+		}
+
+			ai_will_do = {
+				factor = 0
+			}
+		}
+
+	UKR_test_replenish_SAM_ammo = {
+		icon = generic_air
+
+		state_target = any_owned_state
+		on_map_mode = map_and_decisions_view
+
+		cost = 0
+
+		# Проверяем национальный склад
+		available = {
+			has_equipment = {
+				sam_missile_equipment > 23
+			}
+		}
+
+		# Решение можно применять только к state,
+		# где уже есть хотя бы одна батарея
+		target_trigger = {
+			FROM = {
+				check_variable = {
+					var = SAM_battery_count
+					value = 0
+					compare = greater_than
+				}
+			}
+		}
+
+		complete_effect = {
+
+			# COUNTRY scope:
+			# убираем 24 единицы со склада страны
+			add_equipment_to_stockpile = {
+				type = sam_missile_equipment
+				amount = -24
+			}
+
+			# TARGET STATE:
+			# передаём их региональному ПВО
+			FROM = {
+				add_to_variable = {
+					var = SAM_ammo
+					value = 24
+				}
+
+				log = "SAM REPLENISH TEST: batteries = [?SAM_battery_count] model = [?SAM_battery_model] ammo = [?SAM_ammo]"
+				UKR_recalculate_state_SAM = yes
+				force_update_dynamic_modifier = yes
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+}
