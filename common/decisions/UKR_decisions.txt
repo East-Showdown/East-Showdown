@@ -16549,6 +16549,130 @@ UKR_prisoners_of_war = {
 }
 
 UKR_economic_decision_category = {
+	UKR_evacuate_industry = {
+		priority = 100
+		icon = generic_construction
+		cost = 5
+		fire_only_once = no
+		state_target = any_owned_state
+		on_map_mode = map_only
+		days_remove = 7
+
+		allowed = {
+			original_tag = UKR
+		}
+		target_root_trigger = {
+			original_tag = UKR
+			has_completed_focus = UKR_evacuate_production
+		}
+		target_trigger = {
+			FROM = {
+				is_owned_and_controlled_by = ROOT
+				NOT = {
+					OR = {
+						state = 75
+						state = 76
+						state = 88
+						state = 92
+						state = 93
+						state = 108
+						state = 119
+						state = 121
+						state = 129
+						state = 137
+						state = 142
+						state = 135
+						state = 153
+						state = 157
+						state = 179
+						state = 185
+						state = 192
+					}
+				}
+				NOT = { has_state_flag = UKR_industry_evacuation_complete }
+				OR = {
+					has_state_flag = UKR_industry_evacuation_in_progress
+					arms_factory > 0
+					industrial_complex > 0
+					ammunition_plant > 0
+					electronic_factory > 0
+				}
+			}
+		}
+		available = {
+			has_equipment = { train_equipment > 14 }
+			OR = {
+				108 = { is_owned_and_controlled_by = ROOT }
+				121 = { is_owned_and_controlled_by = ROOT }
+				135 = { is_owned_and_controlled_by = ROOT }
+			}
+			FROM = {
+				is_owned_and_controlled_by = ROOT
+				hidden_trigger = {
+					NOT = { has_state_flag = UKR_industry_evacuation_in_progress }
+				}
+			}
+		}
+		complete_effect = {
+			custom_effect_tooltip = UKR_industry_evacuation_trains_taken_tt
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = train_equipment
+					amount = -15
+				}
+				FROM = { save_event_target_as = UKR_industry_evacuation_source }
+				country_event = UKR_industry_evacuation.1
+			}
+		}
+		cancel_trigger = {
+			custom_trigger_tooltip = {
+				tooltip = UKR_industry_evacuation_cancel_trigger_tt
+				OR = {
+					FROM = { NOT = { is_controlled_by = UKR } }
+					AND = {
+						FROM = { has_state_flag = UKR_industry_evacuation_to_108 }
+						108 = { NOT = { is_controlled_by = UKR } }
+					}
+					AND = {
+						FROM = { has_state_flag = UKR_industry_evacuation_to_121 }
+						121 = { NOT = { is_controlled_by = UKR } }
+					}
+					AND = {
+						FROM = { has_state_flag = UKR_industry_evacuation_to_135 }
+						135 = { NOT = { is_controlled_by = UKR } }
+					}
+				}
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = UKR_industry_evacuation_complete_tt
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = train_equipment
+					amount = 15
+					producer = UKR
+				}
+				FROM = { UKR_finish_industry_evacuation = yes }
+			}
+		}
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = {
+						FROM = { has_state_flag = UKR_industry_evacuation_in_progress }
+					}
+					add_equipment_to_stockpile = {
+						type = train_equipment
+						amount = 15
+						producer = UKR
+					}
+					FROM = { UKR_cancel_industry_evacuation = yes }
+				}
+			}
+		}
+		ai_will_do = { factor = 0 }
+	}
+
 	UKR_rent_of_civil_enterprises = {
 		icon = GFX_UKR_economic_decision_2_decisions
 		cost = 50
@@ -16598,6 +16722,24 @@ UKR_economic_decision_category = {
 }
 
 UKR_strengthening_Ukrainian_cities_category = {
+	UKR_autumn_campaign_mission = {
+		icon = GFX_UKR_launch_autumn_campaign
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 120
+		selectable_mission = no
+		allowed = {
+			original_tag = UKR
+		}
+		activation = {
+			always = no
+		}
+		timeout_effect = {
+			complete_national_focus = UKR_operational_pause
+			mark_focus_tree_layout_dirty = yes
+		}
+	}
+
 	UKR_Declare_Military_Disaster = {
 		icon = GFX_UKR_president_ukraine_emblem
 		cost = 10

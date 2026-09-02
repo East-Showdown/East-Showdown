@@ -8,3 +8,212 @@ UKR_update_variable = {
 		add_to_variable = { global.update_ukr_ui = 1 }
 	}
 }
+
+# THIS = source state.
+# The first stage relocates half of every supported building type (rounded up).
+# The second stage relocates everything that remains.
+UKR_start_industry_evacuation = {
+	set_state_flag = UKR_industry_evacuation_in_progress
+
+	set_variable = { UKR_evacuated_arms_factories = building_level@arms_factory }
+	set_variable = { UKR_evacuated_industrial_complexes = building_level@industrial_complex }
+	set_variable = { UKR_evacuated_ammunition_plants = building_level@ammunition_plant }
+	set_variable = { UKR_evacuated_electronic_factories = building_level@electronic_factory }
+
+	if = {
+		limit = {
+			NOT = { has_state_flag = UKR_industry_evacuation_stage_one_complete }
+		}
+
+		if = {
+			limit = { check_variable = { UKR_evacuated_arms_factories > 1 } }
+			divide_variable = { UKR_evacuated_arms_factories = 2 }
+			round_variable = UKR_evacuated_arms_factories
+		}
+		if = {
+			limit = { check_variable = { UKR_evacuated_industrial_complexes > 1 } }
+			divide_variable = { UKR_evacuated_industrial_complexes = 2 }
+			round_variable = UKR_evacuated_industrial_complexes
+		}
+		if = {
+			limit = { check_variable = { UKR_evacuated_ammunition_plants > 1 } }
+			divide_variable = { UKR_evacuated_ammunition_plants = 2 }
+			round_variable = UKR_evacuated_ammunition_plants
+		}
+		if = {
+			limit = { check_variable = { UKR_evacuated_electronic_factories > 1 } }
+			divide_variable = { UKR_evacuated_electronic_factories = 2 }
+			round_variable = UKR_evacuated_electronic_factories
+		}
+	}
+
+	set_variable = { UKR_evacuated_shared_slots = UKR_evacuated_arms_factories }
+	add_to_variable = { UKR_evacuated_shared_slots = UKR_evacuated_industrial_complexes }
+	add_to_variable = { UKR_evacuated_shared_slots = UKR_evacuated_ammunition_plants }
+	add_to_variable = { UKR_evacuated_shared_slots = UKR_evacuated_electronic_factories }
+
+	if = {
+		limit = { check_variable = { UKR_evacuated_arms_factories > 0 } }
+		remove_building = {
+			type = arms_factory
+			level = UKR_evacuated_arms_factories
+		}
+	}
+	if = {
+		limit = { check_variable = { UKR_evacuated_industrial_complexes > 0 } }
+		remove_building = {
+			type = industrial_complex
+			level = UKR_evacuated_industrial_complexes
+		}
+	}
+	if = {
+		limit = { check_variable = { UKR_evacuated_ammunition_plants > 0 } }
+		remove_building = {
+			type = ammunition_plant
+			level = UKR_evacuated_ammunition_plants
+		}
+	}
+	if = {
+		limit = { check_variable = { UKR_evacuated_electronic_factories > 0 } }
+		remove_building = {
+			type = electronic_factory
+			level = UKR_evacuated_electronic_factories
+		}
+	}
+}
+
+# THIS = destination state. PREV = source state.
+UKR_install_evacuated_industry = {
+	if = {
+		limit = { PREV = { check_variable = { UKR_evacuated_shared_slots > 0 } } }
+		add_extra_state_shared_building_slots = PREV.UKR_evacuated_shared_slots
+	}
+	if = {
+		limit = { PREV = { check_variable = { UKR_evacuated_arms_factories > 0 } } }
+		add_building_construction = {
+			type = arms_factory
+			level = PREV.UKR_evacuated_arms_factories
+			instant_build = yes
+		}
+	}
+	if = {
+		limit = { PREV = { check_variable = { UKR_evacuated_industrial_complexes > 0 } } }
+		add_building_construction = {
+			type = industrial_complex
+			level = PREV.UKR_evacuated_industrial_complexes
+			instant_build = yes
+		}
+	}
+	if = {
+		limit = { PREV = { check_variable = { UKR_evacuated_ammunition_plants > 0 } } }
+		add_building_construction = {
+			type = ammunition_plant
+			level = PREV.UKR_evacuated_ammunition_plants
+			instant_build = yes
+		}
+	}
+	if = {
+		limit = { PREV = { check_variable = { UKR_evacuated_electronic_factories > 0 } } }
+		add_building_construction = {
+			type = electronic_factory
+			level = PREV.UKR_evacuated_electronic_factories
+			instant_build = yes
+		}
+	}
+}
+
+# THIS = source state. The destination is stored as a state flag by the decision.
+UKR_finish_industry_evacuation = {
+	if = {
+		limit = { has_state_flag = UKR_industry_evacuation_to_108 }
+		108 = {
+			UKR_install_evacuated_industry = yes
+		}
+	}
+	else_if = {
+		limit = { has_state_flag = UKR_industry_evacuation_to_121 }
+		121 = {
+			UKR_install_evacuated_industry = yes
+		}
+	}
+	else_if = {
+		limit = { has_state_flag = UKR_industry_evacuation_to_135 }
+		135 = {
+			UKR_install_evacuated_industry = yes
+		}
+	}
+
+	clr_state_flag = UKR_industry_evacuation_in_progress
+	clr_state_flag = UKR_industry_evacuation_to_108
+	clr_state_flag = UKR_industry_evacuation_to_121
+	clr_state_flag = UKR_industry_evacuation_to_135
+
+	if = {
+		limit = {
+			NOT = { has_state_flag = UKR_industry_evacuation_stage_one_complete }
+			OR = {
+				arms_factory > 0
+				industrial_complex > 0
+				ammunition_plant > 0
+				electronic_factory > 0
+			}
+		}
+		set_state_flag = UKR_industry_evacuation_stage_one_complete
+	}
+	else = {
+		clr_state_flag = UKR_industry_evacuation_stage_one_complete
+		set_state_flag = UKR_industry_evacuation_complete
+	}
+
+	clear_variable = UKR_evacuated_arms_factories
+	clear_variable = UKR_evacuated_industrial_complexes
+	clear_variable = UKR_evacuated_ammunition_plants
+	clear_variable = UKR_evacuated_electronic_factories
+	clear_variable = UKR_evacuated_shared_slots
+}
+
+# Restores the removed buildings if the timed decision is cancelled.
+UKR_cancel_industry_evacuation = {
+	if = {
+		limit = { check_variable = { UKR_evacuated_arms_factories > 0 } }
+		add_building_construction = {
+			type = arms_factory
+			level = UKR_evacuated_arms_factories
+			instant_build = yes
+		}
+	}
+	if = {
+		limit = { check_variable = { UKR_evacuated_industrial_complexes > 0 } }
+		add_building_construction = {
+			type = industrial_complex
+			level = UKR_evacuated_industrial_complexes
+			instant_build = yes
+		}
+	}
+	if = {
+		limit = { check_variable = { UKR_evacuated_ammunition_plants > 0 } }
+		add_building_construction = {
+			type = ammunition_plant
+			level = UKR_evacuated_ammunition_plants
+			instant_build = yes
+		}
+	}
+	if = {
+		limit = { check_variable = { UKR_evacuated_electronic_factories > 0 } }
+		add_building_construction = {
+			type = electronic_factory
+			level = UKR_evacuated_electronic_factories
+			instant_build = yes
+		}
+	}
+	clr_state_flag = UKR_industry_evacuation_in_progress
+	clr_state_flag = UKR_industry_evacuation_to_108
+	clr_state_flag = UKR_industry_evacuation_to_121
+	clr_state_flag = UKR_industry_evacuation_to_135
+
+	clear_variable = UKR_evacuated_arms_factories
+	clear_variable = UKR_evacuated_industrial_complexes
+	clear_variable = UKR_evacuated_ammunition_plants
+	clear_variable = UKR_evacuated_electronic_factories
+	clear_variable = UKR_evacuated_shared_slots
+}
