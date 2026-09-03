@@ -1,0 +1,41 @@
+scripted_frontline_tick = {
+	clear_array = global.frontline_states_array
+	every_country = {
+		limit = { has_war = yes }
+
+		every_controlled_state = {
+			if = {
+				limit = { PREV = { NOT = { has_full_control_of_state = PREV.state_id } } }
+				
+				set_variable = { frontline_state_unsafe_pointer = global.frontline_states_array^num }
+				set_variable = { frontline_state_is_neighbor_state = 0 }
+				add_to_array = { global.frontline_states_array = state_id }
+			}
+			else = {
+				set_temp_variable = { temp_controller = controller }
+				set_temp_variable = { temp_is_frontline = 0 }
+				every_neighbor_state = {
+					limit = { CONTROLLER = { NOT = { has_full_control_of_state = PREV.state_id } } }
+					add_to_temp_variable = { temp_is_frontline = 1 }
+				}
+
+				if = {
+					limit = {
+						check_variable = { temp_is_frontline > 0 }
+					}
+				
+					set_variable = { frontline_state_unsafe_pointer = global.frontline_states_array^num }
+					set_variable = { frontline_state_is_neighbor_state = 1 }
+					add_to_array = { global.frontline_states_array = state_id }
+				}
+			}
+		}
+	}
+
+	for_each_loop = {
+		array = global.frontline_states_array
+		value = val
+
+		log = "FL state: [?val]"
+	}
+}
