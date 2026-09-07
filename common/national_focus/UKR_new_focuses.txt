@@ -3143,18 +3143,16 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
  				type = NTO_uav_strike_bayraktar
  				producer = NTO
  				amount = 56
- 			}
- 			custom_effect_tooltip = Volunteer_1_bonus
- 			custom_effect_tooltip = Bayraktars_from_the_people_cet
- 			hidden_effect = {
- 				add_to_variable = {
- 					var = UKR_volunteerACT
- 					value = 10
- 				}
- 				UKR_Volunteer_movement_scripted_effects = yes
- 				activate_mission = UKR_volunteer_movement_NTO_drones_Bayraktar
- 			}
- 		}
+			}
+			custom_effect_tooltip = Volunteer_1_bonus
+			hidden_effect = {
+				add_to_variable = {
+					var = UKR_volunteerACT
+					value = 10
+				}
+				UKR_Volunteer_movement_scripted_effects = yes
+			}
+		}
  		search_filters = {
  			FOCUS_FILTER_POLITICAL
  		}
@@ -3257,7 +3255,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		x = 0
 		y = 4
 		relative_position_id = UKR_rebuild_economy_for_war_reality
-		cost = 0.2
+		cost = 0.5
 		prerequisite = { focus = UKR_support_private_business }
 		prerequisite = { focus = UKR_we_rented_a_satellite }
 		prerequisite = { focus = UKR_solidarity_lanes }
@@ -3406,7 +3404,8 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		cost = 0.6
 		prerequisite = { focus = UKR_check_security_apparatus }
 		completion_reward = {
-			country_event = ukr_advisors_events.8
+			upgrade_intelligence_agency = upgrade_passive_defense
+		
 		}
 	}
 
@@ -3418,7 +3417,9 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		relative_position_id = UKR_pause_negotiations
 		cost = 0.8
 		prerequisite = { focus = UKR_identify_agent_networks }
-		completion_reward = {}
+		completion_reward = {
+			country_event = ukr_advisors_events.8
+		}
 	}
 
 	focus = {
@@ -3453,7 +3454,9 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		relative_position_id = UKR_pause_negotiations
 		cost = 1
 		prerequisite = { focus = UKR_seek_heavy_weapons_supplies }
-		completion_reward = {}
+		completion_reward = {
+			custom_effect_tooltip = UKR_request_western_artillery_systems_tt
+		}
 	}
 
 	focus = {
@@ -3462,7 +3465,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		x = 0
 		y = 4
 		relative_position_id = UKR_pause_negotiations
-		cost = 0.2
+		cost = 0.5
 		prerequisite = { focus = UKR_black_sea_grain_initiative }
 		prerequisite = { focus = UKR_candidate_status }
 		prerequisite = { focus = UKR_restore_order_in_sbu }
@@ -3504,14 +3507,6 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 
  			add_command_power = 20
 
-			set_temp_variable = {
- 				DELTA_UKR_Ukraines_ground_forces_army_org_factor = -0.0005
- 			}	
- 			add_to_variable = {
- 				UKR_Ukraines_ground_forces_army_org_factor = DELTA_UKR_Ukraines_ground_forces_army_org_factor
-			}	
-
- 			custom_effect_tooltip = Creation_of_new_brigades_tt
 
  		}
  		search_filters = {
@@ -3668,7 +3663,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		x = 0
 		y = 4
 		relative_position_id = UKR_buy_time_in_donbas
-		cost = 0.2
+		cost = 0.5
 		prerequisite = { focus = UKR_remove_territorial_limits_on_tdf }
 		prerequisite = { focus = UKR_strike_enemy_operational_rear }
 		prerequisite = { focus = UKR_secure_western_coast_of_odessa }
@@ -3692,13 +3687,19 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		prerequisite = { focus = UKR_gradual_economic_adaptation }
 		prerequisite = { focus = UKR_consolidate_new_political_course }
 		prerequisite = { focus = UKR_seize_operational_initiative }
-		completion_reward = {}
+		completion_reward = {
+			set_country_flag = UKR_autumn_storm_focus_completed
+			mark_focus_tree_layout_dirty = yes
+		}
 	}
 	
 
 	focus = {
 		id = UKR_transition_to_wartime_economy
 		icon = GFX_Transition_to_a_wartime_economy
+		allow_branch = {
+			has_country_flag = UKR_autumn_storm_focus_completed
+		}
 		x = -8
 		y = 1
 		relative_position_id = UKR_autumn_storm
@@ -4090,6 +4091,9 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 	focus = {
 		id = UKR_consolidate_political_front
 		icon = GFX_UKR_consolidate_political_front
+		allow_branch = {
+			has_country_flag = UKR_autumn_storm_focus_completed
+		}
 		x = 0
 		y = 1
 		relative_position_id = UKR_autumn_storm
@@ -4104,6 +4108,9 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 	focus = {
 		id = UKR_launch_autumn_campaign
 		icon = GFX_UKR_launch_autumn_campaign
+		allow_branch = {
+			has_country_flag = UKR_autumn_storm_focus_completed
+		}
 		x = 8
 		y = 1
 		relative_position_id = UKR_autumn_storm
@@ -4393,38 +4400,54 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		cost = 0.5
 		prerequisite = { focus = UKR_transition_to_wartime_economy }
 		completion_reward = {
-    custom_effect_tooltip = UKR_nationalize_strategic_enterprises_tt
+			208 = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+					instant_build = yes
+				}
+			}
 
-    hidden_effect = {
-        208 = {
-            add_extra_state_shared_building_slots = 3
-            add_building_construction = {
-                type = arms_factory
-                level = 3
-                instant_build = yes
-            }
-        }
+			105 = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+					instant_build = yes
+				}
+			}
 
-        105 = {
-            add_extra_state_shared_building_slots = 3
-            add_building_construction = {
-                type = arms_factory
-                level = 3
-                instant_build = yes
-            }
-        }
-
-        128 = {
-            add_extra_state_shared_building_slots = 3
-            add_building_construction = {
-                type = synthetic_refinery
-                level = 3
-                instant_build = yes
-            }
-        }
-    }
-}
+			128 = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = synthetic_refinery
+					level = 3
+					instant_build = yes
+				}
+			}
 		}
+	}
 
 	focus = {
 		id = UKR_mobilize_industry_for_defense
@@ -4527,7 +4550,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		x = 0
 		y = 4
 		relative_position_id = UKR_transition_to_wartime_economy
-		cost = 0.1
+		cost = 0.5
 		prerequisite = { focus = UKR_establish_ammunition_production }
 		prerequisite = { focus = UKR_develop_volunteer_movement_in_europe }
 		prerequisite = { focus = UKR_strengthen_enterprise_protection }
@@ -4670,7 +4693,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		x = 0
 		y = 4
 		relative_position_id = UKR_consolidate_political_front
-		cost = 0.2
+		cost = 0.5
 		prerequisite = { focus = UKR_create_air_shield_of_ukraine }
 		prerequisite = { focus = UKR_accelerated_nato_application }
 		prerequisite = { focus = UKR_russia_must_pay }
@@ -4836,7 +4859,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		x = 0
 		y = 4
 		relative_position_id = UKR_launch_autumn_campaign
-		cost = 0.2
+		cost = 0.5
 		prerequisite = { focus = UKR_pin_enemy_reserves }
 		prerequisite = { focus = UKR_isolate_battlefield }
 		prerequisite = { focus = UKR_expand_training_abroad }
@@ -4867,6 +4890,9 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		completion_reward = {
 			add_political_power = 150
 			add_war_support = 0.1
+			set_country_flag = UKR_prepare_for_final_push_focus_completed
+			complete_national_focus = UKR_between_two_fires
+			mark_focus_tree_layout_dirty = yes
 		}
 	}
 
@@ -4877,10 +4903,13 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 	focus = {
 		id = UKR_between_two_fires
 		icon = GFX_UKR_BASE
+		allow_branch = {
+			has_country_flag = UKR_prepare_for_final_push_focus_completed
+		}
 		x = 0
 		y = 1
 		relative_position_id = UKR_prepare_for_final_push
-		cost = 10
+		cost = 0
 		prerequisite = { focus = UKR_prepare_for_final_push }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_Two_Fires"
@@ -4915,7 +4944,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		completion_reward = {
 			add_timed_idea = {
  				idea = UKR_MIC_Revive
- 				days = 240
+ 				days = 360
  			}
  		}
  		search_filters = {
@@ -4945,8 +4974,7 @@ log = "[GetDateText]: [Root.GetName]: Focus UKR_national_reassurer"
 		cost = 0.6
 		prerequisite = { focus = UKR_between_two_fires }
 		completion_reward = {
-			custom_effect_tooltip = UKR_Heading_for_Borders_1991_tt
- 			army_experience = 25
+ 			army_experience = 50
  			add_mastery = {
  				amount = 150
  				track = tier_1_armour
