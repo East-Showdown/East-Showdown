@@ -197,6 +197,6 @@ Located in `tools/`:
 
 ## 📝 License
 
-EPL-2.0
+MOD CONTENT LICENSE AND CONTRIBUTOR AGREEMENT
 
 ---
