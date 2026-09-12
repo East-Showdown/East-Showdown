@@ -33766,3 +33766,1053 @@ UKR_naval_invasion_el_budanoV = {
 		}
 	}
 }
+
+UKR_ministry_of_defense_category = {
+	UKR_accumulate_ammunition_reserve_mission = {
+		priority = 110
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 120
+		selectable_mission = no
+
+		allowed = {
+			original_tag = UKR
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = UKR_accumulate_ammunition_reserve_1m_required_tt
+				check_variable = {
+					var = ammunition_value_k
+					compare = greater_than_or_equals
+					value = 1000
+				}
+			}
+		}
+
+		activation = {
+			always = no
+		}
+
+		complete_effect = {
+			clr_country_flag = UKR_ammunition_reserve_not_accumulated
+			set_country_flag = UKR_ammunition_reserve_accumulated
+		}
+
+		timeout_effect = {
+			clr_country_flag = UKR_ammunition_reserve_accumulated
+			set_country_flag = UKR_ammunition_reserve_not_accumulated
+		}
+	}
+
+	UKR_ministry_implement_logfas = {
+		priority = 109
+		fire_only_once = yes
+		cost = 0
+		days_remove = 120
+
+		custom_cost_trigger = {
+			command_power > 29
+			has_army_experience > 29
+		}
+		custom_cost_text = UKR_ministry_cost_cp_30_ae_30
+
+		visible = {
+			has_completed_focus = UKR_implement_logfas
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -30
+				army_experience = -30
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = UKR_implement_logfas_effect_tt
+			add_to_variable = { UKR_supply_consumption_factor = -0.05 }
+			force_update_dynamic_modifier = yes
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_expand_delta_usage = {
+		priority = 108
+		fire_only_once = yes
+		cost = 0
+		days_remove = 120
+
+		custom_cost_trigger = {
+			command_power > 29
+			has_army_experience > 29
+		}
+		custom_cost_text = UKR_ministry_cost_cp_30_ae_30
+
+		visible = {
+			has_completed_focus = UKR_expand_delta_usage
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -30
+				army_experience = -30
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = UKR_expand_delta_usage_effect_tt
+			add_to_variable = { UKR_coordination_bonus = 0.15 }
+			add_to_variable = { UKR_initiative = 0.05 }
+			force_update_dynamic_modifier = yes
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_question_army_equipment = {
+		priority = 100
+		fire_only_once = yes
+		cost = 30
+		days_remove = 20
+
+		visible = {
+			NOT = { has_country_flag = UKR_ministry_army_equipment_question_resolved }
+		}
+
+		remove_effect = {
+			hidden_effect = {
+				set_country_flag = UKR_ministry_army_equipment_question_resolved
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_begin_deep_reactivation = {
+		icon = GFX_RUS_deconservation_decisions
+		priority = 90
+		fire_only_once = yes
+		cost = 50
+		days_remove = 14
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			NOT = { has_country_flag = UKR_ministry_deep_reactivation_unlocked }
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_begin_deep_reactivation_tt
+			hidden_effect = {
+				set_country_flag = UKR_ministry_deep_reactivation_unlocked
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_complete_prewar_contract = {
+		priority = 89
+		fire_only_once = yes
+		cost = 50
+		days_remove = 50
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+		}
+
+		remove_effect = {
+			add_equipment_to_stockpile = {
+				type = tank_sov_t64_equipment
+				variant_name = "Т-64БМ2 Булат"
+				amount = 60
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = tank_sov_t72_equipment
+				variant_name = "Т-72 АМТ"
+				amount = 30
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = apc_ukr_btr4_equipment
+				variant_name = "БТР-4 Буцефал"
+				amount = 80
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = apc_ukr_btr3_equipment
+				variant_name = "БТР-3"
+				amount = 100
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = ifv_sov_bmp1_equipment
+				variant_name = "БМП-1У/У/УДМ 'Шквал'"
+				amount = 30
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = ifv_sov_bmp2_equipment
+				variant_name = "БМП-2"
+				amount = 30
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_4_equipment
+				variant_name = "Козак-2М"
+				amount = 150
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_3_equipment
+				variant_name = "Козак-7"
+				amount = 250
+				producer = UKR
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_accelerate_soviet_tank_modernization = {
+		priority = 80
+		fire_only_once = yes
+		cost = 0
+		days_remove = 30
+
+		custom_cost_trigger = {
+			has_political_power > 29
+			command_power > 9
+		}
+		custom_cost_text = UKR_ministry_cost_pp_30_cp_10
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_rebuild_economy_for_war_reality
+			NOT = { has_country_flag = UKR_ministry_soviet_tank_modernization_unlocked }
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -30
+				add_command_power = -10
+			}
+		}
+
+		remove_effect = {
+			add_ideas = UKR_ukrainian_tank_building_school
+			hidden_effect = {
+				set_country_flag = UKR_ministry_soviet_tank_modernization_unlocked
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_modernize_t64_t80_family = {
+		priority = 79
+		fire_only_once = yes
+		cost = 0
+		days_remove = 21
+
+		custom_cost_trigger = {
+			has_political_power > 29
+			has_army_experience > 19
+		}
+		custom_cost_text = UKR_ministry_cost_pp_30_ae_20
+
+		visible = {
+			has_country_flag = UKR_ministry_soviet_tank_modernization_unlocked
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -30
+				army_experience = -20
+			}
+		}
+
+		remove_effect = {
+			if = {
+				limit = { has_idea = UKR_ukrainian_tank_building_school_t72 }
+				swap_ideas = {
+					remove_idea = UKR_ukrainian_tank_building_school_t72
+					add_idea = UKR_ukrainian_tank_building_school_combined
+				}
+			}
+			else_if = {
+				limit = { has_idea = UKR_ukrainian_tank_building_school }
+				swap_ideas = {
+					remove_idea = UKR_ukrainian_tank_building_school
+					add_idea = UKR_ukrainian_tank_building_school_t64_t80
+				}
+			}
+			hidden_effect = {
+				set_country_flag = UKR_ministry_t64_t80_modernization_completed
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_modernize_t72 = {
+		priority = 78
+		fire_only_once = yes
+		cost = 0
+		days_remove = 21
+
+		custom_cost_trigger = {
+			has_political_power > 29
+			has_army_experience > 19
+		}
+		custom_cost_text = UKR_ministry_cost_pp_30_ae_20
+
+		visible = {
+			has_country_flag = UKR_ministry_soviet_tank_modernization_unlocked
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -30
+				army_experience = -20
+			}
+		}
+
+		remove_effect = {
+			if = {
+				limit = { has_idea = UKR_ukrainian_tank_building_school_t64_t80 }
+				swap_ideas = {
+					remove_idea = UKR_ukrainian_tank_building_school_t64_t80
+					add_idea = UKR_ukrainian_tank_building_school_combined
+				}
+			}
+			else_if = {
+				limit = { has_idea = UKR_ukrainian_tank_building_school }
+				swap_ideas = {
+					remove_idea = UKR_ukrainian_tank_building_school
+					add_idea = UKR_ukrainian_tank_building_school_t72
+				}
+			}
+			hidden_effect = {
+				set_country_flag = UKR_ministry_t72_modernization_completed
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_t64_modernization = {
+		priority = 77
+		fire_only_once = no
+		cost = 0
+		days_remove = 120
+		days_re_enable = 1
+
+		custom_cost_trigger = {
+			has_political_power > 49
+			has_army_experience > 19
+		}
+		custom_cost_text = UKR_ministry_cost_pp_50_ae_20
+
+		visible = {
+			has_country_flag = UKR_ministry_t64_t80_modernization_completed
+			check_variable = { UKR_ministry_t64_modernization_orders < 6 }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = UKR_ministry_has_200_base_t64_tt
+				check_variable = {
+					var = num_equipment@tank_sov_t64_equipment
+					value = 200
+					compare = greater_than_or_equals
+				}
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = UKR_ministry_t64_stockpile_debit_tt
+			hidden_effect = {
+				UKR_ministry_t64_consume_stockpile = yes
+				if = {
+					limit = { NOT = { has_country_flag = UKR_ministry_t64_order_shortfall } }
+					add_political_power = -50
+					army_experience = -20
+				}
+			}
+		}
+
+		cancel_trigger = {
+			hidden_trigger = { has_country_flag = UKR_ministry_t64_order_shortfall }
+		}
+		cancel_effect = {
+			hidden_effect = { clr_country_flag = UKR_ministry_t64_order_shortfall }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = UKR_ministry_t64_order_shortfall } }
+				hidden_effect = {
+					add_to_variable = { var = UKR_ministry_t64_modernization_orders value = 1 }
+				}
+				add_equipment_to_stockpile = {
+					type = tank_sov_t64_equipment
+					variant_name = "Т-64БМ2 Булат"
+					amount = 200
+					producer = UEM
+				}
+			}
+			hidden_effect = { clr_country_flag = UKR_ministry_t64_order_shortfall }
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_t72_modernization = {
+		priority = 76
+		fire_only_once = no
+		cost = 0
+		days_remove = 120
+		days_re_enable = 1
+
+		custom_cost_trigger = {
+			has_political_power > 49
+			has_army_experience > 19
+		}
+		custom_cost_text = UKR_ministry_cost_pp_50_ae_20
+
+		visible = {
+			has_country_flag = UKR_ministry_t72_modernization_completed
+			check_variable = { UKR_ministry_t72_modernization_orders < 6 }
+		}
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = UKR_ministry_has_120_base_t72_tt
+				check_variable = {
+					var = num_equipment@tank_sov_t72_equipment
+					value = 120
+					compare = greater_than_or_equals
+				}
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = UKR_ministry_t72_stockpile_debit_tt
+			hidden_effect = {
+				UKR_ministry_t72_consume_stockpile = yes
+				if = {
+					limit = { NOT = { has_country_flag = UKR_ministry_t72_order_shortfall } }
+					add_political_power = -50
+					army_experience = -20
+				}
+			}
+		}
+
+		cancel_trigger = {
+			hidden_trigger = { has_country_flag = UKR_ministry_t72_order_shortfall }
+		}
+		cancel_effect = {
+			hidden_effect = { clr_country_flag = UKR_ministry_t72_order_shortfall }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = UKR_ministry_t72_order_shortfall } }
+				add_equipment_to_stockpile = {
+					type = tank_sov_t72_equipment
+					variant_name = "Т-72 АМТ"
+					amount = 120
+					producer = UEM
+				}
+				hidden_effect = {
+					add_to_variable = { var = UKR_ministry_t72_modernization_orders value = 1 }
+				}
+			}
+			hidden_effect = { clr_country_flag = UKR_ministry_t72_order_shortfall }
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_launch_bohdana_family_serial_production = {
+		priority = 70
+		fire_only_once = yes
+		cost = 0
+		days_remove = 60
+
+		custom_cost_trigger = {
+			has_political_power > 79
+			has_army_experience > 49
+		}
+		custom_cost_text = UKR_ministry_cost_pp_80_ae_50
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_revive_military_industrial_complex
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -80
+				army_experience = -50
+			}
+			if = {
+				limit = { has_idea = Bogdana_production_olkha }
+				swap_ideas = {
+					remove_idea = Bogdana_production_olkha
+					add_idea = Bogdana_production_combined
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = { has_idea = Bogdana_production }
+					NOT = { has_idea = Bogdana_production_combined }
+				}
+				add_ideas = Bogdana_production
+			}
+		}
+
+		remove_effect = {
+			hidden_effect = {
+				set_country_flag = UKR_ministry_bohdana_orders_unlocked
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_resume_olkha_production = {
+		priority = 69
+		fire_only_once = yes
+		cost = 0
+		days_remove = 60
+
+		custom_cost_trigger = {
+			has_political_power > 79
+			has_army_experience > 49
+		}
+		custom_cost_text = UKR_ministry_cost_pp_80_ae_50
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_revive_military_industrial_complex
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_political_power = -80
+				army_experience = -50
+			}
+			if = {
+				limit = { has_idea = Bogdana_production }
+				swap_ideas = {
+					remove_idea = Bogdana_production
+					add_idea = Bogdana_production_combined
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = { has_idea = Bogdana_production_olkha }
+					NOT = { has_idea = Bogdana_production_combined }
+				}
+				add_ideas = Bogdana_production_olkha
+			}
+		}
+
+		remove_effect = {
+			hidden_effect = {
+				set_country_flag = UKR_ministry_olkha_orders_unlocked
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_2s22_bohdana = {
+		priority = 68
+		fire_only_once = no
+		cost = 50
+		days_remove = 240
+		days_re_enable = 1
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_country_flag = UKR_ministry_bohdana_orders_unlocked
+			has_completed_focus = UKR_revive_military_industrial_complex
+			check_variable = { UKR_ministry_2s22_bohdana_orders < 6 }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 0 } }
+				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 260 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 1 } }
+				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 300 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 2 } }
+				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 340 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 3 } }
+				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 380 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 4 } }
+				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 420 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 5 } }
+				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 460 producer = UKR }
+			}
+			hidden_effect = {
+				add_to_variable = { var = UKR_ministry_2s22_bohdana_orders value = 1 }
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_2p22_bohdana = {
+		priority = 67
+		fire_only_once = no
+		cost = 50
+		days_remove = 240
+		days_re_enable = 1
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_country_flag = UKR_ministry_bohdana_orders_unlocked
+			has_completed_focus = UKR_revive_military_industrial_complex
+			check_variable = { UKR_ministry_2p22_bohdana_orders < 6 }
+		}
+
+		available = {
+			has_tech = ukr_artillery_2p22_bohdana
+		}
+
+		remove_effect = {
+			if = {
+				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 0 } }
+				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 300 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 1 } }
+				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 380 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 2 } }
+				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 460 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 3 } }
+				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 540 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 4 } }
+				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 620 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 5 } }
+				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 700 producer = UKR }
+			}
+			hidden_effect = {
+				add_to_variable = { var = UKR_ministry_2p22_bohdana_orders value = 1 }
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_olkha = {
+		priority = 66
+		fire_only_once = no
+		cost = 50
+		days_remove = 240
+		days_re_enable = 1
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_country_flag = UKR_ministry_olkha_orders_unlocked
+			has_completed_focus = UKR_revive_military_industrial_complex
+			check_variable = { UKR_ministry_olkha_orders < 6 }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { check_variable = { UKR_ministry_olkha_orders = 0 } }
+				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 120 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_olkha_orders = 1 } }
+				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 160 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_olkha_orders = 2 } }
+				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 200 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_olkha_orders = 3 } }
+				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 240 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_olkha_orders = 4 } }
+				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 280 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_olkha_orders = 5 } }
+				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 320 producer = UKR }
+			}
+			hidden_effect = {
+				add_to_variable = { var = UKR_ministry_olkha_orders value = 1 }
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_kozak_family = {
+		priority = 65
+		fire_only_once = yes
+		cost = 30
+		days_remove = 80
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_revive_military_industrial_complex
+		}
+
+		remove_effect = {
+			add_equipment_to_stockpile = {
+				type = imv_medium_3_equipment
+				variant_name = "Козак-7"
+				amount = 150
+				producer = UKR
+			}
+			add_equipment_to_stockpile = {
+				type = imv_medium_2_equipment
+				variant_name = "Козак-5"
+				amount = 200
+				producer = UKR
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_infantry_equipment = {
+		priority = 64
+		fire_only_once = no
+		cost = 50
+		days_remove = 180
+		days_re_enable = 1
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_transition_to_wartime_economy
+			check_variable = { UKR_ministry_infantry_equipment_orders < 6 }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 0 } }
+				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 10000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_z10_equipment amount = 20000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_vylkan_equipment amount = 10000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 1 } }
+				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 15000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_z10_equipment amount = 25000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_vylkan_equipment amount = 15000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 2 } }
+				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 20000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_z10_equipment amount = 30000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_vylkan_equipment amount = 20000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 3 } }
+				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 25000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_z10_equipment amount = 35000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_vylkan_equipment amount = 25000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 4 } }
+				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 30000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_z10_equipment amount = 40000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_vylkan_equipment amount = 30000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 5 } }
+				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 35000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_z10_equipment amount = 45000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_vylkan_equipment amount = 35000 producer = UKR }
+			}
+			hidden_effect = {
+				add_to_variable = { var = UKR_ministry_infantry_equipment_orders value = 1 }
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_body_armor_and_uniforms = {
+		priority = 63
+		fire_only_once = no
+		cost = 50
+		days_remove = 180
+		days_re_enable = 1
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_transition_to_wartime_economy
+			check_variable = { UKR_ministry_body_armor_uniform_orders < 6 }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 0 } }
+				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 30000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_uniform_multicam_equipment amount = 30000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 1 } }
+				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 35000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_uniform_multicam_equipment amount = 35000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 2 } }
+				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 40000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_uniform_multicam_equipment amount = 40000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 3 } }
+				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 45000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_uniform_multicam_equipment amount = 45000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 4 } }
+				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 50000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_uniform_multicam_equipment amount = 50000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 5 } }
+				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 55000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_uniform_multicam_equipment amount = 55000 producer = UKR }
+			}
+			hidden_effect = {
+				add_to_variable = { var = UKR_ministry_body_armor_uniform_orders value = 1 }
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+
+	UKR_ministry_order_portable_support_equipment = {
+		priority = 62
+		fire_only_once = no
+		cost = 50
+		days_remove = 180
+		days_re_enable = 1
+
+		visible = {
+			has_country_flag = UKR_ministry_army_equipment_question_resolved
+			has_completed_focus = UKR_transition_to_wartime_economy
+			check_variable = { UKR_ministry_portable_support_equipment_orders < 6 }
+		}
+
+		remove_effect = {
+			if = {
+				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 0 } }
+				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 5000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_mortar_ypik82_equipment amount = 5000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_atgm_skif_equipment amount = 5000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 1 } }
+				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 6000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_mortar_ypik82_equipment amount = 6000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_atgm_skif_equipment amount = 6000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 2 } }
+				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 7000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_mortar_ypik82_equipment amount = 7000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_atgm_skif_equipment amount = 7000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 3 } }
+				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 8000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_mortar_ypik82_equipment amount = 8000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_atgm_skif_equipment amount = 8000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 4 } }
+				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 9000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_mortar_ypik82_equipment amount = 9000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_atgm_skif_equipment amount = 9000 producer = UKR }
+			}
+			if = {
+				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 5 } }
+				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 10000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_mortar_ypik82_equipment amount = 10000 producer = UKR }
+				add_equipment_to_stockpile = { type = infantry_atgm_skif_equipment amount = 10000 producer = UKR }
+			}
+			hidden_effect = {
+				add_to_variable = { var = UKR_ministry_portable_support_equipment_orders value = 1 }
+			}
+		}
+
+		ai_will_do = { factor = 10 }
+	}
+}
+
+UKR_limited_operations_in_russia_category = {
+	UKR_limited_operations_start_border_section_selection = {
+		icon = GFX_bz_start_selecting_breakthrough_states
+		priority = 100
+
+		visible = {
+			NOT = { has_country_flag = UKR_limited_operations_selecting_border_section }
+			NOT = { has_country_flag = UKR_limited_operation_in_progress }
+		}
+
+		available = {
+			has_war_with = RUS
+			OR = {
+				623 = { owner = { has_country_flag = is_bz_country } }
+				624 = { owner = { has_country_flag = is_bz_country } }
+				120 = { owner = { has_country_flag = is_bz_country } }
+			}
+		}
+
+		complete_effect = {
+			set_country_flag = UKR_limited_operations_selecting_border_section
+		}
+
+		ai_will_do = { factor = 0 }
+	}
+
+	UKR_limited_operations_breakthrough_belgorod_sumy_3 = {
+		icon = GFX_bz_select_breakthrough
+		priority = 90
+		fire_only_once = yes
+		days_remove = 3
+		highlight_states = { highlight_state_targets = { state = 623 } }
+
+		visible = {
+			has_country_flag = UKR_limited_operations_selecting_border_section
+			623 = { owner = { has_country_flag = is_bz_country } }
+		}
+
+		available = { has_war_with = RUS }
+
+		complete_effect = {
+			clr_country_flag = UKR_limited_operations_selecting_border_section
+			set_country_flag = UKR_limited_operation_in_progress
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = UKR_limited_operations_border_section_opened_tt
+			hidden_effect = {
+				clr_country_flag = UKR_limited_operation_in_progress
+				set_variable = { bz_made_any_breakthrough = 1 }
+				623 = {
+					add_dynamic_modifier = {
+						modifier = bz_recent_breakthrough
+						days = global.bz_recent_breakthough_dynamic_modifier_days
+					}
+					add_dynamic_modifier = { modifier = bz_state_breakthrough }
+					transfer_state_to = RUS
+				}
+				RUS = { set_country_flag = russian_border_is_no_longer_safe }
+			}
+		}
+
+		ai_will_do = { factor = 0 }
+	}
+
+	UKR_limited_operations_breakthrough_belgorod_sumy_2 = {
+		icon = GFX_bz_select_breakthrough
+		priority = 80
+		fire_only_once = yes
+		days_remove = 3
+		highlight_states = { highlight_state_targets = { state = 624 } }
+
+		visible = {
+			has_country_flag = UKR_limited_operations_selecting_border_section
+			624 = { owner = { has_country_flag = is_bz_country } }
+		}
+
+		available = { has_war_with = RUS }
+
+		complete_effect = {
+			clr_country_flag = UKR_limited_operations_selecting_border_section
+			set_country_flag = UKR_limited_operation_in_progress
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = UKR_limited_operations_border_section_opened_tt
+			hidden_effect = {
+				clr_country_flag = UKR_limited_operation_in_progress
+				set_variable = { bz_made_any_breakthrough = 1 }
+				624 = {
+					add_dynamic_modifier = {
+						modifier = bz_recent_breakthrough
+						days = global.bz_recent_breakthough_dynamic_modifier_days
+					}
+					add_dynamic_modifier = { modifier = bz_state_breakthrough }
+					transfer_state_to = RUS
+				}
+				RUS = { set_country_flag = russian_border_is_no_longer_safe }
+			}
+		}
+
+		ai_will_do = { factor = 0 }
+	}
+
+	UKR_limited_operations_breakthrough_belgorod_kharkiv_5 = {
+		icon = GFX_bz_select_breakthrough
+		priority = 70
+		fire_only_once = yes
+		days_remove = 3
+		highlight_states = { highlight_state_targets = { state = 120 } }
+
+		visible = {
+			has_country_flag = UKR_limited_operations_selecting_border_section
+			120 = { owner = { has_country_flag = is_bz_country } }
+		}
+
+		available = { has_war_with = RUS }
+
+		complete_effect = {
+			clr_country_flag = UKR_limited_operations_selecting_border_section
+			set_country_flag = UKR_limited_operation_in_progress
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = UKR_limited_operations_border_section_opened_tt
+			hidden_effect = {
+				clr_country_flag = UKR_limited_operation_in_progress
+				set_variable = { bz_made_any_breakthrough = 1 }
+				120 = {
+					add_dynamic_modifier = {
+						modifier = bz_recent_breakthrough
+						days = global.bz_recent_breakthough_dynamic_modifier_days
+					}
+					add_dynamic_modifier = { modifier = bz_state_breakthrough }
+					transfer_state_to = RUS
+				}
+				RUS = { set_country_flag = russian_border_is_no_longer_safe }
+			}
+		}
+
+		ai_will_do = { factor = 0 }
+	}
+}
