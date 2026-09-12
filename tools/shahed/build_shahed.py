@@ -25,7 +25,6 @@ EQUIPMENT = (
     'rus_irn_guided_uav_shahed131', 'rus_guided_uav_shahed131',
     'rus_guided_uav_geranium', 'rus_guided_uav_geranium_m',
     'rus_guided_uav_geranium3', 'rus_guided_uav_geranium4',
-    'rus_guided_uav_geranium5',
 )
 
 

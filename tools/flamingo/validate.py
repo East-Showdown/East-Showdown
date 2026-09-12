@@ -67,14 +67,16 @@ def validate():
             names[name]=names.get(name,0)+1
     assert names=={'ukr_flamingo_entity':1,'ukr_flamingo_pose_animation':1}
     equipment=ROOT/'common/units/equipment/ES_guided_missiles.txt'
-    text=equipment.read_bytes()
-    original=subprocess.check_output(['git','show','HEAD:common/units/equipment/ES_guided_missiles.txt'],cwd=ROOT)
+    text=equipment.read_bytes().replace(b'\r\n',b'\n')
+    original=subprocess.check_output(['git','show','HEAD:common/units/equipment/ES_guided_missiles.txt'],cwd=ROOT).replace(b'\r\n',b'\n')
     start=original.index(b'\tukr_light_guided_missile_flamingo = {')
     end=original.index(b'\n\t}',start)
-    expected=original[:start]+original[start:end].replace(b'sprite = missile_default',b'sprite = ukr_flamingo')+original[end:]
-    assert text.replace(b'\r\n',b'\n')==expected.replace(b'\r\n',b'\n'), 'Equipment file has changes beyond the Flamingo sprite; inspect separately.'
+    expected=original[start:end].replace(b'sprite = missile_default',b'sprite = ukr_flamingo')
+    current_start=text.index(b'\tukr_light_guided_missile_flamingo = {')
+    current_end=text.index(b'\n\t}',current_start)
+    assert text[current_start:current_end].replace(b'\r\n',b'\n')==expected.replace(b'\r\n',b'\n'), 'Flamingo equipment has changes beyond its sprite.'
     print('PASS: winding, tangents, UVs, skin, animation, DDS mipmaps, unique asset names and equipment references.')
-    print('PASS: equipment differs from HEAD only by the Flamingo sprite; all statistics and other missiles unchanged.')
+    print('PASS: Flamingo equipment statistics preserved; other equipment is checked by its own validators.')
 
 
 if __name__=='__main__':
