@@ -34,7 +34,8 @@ def block(text,name):
     return text[start:pos]
 
 
-def check_model(folder,config):
+def check_model(folder,config,technology_file='common/technologies/missiles_rus.txt',
+                equipment_files=('common/units/equipment/ES_guided_missiles.txt',)):
     meshfile,animfile,sprite,triangles,equipment=config
     directory=ROOT/'gfx/models/units/missiles'/folder
     path=directory/meshfile;tree=read(path)
@@ -101,8 +102,8 @@ def check_model(folder,config):
     for source in (asset,gfx,animations):assert source.count('{')==source.count('}')
     all_entities='\n'.join(path.read_text(encoding='utf-8-sig',errors='replace') for path in (ROOT/'gfx/entities').glob('*.asset'))
     assert len(re.findall(r'name\s*=\s*"'+sprite+r'_entity"',all_entities))==1
-    text=(ROOT/'common/units/equipment/ES_guided_missiles.txt').read_text(encoding='utf-8-sig')
-    technology=(ROOT/'common/technologies/missiles_rus.txt').read_text(encoding='utf-8-sig')
+    text='\n'.join((ROOT/path).read_text(encoding='utf-8-sig') for path in equipment_files)
+    technology=(ROOT/technology_file).read_text(encoding='utf-8-sig')
     for name in equipment:
         assert f'sprite = {sprite}' in block(text,name)
         assert re.search(r'\b'+re.escape(name)+r'\b',technology)
