@@ -481,3 +481,4 @@ NDefines.NMilitary.GENERAL_PROXIMITY_CLOSE = 2								-- At the "close" proximit
 NDefines.NMilitary.GENERAL_PROXIMITY_MEDIUM = 4									-- At the "medium" proximity setting, the general should stay this many provinces behind the frontline
 NDefines.NMilitary.GENERAL_PROXIMITY_FAR = 6									-- At the "far" proximity setting, the general should stay this many provinces behind the frontline
 NDefines.NMilitary.GENERAL_PROXIMITY_DEFAULT = 1									-- The default proximity setting for a deployed general. This number should correspond to one of the values above
+NDefines.NFocus.FOCUS_POINT_DAYS = 1
