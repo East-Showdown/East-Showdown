@@ -10,7 +10,6 @@ sys.path.insert(0,str(HERE.parent))
 sys.path.insert(0,str(HERE.parent/'flamingo'))
 sys.path.insert(0,str(HERE.parent/'shahed'))
 from build import Geometry
-from build_shahed import surface
 from model_export import textures,export_rigid
 from pdx_io import read,encode,Node
 from render import render
@@ -21,72 +20,8 @@ COLORS=[(167,176,180),(199,203,200),(144,155,164),(31,47,55),
 PIVOTS=[]
 
 
-def wing(g,side,span,lead,tip_lead,chord,tip_chord,y,part):
-    rows=[]
-    for u in (0,.15,.36,.62,.82,1):
-        x=side*(.22+(span-.22)*u)
-        z=lead+(tip_lead-lead)*u;c=chord+(tip_chord-chord)*u
-        rows.append([[x,y-.07*u+.11*(1-u)*math.sin(math.pi*t),z+c*t]
-                     for t in (0,.07,.24,.5,.76,1)])
-    surface(g,rows,0,1,part)
-    lower=np.array(rows);lower[:,:,1]=2*(y-.07*np.array([0,.15,.36,.62,.82,1])[:,None])-lower[:,:,1]-.015
-    surface(g,lower,2,-1,part)
-    for j in range(5):g.quad([rows[-1][j],rows[-1][j+1],lower[-1,j+1],lower[-1,j]],2,part=part)
-
-
-def blade(g,pivot,angle,part):
-    radial=np.array([math.cos(angle),math.sin(angle),0.])
-    tangent=np.array([-math.sin(angle),math.cos(angle),0.])
-    outline=[(.08,-.05),(.34,-.07),(.65,-.10),(.71,-.04),(.68,.015),(.22,.06)]
-    layers=[np.array([pivot+radial*r+tangent*t+[0,0,z] for r,t in outline]) for z in (-.012,.012)]
-    for pts,normal in zip(layers,([0,0,-1],[0,0,1])):
-        for j in range(1,len(pts)-1):g.triangle(pts[[0,j,j+1]],5,[normal]*3,part=part)
-    for j in range(6):g.quad([layers[0][j],layers[0][(j+1)%6],layers[1][(j+1)%6],layers[1][j]],5,part=part)
-    for z,normal in [(-.014,[0,0,-1]),(.014,[0,0,1])]:
-        pts=[pivot+radial*r+tangent*t+[0,0,z] for r,t in [(.63,-.091),(.68,-.099),(.71,-.04),(.68,.015),(.63,.02)]]
-        for j in range(1,4):g.triangle([pts[0],pts[j],pts[j+1]],8,[normal]*3,part=part)
-
-
-def geometry():
-    PIVOTS.clear();g=Geometry()
-    g.lathe([(-5.05,.006),(-4.97,.12),(-4.77,.25),(-4.48,.32)],1,segments=32,part='radome')
-    g.lathe([(-4.48,.32),(-4.13,.355),(-3.5,.37),(-1.9,.37),(0,.37),(1.7,.35),
-             (2.7,.29),(3.8,.21),(4.5,.13),(4.85,.025)],0,segments=32,part='fuselage')
-    g.lathe([(-5.44,.004),(-5.08,.018),(-4.96,.035)],4,center=(0,.14),segments=10,part='nose_probe')
-    # Cockpit glazing follows the upper fuselage. Narrow separators stay silver.
-    for side in (-1,1):
-        g.quad([[side*.045,.335,-4.39],[side*.21,.27,-4.38],[side*.29,.255,-4.06],[side*.05,.376,-4.06]],3,[side*.4,1,-.25],'cockpit')
-        g.quad([[side*.22,.263,-4.35],[side*.315,.183,-4.19],[side*.344,.176,-3.85],[side*.293,.269,-4.02]],3,[side,1,0],'cockpit')
-        wing(g,side,5.35,-1.3,1.6,2.25,.48,-.035,'main_wing')
-        wing(g,side,1.8,3.18,4.29,1.36,.38,.2,'tailplane')
-    g.prism([(.14,3.10),(.38,3.15),(1.91,4.04),(2.0,4.53),(.23,4.65)],-.06,.06,0,'vertical_tail')
-    # Red star markings on both sides of the fin, as in the supplied photos.
-    for side in (-1,1):
-        center=np.array([side*.061,1.3,4.19]);points=[]
-        for j in range(10):
-            a=math.pi/2+j*math.pi/5;r=.20 if j%2==0 else .085
-            points.append(center+[0,r*math.sin(a),r*math.cos(a)])
-        for j in range(10):g.triangle([center,points[j],points[(j+1)%10]],7,[[side,0,0]]*3,part='tail_marking')
-    for side in (-1,1):
-        for k,x in enumerate((1.48,3.08)):
-            x*=side;front=-1.88+k*.75;cy=-.14
-            g.lathe([(front,.11),(front+.17,.23),(front+.42,.255),(front+1.15,.24),
-                     (front+1.75,.18),(front+2.20,.08),(front+2.38,.006)],0,center=(x,cy),segments=24,part='nacelle')
-            g.lathe([(front+.33,.257),(front+.45,.257)],4,center=(x,cy),segments=24,part='engine_band')
-            for layer in range(2):
-                pivot=np.array([x,cy,front-.12-layer*.13]);PIVOTS.append(pivot)
-                part=f'prop_{len(PIVOTS)}'
-                for j in range(4):blade(g,pivot,j*math.pi/2+layer*math.pi/4+.12,part)
-            g.lathe([(front-.39,.006),(front-.33,.085),(front-.12,.105),(front+.04,.11)],6,center=(x,cy),segments=20,part='spinner')
-    # Retracted landing gear: only the characteristic inner nacelle fairings.
-    for side in (-1,1):
-        g.lathe([(.0,.03),(.35,.15),(1.0,.16),(1.65,.09),(1.95,.003)],2,center=(side*1.48,-.27),segments=16,part='gear_fairing')
-    return g
-
-
 def export(g):
-    if not all((OUT/f'tu95ms_{s}.dds').exists() for s in ('diffuse','normal','specular')):
-        textures('tu95ms',OUT,HERE,COLORS)
+    textures('tu95ms',OUT,HERE,COLORS)
     export_rigid(g,'tu95ms',OUT,HERE,(0,0,4.8))
     path=OUT/'tu95ms.mesh';root=read(path);obj=root.child('object').children[0]
     mesh=obj.child('mesh');skin=mesh.child('skin');indices=[]

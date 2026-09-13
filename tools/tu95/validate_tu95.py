@@ -15,6 +15,15 @@ tri=np.array(m.get('tri')).reshape(-1,3)
 assert 15000<=len(tri)<=20000 and tri.min()==0 and tri.max()<len(p)
 assert np.isfinite(p).all() and np.isfinite(n).all()
 assert np.allclose(np.linalg.norm(n,axis=1),1,atol=1e-5)
+uv=np.array(m.get('u0')).reshape(-1,2)
+tangent=np.array(m.get('ta')).reshape(-1,4)
+assert len(p)<65536 and len(p)==len(uv)==len(tangent)
+assert np.isfinite(uv).all() and (uv>=0).all() and (uv<=1).all()
+assert np.isfinite(tangent).all()
+assert np.allclose(np.linalg.norm(tangent[:,:3],axis=1),1,atol=1e-5)
+assert np.allclose(np.sum(tangent[:,:3]*n,axis=1),0,atol=1e-5)
+faces=np.cross(p[tri[:,1]]-p[tri[:,0]],p[tri[:,2]]-p[tri[:,0]])
+assert (np.sum(faces*n[tri].mean(1),axis=1)>0).all(),'Inverted surface'
 points={tuple(v) for v in p.round(5)}
 assert points=={(-x,y,z) for x,y,z in points},'Geometry is not symmetric'
 area=np.linalg.norm(np.cross(p[tri[:,1]]-p[tri[:,0]],p[tri[:,2]]-p[tri[:,0]]),axis=1)
