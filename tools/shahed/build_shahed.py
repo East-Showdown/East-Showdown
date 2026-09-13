@@ -24,7 +24,7 @@ COLORS = [(194,196,190), (206,208,202), (180,184,177), (23,28,101),
 EQUIPMENT = (
     'rus_irn_guided_uav_shahed131', 'rus_guided_uav_shahed131',
     'rus_guided_uav_geranium', 'rus_guided_uav_geranium_m',
-    'rus_guided_uav_geranium3', 'rus_guided_uav_geranium4',
+    'rus_guided_uav_geranium3',
 )
 
 

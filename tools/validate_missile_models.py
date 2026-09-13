@@ -12,9 +12,10 @@ sys.path.insert(0,str(ROOT/'tools/flamingo'))
 from pdx_io import read,encode
 
 MODELS={
+    'geran4': ('geran4.mesh','geran4_idle.anim','rus_geran4',1556,['rus_guided_uav_geranium4']),
     'shahed': ('shahed136.mesh','shahed_fly.anim','rus_shahed',2736,
                ['rus_irn_guided_uav_shahed131','rus_guided_uav_shahed131','rus_guided_uav_geranium',
-                'rus_guided_uav_geranium_m','rus_guided_uav_geranium3','rus_guided_uav_geranium4']),
+                'rus_guided_uav_geranium_m','rus_guided_uav_geranium3']),
     'geran5': ('geran5.mesh','geran5_idle.anim','rus_geran5',3304,['rus_guided_uav_geranium5']),
     'kh55': ('kh55.mesh','kh55_idle.anim','rus_kh55',3556,
              ['rus_medium_guided_missile_kh55','rus_medium_guided_missile_kh55cm',
