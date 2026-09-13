@@ -3389,8 +3389,7 @@ focus_tree = {
 			custom_trigger_tooltip = { 
 				tooltip = DPR_elections_2023_trigger
 				hidden_trigger = {
-					has_completed_focus = DPR_region_of_russia
-					has_completed_focus = DPR_russian_parties_in_Donetsk
+					has_completed_focus = DPR_shall_be_together
 				}
 		 	}
 			date > 2023.08.01
@@ -3868,52 +3867,23 @@ focus_tree = {
 		}
 	}
 
-	focus = {
-		id = DPR_region_of_russia
-		icon = GFX_404
-		relative_position_id = DPR_shall_be_together
-		x = -5
-		y = 1
-		cost = 1
+	##################################################
+	## Ветка 1 (лево)   - Улучшение уровня жизни
+	## Ветка 2 (центр)  - Экономика между регионами
+	## Ветка 3 (право)  - Военная интеграция
+	## Все три ветки стартуют от DPR_shall_be_together
+	## и идут линейно по 3 фокуса в каждой
+	##################################################
 
-		prerequisite = { focus = DPR_shall_be_together }
-
-		completion_reward = {
-		    add_political_power = 65
-			custom_effect_tooltip = DPR_region_of_russia_tt
-			custom_effect_tooltip = DPR_region_of_russia_tt_1
-			hidden_effect = {
-				random_controlled_state = {
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
-					}
-				}
-
-				random_controlled_state = {
-					add_building_construction = {
-						type = anti_air_building
-						level = 1
-						instant_build = yes
-					}
-				}
-			}
-		}
-		
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-	}
-
+	### 1.1 ###
 	focus = {
 		id = DPR_donbass_recovery_program
 		icon = GFX_404
-		relative_position_id = DPR_region_of_russia
-		x = 0
+		relative_position_id = DPR_shall_be_together
+		x = -6
 		y = 1
 		cost = 1
-		prerequisite = { focus = DPR_region_of_russia }
+		prerequisite = { focus = DPR_shall_be_together }
 		completion_reward = {
 			add_political_power = 50
 			add_stability = 0.03
@@ -3923,8 +3893,46 @@ focus_tree = {
 		}
 	}
 
+	### 1.2 ###
 	focus = {
-		id = DPR_interregional_economy
+		id = DPR_national_living_standard
+		icon = GFX_404
+		relative_position_id = DPR_donbass_recovery_program
+		x = 0
+		y = 1
+		cost = 1
+		prerequisite = { focus = DPR_donbass_recovery_program }
+		completion_reward = {
+			add_political_power = 45
+			add_stability = 0.04
+			custom_effect_tooltip = DPR_national_living_standard_tt
+			hidden_effect = {
+				set_country_flag = DPR_marketplace_intermediaries_unlocked
+				set_country_flag = DPR_telecom_integration_unlocked
+				add_to_variable = { DPR_consumer_goods_factories_cost_factor = -0.1 }
+			}
+		}
+	}
+
+	### 1.3 ###
+	focus = {
+		id = DPR_small_business_revival
+		icon = GFX_404
+		relative_position_id = DPR_national_living_standard
+		x = 0
+		y = 1
+		cost = 1
+		prerequisite = { focus = DPR_national_living_standard }
+		completion_reward = {
+			add_political_power = 50
+			add_stability = 0.02
+			add_to_variable = { DPR_economy_problems_production_speed_buildings_factor = 0.1 }
+		}
+	}
+
+	### 2.1 ###
+	focus = {
+		id = DPR_agricultural_revival
 		icon = GFX_404
 		relative_position_id = DPR_shall_be_together
 		x = 0
@@ -3932,26 +3940,13 @@ focus_tree = {
 		cost = 1
 		prerequisite = { focus = DPR_shall_be_together }
 		completion_reward = {
-			add_political_power = 50
-			add_stability = 0.02
-		}
-	}
-
-	focus = {
-		id = DPR_agricultural_revival
-		icon = GFX_404
-		relative_position_id = DPR_interregional_economy
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_interregional_economy }
-		completion_reward = {
 			add_political_power = 40
 			add_stability = 0.02
 			add_to_variable = { DPR_economy_problems_production_speed_buildings_factor = 0.05 }
 		}
 	}
 
+	### 2.2 ###
 	focus = {
 		id = DPR_road_to_russian_markets
 		icon = GFX_404
@@ -3966,6 +3961,7 @@ focus_tree = {
 		}
 	}
 
+	### 2.3 ###
 	focus = {
 		id = DPR_donbass_investment_platform
 		icon = GFX_404
@@ -3980,303 +3976,22 @@ focus_tree = {
 		}
 	}
 
-	focus = {
-		id = DPR_logistics_hubs_restoration
-		icon = GFX_404
-		relative_position_id = DPR_donbass_investment_platform
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_donbass_investment_platform }
-		completion_reward = {
-			add_political_power = 45
-			add_stability = 0.02
-		}
-	}
-
-	focus = {
-		id = DPR_energy_integration
-		icon = GFX_404
-		relative_position_id = DPR_logistics_hubs_restoration
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_logistics_hubs_restoration }
-		completion_reward = {
-			add_political_power = 50
-			add_stability = 0.025
-		}
-	}
-
-	focus = {
-		id = DPR_donbass_industrial_cluster
-		icon = GFX_404
-		relative_position_id = DPR_energy_integration
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_energy_integration }
-		completion_reward = {
-			add_political_power = 55
-			add_stability = 0.025
-		}
-	}
-
-	focus = {
-		id = DPR_banking_integration
-		icon = GFX_404
-		relative_position_id = DPR_donbass_industrial_cluster
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_donbass_industrial_cluster }
-		completion_reward = {
-			add_political_power = 50
-			add_stability = 0.02
-		}
-	}
-
-	focus = {
-		id = DPR_free_economic_zone
-		icon = GFX_404
-		relative_position_id = DPR_banking_integration
-		x = 2
-		y = 0
-		cost = 1
-		prerequisite = { focus = DPR_banking_integration }
-		completion_reward = {
-			add_political_power = 60
-			add_stability = 0.03
-		}
-	}
-
-	focus = {
-		id = DPR_labor_migration
-		icon = GFX_404
-		relative_position_id = DPR_free_economic_zone
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_free_economic_zone }
-		completion_reward = {
-			add_political_power = 45
-			add_stability = 0.02
-		}
-	}
-
-	focus = {
-		id = DPR_russian_parties_in_Donetsk
-		icon = GFX_DPR_russian_parties_in_Donetsk
-		relative_position_id = DPR_end_political_integration
-		x = 0
-		y = 1
-		cost = 1
-
-		prerequisite = { focus = DPR_end_political_integration }
-		
-		completion_reward = {
-			add_political_power = 75
-			add_stability = 0.015
-			custom_effect_tooltip = DPR_russian_parties_in_Donetsk_tt
-			custom_effect_tooltip = DPR_russian_parties_in_Donetsk_advisor_tt
-			hidden_effect = {
-				add_popularity = {
-					ideology = neutrality
-					popularity = 0.05
-				}
-				set_party_name = {
-					ideology = neutrality
-					long_name = DPR_neutrality_party_rus_long
-					name = DPR_neutrality_party_rus
-				}
-				set_party_name = {
-					ideology = fascism
-					long_name = DPR_fascism_party_long_rus
-					name = DPR_fascism_party_rus
-				}
-				set_party_name = {
-					ideology = communism
-					long_name = DPR_communism_party_long_rus
-					name = DPR_communism_party_rus
-				}
-				set_party_name = {
-					ideology = democratic
-					long_name = DPR_democratic_party_long_rus
-					name = DPR_democratic_party_rus
-				}
-				add_advisor_role = {
-					character = boris_litvinov
-					advisor = {
-						cost = 150
-						slot = political_advisor
-						idea_token = DPR_boris_litvinov
-						ledger = civilian
-						traits = {
-							DPR_sovetskiy_chelovek
-						}
-					}
-				}
-
-				add_advisor_role = {
-					character = andrey_kramar
-					advisor = {
-						cost = 150
-						slot = political_advisor
-						idea_token = DPR_andrey_kramar
-						ledger = civilian
-						traits = {
-							DPR_politic_jurnalist
-						}
-					}
-				}
-
-				add_advisor_role = {
-					character = sergey_gurchenko
-					advisor = {
-						cost = 150
-						slot = political_advisor
-						idea_token = DPR_sergey_gurchenko
-						ledger = civilian
-						traits = {
-							DPR_novie_lydi
-						}
-					}
-				}
-			}
-		    set_country_flag = russian_parties_in_Donetsk_cf
-		}
-		
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-	}
-
-	focus = {
-		id = DPR_national_living_standard
-		icon = GFX_404
-		relative_position_id = DPR_russian_parties_in_Donetsk
-		x = -2
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_russian_parties_in_Donetsk }
-		completion_reward = {
-			add_political_power = 45
-			add_stability = 0.04
-		}
-	}
-
-	focus = {
-		id = DPR_population_passportization
-		icon = GFX_404
-		relative_position_id = DPR_russian_parties_in_Donetsk
-		x = 2
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_russian_parties_in_Donetsk }
-		completion_reward = {
-			add_political_power = 45
-			add_stability = 0.02
-		}
-	}
-
-	focus = {
-		id = DPR_small_business_revival
-		icon = GFX_404
-		relative_position_id = DPR_population_passportization
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_population_passportization }
-		completion_reward = {
-			add_political_power = 50
-			add_stability = 0.03
-		}
-	}
-
-	focus = {
-		id = DPR_unified_education_system
-		icon = GFX_404
-		relative_position_id = DPR_small_business_revival
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_small_business_revival }
-		completion_reward = {
-			add_political_power = 45
-			add_stability = 0.025
-		}
-	}
-
-	focus = {
-		id = DPR_mandatory_healthcare_reform
-		icon = GFX_404
-		relative_position_id = DPR_unified_education_system
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_unified_education_system }
-		completion_reward = {
-			add_political_power = 45
-			add_stability = 0.03
-		}
-	}
-
-	focus = {
-		id = DPR_cultural_assimilation
-		icon = GFX_404
-		relative_position_id = DPR_mandatory_healthcare_reform
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_mandatory_healthcare_reform }
-		completion_reward = {
-			add_political_power = 40
-			add_stability = 0.025
-		}
-	}
-
-	focus = {
-		id = DPR_personnel_rotation
-		icon = GFX_404
-		relative_position_id = DPR_cultural_assimilation
-		x = 0
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_cultural_assimilation }
-		completion_reward = {
-			add_political_power = 55
-			add_stability = 0.02
-		}
-	}
-
-	focus = {
-		id = DPR_military_integration
-		icon = GFX_404
-		relative_position_id = DPR_shall_be_together
-		x = 4
-		y = 1
-		cost = 1
-		prerequisite = { focus = DPR_shall_be_together }
-		completion_reward = {
-			add_command_power = 35
-			army_experience = 15
-		}
-	}
-
+	### 3.1 ###
 	focus = {
 		id = DPR_shield_of_the_mainland
 		icon = GFX_404
-		relative_position_id = DPR_military_integration
-		x = 0
+		relative_position_id = DPR_shall_be_together
+		x = 6
 		y = 1
 		cost = 1
-		prerequisite = { focus = DPR_military_integration }
+		prerequisite = { focus = DPR_shall_be_together }
 		completion_reward = {
 			add_command_power = 40
 			add_stability = 0.02
 		}
 	}
 
+	### 3.2 ###
 	focus = {
 		id = DPR_part_of_one_whole
 		icon = GFX_404
@@ -4291,6 +4006,7 @@ focus_tree = {
 		}
 	}
 
+	### 3.3 ###
 	focus = {
 		id = DPR_main_strike_direction
 		icon = GFX_404
@@ -4303,58 +4019,6 @@ focus_tree = {
 			add_command_power = 50
 			army_experience = 25
 			add_war_support = 0.04
-		}
-	}
-
-	focus = {
-		id = DPR_end_political_integration
-		icon = GFX_404
-		relative_position_id = DPR_donbass_recovery_program
-		x = 0
-		y = 1
-		cost = 1
-
-		prerequisite = { focus = DPR_donbass_recovery_program }
-		
-		completion_reward = {
-			add_political_power = 65
-			add_command_power = 15
-			custom_effect_tooltip = DPR_russian_parties_in_Donetsk_tt
-			custom_effect_tooltip = DPR_end_political_integration_tt
-		    hidden_effect = {
-				add_popularity = {
-					ideology = neutrality
-					popularity = 0.05
-				}
-			}
-		}
-		
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
-		}
-	}
-
-	focus = {
-		id = DPR_expand_volunteer_activities
-		icon = GFX_404
-		relative_position_id = DPR_national_living_standard
-		x = 0
-		y = 1
-		cost = 1
-
-		prerequisite = { focus = DPR_national_living_standard }
-
-		completion_reward = {
-			add_political_power = 35
-			add_command_power = 5
-			custom_effect_tooltip = DPR_expand_volunteer_activities_tt
-			custom_effect_tooltip = DPR_expand_volunteer_activities_cet
-		    add_to_variable = { DPR_Pushilin_republic_consumer_goods_factor = -0.015 }
-			add_to_variable = { DPR_Pushilin_republic_civilian_factory_use = -1 }
-		}
-		
-		search_filters = {
-			FOCUS_FILTER_POLITICAL
 		}
 	}
 
