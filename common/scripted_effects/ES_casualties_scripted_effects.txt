@@ -422,3 +422,34 @@ UKR_update_szch_spirit = {
 		swap_ideas = { remove_idea = UKR_szch_1900 add_idea = UKR_szch_2000 }
 	}
 }
+
+# Update the casualty-driven part of the mobilisation flight penalty once per threshold.
+UKR_update_escape_from_mobilization = {
+	if = {
+		limit = {
+			check_variable = { var = casualties_k value = 200 compare = greater_than_or_equals }
+			NOT = { has_country_flag = UKR_escape_mob_200k }
+		}
+		add_to_variable = { UKR_escape_from_mobilization_conscription = -0.001 }
+		set_country_flag = UKR_escape_mob_200k
+		force_update_dynamic_modifier = yes
+	}
+	if = {
+		limit = {
+			check_variable = { var = casualties_k value = 500 compare = greater_than_or_equals }
+			NOT = { has_country_flag = UKR_escape_mob_500k }
+		}
+		add_to_variable = { UKR_escape_from_mobilization_conscription = -0.001 }
+		set_country_flag = UKR_escape_mob_500k
+		force_update_dynamic_modifier = yes
+	}
+	if = {
+		limit = {
+			check_variable = { var = casualties_k value = 1000 compare = greater_than_or_equals }
+			NOT = { has_country_flag = UKR_escape_mob_1000k }
+		}
+		add_to_variable = { UKR_escape_from_mobilization_conscription = -0.001 }
+		set_country_flag = UKR_escape_mob_1000k
+		force_update_dynamic_modifier = yes
+	}
+}
