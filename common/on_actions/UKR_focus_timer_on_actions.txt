@@ -1,0 +1,63 @@
+on_actions = {
+	on_startup = {
+		effect = {
+			UKR = {
+				set_variable = { UKR_steel_general_days_remaining = 180 }
+				if = {
+					limit = { has_war_with = RUS }
+					UKR_start_steel_general_war_timer = yes
+					# Later scenarios begin after the invasion on 24 February 2022.
+					if = {
+						limit = { has_start_date > 2022.04.14 has_start_date < 2022.04.16 }
+						set_variable = { UKR_steel_general_unlock_day = global.num_days }
+						add_to_variable = { UKR_steel_general_unlock_day = 130 } # 180 - 50 elapsed days
+					}
+					else_if = {
+						limit = { has_start_date > 2022.09.05 has_start_date < 2022.09.07 }
+						set_variable = { UKR_steel_general_unlock_day = global.num_days }
+					}
+					UKR_update_steel_general_war_timer = yes
+				}
+			}
+		}
+	}
+
+	on_declare_war = {
+		effect = {
+			if = {
+				limit = {
+					OR = {
+						AND = { tag = RUS FROM = { tag = UKR } }
+						AND = { tag = UKR FROM = { tag = RUS } }
+					}
+				}
+				UKR = { UKR_start_steel_general_war_timer = yes }
+			}
+		}
+	}
+
+	on_war = {
+		effect = {
+			if = {
+				limit = { tag = UKR has_war_with = RUS }
+				UKR_start_steel_general_war_timer = yes
+			}
+		}
+	}
+
+	on_daily = {
+		effect = {
+			UKR = {
+				# Also handles joining an ongoing war when already fighting another country.
+				if = {
+					limit = { has_war_with = RUS }
+					UKR_start_steel_general_war_timer = yes
+				}
+				if = {
+					limit = { has_country_flag = UKR_steel_general_war_timer_started }
+					UKR_update_steel_general_war_timer = yes
+				}
+			}
+		}
+	}
+}
