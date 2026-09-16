@@ -3786,7 +3786,7 @@ UKR_create_territorial_defence_category = {
 		visible = {
 			tag = UKR
 			UKR = {
-				has_completed_focus = Expand_TRO
+				has_completed_focus = UKR_rearm_tdf_brigades
 				has_country_flag = TRO_Eastern
 				check_variable = { global.SCENARIO_SELECTED = 1 }
 			}
@@ -3817,7 +3817,7 @@ UKR_create_territorial_defence_category = {
 		visible = {
 			tag = UKR
 			UKR = {
-				has_completed_focus = Expand_TRO
+				has_completed_focus = UKR_rearm_tdf_brigades
 				has_country_flag = TRO_southern
 				check_variable = { global.SCENARIO_SELECTED = 1 }
 			}
@@ -3848,7 +3848,7 @@ UKR_create_territorial_defence_category = {
 		visible = {
 			tag = UKR
 			UKR = {
-				has_completed_focus = Expand_TRO
+				has_completed_focus = UKR_rearm_tdf_brigades
 				has_country_flag = TRO_western
 				check_variable = { global.SCENARIO_SELECTED = 1 }
 			}
@@ -3879,7 +3879,7 @@ UKR_create_territorial_defence_category = {
 		visible = {
 			tag = UKR
 			UKR = {
-				has_completed_focus = Expand_TRO
+				has_completed_focus = UKR_rearm_tdf_brigades
 				has_country_flag = TRO_central
 				check_variable = { global.SCENARIO_SELECTED = 1 }
 			}
@@ -4790,63 +4790,6 @@ UKR_special_operations = {
 	}
 }
 
-UKR_rockets_category = {
-	UKR_crimean_bridge_explode = {
-		icon = GFX_404
-		visible = {
-			original_tag = UKR
-			has_completed_focus = UKR_Crimea_bridge_should_be_destoyed
-		}
-		fire_only_once = yes
-		cost = 150
-		days_remove = 100
-		ai_will_do = {
-			factor = 0
-		}
-		available = {
-		}
-		remove_effect = {
-			ROOT = {
-				country_event = {
-					id = ukr.78
-					hours = 0
-				}
-			}
-		}
-	}
-	UKR_build_10rockets = {
-		icon = GFX_404
-		visible = {
-			original_tag = UKR
-		}
-		fire_only_once = no
-		cost = 100
-		days_remove = 30
-		days_re_enable = 25
-		ai_will_do = {
-			factor = 40
-		}
-		available = {
-			NOT = {
-				has_country_flag = UKR_building_rockets
-			}
-		}
-		remove_effect = {
-			custom_effect_tooltip = UKR_tt_rockets10
-			add_to_variable = {
-				var = ukraine_rockets
-				value = 10
-			}
-			clr_country_flag = UKR_building_rockets
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		complete_effect = {
-			set_country_flag = UKR_building_rockets
-		}
-	}
-}
 
 UKR_Himars = {
 	UKR_Himars_cooldown = {
@@ -10249,93 +10192,6 @@ UKR_Bombing_Russia = {
 		}
 		fire_only_once = no
 	}
-	UKR_BPLA_Fedor = {
-		icon = decision_icon_bpla
-		visible = {
-			original_tag = UKR
-			UKR = {
-				count_triggers = {
-					amount = 1
-					controls_state = 264
-					controls_state = 240
-					controls_state = 251
-					controls_state = 262
-				}
-			}
-		}
-		cost = 75
-		days_remove = 15
-		on_map_mode = map_only
-		highlight_states = {
-			highlight_state_targets = {
-				state = 309
-			}
-			highlight_color_while_active = 3
-			highlight_color_before_active = 2
-		}
-		ai_will_do = {
-			factor = 40
-		}
-		available = {
-			RUS = {
-				owns_state = 309
-			}
-			NOT = {
-				has_country_flag = UKR_BPLA_cooldown_flag
-			}
-			has_country_flag = UKR_C200_flag
-			has_country_flag = UKR_use_BPLA_flag
-		}
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_BPLA_Fedor"
-			309 = {
-				random_list = {
-					1 = {
-						damage_building = {
-							type = arms_factory
-							damage = 3
-						}
-					}
-					1 = {
-						damage_building = {
-							type = infrastructure
-							damage = 4
-						}
-					}
-					1 = {
-						damage_building = {
-							type = industrial_complex
-							damage = 2
-						}
-					}
-					1 = {
-						damage_building = {
-							type = rail_way
-							damage = 2
-						}
-					}
-					1 = {
-						damage_building = {
-							type = anti_air_building
-							damage = 2
-						}
-					}
-					0.5 = {
-					}
-				}
-			}
-			RUS = {
-				country_event = rus.98
-				add_war_support = -0.001
-			}
-			set_variable = {
-				var = new_bpla_strike
-				value = 24
-			}
-			set_country_flag = UKR_BPLA_cooldown_flag
-		}
-		fire_only_once = no
-	}
 	#
 	UKR_BPLA_Yalta = {
 		icon = decision_icon_bpla
@@ -11630,38 +11486,6 @@ UKR_Bombing_Russia = {
 		}
 	}
 	#переименовать на расширить диапазон применения 
-	UKR_bpla_new_bpla = {
-		icon = decision_category_generic_arms_trade
-		available = {
-			has_country_flag = UKR_use_BPLA_flag
-			has_completed_focus = Bober
-		}
-		visible = {
-			tag = UKR
-		}
-		days_remove = 10
-		cost = 10
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_bpla_new_bpla"
-			set_country_flag = UKR_new_BPLA_flag
-			custom_effect_tooltip = UKR_bpla_tt
-		}
-		fire_only_once = yes
-	}
-	UKR_bpla_use_bpla = {
-		icon = decision_category_generic_arms_trade
-		visible = {
-			tag = UKR
-		}
-		days_remove = 10
-		cost = 120
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_bpla_use_bpla"
-			set_country_flag = UKR_use_BPLA_flag
-			custom_effect_tooltip = UKR_bpla_tt2
-		}
-		fire_only_once = yes
-	}
 }
 
 UKR_New_brigades_category = {
@@ -12310,7 +12134,7 @@ UKR_New_brigades_category = {
 						has_country_flag = UKR_Form_47_mekhanizovana_executed_flag
 					}
 				}
-				date = 2024.02.24
+				date > 2024.02.24
 			}
 			else = {
 				date > 2023.01.01
@@ -12355,7 +12179,7 @@ UKR_New_brigades_category = {
 					type = tank_usa_abrams_equipment
 					amount = 10
 					producer = "NTO"
-					version_name = "M1A1"
+					variant_name = "M1A1"
 				}
 				hidden_effect = {
 					delete_unit_template_and_units = {
@@ -13966,7 +13790,7 @@ UKR_New_brigades_category = {
 					type = light_tank_apc_ita_freccia_equipment
 					amount = 10
 					producer = "NTO"
-					version_name = "B1 Centauro"
+					variant_name = "B1 Centauro"
 				}
 			hidden_effect = {
 				if = {
@@ -14790,7 +14614,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 90
 		cost = 35
@@ -14826,7 +14650,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 90
 		cost = 35
@@ -14862,7 +14686,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 90
 		cost = 35
@@ -14898,7 +14722,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 90
 		cost = 70
@@ -14945,7 +14769,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 90
 		cost = 35
@@ -14981,7 +14805,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 60
 		cost = 35
@@ -15017,7 +14841,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 60
 		cost = 35
@@ -15045,7 +14869,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 60
 		cost = 70
@@ -15078,7 +14902,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2024.11.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 60
 		cost = 35
@@ -15106,7 +14930,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2024.04.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 30
 		cost = 35
@@ -15134,7 +14958,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2023.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 60
 		cost = 35
@@ -15162,7 +14986,7 @@ UKR_New_brigades_category = {
 		}
 		available = {
 			date > 2024.01.01
-			has_completed_focus = Counter_Step_Guard
+			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 30
 		cost = 35
@@ -15190,7 +15014,7 @@ UKR_information_war = {
 			NOT = {
 				has_country_flag = UKR_psychological_operation
 			}
-			has_completed_focus = Information_war
+			has_completed_focus = UKR_unified_information_front
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_psychological_operation_bet"
@@ -15246,7 +15070,7 @@ UKR_information_war = {
 			NOT = {
 				has_country_flag = UKR_foreign_journalism
 			}
-			has_completed_focus = Western_news_branches_in_Ukraine
+			has_completed_focus = UKR_launch_diplomatic_offensive
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_foreign_journalism_bet"
@@ -15302,7 +15126,7 @@ UKR_information_war = {
 			NOT = {
 				has_country_flag = UKR_military_personnel
 			}
-			has_completed_focus = Sponsor_loyal_telegram_channels
+			has_completed_focus = UKR_sponsor_loyal_telegram_channels
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_military_personnel_bet"
@@ -15701,7 +15525,7 @@ UKR_information_war = {
 		visible = {
 			original_tag = UKR
 			has_war_with = RUS
-			has_completed_focus = Information_war
+			has_completed_focus = UKR_unified_information_front
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Russian_crimes_international_level"
@@ -15744,7 +15568,7 @@ UKR_information_war = {
 		visible = {
 			original_tag = UKR
 			has_war_with = RUS
-			has_completed_focus = Information_war
+			has_completed_focus = UKR_unified_information_front
 		}
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Throw_fakes_VS_RF"
@@ -15806,7 +15630,7 @@ UKR_information_war = {
 			WGN = {
 				has_country_flag = WGN_death_prigozhin_utkin
 			}
-			has_completed_focus = Information_war
+			has_completed_focus = UKR_unified_information_front
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_death_prigozhin_utkin"
@@ -15850,7 +15674,7 @@ UKR_information_war = {
 		visible = {
 			original_tag = UKR
 			has_war_with = RUS
-			has_completed_focus = Information_war
+			has_completed_focus = UKR_unified_information_front
 		}
 		complete_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_minor_information_provocation"
@@ -16611,7 +16435,7 @@ UKR_economic_decision_category = {
 			factor = 30
 		}
 		visible = {
-			has_completed_focus = Agree_on_the_construction_of_factories_abroad
+			has_completed_focus = UKR_build_enterprises_abroad
 		}
 		modifier = {
 			consumer_goods_factor = 0.035
@@ -16634,7 +16458,7 @@ UKR_economic_decision_category = {
 			factor = 30
 		}
 		visible = {
-			has_completed_focus = Agree_on_the_construction_of_factories_abroad
+			has_completed_focus = UKR_deploy_joint_defense_enterprises
 		}
 		modifier = {
 			consumer_goods_factor = 0.045
@@ -18113,62 +17937,6 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 		complete_effect = {
 			remove_ideas = UKR_city_fortress
-		}
-	}
-	UKR_orders_for_tactical_drones_contract = {
-		icon = GFX_RUS_strengthening_the_front_line
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 45
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_war_with = RUS
-			}
-		}
-		allowed = {
-			original_tag = UKR
-		}
-		activation = {
-			has_completed_focus = UKR_orders_for_tactical_drones
-		}
-		timeout_effect = {
-			add_equipment_to_stockpile = {
-				type = UKR_uav_strike_equipment_gorlitsa
-				amount = 120
-			}
-			add_equipment_to_stockpile = {
-				type = UKR_uav_strike_equipment_sokol300
-				amount = 80
-			}
-		}
-	}
-	UKR_orders_for_reconnaissance_drones_contract = {
-		icon = GFX_RUS_strengthening_the_front_line
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 45
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_war_with = RUS
-			}
-		}
-		allowed = {
-			original_tag = UKR
-		}
-		activation = {
-			has_completed_focus = UKR_orders_for_tactical_drones
-		}
-		timeout_effect = {
-			add_equipment_to_stockpile = {
-				type = URK_uav_recon_equipment_spectator
-				amount = 130
-			}
-			add_equipment_to_stockpile = {
-				type = UKR_uav_recon_equipment_leleka
-				amount = 90
-			}
 		}
 	}
 }
@@ -21821,7 +21589,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 		visible = {
 			#has_country_flag = UKR_South_dec
-			has_country_flag = { flag = RUS_start_SMO > 7 }
+			has_country_flag = { flag = RUS_start_SMO days > 7 }
 			has_country_flag = UKR_NOSTEPBACK_SOUTH
 		}
 		highlight_states = {
@@ -21970,7 +21738,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 		visible = {
 			#has_country_flag = UKR_South_dec
-			has_country_flag = { flag = RUS_start_SMO > 7 }
+			has_country_flag = { flag = RUS_start_SMO days > 7 }
 			has_country_flag = UKR_NOSTEPBACK_SOUTH
 		}
 		highlight_states = {
@@ -25965,26 +25733,6 @@ UKR_order_of_vehicles_category = {
 			civilian_factory_use = 5
 		}
 	}
-	UKR_order_t72 = {
-		icon = GFX_404
-		fire_only_once = no
-		available = {
-		}
-		visible = {
-			has_completed_focus = UKR_revival_of_tank_building
-		}
-		days_remove = 40
-		cost = 50
-		ai_will_do = {
-			factor = 10
-		}
-		remove_effect = {
-
-		}
-		modifier = {
-			civilian_factory_use = 6
-		}
-	}
 	UKR_order_bm21 = {
 		icon = GFX_404
 		fire_only_once = yes
@@ -26946,7 +26694,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 15
 		cost = 10
@@ -27011,7 +26759,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 20
 		cost = 15
@@ -27076,7 +26824,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 15
 		cost = 10
@@ -27207,7 +26955,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 20
@@ -27273,7 +27021,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 20
@@ -27658,7 +27406,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 30
 		cost = 35
@@ -27750,7 +27498,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 30
 		cost = 35
@@ -27858,7 +27606,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 30
@@ -27930,7 +27678,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 30
@@ -28002,7 +27750,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 30
@@ -28074,7 +27822,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 30
@@ -28146,7 +27894,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 			}
 		}
 		visible = {
-			has_completed_focus = UKR_Interna_legion_TRO
+			has_completed_focus = UKR_international_legion_tdf
 		}
 		days_remove = 25
 		cost = 30
@@ -28537,7 +28285,7 @@ UKR_GUR_Special_Units = {
 		}
 		visible = {
 			tag = UKR
-			has_completed_focus = Expand_the_SSO_department
+			has_completed_focus = UKR_prepare_SSO_groups
 		}
 		days_remove = 60
 		cost = 70
@@ -28559,7 +28307,7 @@ UKR_GUR_Special_Units = {
 		}
 		visible = {
 			tag = UKR
-			has_completed_focus = Expand_the_SSO_department
+			has_completed_focus = UKR_prepare_SSO_groups
 		}
 		days_remove = 30
 		cost = 30
@@ -28584,708 +28332,8 @@ UKR_GUR_Special_Units = {
 }
 
 ### строительство энергетики ###
-UKR_energy_construction = {
-	UKR_Dnepr_hpp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 420
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 169
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Dnepr_hpp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			169 = {
-				set_variable = {
-					energy_hydro_power_plant_operating_units = 8
-				}
-				set_variable = {
-					energy_hydro_power_plant_reconstruction_units = 0
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 1
-				}
-			}
-		}
-	}
-	UKR_Odessa_wpp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 256
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Odessa_wpp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			256 = {
-				add_building_construction = {
-					type = wind_power_plant
-					level = 3
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 1
-				}
-			}
-		}
-	}
-	UKR_mgtes = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 30
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 108
-				has_full_control_of_state = 197
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_mgtes
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			add_to_variable = {
-				energy_mobile_gas_turbine_power_plant_units = 2
-			}
-			custom_effect_tooltip = UKR_mgtes_tt
-		}
-	}
-	UKR_Nikolaev_wpp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 150
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 233
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Nikolaev_wpp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			233 = {
-				add_building_construction = {
-					type = wind_power_plant
-					level = 5
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_khmel_wpp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 93
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_khmel_wpp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			93 = {
-				add_building_construction = {
-					type = wind_power_plant
-					level = 3
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 1
-				}
-			}
-		}
-	}
-	UKR_Poltava_wpp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 128
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Poltava_wpp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			128 = {
-				add_building_construction = {
-					type = wind_power_plant
-					level = 3
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 1
-				}
-			}
-		}
-	}
-	#ТЭС
-	UKR_Kyiv_tppd = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 94
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Kyiv_tpp
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		timeout_effect = {
-			94 = {
-				add_building_construction = {
-					type = thermal_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 6
-				}
-			}
-		}
-	}
-	UKR_ivano_frank_tppd = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 135
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_ivano_frank_tpp
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		timeout_effect = {
-			135 = {
-				add_building_construction = {
-					type = thermal_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 6
-				}
-			}
-		}
-	}
-	UKR_kryvoriz_tppd = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 197
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_kryvoriz_tpp
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		timeout_effect = {
-			197 = {
-				add_building_construction = {
-					type = thermal_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Darnitsya_tppd = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 95
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Darnitsya_tpp
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		timeout_effect = {
-			95 = {
-				add_building_construction = {
-					type = thermal_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Tripol_tppd = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 106
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Tripol_tpp
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		timeout_effect = {
-			106 = {
-				add_building_construction = {
-					type = thermal_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Dnerp_tppd = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 100
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 187
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Tripol_tpp
-		}
-		modifier = {
-			civilian_factory_use = 5
-		}
-		timeout_effect = {
-			187 = {
-				add_building_construction = {
-					type = thermal_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 4
-				}
-			}
-		}
-	}
-	UKR_khmel_3npp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 800
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 93
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_khmel3_npp
-		}
-		modifier = {
-			civilian_factory_use = 10
-		}
-		
-		timeout_effect = {
-			93 = {
-				add_building_construction = {
-					type = nuclear_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 5
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_khmel_4npp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 800
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 93
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_khmel4_npp
-		}
-		modifier = {
-			civilian_factory_use = 10
-		}
-		timeout_effect = {
-			93 = {
-				add_building_construction = {
-					type = nuclear_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 5
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_khmel_5npp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 800
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 93
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_khmel5_npp
-		}
-		modifier = {
-			civilian_factory_use = 10
-		}
-		timeout_effect = {
-			93 = {
-				add_building_construction = {
-					type = nuclear_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 5
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_khmel_6npp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 800
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 93
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_khmel6_npp
-		}
-		modifier = {
-			civilian_factory_use = 10
-		}
-		timeout_effect = {
-			93 = {
-				add_building_construction = {
-					type = nuclear_power_plant
-					level = 1
-				}
-				add_building_construction = {
-					type = electrical_substation
-					level = 5
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Odessa_1spp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 256
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Odessa_spp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			256 = {
-				add_building_construction = {
-					type = solar_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Cherkasy_1spp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 118
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Cherkasy_spp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			118 = {
-				add_building_construction = {
-					type = solar_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Chernovtsy_1spp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 179
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Chernovtsy_spp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			179 = {
-				add_building_construction = {
-					type = solar_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Nikopol_1spp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 216
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Nikopol_spp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			216 = {
-				add_building_construction = {
-					type = solar_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Zytomir_1spp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 88
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Zytomir_spp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			88 = {
-				add_building_construction = {
-					type = solar_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-	UKR_Chernobyl_1spp = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 80
-		selectable_mission = no
-		available = {
-			NOT = {
-				has_full_control_of_state = 68
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_Chernobyl_spp
-		}
-		modifier = {
-			civilian_factory_use = 3
-		}
-		timeout_effect = {
-			68 = {
-				add_building_construction = {
-					type = solar_power_plant
-					level = 2
-				}
-				add_building_construction = {
-					type = electrical_substation_big
-					level = 2
-				}
-			}
-		}
-	}
-}
 
 POL_energy_category = {
-	UKR_buy_mgtes = {
-		fire_only_once = no
-		available = {
-			has_completed_focus = UKR_usaid_mgtes
-		}
-		visible = {
-			tag = UKR
-			has_completed_focus = UKR_usaid_mgtes
-		}
-		days_remove = 7
-		days_re_enable = 14
-		cost = 100
-		ai_will_do = {
-			factor = 0
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_buy_mgtes: remove_effect"
-			add_to_variable = {
-				energy_mobile_gas_turbine_power_plant_units = 1
-			}
-			custom_effect_tooltip = UKR_free_mgtes_tt
-		}
-	}
 	
 }
 
@@ -29458,9 +28506,6 @@ POL_energy_category = {
 # 	}
 # }
 
-UKR_nto_help_new_brigades_category = {
-	
-}
 UKR_EMERGENCY_REQUEST_category = {
 	UKR_Emergency_offer = {
 		#icon = 
@@ -30726,23 +29771,6 @@ UKR_government_of_ukraine = {
 		cost = 20
 		complete_effect = {
 			country_event = ukr_advisors_events.19
-		}
-	}
-	UKR_bring_fedorov_closer_to_power = {
-		icon = GFX_UKR_president_ukraine_emblem
-		fire_only_once = yes
-		visible = {
-			original_tag = UKR
-		}
-		ai_will_do = {
-			factor = 20
-		}
-		available = {
-			has_completed_focus = Expanding_Diya_capabilities
-			has_completed_focus = Agendas_via_diya
-		}
-		complete_effect = {
- 			country_event = ukr_advisors_events.11
 		}
 	}
 	UKR_change_budanov_to_politics = {
@@ -32954,170 +31982,7 @@ UKR_Coordination_of_MTR_with_foreign_MTR_category = {
 	}
 }
 
-UKR_prepare_to_war = {
-	give_weapoon_east = {
-		cost = 0
-		days_remove = 5
-		visible = {
-			original_tag = UKR
-		}
-		available = {
-		}
-		fire_only_once = yes
-		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = -10000
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_army_core_defence_factor = 0.05
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_resistance_growth_on_our_occupied_states = 0.1
-			}
-		}
-	}
-	give_weapoon_south = {
-		cost = 0
-		days_remove = 5
-		visible = {
-			original_tag = UKR
-		}
-		available = {
-		}
-		fire_only_once = yes
-		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = -10000
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_army_core_defence_factor = 0.05
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_resistance_growth_on_our_occupied_states = 0.1
-			}
-		}
-	}
-	give_weapoon_north = {
-		cost = 0
-		days_remove = 5
-		visible = {
-			original_tag = UKR
-		}
-		available = {
-		}
-		fire_only_once = yes
-		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = -10000
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_army_core_defence_factor = 0.05
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_resistance_growth_on_our_occupied_states = 0.1
-			}
-		}
-	}
-	weapoon_stockpile_east = {
-		cost = 0
-		days_remove = 5
-		visible = {
-			original_tag = UKR
-		}
-		available = {
-		}
-		fire_only_once = yes
-		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = -20000
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_resistance_growth_on_our_occupied_states = 0.2
-			}
-		}
-	}
-	weapoon_stockpile_south = {
-		cost = 0
-		days_remove = 5
-		visible = {
-			original_tag = UKR
-		}
-		available = {
-		}
-		fire_only_once = yes
-		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = -20000
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_resistance_growth_on_our_occupied_states = 0.2
-			}
-		}
-	}
-	weapoon_stockpile_north = {
-		cost = 0
-		days_remove = 5
-		visible = {
-			original_tag = UKR
-		}
-		available = {
-		}
-		fire_only_once = yes
-		complete_effect = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = -20000
-			}
-			add_to_variable = {
-				UKR_prepare_to_war_modifer_resistance_growth_on_our_occupied_states = 0.2
-			}
-		}
-	}
-}
 
-UKR_million_ammo = {
-	product_ammo = {
-		# icon = 
-		is_good = yes
-		fire_only_once = yes
-		days_mission_timeout = 365
-		selectable_mission = no
-		available = {
-			custom_trigger_tooltip = {
-				tooltip = product_ammo_tt
-				check_variable = { 
-					UKR_million_ammo_per_year_var > 999 
-				}
-			}
-		}
-		activation = {
-			has_completed_focus = UKR_million_ammo_per_year
-		}
-		timeout_effect = {
-			country_event = {
-				id = ukr_hidden.5
-				days = 0
-			}
-			add_war_support = 0.05
-			add_political_power = 100
-		}
-		complete_effect = {
-			country_event = {
-				id = ukr_hidden.6
-				days = 0
-			}
-			country_event = {
-				id = ukr_hidden.7
-				days = 60
-			}
-		}
-	}
-}
 
 UKR_naval_invasion_el_budanoV = {
 
@@ -33950,7 +32815,7 @@ UKR_naval_invasion_el_budanoV = {
 			load_oob = UKR_naval_invasion_in_nova_kahovka
 		}
 	}
-	UKR_naval_invasion_in_kahovka = {
+	UKR_more_in_nova_kahovka = {
 		# icon = 
 		fire_only_once = no
 		days_remove = 0
