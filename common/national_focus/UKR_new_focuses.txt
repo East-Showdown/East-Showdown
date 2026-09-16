@@ -91,6 +91,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus Meeting_of_the_countrys_high_command"
 			add_command_power = 20
+			custom_effect_tooltip = Meeting_of_the_countrys_high_command_zaluzhny_tt
 			# country_event = {
 			# 	id = ukr.64
 			# 	hours = 1
@@ -114,7 +115,7 @@ focus_tree = {
 		x = -3
 		y = 1
 		relative_position_id = Meeting_of_the_countrys_high_command
-		cost = 0.5
+		cost = 0.3
 		available = {
 			NOT = {
 				has_war_with = RUS
@@ -894,9 +895,35 @@ focus_tree = {
 		bypass = {
 			has_war_with = RUS
 		}
+		cost = 0.3
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_final_step_of_vaccination"
-
+			add_political_power = 20
+			add_stability = 0.02
+			if = {
+				limit = {
+					check_variable = { global.SCENARIO_SELECTED = 1 }
+					date < 2022.5.31
+				}
+				hidden_effect = {
+					set_temp_variable = { temp_covid_idea_days_remaining = UKR_covid_idea_end_day }
+					subtract_from_temp_variable = { temp_covid_idea_days_remaining = global.num_days }
+					remove_ideas = coronavires_idea
+				}
+				add_timed_idea = {
+					idea = coronavires_idea
+					days = temp_var:temp_covid_idea_days_remaining
+				}
+			}
+			else_if = {
+				limit = {
+					check_variable = { global.SCENARIO_SELECTED = 1 }
+				}
+				hidden_effect = {
+					remove_ideas = coronavires_idea
+				}
+			}
+			custom_effect_tooltip = UKR_final_step_of_vaccination_flavor_tt
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -919,6 +946,7 @@ focus_tree = {
 		bypass = {
 			has_war_with = RUS
 		}
+		cost = 0.3
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_plan_big_bud"
 
@@ -1008,6 +1036,7 @@ focus_tree = {
 		bypass = {
 			has_war_with = RUS
 		}
+		cost = 0.3
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_state_price_regulation"
 		}
@@ -1024,7 +1053,7 @@ focus_tree = {
 		x = 1
 		y = 1
 		relative_position_id = UKR_plan_big_bud
-		cost = 0.2
+		cost = 0.5
 		available = {
 			NOT = {
 				has_war_with = RUS
@@ -1196,7 +1225,7 @@ focus_tree = {
 		x = 3
 		y = 1
 		relative_position_id = Conduct_military_exercises_of_the_AFU
-		cost = 0.2
+		cost = 0.3
 		available = {
 			NOT = {
 				has_war_with = RUS
@@ -1213,13 +1242,11 @@ focus_tree = {
 				uses = 1
 				category = air_doctrine
 			}
-			add_timed_idea = {
-				idea = UKR_Protecting_the_sky_idea
-				days = 110
-			}
+			custom_effect_tooltip = Prepare_aviation_delayed_idea_tt
 			air_experience = 100
 			add_command_power = 50
 			custom_effect_tooltip = Prepare_aviation_t
+			UKR_try_activate_prepare_aviation_idea = yes
 		}
 		search_filters = {
 			FOCUS_FILTER_POLITICAL
@@ -1307,7 +1334,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = Give_weapon_to_police
-		cost = 0.2
+		cost = 0.3
 		available = {
 			NOT = {
 				has_war_with = RUS
@@ -1494,7 +1521,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = Attention_the_equipment_of_the_AFU_is_moving
-		cost = 0.2
+		cost = 0.8
 		available = {
 			NOT = {
 				has_war_with = RUS
@@ -1547,7 +1574,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = UKR_enemy_at_the_gates
 
-		cost = 0.1
+		cost = 0.143
 		available = {
 			if = {
 				limit = {
@@ -1581,6 +1608,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_check_bridge_mining"
+			custom_effect_tooltip = UKR_check_bridge_mining_tt
 			UKR_try_dep_reserv = yes
 		}
 	}
@@ -1593,7 +1621,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = UKR_check_bridge_mining
 
-		cost = 0.1
+		cost = 0.143
 		available = {
 			if = {
 				limit = {
@@ -1627,6 +1655,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_begin_tdf_deployment"
+			custom_effect_tooltip = UKR_begin_tdf_deployment_tt
 		}
 	}
 
@@ -1638,7 +1667,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = UKR_check_bridge_mining
 
-		cost = 0.1
+		cost = 0.143
 		available = {
 			if = {
 				limit = {
@@ -1672,6 +1701,7 @@ focus_tree = {
 
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_raise_reserve_corps"
+			activate_mission = UKR_reserve_corps
 		}
 	}
 
