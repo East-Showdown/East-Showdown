@@ -71,6 +71,46 @@ RUS_SMO_FRONT_CONTROL = {
 	}
 }
 
+# Stop all AI-controlled RUS offensives while Operation Mongoose Throw is disrupted.
+# A priority above the regular RUS front-control strategies makes this block authoritative.
+RUS_defensive_pause_from_disrupted_operation = {
+	allowed = {
+		original_tag = RUS
+	}
+
+	enable = {
+		OR = {
+			has_idea = RUS_disruption_of_the_operation_3_singleplayer
+			has_active_mission = RUS_stop_offensive_mission
+		}
+	}
+
+	abort_when_not_enabled = yes
+
+	# Do not execute battle plans or make manual attacks on any enemy land front.
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			has_war_with = FROM
+		}
+		ordertype = front
+		priority = 1000
+		execute_order = no
+		manual_attack = no
+	}
+
+	# Do not execute naval invasions during the defensive pause.
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			has_war_with = FROM
+		}
+		ordertype = invasion
+		priority = 1000
+		execute_order = no
+	}
+}
+
 RUS_more_army_crimea_kherson = {
 	allowed = {
 		original_tag = RUS

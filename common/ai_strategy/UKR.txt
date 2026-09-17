@@ -440,6 +440,47 @@ UKR_front_control_2 = {
 	}
 }
 
+# Stop all AI-controlled UKR offensives while the army is recovering.
+# A priority above the regular UKR front-control strategies makes this block authoritative.
+UKR_defensive_pause_from_ideas = {
+	allowed = {
+		original_tag = UKR
+	}
+
+	enable = {
+		OR = {
+			has_idea = ukr_unexpected_strike
+			has_idea = ukr_unexpected_strike_singleplayer
+			has_idea = UKR_exhausted_army_idea
+		}
+	}
+
+	abort_when_not_enabled = yes
+
+	# Do not execute battle plans or make manual attacks on any enemy land front.
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			has_war_with = FROM
+		}
+		ordertype = front
+		priority = 1000
+		execute_order = no
+		manual_attack = no
+	}
+
+	# Do not execute naval invasions during the defensive pause.
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			has_war_with = FROM
+		}
+		ordertype = invasion
+		priority = 1000
+		execute_order = no
+	}
+}
+
 #украина не пушит крым
 UKR_do_not_attack_the_Crimea = {
 	allowed = {
