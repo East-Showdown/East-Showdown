@@ -4,6 +4,7 @@ NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
 NDefines.NGame.SAVE_VERSION = 27								-- 0.7.1.4
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
+NDefines.NFocus.FOCUS_POINT_DAYS = 1
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.1                        -- Acceptance factor for opinion
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_OPINION = 1.0 -- Acceptance factor for opinion 
 NDefines.NDiplomacy.EQUIPMENT_PURCHASE_ACCEPTANCE_SAME_IDEOLOGY = 10 -- Acceptance value added if same ideology 
