@@ -11,6 +11,7 @@ create_intelligence_agency = yes
 set_global_flag = RUS_MO_minister_defense_CIRK_SHOIGY
 set_country_flag = head_of_gov_enabled_flag
 set_country_flag = news_pro_russian_flag
+set_country_flag = bz_active_manpower_ai_disable
 
 if = {
 	limit = { has_dlc = "Together for Victory" }
@@ -201,10 +202,10 @@ create_equipment_variant_sp_aa_buk_m3 = yes
 create_equipment_variant_bpmt_bmpt_terminator = yes
 create_equipment_variant_bpmt_bmpt_72_terminator_2 = yes
 create_equipment_variant_apc_btr_d = yes
-create_equipment_variant_missile_rus_R17 = yes
-create_equipment_variant_missile_rus_9K79 = yes
-create_equipment_variant_missile_rus_9M723 = yes
-create_equipment_variant_missile_rus_iskander1000 = yes
+# create_equipment_variant_missile_rus_R17 = yes
+# create_equipment_variant_missile_rus_9K79 = yes
+# create_equipment_variant_missile_rus_9M723 = yes
+# create_equipment_variant_missile_rus_iskander1000 = yes
 
 #NEW GENERATION EQUIPMENT VARIANT
 create_equipment_variant = {
@@ -339,8 +340,13 @@ set_technology = {
 	missile_rus_R17 = 1
 	missile_rus_9K79 = 1
 	missile_rus_9M723 = 1
+	missile_rus_9M729 = 1
 	rus_sam_40H6E = 1
 	rus_sam_prometey = 1
+	missile_rus_granit = 1
+	missile_rus_3M55 = 1
+	missile_rus_kalibr_3m14 = 1
+	missile_rus_kalibr_3m54 = 1
 
 	rus_guidance_1 = 1
  
@@ -778,7 +784,7 @@ set_variable = { RUS_VCRF_training_time_army_factor = 0.2 }
 set_variable = { RUS_VCRF_army_chief_cost_factor = 0.2 }
 set_variable = { RUS_VCRF_equipment_upgrade_xp_cost = 0.4 }
 set_variable = { RUS_VCRF_mobilization_speed = 0.1 }
-set_variable = { RUS_VCRF_conscription_factor = -0.82 }
+set_variable = { RUS_VCRF_conscription_factor = -0.8 }
 set_variable = { RUS_GRU_modifer_recon_factor = 0.05 }
 set_variable = { RUS_GRU_modifer_recon_factor_while_entrenched = 0.1 }
 set_variable = { RUS_GRU_modifer_special_forces_cap = 0.015 }
@@ -1814,13 +1820,13 @@ add_equipment_to_stockpile = {
 	#producer = RUS
 #}
 #add_equipment_to_stockpile = {
-	#type = apc_rus_btr16_equipment
+	#type = apc_sov_btr16_equipment
 	#variant_name = "БТР К-16 \"Бумеранг\""
 	#amount = 18
 	#producer = RUS
 #}
 #add_equipment_to_stockpile = {
-#type = apc_rus_btr16_equipment
+#type = apc_sov_btr16_equipment
 	#variant_name = "БМП К-17"
 	#amount = 8
 	#producer = RUS
@@ -2748,23 +2754,26 @@ add_equipment_to_stockpile = {
 #}
 
 add_equipment_to_stockpile = {
-	type = ballistic_missile_rus_generation_1_chassis
-	variant_name = "Р-17"	
+	type = rus_ballistic_missile_R17	
 	amount = 600 
 	producer = RUS
 }
 
 add_equipment_to_stockpile = {
-	type = ballistic_missile_rus_generation_2_chassis
-	variant_name = "Точка-У"	
+	type = rus_ballistic_missile_9K79
 	amount = 500 
 	producer = RUS
 }
 
 add_equipment_to_stockpile = {
-	type = ballistic_missile_rus_generation_3_chassis
-	variant_name = "Искандер-М"	
+	type = rus_ballistic_missile_9M723
 	amount = 800 
+	producer = RUS
+}
+
+add_equipment_to_stockpile = {
+	type = rus_ballistic_missile_9M729
+	amount = 100
 	producer = RUS
 }
 
@@ -2801,6 +2810,30 @@ add_equipment_to_stockpile = {
 add_equipment_to_stockpile = {
 	type = rus_medium_guided_missile_kh101		
 	amount = 980
+	producer = RUS
+}
+
+add_equipment_to_stockpile = {
+	type = rus_medium_guided_missile_granit	
+	amount = 160
+	producer = RUS
+}
+
+add_equipment_to_stockpile = {
+	type = rus_medium_guided_missile_oniks
+	amount = 470
+	producer = RUS
+}
+
+add_equipment_to_stockpile = {
+	type = rus_medium_guided_missile_kalibr_3m14
+	amount = 500
+	producer = RUS
+}
+
+add_equipment_to_stockpile = {
+	type = rus_medium_guided_missile_kalibr_3m54	
+	amount = 50
 	producer = RUS
 }
 
@@ -3126,9 +3159,8 @@ add_equipment_production = {
 }
 add_equipment_production = {
 	equipment = {
-		type = ballistic_missile_rus_generation_3_chassis
+		type = rus_ballistic_missile_9M723
 		creator = "RUS"
-		version_name = "Искандер-М"	
 	}
 	requested_factories = 5
 	progress = 0.6
@@ -3167,7 +3199,6 @@ add_equipment_production = {
 	add_command_power = 250 # Итого 100
 	#set_convoys = 250
 	add_political_power = 30
-	add_manpower = 5000 #по факту 2500
 	add_fuel = 5635712
 	
 	set_popularities = {
@@ -3188,12 +3219,13 @@ add_equipment_production = {
 		society_high
 		frontline_improvisation_spirit
 		#strength_of_opposition_2
-		RUS_SAN_1
+		RUS_SAN_0
 		RUS_Rostrud_idea
 		RUS_coronavires_idea_1
 	}
 
-	
+	unlock_national_focus = RUS_nato_advance_threat
+	unlock_national_focus = RUS_escalation_of_conflict
 	unlock_national_focus = RUS_Preparing_for_Preemptive_Strike
 	unlock_national_focus = RUS_Military_assistance_to_the_Peoples_Republics
 	unlock_national_focus = RUS_Anti_Ukrainian_media_campaign
@@ -3232,6 +3264,9 @@ add_equipment_production = {
 	unlock_national_focus = RUS_Save_the_ruble
 	unlock_national_focus = RUS_Central_bank_measures
 	unlock_national_focus = RUS_Expansion_of_the_CDZ
+	unlock_national_focus = RUS_Resisting_sanctions
+	unlock_national_focus = RUS_Sanctions_policy_against_the_West
+	unlock_national_focus = RUS_Reanimating_the_economy
 	
 	
 	#Флажки - Глобальные
@@ -3270,6 +3305,7 @@ add_equipment_production = {
 	set_country_flag = RUS_Drugaya_Rossia_Interbrigadi_cf
 	set_country_flag = RUS_start_SMO
 	set_country_flag = Volunteer_movement_start
+	set_country_flag = Volunteer_movement_business_start
 	
 	#Динамические идеи и симловые значения
 	add_to_variable = { var = RUS_GRU_modifer_special_forces_defence_factor value = 0.05 }
@@ -3344,9 +3380,8 @@ add_equipment_production = {
 	add_to_variable = { var = RUS_recruitment_of_volunteers_training_time_army_factor value = 0.05 }
 	add_to_variable = { var = RUS_recruitment_of_volunteers_command_power_gain_mult value = 0.05 }
 	
-	set_variable = { RUS_RUB_1_neutrality_drift = -0.01 }
-	set_variable = { RUS_RUB_1_stability_factor = -0.1 }
-	set_variable = { RUS_RUB_1_consumer_goods_factor = 0.1 }
+	set_variable = { RUS_RUB_1_stability_factor = -0.05 }
+	set_variable = { RUS_RUB_1_consumer_goods_factor = 0.05 }
 	
 	add_dynamic_modifier = { modifier = RUS_shortage_of_foreign_goods }
 	set_variable = { var = RUS_shortage_of_foreign_goods_consumer_goods_factor value = 0.045 }
@@ -3376,6 +3411,10 @@ add_equipment_production = {
 	activate_advisor = RUS_vladimir_solovyov
 	activate_advisor = RUS_igor_konashenkov
 	activate_advisor = RUS_elvira_nabiullina
+	set_can_be_fired_in_advisor_role = {
+		character = elvira_nabiullina
+		value = no
+	}
 
 	retire_character = vladimir_zhirinovsky
 	retire_character = sergey_kisel
@@ -3393,7 +3432,7 @@ add_equipment_production = {
 			country_leader = {
 				ideology = authoritarian_democracy_rus_postwar
 				expire = "1965.1.1.1"
-				traits = { popular_figurehead regent_of_russian_democracy }
+				traits = { putin_kremlins_supreme_commander popular_figurehead  }
 				desc = VLADIMIR_PUTIN_DESCRIPTION
 			}
 		}
@@ -3529,6 +3568,34 @@ add_equipment_production = {
 		technology = infantry_improvements_4
 	}
 
+	#производство
+	add_equipment_production = {
+		equipment = {
+			type = motorized_equipment_1
+		}
+		requested_factories = 3
+		progress = 0.8
+		efficiency = 50
+	}
+	add_equipment_production = {
+		equipment = {
+			type = communication_equipment_0
+		}
+		requested_factories = 1
+		progress = 0.8
+		efficiency = 50
+	}
+	add_equipment_production = {
+		equipment = {
+			type = tank_rus_t90_equipment
+			version_name = "Т-90М \"Прорыв-3\""
+			creator = "RUS"
+		}
+		requested_factories = 9
+		progress = 0.80
+		efficiency = 50
+	}
+
 	#Списание снаряги со складов
 	add_equipment_to_stockpile = {
 		type = hel_strike_equipment_1	
@@ -3562,8 +3629,7 @@ add_equipment_production = {
 		producer = RUS
 	}
 	add_equipment_to_stockpile = {
-		type = ballistic_missile_rus_generation_3_chassis
-		variant_name = "Искандер-М"	
+		type = rus_ballistic_missile_9M723
 		amount = -300 
 		producer = RUS
 	}
@@ -4056,7 +4122,6 @@ add_equipment_production = {
 	set_country_flag = Zaporozhye_cma_cf
 	set_country_flag = Kharkov_cma_cf
 	set_country_flag = Volunteer_movement_voenkory_start
-	set_country_flag = Volunteer_movement_business_start
 	
 	#Динамические идеи и числовые значения
 	add_to_variable = {	
@@ -4150,10 +4215,6 @@ add_equipment_production = {
 	add_to_variable = { RUS_shortage_of_foreign_production_factory_efficiency_gain_factor = 0.015 }
 	add_to_variable = { RUS_shortage_of_foreign_goods_neutrality_drift = 0.02 }
 	add_to_variable = { RUS_shortage_of_foreign_civilian_factory_use = 2 }
-	
-	add_to_variable = { RUS_RUB_1_consumer_goods_factor = -0.05 }
-	add_to_variable = { RUS_RUB_1_stability_factor = 0.05 }
-	add_to_variable = { RUS_RUB_1_neutrality_drift = 0.01 }
 	
 	add_dynamic_modifier = {
 		modifier = WGN_information_war_BOP_modifier
