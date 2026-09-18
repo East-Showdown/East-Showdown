@@ -40,7 +40,7 @@ RUS_prepare_war_UKR = {
 }
 
 
-
+	
 
 
 
@@ -101,11 +101,9 @@ RUS_more_army_crimea_kherson = {
 	}	
 
 
-	#abort = {
-	#RUS = { 
-	#	has_global_flag = RUS_STOP_RUS_more_army_crimea_kherson_strategy
-	#}
-	#}
+	abort = {
+    has_global_flag = RUS_STOP_RUS_more_army_crimea_kherson_strategy
+	}
 
 
 	ai_strategy = {
@@ -417,7 +415,27 @@ RUS_base_production = {
 
 
 }
+RUS_limit_force_concentration = {
 
+    allowed = {
+        original_tag = RUS
+    }
+
+    enable = {
+        has_war_with = UKR
+    }
+
+    abort = {
+        NOT = {
+            has_war_with = UKR
+        }
+    }
+
+    ai_strategy = {
+        type = force_concentration_factor
+        value = -5
+    }
+}
 # Stop all AI-controlled RUS offensives while Operation Mongoose Throw is disrupted.
 # A priority above the regular RUS front-control strategies makes this block authoritative.
 RUS_defensive_pause_from_disrupted_operation = {
@@ -425,8 +443,10 @@ RUS_defensive_pause_from_disrupted_operation = {
     original_tag = RUS
   }
   enable = {
+	OR = {
     has_idea = RUS_disruption_of_the_operation_3_singleplayer
 	has_active_mission = RUS_stop_offensive_mission
+	}
   }
   abort_when_not_enabled = yes
   # Do not execute battle plans or make manual attacks on any enemy land front.
