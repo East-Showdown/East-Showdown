@@ -473,9 +473,9 @@ NDefines.NDoctrines.TRAINING_MASTERY_GAIN_FACTOR = 0.00 -- 0.1
 NDefines.NMilitary.UNIT_LEADER_MODIFIER_COOLDOWN_ON_REDEPLOY = 15 -- vanilla 15; days before a reassigned unit leader is fully redeployed to a new unit
 NDefines.NMilitary.COMMS_MAX_DISTANCE = 10										-- If N is >= the size of the below arrays, the last value will be considered repeated
 NDefines.NMilitary.PLANNING_CAP_COMMS_SCALING = { 1.0, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6 }		-- Value at index J is the scaling applied to planning cap when HQ is J provinces behind the frontline
-NDefines.NMilitary.PLANNING_CAP_NO_HQ_SCALING = 0.6							-- Scaling applied to planning cap when there's no HQ (no leader or leader not deployed or not the same root order)
+NDefines.NMilitary.PLANNING_CAP_NO_HQ_SCALING = 0.8							-- -20% planning cap when there's no HQ (no leader or leader not deployed or not the same root order)
 NDefines.NMilitary.PLANNING_SPEED_COMMS_SCALING = { 1.0, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6 }		-- Same as PLANNING_CAP_COMMS_SCALING but for planning speed
-NDefines.NMilitary.PLANNING_SPEED_NO_HQ_SCALING = 0.6								-- Same as PLANNING_CAP_NO_HQ_SCALING but for planning speed
+NDefines.NMilitary.PLANNING_SPEED_NO_HQ_SCALING = 1.0								-- No planning speed penalty when there's no HQ
 NDefines.NMilitary.LEADER_MOD_COMMS_SCALING = { 1.10, 1.10, 1.10, 1.05, 1.05, 1.00, 1.00, 1.0, 1.0, 1.0, 1.0 }		-- Same as PLANNING_CAP_COMMS_SCALING but for leader modifiers
 NDefines.NMilitary.LEADER_MOD_NO_HQ_SCALING = 1.0								-- Same as PLANNING_CAP_NO_HQ_SCALING but for leader modifiers
 NDefines.NMilitary.ABILITY_COMMS_SCALING = { 1.10, 1.10, 1.10, 1.05, 1.05, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 }	-- Same as PLANNING_CAP_COMMS_SCALING but for active abilities

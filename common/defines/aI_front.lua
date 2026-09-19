@@ -134,12 +134,35 @@ NDefines.NAI.COMMAND_POWER_BEFORE_SPEND_ON_TRAITS = 65.0
 --------------------------------------------------------------------------------------------------------------
 
 NDefines.NAI.MAX_DEPLOYED_ARMY_HQS = 20 -- vanilla 5; maximum number of Army HQs the AI may have deployed at once
+NDefines.NAI.AIFC_UPDATE_FREQUENCY_DAYS = 5 -- vanilla 5; frequency of AIFC decision updates; lower values cost more performance
+NDefines.NAI.AIFC_FRESHNESS_BASE_VALUE = 45.0 -- vanilla 45.0; initial persistence before AIFC abandons an unproductive target
+NDefines.NAI.AIFC_REFRESH_NEED_PER_DAY = 1.0 -- vanilla 1.0; daily AIFC freshness decay
+NDefines.NAI.AIFC_REFRESH_NEED_SUPPLY_FACTOR_PER_DAY = 2.0 -- vanilla 0.8; supply-related daily AIFC freshness decay
+NDefines.NAI.AIFC_FRESHNESS_ADD_ON_PROGRESS = 25.0 -- vanilla 25.0; freshness restored when AIFC advances along its target path
 NDefines.NAI.AIFC_ACTIVATE_AVG_ORG_RATIO_THRESHOLD = 0.5 -- vanilla 0.2; minimum average organisation ratio before AIFC activates its offensive order
 NDefines.NAI.AIFC_ACTIVATE_IN_POSITION_RATIO_THRESHOLD = 0.7 -- vanilla 0.3; minimum ratio of AIFC divisions in position before activating the offensive order
+NDefines.NAI.AIFC_OFFENSIVE_DEACTIVATION_DAYS_THRESHOLD = 3 -- vanilla 5; days of unmet conditions before AIFC deactivates its offensive order
+NDefines.NAI.AIFC_UNIT_NUDGE_FREQUENCY_DAYS = 15 -- vanilla 15; average interval for replacing an AIFC division with a higher-scoring unit on the same front
+
+
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_BREAKTHROUGH = 11.0 -- vanilla 11.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_SOFT_ATTACK = 25.0 -- vanilla 6.0; increased to value artillery firepower
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_HARD_ATTACK = 8.0 -- vanilla 8.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_ARMOR = 15.0 -- vanilla 30.0; reduced tank armour contribution
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_PIERCING = 4.0 -- vanilla 4.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_HARDNESS = 100.0 -- vanilla 300.0; reduced tank hardness contribution
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_SPEED = 10.0 -- vanilla 15.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_INITIATIVE = 5.0 -- vanilla 5.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_ORGANISATION = 0.3 -- vanilla 0.3
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_HITPOINTS = 0.3 -- vanilla 0.3
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_DEFENSE = -0.2 -- vanilla -0.2
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_ENTRENCHMENT = -0.5 -- vanilla -0.5
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_EXPERIENCE = 300.0 -- vanilla 300.0
+
 NDefines.NAI.AIFC_TARGET_SUPPLY_HUB_BASE_SCORE = 35.0 -- vanilla 20.0; base target score assigned to enemy supply hubs
 NDefines.NAI.AIFC_PATH_COST_HAS_SUPPLY_HUB = 0.35 -- vanilla 0.5; path cost multiplier for provinces containing a supply hub
 NDefines.NAI.AIFC_PATH_COST_RAILWAY_CONNECTION = 0.5 -- vanilla 0.75; path cost multiplier for provinces connected by railway
-NDefines.NAITheatre.AI_THEATRE_SUPPLY_CRISIS_LIMIT = 0.6 -- vanilla 0.1; units at or below this supply ratio try to escape the area
+NDefines.NAITheatre.AI_THEATRE_SUPPLY_CRISIS_LIMIT = 0.6 
 
 NDefines.NAI.MIN_AI_UNITS_PER_TILE_FOR_STANDARD_COHESION = 2.0	-- How many units should we have for each tile along a front in order to switch to standard cohesion (less moving around)
 NDefines.NAI.MIN_FRONT_SIZE_TO_CONSIDER_STANDARD_COHESION = 2000	-- How long should fronts be before we consider switching to standard cohesion (under this, standard cohesion fronts will switch back to relaxed)
