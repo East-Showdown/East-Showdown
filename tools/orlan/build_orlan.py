@@ -145,6 +145,15 @@ def animate_propeller(g):
     mesh.add('skin',bones=('i',[4]),ix=('i',indices),w=('f',[1.,0.,0.,0.]*len(g.p)))
     obj.child('skeleton').add('propeller',ix=('i',[1]),pa=('i',[0]),
         tx=('f',[1.,0.,0.,0.,1.,0.,0.,0.,1.,0.,0.,2.56]))
+    # Bounds cover the full propeller sweep, including positions between frames.
+    points=np.asarray(mesh.get('p')).reshape(-1,3)
+    propeller=points[np.asarray(indices).reshape(-1,4)[:,0]==1]
+    radius=np.linalg.norm(propeller[:,:2],axis=1).max()
+    lower,upper=points.min(0),points.max(0)
+    lower[:2]=np.minimum(lower[:2],-radius)
+    upper[:2]=np.maximum(upper[:2],radius)
+    mesh.children=[c for c in mesh.children if c.name!='aabb']
+    mesh.add('aabb',min=('f',lower.tolist()),max=('f',upper.tolist()))
     path.write_bytes(encode(tree))
     anim=Node('File',pdxasset=('i',[1,0]))
     info=anim.add('info',fps=('f',[30.]),sa=('i',[13]),j=('i',[2]))
