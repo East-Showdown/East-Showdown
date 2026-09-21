@@ -59,6 +59,18 @@ on_actions = {
                         transfer_troops = yes
                     }                   
                     release_puppet_on_controlled = DPR
+
+                    # Diagnostic: DPR remains in CSTO, but must be a direct
+                    # faction member rather than a Russian subject. This lets
+                    # us test whether the subject relation suppresses UKR's
+                    # peacetime DPR frontline generation.
+                    set_autonomy = {
+                        target = DPR
+                        autonomous_state = autonomy_free
+                        end_wars = no
+                        end_civil_wars = no
+                    }
+                    add_to_faction = DPR
                 }
 
             }
@@ -79,8 +91,33 @@ on_actions = {
                         transfer_troops = yes
                     }                   
                     release_puppet_on_controlled = LPR
+
+                    # See the equivalent DPR diagnostic above.
+                    set_autonomy = {
+                        target = LPR
+                        autonomous_state = autonomy_free
+                        end_wars = no
+                        end_civil_wars = no
+                    }
+                    add_to_faction = LPR
                 }
 
+            }
+
+            # Let UKR AI form its pre-war frontier while DPR/LPR are direct
+            # CSTO members, then restore their normal Russian subject status.
+            if = {
+                limit = {
+                    RUS = { is_ai = yes }
+                    DPR = { is_ai = yes }
+                    LPR = { is_ai = yes }
+                }
+                RUS = {
+                    country_event = {
+                        id = ai_technical.3
+                        days = 1
+                    }
+                }
             }
 
 
