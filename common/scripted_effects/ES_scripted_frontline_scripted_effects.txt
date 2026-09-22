@@ -1,17 +1,19 @@
 scripted_frontline_tick = {
 	clear_array = global.frontline_states_array
+	add_to_variable = { global.scripted_frontline_tick_count = 1}
 	every_country = {
 		limit = { has_war = yes }
 
-		every_controlled_state = {
+		every_controlled_state = { # Цикл по стейтам воюющей страны
 			if = {
+				# Если страна не имеет полного контроля над стейтом
 				limit = { PREV = { NOT = { has_full_control_of_state = PREV.state_id } } }
 				
 				set_variable = { frontline_state_unsafe_pointer = global.frontline_states_array^num }
 				set_variable = { frontline_state_is_neighbor_state = 0 }
 				add_to_array = { global.frontline_states_array = state_id }
 			}
-			else = {
+			else = { # Иначе ищем соседние стейты с линией фронта
 				set_temp_variable = { temp_controller = controller }
 				set_temp_variable = { temp_is_frontline = 0 }
 				every_neighbor_state = {
@@ -32,10 +34,10 @@ scripted_frontline_tick = {
 		}
 	}
 
-	for_each_loop = {
-		array = global.frontline_states_array
-		value = val
-
-		log = "FL state: [?val]"
-	}
+	#for_each_loop = {
+	#	array = global.frontline_states_array
+	#	value = val
+	#
+	#	log = "FL state: [?val]"
+	#}
 }
