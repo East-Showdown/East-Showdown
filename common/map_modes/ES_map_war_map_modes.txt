@@ -1,0 +1,67 @@
+scripted_map_modes = {
+	more_mapmodes_map_war_map_mode = {
+		top = {
+			type = state
+
+			color = {
+				
+			}
+
+			thickness = yes
+		}
+
+		bottom = {
+			type = state
+
+			thickness = yes
+			color = {
+				FROM = {
+					set_temp_variable = { thickness = 0.5 }
+					if = { # Полностью контролируется страной игрока
+						limit = { is_fully_controlled_by = ROOT }
+						set_temp_variable = { alpha = 1 }
+						set_temp_variable = { red = 0.15 }
+						set_temp_variable = { green = 0.75 }
+						set_temp_variable = { blue = 0.15 }
+					}
+					else_if = { # Полностью контролируется другой страной
+						limit = { is_fully_controlled_by = CONTROLLER }
+
+						if = { # Союзник игрока
+							limit = { CONTROLLER = { is_ally_with = ROOT } }
+							set_temp_variable = { alpha = 1 }
+							set_temp_variable = { red = 0.125 }
+							set_temp_variable = { green = 0.625 }
+							set_temp_variable = { blue = 0.125 }
+						}
+						else_if = { # В войне с игроком
+							limit = { CONTROLLER = { has_war_with = ROOT } } 
+							set_temp_variable = { alpha = 1 }
+							set_temp_variable = { red = 0.75 }
+							set_temp_variable = { green = 0.15 }
+							set_temp_variable = { blue = 0.15 }
+						} 
+						else = { # Нейтральные страны
+							set_temp_variable = { alpha = 0 }
+							set_temp_variable = { red = 0.0 }
+							set_temp_variable = { green = 0.0 }
+							set_temp_variable = { blue = 0.0 }
+						}
+					}
+					else = {
+						set_temp_variable = { alpha = 1.0 }
+						set_temp_variable = { red = 0.75 }
+						set_temp_variable = { green = 0.75 }
+						set_temp_variable = { blue = 0.15 }
+					}
+				}
+			}
+		}
+
+		far_text = country
+		near_text = state
+
+		update_daily = yes
+	}
+
+}
