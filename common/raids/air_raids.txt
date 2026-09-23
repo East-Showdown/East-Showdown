@@ -1227,7 +1227,7 @@ types = {
 		}
 	}
 
-	radar_station_strike_rc = {
+	radar_station_strike_rc = { #удар по радарам управляемыми ракетами
 		days_to_prepare = 1 #2
 		days_re_enable = 7		
 		category = on_airfield_infrastructure_strikes
@@ -1297,6 +1297,421 @@ types = {
 					reference = 200
 					weight = 1.2
 					start_weight = -0.4
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.5
+				}
+				interception = {
+					reference = 5 
+					weight = -0.15
+				}
+				intel = {
+					weight = 0.1
+					reference = 100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				interception = {
+					reference = 5 
+					weight = 0.15
+				}
+				air_agility = {
+					reference = 200
+					weight = -0.30
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					reference = 200
+					start_reference = 100
+					weight = 0.15
+				}
+				strategic_bomber = {
+					weight = 0.10
+					reference = 1000
+					start_reference = 500
+				}
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+			limited_success = {
+				victim_effects = {
+
+					var:target_state = {
+						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { target_split_var = 0 }
+
+					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
+
+					divide_temp_variable = { building_damage_by_missile = target_split_var }
+
+					set_temp_variable = { max_clamp = radarstation }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
+
+					var:target_state = {
+						if = { limit = { radar_station > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = radar_station
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+			success = {
+				victim_effects = {
+
+					var:target_state = {
+						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { target_split_var = 0 }
+
+					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
+
+					divide_temp_variable = { building_damage_by_missile = target_split_var }
+
+					set_temp_variable = { max_clamp = radarstation }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					#Грантия на единичный урон
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
+
+					var:target_state = {
+						if = { limit = { radar_station > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = radar_station
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+			critical_success = {
+				victim_effects = {
+
+					var:target_state = {
+						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					set_temp_variable = { building_damage_by_missile = 4 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { target_split_var = 0 }
+
+					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
+
+					divide_temp_variable = { building_damage_by_missile = target_split_var }
+
+					set_temp_variable = { max_clamp = radarstation }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					#Грантия на единичный урон
+					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
+
+					var:target_state = {
+						if = { limit = { radar_station > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = radar_station
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+		}
+	}
+
+	radar_station_strike_am = { #удар по радарам антирадарками
+		days_to_prepare = 1 #2
+		days_re_enable = 7		
+		category = on_airfield_infrastructure_strikes
+		command_power = 0.2 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.5.1
+			}
+			modifier = {
+				factor = 1
+				date < 2022.5.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+		}
+		visible = { }
+		
+		show_target = {
+			has_war_with = FROM
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = radar_station
+			}
+		}
+		
+		target_icon = GFX_oilfield_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { rus_anti_radar_missile_equipment }
+				amount = { min = 8 }
+			}
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 0.5
+					reference = 1000
+					start_weight = -0.10
+				}
+				air_agility = {
+					reference = 500
+					weight = 1
+					start_weight = 0
 				}
 				anti_air = {
 					reference = 6
@@ -2046,7 +2461,7 @@ types = {
 		}
 	}
 
-	synthetic_refinery_strike_rc = {
+	synthetic_refinery_strike_rc = { #удар по нпз управляемыми ракетами
 		days_to_prepare = 1 #2
 		days_re_enable = 7		
 		category = on_oil_refinery_strikes
@@ -3671,6 +4086,421 @@ types = {
 				}
 				actor_effects = {
 					set_temp_variable = { raid_planes_lost = 12 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+		}
+	}
+
+	anti_air_strike_am = { #удар по пво антирадарками
+		days_to_prepare = 7 #2
+		days_re_enable = 21		
+		category = on_airfield_infrastructure_strikes
+		command_power = 0.2 # command power allocation cost
+		# Настройка для ракетных ударов
+		ai_will_do = {
+			base = 1.0
+			modifier = {
+				factor = 5.0
+				date > 2022.5.1
+			}
+			modifier = {
+				factor = 1
+				date < 2022.5.1
+			}
+		}
+		allowed = {
+			has_dlc = "Gotterdammerung"
+		}
+		visible = { }
+		
+		show_target = {
+			has_war_with = FROM
+		}
+	
+		available = {
+			has_war_with = FROM
+		}
+	
+		target_type = {
+			building = {
+				type = anti_air_building
+			}
+		}
+		
+		target_icon = GFX_oilfield_target_icon
+		launch_sound = raid_launch_air
+	
+		arrow = {
+			type = air
+		}
+		
+		unit_model = {
+		}
+	
+		unit_requirements = {
+			equipment = {
+				type = { rus_anti_radar_missile_equipment }
+				amount = { min = 8 }
+			}
+		}
+	
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+	
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 0.5
+					reference = 1000
+					start_weight = -0.10
+				}
+				air_agility = {
+					reference = 1000
+					weight = 0.8
+					start_weight = 0
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.8
+				}
+				interception = {
+					reference = 5 
+					weight = -0.15
+				}
+				intel = {
+					weight = 0.1
+					reference = 100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				interception = {
+					reference = 5 
+					weight = 0.15
+				}
+				air_agility = {
+					reference = 200
+					weight = -0.30
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					weight = 0.05
+					reference = 200
+					start_reference = 100
+				}
+				strategic_bomber = {
+					weight = 0.05
+					reference = 1000
+					start_reference = 500
+				}
+			}
+		}
+	
+		success_levels = {
+			failure = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+			limited_success = {
+				victim_effects = {
+
+					var:target_state = {
+						set_temp_variable = { ROOT.antiairbuilding = THIS.building_level@anti_air_building }
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { target_split_var = 0 }
+
+					if = { limit = { check_variable = { antiairbuilding > 0 } } add_to_temp_variable = { target_split_var = 1 } }
+
+					divide_temp_variable = { building_damage_by_missile = target_split_var }
+
+					set_temp_variable = { max_clamp = antiairbuilding }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
+
+					var:target_state = {
+						if = { limit = { anti_air_building > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = anti_air_building
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+			success = {
+				victim_effects = {
+
+					var:target_state = {
+						set_temp_variable = { ROOT.antiairbuilding = THIS.building_level@anti_air_building }
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					set_temp_variable = { building_damage_by_missile = 1.25 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { target_split_var = 0 }
+
+					if = { limit = { check_variable = { antiairbuilding > 0 } } add_to_temp_variable = { target_split_var = 1 } }
+
+					divide_temp_variable = { building_damage_by_missile = target_split_var }
+
+					set_temp_variable = { max_clamp = antiairbuilding }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					#Грантия на единичный урон
+					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
+
+					var:target_state = {
+						if = { limit = { anti_air_building > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = anti_air_building
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
+
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+			}
+			critical_success = {
+				victim_effects = {
+
+					var:target_state = {
+						set_temp_variable = { ROOT.antiairbuilding = THIS.building_level@anti_air_building }
+						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
+						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
+						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
+					}
+
+					add_to_temp_variable = { radar_mult = 0.5 }
+					multiply_temp_variable = { aa_defense = radar_mult }
+					multiply_temp_variable = { rocket_mult = radar_mult }
+
+					if = {
+						limit = {
+							NOT = { check_variable = { rocket_mult = 0 } }
+						}
+						multiply_temp_variable = { aa_defense = rocket_mult }
+
+						if = {
+							limit = {
+								check_variable = { aa_defense = 0 }
+							}
+							add_to_temp_variable = { aa_defense = rocket_mult }
+						}
+					}
+					set_temp_variable = { building_damage_by_missile = 4 }
+
+					set_temp_variable_to_random = {
+						var = missile_luck_mod
+						min = 0.4
+						max = 0.6
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
+
+					if = {
+						limit = {
+							check_variable = { aa_defense > 0 }
+						}
+						divide_temp_variable = { building_damage_by_missile = aa_defense }
+					}
+
+					multiply_temp_variable = { building_damage_by_missile = 5 }
+
+					set_temp_variable = { target_split_var = 0 }
+
+					if = { limit = { check_variable = { antiairbuilding > 0 } } add_to_temp_variable = { target_split_var = 1 } }
+
+					divide_temp_variable = { building_damage_by_missile = target_split_var }
+
+					set_temp_variable = { max_clamp = antiairbuilding }
+
+					clamp_temp_variable = {
+						var = building_damage_by_missile
+						min = 0
+						max = max_clamp
+					}
+
+					#Грантия на единичный урон
+					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
+
+					var:target_state = {
+						if = { limit = { anti_air_building > 0 }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = anti_air_building
+										damage = [DAM]
+									}
+								}
+								DAM = "[?building_damage_by_missile]"
+							}
+						}
+					}
+				}
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 8 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
