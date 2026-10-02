@@ -1,0 +1,459 @@
+# Автопрокачка разведки для East Showdown. Порт механики MD_auto_agency
+# с ES-префиксами, без MD-баланса/tech-пререквизитов. 17 апгрейдов (0-16).
+
+# Бамп грязного счётчика, по которому скриптовые GUI обновляются только при
+# реальном изменении состояния, а не каждый тик. Обёртка на 10000.
+ES_auto_agency_mark_dirty = {
+	if = {
+		limit = { check_variable = { global.ES_auto_agency_dirty < 10000 } }
+		add_to_variable = { global.ES_auto_agency_dirty = 1 }
+	}
+	else = {
+		set_variable = { global.ES_auto_agency_dirty = 1 }
+	}
+}
+
+# Вызывающий обязан `set_temp_variable = { shrink_idx = N }` перед вызовом.
+ES_auto_agency_shrink_queue_at_index = {
+	set_temp_variable = { last = ES_auto_agency_queue^num }
+	subtract_from_temp_variable = { last = 1 }
+
+	if = {
+		limit = {
+			check_variable = { ES_auto_agency_queue^num > 1 }
+			check_variable = { shrink_idx < last }
+		}
+
+		set_temp_variable = { start_from = shrink_idx }
+		add_to_temp_variable = { start_from = 1 }
+
+		for_loop_effect = {
+			start = start_from
+			end = ES_auto_agency_queue^num
+			value = v2
+
+			set_temp_variable = { above = v2 }
+			subtract_from_temp_variable = { above = 1 }
+			set_variable = { ES_auto_agency_queue^above = ES_auto_agency_queue^v2 }
+		}
+
+		clear_variable = ES_auto_agency_queue^last
+		subtract_from_variable = { ES_auto_agency_queue^num = 1 }
+	}
+	else_if = {
+		limit = { check_variable = { ES_auto_agency_queue^num = 1 } }
+		clear_array = ES_auto_agency_queue
+	}
+	else = {
+		clear_variable = ES_auto_agency_queue^last
+		subtract_from_variable = { ES_auto_agency_queue^num = 1 }
+	}
+}
+
+ES_auto_agency_toggle_dropdown = {
+	if = {
+		limit = { check_variable = { ES_auto_agency_dropdown_visible = 2 } }
+		set_variable = { ES_auto_agency_dropdown_visible = 1 }
+	}
+	else = {
+		set_variable = { ES_auto_agency_dropdown_visible = 2 }
+	}
+}
+
+ES_auto_agency_verify_queue = {
+	if = {
+		limit = {
+			has_variable = ES_auto_agency_queue^num
+			check_variable = { ES_auto_agency_queue^num > 0 }
+		}
+		resize_array = { array = ES_auto_agency_upgrades_in_queue_count size = ES_auto_agency_upgrades_completed_and_queued^num value = 0 }
+
+		if = {
+			limit = { NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } } }
+			add_to_variable = { ES_auto_agency_upgrades_in_queue_count^ES_auto_agency_selected_upgrade = 1 }
+		}
+
+		# Компактный проход вперёд: for_each_loop идёт задом наперёд и перевернул бы очередь.
+		set_temp_variable = { write_idx = 0 }
+		for_loop_effect = {
+			end = ES_auto_agency_queue^num
+			value = v2
+
+			set_temp_variable = { v = ES_auto_agency_queue^v2 }
+			if = {
+				limit = {
+					ES_auto_agency_v_index_valid = yes
+					ES_auto_agency_v_not_maxed_in_queue = yes
+				}
+
+				set_variable = { ES_auto_agency_queue^write_idx = v }
+				add_to_variable = { ES_auto_agency_upgrades_in_queue_count^v = 1 }
+				add_to_temp_variable = { write_idx = 1 }
+			}
+			else_if = {
+				limit = {
+					ES_auto_agency_v_index_valid = yes
+					check_variable = { ES_auto_agency_upgrades_completed_and_queued^v > 0 }
+				}
+				subtract_from_variable = { ES_auto_agency_upgrades_completed_and_queued^v = 1 }
+			}
+		}
+
+		resize_array = { array = ES_auto_agency_queue size = write_idx }
+		clear_array = ES_auto_agency_upgrades_in_queue_count
+	}
+}
+
+ES_auto_agency_find_first_valid = {
+	ES_auto_agency_verify_queue = yes
+
+	set_variable = { ES_auto_agency_selected_upgrade = -1 }
+
+	if = {
+		limit = {
+			has_intelligence_agency = yes
+			has_variable = ES_auto_agency_queue^num
+			check_variable = { ES_auto_agency_queue^num > 0 }
+		}
+
+		# Проход очереди сверху вниз (индекс 0 первым): первый валидный выигрывает.
+		for_loop_effect = {
+			end = ES_auto_agency_queue^num
+			value = v2
+			break = ES_auto_agency_loop_break
+
+			set_temp_variable = { v = ES_auto_agency_queue^v2 }
+			if = {
+				limit = {
+					ES_auto_agency_v_index_valid = yes
+					ES_auto_agency_v_can_select = yes
+				}
+
+				set_variable = { ES_auto_agency_selected_upgrade = v }
+				set_temp_variable = { idx_to_remove = v2 }
+				set_temp_variable = { ES_auto_agency_loop_break = 1 }
+			}
+		}
+	}
+
+	if = {
+		limit = {
+			check_variable = { ES_auto_agency_selected_upgrade = -1 }
+			check_variable = { ES_auto_agency_choice = 2 }
+			# После ручной очистки очереди ON не должен сам выбирать случайный
+			# апгрейд, пока игрок снова не заполнит очередь.
+			NOT = { check_variable = { ES_auto_agency_queue_cleared = 1 } }
+		}
+		ES_auto_agency_select_random = yes
+
+		if = {
+			limit = { NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } } }
+			add_to_variable = { ES_auto_agency_upgrades_completed_and_queued^ES_auto_agency_selected_upgrade = 1 }
+		}
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } } }
+		set_temp_variable = { shrink_idx = idx_to_remove }
+		ES_auto_agency_shrink_queue_at_index = yes
+	}
+}
+
+ES_auto_agency_select_random = {
+	clear_array = ES_auto_agency_random_upgrade_to_select
+
+	for_loop_effect = {
+		end = global.ES_auto_agency_upgrades^num
+		value = v
+
+		if = {
+			limit = {
+				ES_auto_agency_v_can_select = yes
+				ES_auto_agency_v_slot_available = yes
+			}
+
+			add_to_array = { ES_auto_agency_random_upgrade_to_select = v }
+		}
+	}
+
+	if = {
+		limit = {
+			has_variable = ES_auto_agency_random_upgrade_to_select^num
+			check_variable = { ES_auto_agency_random_upgrade_to_select^num > 0 }
+		}
+
+		set_temp_variable_to_random = {
+			var = random_num
+			min = 0
+			max = ES_auto_agency_random_upgrade_to_select^num
+			integer = yes
+		}
+
+		set_variable = { ES_auto_agency_selected_upgrade = ES_auto_agency_random_upgrade_to_select^random_num }
+	}
+
+	clear_array = ES_auto_agency_random_upgrade_to_select
+}
+
+ES_auto_agency_apply_selected = {
+	set_temp_variable = { v = ES_auto_agency_selected_upgrade }
+	# === TEMP-DEBUG ES_AA_DBG: фиксирует, какой индекс выбран (удалить после диагностики) ===
+	log = "[ES_AA_DBG] apply_selected ENTER | selected=[?ES_auto_agency_selected_upgrade]"
+	if = {
+		limit = { ES_auto_agency_v_index_valid = yes }
+		# === TEMP-DEBUG ES_AA_DBG: ключ/локализованное имя, уходящие в meta_effect ===
+		log = "[ES_AA_DBG] apply_selected META | v=[?ES_auto_agency_selected_upgrade] token_key=[?global.ES_auto_agency_upgrades^v.GetTokenKey] localized=[?global.ES_auto_agency_upgrades^v.GetTokenLocalizedKey]"
+		meta_effect = {
+			text = {
+				upgrade_intelligence_agency = [AGENCY]
+			}
+			AGENCY = "[?global.ES_auto_agency_upgrades^v.GetTokenLocalizedKey]"
+		}
+		# === TEMP-DEBUG ES_AA_DBG: состояние уровня сразу после применения (удалить после диагностики) ===
+		# has_done_agency_upgrade читает фактический native-апгрейд, а не наш кэш.
+		log = "[ES_AA_DBG] apply_selected AFTER_META | selected=[?ES_auto_agency_selected_upgrade] queue_num=[?ES_auto_agency_queue^num]"
+		if = {
+			limit = { check_variable = { ES_auto_agency_selected_upgrade = 0 } }
+			if = {
+				limit = { has_done_agency_upgrade = upgrade_economy_civilian }
+				log = "[ES_AA_DBG] AFTER_APPLY | upgrade_economy_civilian DONE=YES"
+			}
+			else = {
+				log = "[ES_AA_DBG] AFTER_APPLY | upgrade_economy_civilian DONE=NO"
+			}
+		}
+		if = {
+			limit = { check_variable = { ES_auto_agency_selected_upgrade = 1 } }
+			if = {
+				limit = { has_done_agency_upgrade = upgrade_army_department }
+				log = "[ES_AA_DBG] AFTER_APPLY | upgrade_army_department DONE=YES"
+			}
+			else = {
+				log = "[ES_AA_DBG] AFTER_APPLY | upgrade_army_department DONE=NO"
+			}
+		}
+	}
+
+	set_variable = { ES_auto_agency_selected_upgrade = -1 }
+	ES_auto_agency_mark_dirty = yes
+}
+
+ES_auto_agency_init_country_state = {
+	# State-переменные сначала: неинициализированный ES_auto_agency_selected_upgrade
+	# читается как 0, а не -1, и ES_auto_agency_can_start тогда отказался бы
+	# от любого старта до конца игры.
+	if = {
+		limit = { NOT = { has_variable = ES_auto_agency_selected_upgrade } }
+		set_variable = { ES_auto_agency_selected_upgrade = -1 }
+	}
+	if = {
+		limit = { NOT = { has_variable = ES_auto_agency_choice } }
+		set_variable = { ES_auto_agency_choice = 1 }
+	}
+	if = {
+		limit = { NOT = { has_variable = ES_auto_agency_dropdown_visible } }
+		set_variable = { ES_auto_agency_dropdown_visible = 2 }
+	}
+	if = {
+		limit = { NOT = { has_variable = ES_auto_agency_queue_cleared } }
+		set_variable = { ES_auto_agency_queue_cleared = 0 }
+	}
+
+	resize_array = { array = ES_auto_agency_upgrades_completed_and_queued value = 0 size = 17 }
+	ES_auto_agency_seed_completed_cache = yes
+
+	log = "[AUTO_AGENCY_DEBUG] init_country_state fired for [ROOT.GetNameWithFlag] | global upgrades num = [?global.ES_auto_agency_upgrades^num] | upgrades[0] = [?global.ES_auto_agency_upgrades^0.GetTokenKey] | upgrades[16] = [?global.ES_auto_agency_upgrades^16.GetTokenKey]"
+
+	ES_auto_agency_get_upgrade_time = yes
+	ES_auto_agency_mark_dirty = yes
+}
+
+# Заполняет кэш выполненного уровнями, взятыми вне автоматизации (история,
+# фокусы, ванильный UI разведки). has_done_agency_upgrade требует литеральное
+# имя апгрейда, поэтому индекс-маппинг записан статически.
+ES_auto_agency_seed_completed_cache = {
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_economy_civilian }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^0 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_army_department }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^1 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_airforce_department }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^2 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_passive_defense }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^3 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_anti_partisan }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^4 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_invisible_ink }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^5 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_plastic_explosives }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^6 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_suicide_pills }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^7 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_training_centers }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^8 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_commando_training }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^9 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_interrogation_techniques }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^10 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_diplo_training }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^11 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_psycho_warfare }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^12 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_form_department }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^13 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_decryption_boost }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^14 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_crypto_strength }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^15 = 1 }
+	}
+	if = {
+		limit = { has_done_agency_upgrade = upgrade_crypto_strength_2 }
+		set_variable = { ES_auto_agency_upgrades_completed_and_queued^16 = 1 }
+	}
+}
+
+ES_auto_agency_get_upgrade_time = {
+	set_variable = { ES_auto_agency_upgrade_time_days = modifier@agency_upgrade_time }
+	add_to_variable = { ES_auto_agency_upgrade_time_days = 1 }
+	multiply_variable = { ES_auto_agency_upgrade_time_days = global.ES_auto_agency_upgrade_time_days_base }
+	clamp_variable = {
+		var = ES_auto_agency_upgrade_time_days
+		min = 1
+	}
+	round_variable = ES_auto_agency_upgrade_time_days
+}
+
+ES_auto_agency_queue_push_front = {
+	# Вызывающий обязан `set_temp_variable = { push_front_val = N }` перед вызовом.
+	add_to_array = { ES_auto_agency_queue = push_front_val }
+	set_temp_variable = { last = ES_auto_agency_queue^num }
+	subtract_from_temp_variable = { last = 1 }
+
+	for_loop_effect = {
+		start = last
+		end = 0
+		value = v2
+		compare = greater_than
+		add = -1
+
+		set_temp_variable = { prev = v2 }
+		subtract_from_temp_variable = { prev = 1 }
+		set_variable = { ES_auto_agency_queue^v2 = ES_auto_agency_queue^prev }
+	}
+
+	set_variable = { ES_auto_agency_queue^0 = push_front_val }
+}
+
+ES_auto_agency_reconcile_state = {
+	# Восстановление «зависшего» выбора: миссия ушла, а выбор остался.
+	# Возвращаем его в начало очереди, чтобы он возобновился раньше уже
+	# стоящего в очереди.
+	# === TEMP-DEBUG ES_AA_DBG: фиксирует «зависший» выбор (удалить после диагностики) ===
+	if = {
+		limit = { NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } } }
+		log = "[ES_AA_DBG] reconcile_flag | selected=[?ES_auto_agency_selected_upgrade]"
+		ES_auto_agency_diag_mission_active = yes
+	}
+	if = {
+		limit = {
+			NOT = { has_active_mission = ES_auto_agency_upgrade_in_progress }
+			NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } }
+		}
+
+		# === TEMP-DEBUG ES_AA_DBG ===
+		log = "[ES_AA_DBG] reconcile_RECOVERY_RUN | requeue selected=[?ES_auto_agency_selected_upgrade]"
+
+		set_temp_variable = { push_front_val = ES_auto_agency_selected_upgrade }
+		set_variable = { ES_auto_agency_selected_upgrade = -1 }
+		ES_auto_agency_queue_push_front = yes
+		ES_auto_agency_verify_queue = yes
+	}
+}
+
+ES_auto_agency_update_state = {
+	ES_auto_agency_reconcile_state = yes
+	ES_auto_agency_begin_if_possible = yes
+	ES_auto_agency_mark_dirty = yes
+}
+
+ES_auto_agency_begin_if_possible = {
+	# === TEMP-DEBUG ES_AA_DBG: прокси-логи состояния (удалить после диагностики) ===
+	log = "[ES_AA_DBG] begin_if_possible ENTER | country=[This.GetNameWithFlag] choice=[?ES_auto_agency_choice] selected=[?ES_auto_agency_selected_upgrade] queue_num=[?ES_auto_agency_queue^num]"
+	if = {
+		limit = { ES_auto_agency_can_start = yes }
+
+		ES_auto_agency_get_upgrade_time = yes
+		ES_auto_agency_find_first_valid = yes
+
+		# === TEMP-DEBUG ES_AA_DBG ===
+		log = "[ES_AA_DBG] begin_if_possible CAN_START=yes | time_days=[?ES_auto_agency_upgrade_time_days] selected_after_find=[?ES_auto_agency_selected_upgrade] queue_num_after=[?ES_auto_agency_queue^num]"
+
+		if = {
+			limit = { NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } } }
+			# === TEMP-DEBUG ES_AA_DBG ===
+			log = "[ES_AA_DBG] begin_if_possible ACTIVATE_MISSION | selected=[?ES_auto_agency_selected_upgrade]"
+			activate_mission = ES_auto_agency_upgrade_in_progress
+		}
+
+		ES_auto_agency_mark_dirty = yes
+	}
+	else = {
+		# === TEMP-DEBUG ES_AA_DBG ===
+		log = "[ES_AA_DBG] begin_if_possible CAN_START=no | selected=[?ES_auto_agency_selected_upgrade] queue_num=[?ES_auto_agency_queue^num]"
+	}
+}
+
+# === TEMP-DEBUG ES_AA_DBG: проверяет, жива ли миссия автопрокачки (удалить после диагностики) ===
+ES_auto_agency_diag_mission_active = {
+	if = {
+		limit = { has_active_mission = ES_auto_agency_upgrade_in_progress }
+		log = "[ES_AA_DBG] mission_active(ES_auto_agency_upgrade_in_progress)=YES"
+	}
+	else = {
+		log = "[ES_AA_DBG] mission_active(ES_auto_agency_upgrade_in_progress)=NO"
+	}
+}
+
+# Еженедельный страховочный импульс: возобновляет режимы ON / Queue-Only после
+# снятия временной блокировки (например, завершения ручного ванильного апгрейда).
+# Только для игрока и на ленивой инициализации — AI-нации не трогаются.
+ES_auto_agency_weekly_tick = {
+	if = {
+		limit = {
+			is_ai = no
+			has_variable = ES_auto_agency_choice
+			check_variable = { ES_auto_agency_choice > 1 }
+		}
+		ES_auto_agency_reconcile_state = yes
+		ES_auto_agency_begin_if_possible = yes
+	}
+}

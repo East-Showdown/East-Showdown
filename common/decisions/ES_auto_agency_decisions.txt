@@ -1,0 +1,48 @@
+ES_auto_agency_cat = {
+	ES_auto_agency_upgrade_in_progress = {
+		priority = 999
+
+		icon = generic_research
+		allowed = { always = no }
+
+		selectable_mission = yes
+		ai_will_do = { base = 0 }
+
+		is_good = yes
+		days_mission_timeout = ES_auto_agency_upgrade_time_days
+
+		timeout_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision ES_auto_agency_upgrade_in_progress timeout"
+			# === TEMP-DEBUG ES_AA_DBG: состояние ДО apply_selected ===
+			log = "[ES_AA_DBG] TIMEOUT_ENTER | selected=[?ES_auto_agency_selected_upgrade] queue_num=[?ES_auto_agency_queue^num]"
+			ES_auto_agency_diag_mission_active = yes
+			ES_auto_agency_apply_selected = yes
+			ES_auto_agency_begin_if_possible = yes
+			# === TEMP-DEBUG ES_AA_DBG: состояние ПОСЛЕ apply_selected + begin_if_possible ===
+			ES_auto_agency_diag_mission_active = yes
+			log = "[ES_AA_DBG] TIMEOUT_EXIT | selected=[?ES_auto_agency_selected_upgrade] queue_num=[?ES_auto_agency_queue^num]"
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision ES_auto_agency_upgrade_in_progress cancelled"
+			# === TEMP-DEBUG ES_AA_DBG: состояние в момент отмены ===
+			ES_auto_agency_diag_mission_active = yes
+			log = "[ES_AA_DBG] complete_effect | selected=[?ES_auto_agency_selected_upgrade]"
+			custom_effect_tooltip = ES_auto_agency_will_cancel_tt
+			if = {
+				limit = {
+					NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } }
+					check_variable = {
+						var = ES_auto_agency_upgrades_completed_and_queued^ES_auto_agency_selected_upgrade
+						value = 0
+						compare = greater_than
+					}
+				}
+				subtract_from_variable = { ES_auto_agency_upgrades_completed_and_queued^ES_auto_agency_selected_upgrade = 1 }
+			}
+			set_variable = { ES_auto_agency_selected_upgrade = -1 }
+			# Запускаем следующий апгрейд, чтобы ручная отмена не оставила ON / Queue Only простаивать.
+			ES_auto_agency_begin_if_possible = yes
+		}
+	}
+}

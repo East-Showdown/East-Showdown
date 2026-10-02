@@ -1,0 +1,140 @@
+# Intelligence/service events restored from vanilla (LaR) logic
+# operative leader events
+
+add_namespace = lar_operative_event
+
+#шпион захвачен
+operative_leader_event = {
+	id = lar_operative_event.1
+	title = lar_operative_event.1.t
+	desc = lar_operative_event.1.desc
+
+	is_triggered_only = yes
+
+	major = no
+
+	option = {
+		name = lar_operative_event.1.a
+	}
+}
+
+#шпион вынужден скрываться
+operative_leader_event = {
+	id = lar_operative_event.2
+	title = lar_operative_event.2.t
+	desc = lar_operative_event.2.desc
+
+	is_triggered_only = yes
+
+	major = no
+
+	option = {
+		name = lar_operative_event.2.a
+	}
+}
+
+#шпион убит
+operative_leader_event = {
+	id = lar_operative_event.3
+	title = lar_operative_event.3.t
+	desc = lar_operative_event.3.desc
+
+	is_triggered_only = yes
+
+	major = no
+
+	option = {
+		name = lar_operative_event.3.a
+	}
+}
+
+#шпион ранен
+operative_leader_event = {
+	id = lar_operative_event.4
+	title = lar_operative_event.4.t
+	desc = lar_operative_event.4.desc
+
+	is_triggered_only = yes
+
+	major = no
+
+	option = {
+		name = lar_operative_event.4.a
+	}
+}
+
+#вражеский шпион перевербован
+operative_leader_event = {
+	id = lar_operative_event.5
+	title = lar_operative_event.5.t
+	desc = lar_operative_event.5.desc
+
+	is_triggered_only = yes
+
+	major = no
+
+	option = {
+		name = lar_operative_event.5.a
+		add_unit_leader_trait = operative_double_agent
+	}
+}
+
+#страна уведомлена, что захвачен её агент
+operative_leader_event = {
+	id = lar_operative_event.6
+	title = lar_operative_event.6.t
+	desc = lar_operative_event.6.desc
+
+	is_triggered_only = yes
+
+	major = no
+
+	option = {
+		name = lar_operative_event.6.a
+	}
+}
+
+# удаление ранее созданных фейковых дивизий (исходная ванильная логика)
+add_namespace = lar_fake_intel_units
+
+country_event = {
+	id = lar_fake_intel_units.1
+	title = lar_fake_intel_units.1.t
+	desc = lar_fake_intel_units.1.d
+
+	picture = GFX_report_event_generic_factory
+
+	is_triggered_only = yes
+
+	hidden = yes
+
+	immediate = {
+		clear_temp_array = ids_to_remove
+
+		for_each_loop = {
+			array = fake_intel_ids_to_delete
+
+			set_temp_variable = { passed_days = global.num_days }
+			subtract_from_temp_variable = { passed_days = num_days_for_fake_intel_id@var:v }
+
+			if = {
+				limit = { check_variable = { passed_days > 85 } }
+				add_to_temp_array = { ids_to_remove = v }
+				delete_unit = {
+					id = v
+				}
+			}
+		}
+
+		for_each_loop = {
+			array = ids_to_remove
+
+			remove_from_array = { fake_intel_ids_to_delete = v }
+			clear_variable = num_days_for_fake_intel_id@var:v
+		}
+	}
+
+	option = {
+		name = excellent
+	}
+}
