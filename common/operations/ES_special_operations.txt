@@ -43,7 +43,7 @@ operation_ES_sabotage_transformer = { ### 40
 	}
 
 	equipment = {
-		support_equipment = 300
+
 	}
 	risk_chance = 0.15
 	experience = 1.5
@@ -52,23 +52,50 @@ operation_ES_sabotage_transformer = { ### 40
 	risk_modifiers = { target_sabotage_risk operation_risk }
 	cost_modifiers = { target_sabotage_cost operation_cost }
 	outcome_execute = {
-		FROM.FROM = {
-			damage_building = {
-				type = infrastructure
-				damage = 1
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 20
+				}
+				FROM.FROM = {
+					damage_building = {
+						type = electrical_substation
+						damage = 1
+					}
+					add_dynamic_modifier = {
+						modifier = ES_sabotaged_transformer
+						days = 120
+					}
+					custom_effect_tooltip = operation_ES_sabotage_transformer_tt
+				}
 			}
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_transformer
-				days = 120
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_sabotage_transformer_tt
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 20
+		}
 		FROM.FROM = {
 			damage_building = {
-				type = industrial_complex
-				damage = 1
+				type = electrical_substation
+				damage = 2
 			}
 			add_dynamic_modifier = {
 				modifier = ES_sabotaged_transformer
@@ -143,7 +170,7 @@ operation_ES_sabotage_powerplant = { ### 41
 	}
 
 	equipment = {
-		support_equipment = 500
+
 	}
 	risk_chance = 0.2
 	experience = 2
@@ -152,22 +179,49 @@ operation_ES_sabotage_powerplant = { ### 41
 	risk_modifiers = { target_sabotage_risk operation_risk }
 	cost_modifiers = { target_sabotage_cost operation_cost }
 	outcome_execute = {
-		FROM.FROM = {
-			damage_building = {
-				type = industrial_complex
-				damage = 2
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 25
+				}
+				FROM.FROM = {
+					damage_building = {
+						type = electrical_substation_big
+						damage = 2
+					}
+					add_dynamic_modifier = {
+						modifier = ES_sabotaged_powerplant
+						days = 150
+					}
+					custom_effect_tooltip = operation_ES_sabotage_powerplant_tt
+				}
 			}
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_powerplant
-				days = 150
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_sabotage_powerplant_tt
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 25
+		}
 		FROM.FROM = {
 			damage_building = {
-				type = industrial_complex
+				type = electrical_substation_big
 				damage = 3
 			}
 			add_dynamic_modifier = {
@@ -245,7 +299,7 @@ operation_ES_sabotage_radar = { ### 42
 	}
 
 	equipment = {
-		support_equipment = 400
+
 	}
 	risk_chance = 0.2
 	experience = 1.5
@@ -254,33 +308,60 @@ operation_ES_sabotage_radar = { ### 42
 	risk_modifiers = { target_sabotage_risk operation_risk }
 	cost_modifiers = { target_sabotage_cost operation_cost }
 	outcome_execute = {
-		FROM.FROM = {
-			damage_building = {
-				type = air_base
-				damage = 1
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 20
+				}
+				FROM.FROM = {
+					damage_building = {
+						type = radar_station
+						damage = 1
+					}
+					custom_effect_tooltip = operation_ES_sabotage_radar_tt
+				}
+				FROM = {
+					add_dynamic_modifier = {
+						modifier = ES_sabotaged_radar
+						days = 120
+					}
+				}
 			}
-		}
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_radar
-				days = 120
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_sabotage_radar_tt
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 20
+		}
 		FROM.FROM = {
 			damage_building = {
-				type = air_base
+				type = radar_station
 				damage = 2
 			}
+			custom_effect_tooltip = operation_ES_sabotage_radar_2_tt
 		}
 		FROM = {
 			add_dynamic_modifier = {
 				modifier = ES_sabotaged_radar
 				days = 180
 			}
-			custom_effect_tooltip = operation_ES_sabotage_radar_2_tt
 		}
 	}
 	outcome_potential = {
@@ -340,7 +421,7 @@ operation_ES_strike_command = { ### 43
 		}
 	}
 	equipment = {
-		support_equipment = 600
+
 	}
 	risk_chance = 0.25
 	experience = 2
@@ -349,15 +430,42 @@ operation_ES_strike_command = { ### 43
 	risk_modifiers = { target_sabotage_risk operation_risk }
 	cost_modifiers = { target_sabotage_cost operation_cost }
 	outcome_execute = {
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_command
-				days = 120
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 25
+				}
+				FROM = {
+					add_dynamic_modifier = {
+						modifier = ES_sabotaged_command
+						days = 120
+					}
+					custom_effect_tooltip = operation_ES_strike_command_tt
+				}
 			}
-			custom_effect_tooltip = operation_ES_strike_command_tt
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 25
+		}
 		FROM = {
 			add_dynamic_modifier = {
 				modifier = ES_sabotaged_command
@@ -428,16 +536,43 @@ operation_ES_political_pressure_1 = { ### 44
 	risk_modifiers = { operation_risk }
 	cost_modifiers = { operation_cost }
 	outcome_execute = {
-		FROM = {
-			add_political_power = -50
-			add_dynamic_modifier = {
-				modifier = ES_political_instability
-				days = 90
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 15
+				}
+				FROM = {
+					add_political_power = -50
+					add_dynamic_modifier = {
+						modifier = ES_political_instability
+						days = 90
+					}
+					custom_effect_tooltip = operation_ES_political_pressure_1_tt
+				}
 			}
-			custom_effect_tooltip = operation_ES_political_pressure_1_tt
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 15
+		}
 		FROM = {
 			add_political_power = -80
 			add_dynamic_modifier = {
@@ -501,16 +636,43 @@ operation_ES_political_pressure_2 = { ### 45
 	risk_modifiers = { operation_risk }
 	cost_modifiers = { operation_cost }
 	outcome_execute = {
-		FROM = {
-			add_political_power = -150
-			add_dynamic_modifier = {
-				modifier = ES_political_instability
-				days = 120
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 20
+				}
+				FROM = {
+					add_political_power = -150
+					add_dynamic_modifier = {
+						modifier = ES_political_instability
+						days = 120
+					}
+					custom_effect_tooltip = operation_ES_political_pressure_2_tt
+				}
 			}
-			custom_effect_tooltip = operation_ES_political_pressure_2_tt
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 20
+		}
 		FROM = {
 			add_political_power = -200
 			add_dynamic_modifier = {
@@ -574,16 +736,43 @@ operation_ES_political_pressure_3 = { ### 46
 	risk_modifiers = { operation_risk }
 	cost_modifiers = { operation_cost }
 	outcome_execute = {
-		FROM = {
-			add_political_power = -250
-			add_dynamic_modifier = {
-				modifier = ES_political_instability
-				days = 150
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 25
+				}
+				FROM = {
+					add_political_power = -250
+					add_dynamic_modifier = {
+						modifier = ES_political_instability
+						days = 150
+					}
+					custom_effect_tooltip = operation_ES_political_pressure_3_tt
+				}
 			}
-			custom_effect_tooltip = operation_ES_political_pressure_3_tt
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 25
+		}
 		FROM = {
 			add_political_power = -350
 			add_dynamic_modifier = {
@@ -647,15 +836,42 @@ operation_ES_diplomatic_pressure = { ### 47
 	risk_modifiers = { operation_risk }
 	cost_modifiers = { operation_cost }
 	outcome_execute = {
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_diplomatic_isolation
-				days = 120
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 20
+				}
+				FROM = {
+					add_dynamic_modifier = {
+						modifier = ES_diplomatic_isolation
+						days = 120
+					}
+					custom_effect_tooltip = operation_ES_diplomatic_pressure_tt
+				}
 			}
-			custom_effect_tooltip = operation_ES_diplomatic_pressure_tt
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 20
+		}
 		FROM = {
 			add_dynamic_modifier = {
 				modifier = ES_diplomatic_isolation
@@ -718,15 +934,42 @@ operation_ES_trade_control = { ### 48
 	risk_modifiers = { operation_risk }
 	cost_modifiers = { operation_cost }
 	outcome_execute = {
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_trade_disruption
-				days = 150
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 20
+				}
+				FROM = {
+					add_dynamic_modifier = {
+						modifier = ES_trade_disruption
+						days = 150
+					}
+					custom_effect_tooltip = operation_ES_trade_control_tt
+				}
 			}
-			custom_effect_tooltip = operation_ES_trade_control_tt
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 20
+		}
 		FROM = {
 			add_dynamic_modifier = {
 				modifier = ES_trade_disruption
