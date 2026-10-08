@@ -9,6 +9,18 @@ operation_infiltrate_armed_forces_airforce = { ### 6 1/55
 	desc = operation_infiltrate_armed_forces_airforce_desc
 	priority = 6
 
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	days = 20
 	network_strength = 40
 	operatives = 2
@@ -49,6 +61,10 @@ operation_infiltrate_armed_forces_airforce = { ### 6 1/55
 				token = token_airforce
 			}
 		}
+		FROM = {
+			add_to_variable = { ES_intel_network_loss = 10 }
+			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+		}
 	}
 
 	outcome_extra_execute = { # SCOPE_OPERATION
@@ -75,6 +91,10 @@ operation_infiltrate_armed_forces_airforce = { ### 6 1/55
 					air_experience = 10
 				}
 			}
+		}
+		FROM = {
+			add_to_variable = { ES_intel_network_loss = 10 }
+			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 		}
 	}
 
@@ -155,6 +175,18 @@ operation_minor_sabotage = { ### 7 2/20
 	desc = operation_minor_sabotage_desc
 	priority = 7
 
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 15
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	days = 5
 	network_strength = 15
 	operatives = 1
@@ -221,6 +253,10 @@ operation_minor_sabotage = { ### 7 2/20
 					}
 					custom_effect_tooltip = targeted_sabotage_infrastructure_2_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 5 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -236,31 +272,44 @@ operation_minor_sabotage = { ### 7 2/20
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 15
-		}
-		FROM.FROM = {
-			random_list = {
-				50 = {
-					damage_building = {
-						type = rail_way
-						damage = 1
-					}
-				}
-				30 = {
-					damage_building = {
-						type = supply_node
-						damage = 1
-					}
-				}
-				20 = {
-					damage_building = {
-						type = air_base
-						damage = 1
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
 					}
 				}
 			}
-			custom_effect_tooltip = targeted_sabotage_infrastructure_3_tt
+			every_operative = {
+				gain_xp = 15
+			}
+			FROM.FROM = {
+				random_list = {
+					50 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					30 = {
+						damage_building = {
+							type = supply_node
+							damage = 1
+						}
+					}
+					20 = {
+						damage_building = {
+							type = air_base
+							damage = 1
+						}
+					}
+				}
+				custom_effect_tooltip = targeted_sabotage_infrastructure_3_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -287,6 +336,18 @@ operation_sabotage_morale = { ### 15 3/40
 	name = operation_sabotage_morale
 	desc = operation_sabotage_morale_desc
 	priority = 15
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 15
 	network_strength = 40
@@ -350,6 +411,10 @@ operation_sabotage_morale = { ### 15 3/40
 					}
 					custom_effect_tooltip = operation_sabotage_morale_2_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -393,6 +458,10 @@ operation_sabotage_morale = { ### 15 3/40
 				}
 			}
 			custom_effect_tooltip = operation_sabotage_morale_3_tt
+		}
+		FROM = {
+			add_to_variable = { ES_intel_network_loss = 10 }
+			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 		}
 	}
 	outcome_potential = {

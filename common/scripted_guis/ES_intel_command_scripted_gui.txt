@@ -1,0 +1,262 @@
+# Оперативный центр разведки (СПЕЦСЛУЖБЫ).
+# Читает реальные operation tokens и данные агентства; собственного игрового состояния не создаёт.
+# Клики переключают справочную панель (интерфейсное состояние, как в других окнах мода).
+
+scripted_gui = {
+
+	# ==== Кнопка-лаунчер на экране агентства (ветки) ====
+	ES_intel_command_launcher_scripted_ui = {
+		context_type = player_context
+		window_name = "ES_intel_command_launcher"
+		parent_window_name = agency_branches
+
+		dirty = global.ES_auto_agency_dirty
+
+		visible = {
+			has_intelligence_agency = yes
+		}
+
+		effects = {
+			open_intel_command_button_click = {
+				if = {
+					limit = { has_country_flag = ES_intel_command_gui_open }
+					clr_country_flag = ES_intel_command_gui_open
+				}
+				else = {
+					if = {
+						limit = { NOT = { has_variable = ES_intel_selection } }
+						set_variable = { ES_intel_selection = 0 }
+					}
+					if = {
+						limit = { NOT = { has_variable = ES_intel_upgrade_index } }
+						set_variable = { ES_intel_upgrade_index = 0 }
+					}
+					set_country_flag = ES_intel_command_gui_open
+				}
+				ES_auto_agency_mark_dirty = yes
+			}
+		}
+	}
+
+	# ==== Главное окно ====
+	ES_intel_command_scripted_gui = {
+		context_type = player_context
+		window_name = "ES_intel_command_window"
+
+		dirty = global.ES_auto_agency_dirty
+
+		visible = {
+			has_country_flag = ES_intel_command_gui_open
+		}
+
+		effects = {
+			close_intel_command_button_click = {
+				clr_country_flag = ES_intel_command_gui_open
+				set_variable = { ES_intel_selection = 0 }
+				ES_auto_agency_mark_dirty = yes
+			}
+#~ 
+#~ 			# Гражданское направление
+#~ 			intel_dir_civilian_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 1 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 1 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Военное направление
+#~ 			intel_dir_army_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 2 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 2 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Авиационное направление
+#~ 			intel_dir_air_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 3 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 3 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Информационное направление
+#~ 			intel_dir_info_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 4 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 4 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# ДРГ
+#~ 			intel_dir_drg_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 5 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 5 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Информационная война: политическое давление
+#~ 			intel_iw_political_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 6 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 6 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Информационная война: дипломатическая изоляция
+#~ 			intel_iw_diplomatic_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 7 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 7 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Информационная война: контроль торговли
+#~ 			intel_iw_trade_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 8 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 8 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Спецоперации: диверсии и удары
+#~ 			intel_iw_specops_click = {
+#~ 				if = {
+#~ 					limit = { check_variable = { ES_intel_selection = 9 } }
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_selection = 9 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+#~ 
+#~ 			# Улучшение агентства: выбрать для справки
+#~ 			intel_upgrade_button_click = {
+#~ 				if = {
+#~ 					limit = {
+#~ 						check_variable = { ES_intel_selection = 100 }
+#~ 						check_variable = { ES_intel_upgrade_index = i }
+#~ 					}
+#~ 					set_variable = { ES_intel_selection = 0 }
+#~ 				}
+#~ 				else = {
+#~ 					set_variable = { ES_intel_upgrade_index = i }
+#~ 					set_variable = { ES_intel_selection = 100 }
+#~ 				}
+#~ 				ES_auto_agency_mark_dirty = yes
+#~ 			}
+		}
+#~ 
+#~ 		properties = {
+#~ 			intel_agency_logo = {
+#~ 				image = "[ES_intel_agency_logo_gfx]"
+#~ 			}
+#~ 			intel_upgrade_button = {
+#~ 				image = "[ES_auto_agency_upgrade_icon]"
+#~ 			}
+#~ 			intel_upgrade_sel = {
+#~ 				image = "[ES_intel_upg_entry_sel]"
+#~ 			}
+#~ 			intel_upgrade_done = {
+#~ 				image = "[ES_intel_upg_entry_status]"
+#~ 			}
+#~ 		}
+#~ 
+#~ 		triggers = {
+#~ 			# --- Гражданское направление: индикаторы уровня ---
+#~ 			intel_dir_civilian_pip1_ok_visible = { ES_has_token_civilian_1 = yes }
+#~ 			intel_dir_civilian_pip1_no_visible = { NOT = { ES_has_token_civilian_1 = yes } }
+#~ 			intel_dir_civilian_pip2_ok_visible = { ES_has_token_civilian_2 = yes }
+#~ 			intel_dir_civilian_pip2_no_visible = { NOT = { ES_has_token_civilian_2 = yes } }
+#~ 			intel_dir_civilian_pip3_ok_visible = { ES_has_token_civilian_3 = yes }
+#~ 			intel_dir_civilian_pip3_no_visible = { NOT = { ES_has_token_civilian_3 = yes } }
+#~ 
+#~ 			# --- Армейское направление ---
+#~ 			intel_dir_army_pip1_ok_visible = { ES_has_token_army_1 = yes }
+#~ 			intel_dir_army_pip1_no_visible = { NOT = { ES_has_token_army_1 = yes } }
+#~ 			intel_dir_army_pip2_ok_visible = { ES_has_token_army_2 = yes }
+#~ 			intel_dir_army_pip2_no_visible = { NOT = { ES_has_token_army_2 = yes } }
+#~ 			intel_dir_army_pip3_ok_visible = { ES_has_token_army_3 = yes }
+#~ 			intel_dir_army_pip3_no_visible = { NOT = { ES_has_token_army_3 = yes } }
+#~ 
+#~ 			# --- Авиационное направление ---
+#~ 			intel_dir_air_pip1_ok_visible = { ES_has_token_air_1 = yes }
+#~ 			intel_dir_air_pip1_no_visible = { NOT = { ES_has_token_air_1 = yes } }
+#~ 			intel_dir_air_pip2_ok_visible = { ES_has_token_air_2 = yes }
+#~ 			intel_dir_air_pip2_no_visible = { NOT = { ES_has_token_air_2 = yes } }
+#~ 			intel_dir_air_pip3_ok_visible = { ES_has_token_air_3 = yes }
+#~ 			intel_dir_air_pip3_no_visible = { NOT = { ES_has_token_air_3 = yes } }
+#~ 
+#~ 			# --- Информационное направление ---
+#~ 			intel_dir_info_pip1_ok_visible = { ES_has_token_info_1 = yes }
+#~ 			intel_dir_info_pip1_no_visible = { NOT = { ES_has_token_info_1 = yes } }
+#~ 			intel_dir_info_pip2_ok_visible = { ES_has_token_info_2 = yes }
+#~ 			intel_dir_info_pip2_no_visible = { NOT = { ES_has_token_info_2 = yes } }
+#~ 			intel_dir_info_pip3_ok_visible = { ES_has_token_info_3 = yes }
+#~ 			intel_dir_info_pip3_no_visible = { NOT = { ES_has_token_info_3 = yes } }
+#~ 
+#~ 			# --- ДРГ ---
+#~ 			intel_dir_drg_pip_ok_visible = { ES_has_token_drg = yes }
+#~ 			intel_dir_drg_pip_no_visible = { NOT = { ES_has_token_drg = yes } }
+#~ 
+#~ 			# --- Справочная панель ---
+#~ 			intel_brief_hint_visible = { check_variable = { ES_intel_selection = 0 } }
+#~ 			intel_brief_civilian_visible = { check_variable = { ES_intel_selection = 1 } }
+#~ 			intel_brief_army_visible = { check_variable = { ES_intel_selection = 2 } }
+#~ 			intel_brief_air_visible = { check_variable = { ES_intel_selection = 3 } }
+#~ 			intel_brief_info_visible = { check_variable = { ES_intel_selection = 4 } }
+#~ 			intel_brief_drg_visible = { check_variable = { ES_intel_selection = 5 } }
+#~ 			intel_brief_pol_visible = { check_variable = { ES_intel_selection = 6 } }
+#~ 			intel_brief_diplo_visible = { check_variable = { ES_intel_selection = 7 } }
+#~ 			intel_brief_trade_visible = { check_variable = { ES_intel_selection = 8 } }
+#~ 			intel_brief_specops_visible = { check_variable = { ES_intel_selection = 9 } }
+#~ 			intel_brief_upg_icon_visible = { check_variable = { ES_intel_selection = 100 } }
+#~ 			intel_brief_upg_name_visible = { check_variable = { ES_intel_selection = 100 } }
+#~ 			intel_brief_upg_status_visible = { check_variable = { ES_intel_selection = 100 } }
+#~ 			intel_brief_upg_desc_visible = { check_variable = { ES_intel_selection = 100 } }
+#~ 			intel_brief_upg_effects_visible = { check_variable = { ES_intel_selection = 100 } }
+#~ 		}
+#~ 
+#~ 		dynamic_lists = {
+#~ 			intel_upgrades_gridbox = {
+#~ 				array = global.ES_auto_agency_upgrades
+#~ 				change_scope = no
+#~ 				entry_container = "intel_upgrade_item"
+#~ 			}
+#~ 		}
+	}
+}

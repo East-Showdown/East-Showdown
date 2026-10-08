@@ -7,6 +7,18 @@ operation_ES_sabotage_transformer = { ### 40
 	desc = operation_ES_sabotage_transformer_desc
 	priority = 40
 
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 30
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	days = 10
 	network_strength = 30
 	operatives = 2
@@ -68,11 +80,11 @@ operation_ES_sabotage_transformer = { ### 40
 						type = electrical_substation
 						damage = 1
 					}
-					add_dynamic_modifier = {
-						modifier = ES_sabotaged_transformer
-						days = 120
-					}
 					custom_effect_tooltip = operation_ES_sabotage_transformer_tt
+				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 				}
 			}
 			20 = {
@@ -89,19 +101,28 @@ operation_ES_sabotage_transformer = { ### 40
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 20
-		}
-		FROM.FROM = {
-			damage_building = {
-				type = electrical_substation
-				damage = 2
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_transformer
-				days = 180
+			every_operative = {
+				gain_xp = 20
 			}
-			custom_effect_tooltip = operation_ES_sabotage_transformer_2_tt
+			FROM.FROM = {
+				damage_building = {
+					type = electrical_substation
+					damage = 2
+				}
+				custom_effect_tooltip = operation_ES_sabotage_transformer_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -134,6 +155,18 @@ operation_ES_sabotage_powerplant = { ### 41
 	desc = operation_ES_sabotage_powerplant_desc
 	priority = 41
 
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 45
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	days = 15
 	network_strength = 45
 	operatives = 3
@@ -154,6 +187,9 @@ operation_ES_sabotage_powerplant = { ### 41
 	requirements = {
 		FROM = {
 			has_war = yes
+		}
+		any_operative_leader = {
+			has_trait = operative_commando
 		}
 	}
 
@@ -195,11 +231,11 @@ operation_ES_sabotage_powerplant = { ### 41
 						type = electrical_substation_big
 						damage = 2
 					}
-					add_dynamic_modifier = {
-						modifier = ES_sabotaged_powerplant
-						days = 150
-					}
 					custom_effect_tooltip = operation_ES_sabotage_powerplant_tt
+				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 				}
 			}
 			20 = {
@@ -216,19 +252,28 @@ operation_ES_sabotage_powerplant = { ### 41
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 25
-		}
-		FROM.FROM = {
-			damage_building = {
-				type = electrical_substation_big
-				damage = 3
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_powerplant
-				days = 210
+			every_operative = {
+				gain_xp = 25
 			}
-			custom_effect_tooltip = operation_ES_sabotage_powerplant_2_tt
+			FROM.FROM = {
+				damage_building = {
+					type = electrical_substation_big
+					damage = 3
+				}
+				custom_effect_tooltip = operation_ES_sabotage_powerplant_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -262,6 +307,18 @@ operation_ES_sabotage_radar = { ### 42
 	name = operation_ES_sabotage_radar
 	desc = operation_ES_sabotage_radar_desc
 	priority = 42
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 35
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 12
 	network_strength = 35
@@ -332,6 +389,10 @@ operation_ES_sabotage_radar = { ### 42
 						days = 120
 					}
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -347,20 +408,33 @@ operation_ES_sabotage_radar = { ### 42
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 20
-		}
-		FROM.FROM = {
-			damage_building = {
-				type = radar_station
-				damage = 2
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_sabotage_radar_2_tt
-		}
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_radar
-				days = 180
+			every_operative = {
+				gain_xp = 20
+			}
+			FROM.FROM = {
+				damage_building = {
+					type = radar_station
+					damage = 2
+				}
+				custom_effect_tooltip = operation_ES_sabotage_radar_2_tt
+			}
+			FROM = {
+				add_dynamic_modifier = {
+					modifier = ES_sabotaged_radar
+					days = 180
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
@@ -394,6 +468,18 @@ operation_ES_strike_command = { ### 43
 	desc = operation_ES_strike_command_desc
 	priority = 43
 
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 55
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	days = 18
 	network_strength = 55
 	operatives = 3
@@ -418,6 +504,9 @@ operation_ES_strike_command = { ### 43
 	requirements = {
 		FROM = {
 			has_war = yes
+		}
+		any_operative_leader = {
+			has_trait = operative_commando
 		}
 	}
 	equipment = {
@@ -444,9 +533,13 @@ operation_ES_strike_command = { ### 43
 				FROM = {
 					add_dynamic_modifier = {
 						modifier = ES_sabotaged_command
-						days = 120
+						days = 15
 					}
 					custom_effect_tooltip = operation_ES_strike_command_tt
+				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 20 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 				}
 			}
 			20 = {
@@ -463,15 +556,28 @@ operation_ES_strike_command = { ### 43
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 25
-		}
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_sabotaged_command
-				days = 180
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_strike_command_2_tt
+			every_operative = {
+				gain_xp = 25
+			}
+			FROM = {
+				add_dynamic_modifier = {
+					modifier = ES_sabotaged_command
+					days = 15
+				}
+				custom_effect_tooltip = operation_ES_strike_command_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 20 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -505,6 +611,18 @@ operation_ES_political_pressure_1 = { ### 44
 	name = operation_ES_political_pressure_1
 	desc = operation_ES_political_pressure_1_desc
 	priority = 44
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 25
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 12
 	network_strength = 25
@@ -555,6 +673,10 @@ operation_ES_political_pressure_1 = { ### 44
 					}
 					custom_effect_tooltip = operation_ES_political_pressure_1_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 5 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -570,16 +692,29 @@ operation_ES_political_pressure_1 = { ### 44
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 15
-		}
-		FROM = {
-			add_political_power = -80
-			add_dynamic_modifier = {
-				modifier = ES_political_instability
-				days = 120
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_political_pressure_1_2_tt
+			every_operative = {
+				gain_xp = 15
+			}
+			FROM = {
+				add_political_power = -80
+				add_dynamic_modifier = {
+					modifier = ES_political_instability
+					days = 120
+				}
+				custom_effect_tooltip = operation_ES_political_pressure_1_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -605,6 +740,18 @@ operation_ES_political_pressure_2 = { ### 45
 	name = operation_ES_political_pressure_2
 	desc = operation_ES_political_pressure_2_desc
 	priority = 45
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 18
 	network_strength = 40
@@ -655,6 +802,10 @@ operation_ES_political_pressure_2 = { ### 45
 					}
 					custom_effect_tooltip = operation_ES_political_pressure_2_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -670,16 +821,29 @@ operation_ES_political_pressure_2 = { ### 45
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 20
-		}
-		FROM = {
-			add_political_power = -200
-			add_dynamic_modifier = {
-				modifier = ES_political_instability
-				days = 150
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_political_pressure_2_2_tt
+			every_operative = {
+				gain_xp = 20
+			}
+			FROM = {
+				add_political_power = -200
+				add_dynamic_modifier = {
+					modifier = ES_political_instability
+					days = 150
+				}
+				custom_effect_tooltip = operation_ES_political_pressure_2_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -705,6 +869,18 @@ operation_ES_political_pressure_3 = { ### 46
 	name = operation_ES_political_pressure_3
 	desc = operation_ES_political_pressure_3_desc
 	priority = 46
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 55
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 25
 	network_strength = 55
@@ -755,6 +931,10 @@ operation_ES_political_pressure_3 = { ### 46
 					}
 					custom_effect_tooltip = operation_ES_political_pressure_3_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 20 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -770,16 +950,29 @@ operation_ES_political_pressure_3 = { ### 46
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 25
-		}
-		FROM = {
-			add_political_power = -350
-			add_dynamic_modifier = {
-				modifier = ES_political_instability
-				days = 180
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_political_pressure_3_2_tt
+			every_operative = {
+				gain_xp = 25
+			}
+			FROM = {
+				add_political_power = -350
+				add_dynamic_modifier = {
+					modifier = ES_political_instability
+					days = 180
+				}
+				custom_effect_tooltip = operation_ES_political_pressure_3_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 20 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -805,6 +998,18 @@ operation_ES_diplomatic_pressure = { ### 47
 	name = operation_ES_diplomatic_pressure
 	desc = operation_ES_diplomatic_pressure_desc
 	priority = 47
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 35
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 20
 	network_strength = 35
@@ -854,6 +1059,10 @@ operation_ES_diplomatic_pressure = { ### 47
 					}
 					custom_effect_tooltip = operation_ES_diplomatic_pressure_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -869,15 +1078,28 @@ operation_ES_diplomatic_pressure = { ### 47
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 20
-		}
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_diplomatic_isolation
-				days = 180
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_diplomatic_pressure_2_tt
+			every_operative = {
+				gain_xp = 20
+			}
+			FROM = {
+				add_dynamic_modifier = {
+					modifier = ES_diplomatic_isolation
+					days = 180
+				}
+				custom_effect_tooltip = operation_ES_diplomatic_pressure_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -903,6 +1125,18 @@ operation_ES_trade_control = { ### 48
 	name = operation_ES_trade_control
 	desc = operation_ES_trade_control_desc
 	priority = 48
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 45
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
 
 	days = 25
 	network_strength = 45
@@ -952,6 +1186,10 @@ operation_ES_trade_control = { ### 48
 					}
 					custom_effect_tooltip = operation_ES_trade_control_tt
 				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
 			}
 			20 = {
 				# провал: цель не пострадала, агент ранен/захвачен/погиб
@@ -967,15 +1205,28 @@ operation_ES_trade_control = { ### 48
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		every_operative = {
-			gain_xp = 20
-		}
-		FROM = {
-			add_dynamic_modifier = {
-				modifier = ES_trade_disruption
-				days = 210
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = operation_ES_trade_control_2_tt
+			every_operative = {
+				gain_xp = 20
+			}
+			FROM = {
+				add_dynamic_modifier = {
+					modifier = ES_trade_disruption
+					days = 210
+				}
+				custom_effect_tooltip = operation_ES_trade_control_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {

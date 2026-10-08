@@ -18,7 +18,15 @@ operation_rescue_operative = { ### 0 1/35
 	}
 
 	available = {
-		
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 30
+					compare = greater_than_or_equals
+				}
+			}
+		}
 	}
 
 	requirements = {
@@ -46,6 +54,10 @@ operation_rescue_operative = { ### 0 1/35
 			hidden_effect = {
 				set_country_flag = just_freed_operative_flag
 			}
+		}
+		FROM = {
+			add_to_variable = { ES_intel_network_loss = 10 }
+			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 		}
 	}
 
@@ -117,6 +129,15 @@ operation_infiltrate_civilian = { ### 1 1/35
 	}
 
 	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 20
+					compare = greater_than_or_equals
+				}
+			}
+		}
 		#NOT = {
 			#has_operation_token = {
 			#	tag = FROM
@@ -134,36 +155,62 @@ operation_infiltrate_civilian = { ### 1 1/35
 	outcome_modifiers = { operation_infiltrate_outcome operation_outcome }
 	cost_modifiers = { operation_infiltrate_cost operation_cost }
 	outcome_execute = {
-		ROOT = {
-			add_operation_token = {
-				tag = FROM
-				token = token_civilian
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			ROOT = {
+				add_operation_token = {
+					tag = FROM
+					token = token_civilian
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		random_list = {
-			33 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_civilian
-					}
-					add_political_power = 25
-					add_intel = {
-						target = FROM
-						civilian_intel = 10
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
 					}
 				}
 			}
-			67 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_civilian
+			random_list = {
+				33 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_civilian
+						}
+						add_political_power = 25
+						add_intel = {
+							target = FROM
+							civilian_intel = 10
+						}
 					}
-					add_political_power = 25
-				}	
+				}
+				67 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_civilian
+						}
+						add_political_power = 25
+					}	
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
@@ -254,6 +301,15 @@ operation_fake_intel = { ### 2 1/40
 				}
 			}
 		}
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
 	}
 	
 	equipment = {
@@ -266,64 +322,77 @@ operation_fake_intel = { ### 2 1/40
 	risk_chance = 0 #there shouldn't be any risk
 	experience = 0.5
 	outcome_execute = { # SCOPE_OPERATION
-		ROOT = {
-			hidden_effect = {
-				if = {
-					# create template if not exist
-					limit = {
-						not = {
-							has_country_flag = fake_intel_template_created
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			ROOT = {
+				hidden_effect = {
+					if = {
+						# create template if not exist
+						limit = {
+							not = {
+								has_country_flag = fake_intel_template_created
+							}
+						}
+						division_template = {
+							name = "Fake Intel Division"
+							
+							is_fake_intel_division = yes
+							is_locked = yes
+							regiments = {
+								fake_intel_unit = { x = 0 y = 0 }
+							}
+						}
+						set_country_flag = fake_intel_template_created
+					}
+					
+					# give it an id and store id & current date so it can be deleted later
+					if = {
+						limit = { NOT = { has_variable = fake_intel_id } }
+						set_variable = { fake_intel_id = 1000 }
+					}
+					set_temp_variable = { id_to_set = fake_intel_id }
+					add_to_variable = { fake_intel_id = 1 }
+					add_to_array = {
+						fake_intel_ids_to_delete = id_to_set
+					}
+					set_variable = { num_days_for_fake_intel_id@var:id_to_set = global.num_days }
+					
+					# minimum of 0.25 of current armies or 24
+					set_temp_variable = { num_to_create = num_armies }
+					multiply_temp_variable = { num_to_create = 0.25 }
+					round_temp_variable = num_to_create
+					add_to_temp_variable = { num_to_create = 1 }
+					clamp_temp_variable = {
+						var = num_to_create
+						min = 24
+					}
+					
+					# create actual units
+					capital_scope = {
+						create_unit = {
+							division = "division_template = \"Fake Intel Division\" start_experience_factor = 0.5" 
+							owner = PREV
+							count = num_to_create
+							id = id_to_set
 						}
 					}
-					division_template = {
-						name = "Fake Intel Division"
-						
-						is_fake_intel_division = yes
-						is_locked = yes
-						regiments = {
-							fake_intel_unit = { x = 0 y = 0 }
-						}
-					}
-					set_country_flag = fake_intel_template_created
+					
+					# will delete them after 90 days
+					country_event = { id = lar_fake_intel_units.1 days = 90 }
 				}
-				
-				# give it an id and store id & current date so it can be deleted later
-				if = {
-					limit = { NOT = { has_variable = fake_intel_id } }
-					set_variable = { fake_intel_id = 1000 }
-				}
-				set_temp_variable = { id_to_set = fake_intel_id }
-				add_to_variable = { fake_intel_id = 1 }
-				add_to_array = {
-					fake_intel_ids_to_delete = id_to_set
-				}
-				set_variable = { num_days_for_fake_intel_id@var:id_to_set = global.num_days }
-				
-				# minimum of 0.25 of current armies or 24
-				set_temp_variable = { num_to_create = num_armies }
-				multiply_temp_variable = { num_to_create = 0.25 }
-				round_temp_variable = num_to_create
-				add_to_temp_variable = { num_to_create = 1 }
-				clamp_temp_variable = {
-					var = num_to_create
-					min = 24
-				}
-				
-				# create actual units
-				capital_scope = {
-					create_unit = {
-						division = "division_template = \"Fake Intel Division\" start_experience_factor = 0.5" 
-						owner = PREV
-						count = num_to_create
-						id = id_to_set
-					}
-				}
-				
-				# will delete them after 90 days
-				country_event = { id = lar_fake_intel_units.1 days = 90 }
+			}
+			custom_effect_tooltip = CUSTOM_EFFECT_CREATE_FAKE_ARMIES_RESULT
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
-		custom_effect_tooltip = CUSTOM_EFFECT_CREATE_FAKE_ARMIES_RESULT
 	}
 
 	outcome_potential = {
@@ -372,6 +441,19 @@ operation_infiltrate_drg = {
 
 	equipment = {
 	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 20
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	risk_chance = 0.8
 	experience = 2
 	outcome_extra_chance = 0.2
@@ -381,36 +463,62 @@ operation_infiltrate_drg = {
 	}
 
 	outcome_execute = {
-		ROOT = {
-			add_operation_token = {
-				tag = FROM
-				token = token_drg
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			ROOT = {
+				add_operation_token = {
+					tag = FROM
+					token = token_drg
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		random_list = {
-			33 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_drg
-					}
-					army_experience = 10
-					add_intel = {
-						target = FROM
-						army_intel = 10
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
 					}
 				}
 			}
-			67 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_drg
+			random_list = {
+				33 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_drg
+						}
+						army_experience = 10
+						add_intel = {
+							target = FROM
+							army_intel = 10
+						}
 					}
-					army_experience = 10
 				}
+				67 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_drg
+						}
+						army_experience = 10
+					}
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
@@ -480,6 +588,15 @@ operation_infiltrate_armed_forces_army = { ### 4 1/55
 	}
 
 	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
 		#NOT = {
 		#	has_operation_token = {
 		#		tag = FROM
@@ -498,36 +615,62 @@ operation_infiltrate_armed_forces_army = { ### 4 1/55
 	outcome_modifiers = { operation_infiltrate_outcome operation_outcome }
 	cost_modifiers = { operation_infiltrate_cost operation_cost }
 	outcome_execute = {
-		ROOT = {
-			add_operation_token = {
-				tag = FROM
-				token = token_army
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			ROOT = {
+				add_operation_token = {
+					tag = FROM
+					token = token_army
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		random_list = {
-			33 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_army
-					}
-					army_experience = 10
-					add_intel = {
-						target = FROM
-						army_intel = 10
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
 					}
 				}
 			}
-			67 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_army
+			random_list = {
+				33 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_army
+						}
+						army_experience = 10
+						add_intel = {
+							target = FROM
+							army_intel = 10
+						}
 					}
-					army_experience = 10
 				}
+				67 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_army
+						}
+						army_experience = 10
+					}
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
@@ -614,6 +757,15 @@ operation_make_resistance_contacts = { ### 9 2/40
 	}
 
 	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
 		#NOT = {
 		#	has_operation_token = {
 		#		tag = FROM
@@ -637,42 +789,68 @@ operation_make_resistance_contacts = { ### 9 2/40
 	outcome_modifiers = { operation_infiltrate_outcome operation_outcome }
 	cost_modifiers = { operation_infiltrate_cost operation_cost }
 	outcome_execute = {
-		ROOT = {
-			add_operation_token = {
-				tag = FROM
-				token = token_resistance_contacts
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			ROOT = {
+				add_operation_token = {
+					tag = FROM
+					token = token_resistance_contacts
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		random_list = {
-			33 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_resistance_contacts
-					}
-				}
-				FROM.FROM = {
-					add_resistance_target = {
-						amount = 20
-						tooltip = intelligency_agency_resistance_boost_tt
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
 					}
 				}
 			}
-			67 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_resistance_contacts
+			random_list = {
+				33 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_resistance_contacts
+						}
+					}
+					FROM.FROM = {
+						add_resistance_target = {
+							amount = 20
+							tooltip = intelligency_agency_resistance_boost_tt
+						}
 					}
 				}
-				FROM.FROM = {
-					add_resistance_target = {
-						amount = 30
-						tooltip = intelligency_agency_resistance_boost_tt
+				67 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_resistance_contacts
+						}
+					}
+					FROM.FROM = {
+						add_resistance_target = {
+							amount = 30
+							tooltip = intelligency_agency_resistance_boost_tt
+						}
 					}
 				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
@@ -736,6 +914,18 @@ operation_boost_resistance = { ### 8 2/40
 
 	}
 
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 30
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	required_tokens = {
 		token_resistance_contacts
 	}
@@ -744,39 +934,65 @@ operation_boost_resistance = { ### 8 2/40
 	outcome_extra_chance = 0.25
 	outcome_modifiers = { boost_resistance_factor }
 	outcome_execute = {
-		FROM.FROM = {
-		add_resistance_target = {
-			amount = 10
-			tooltip = intelligency_agency_resistance_boost_tt
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			add_resistance = 5
+			FROM.FROM = {
+				add_resistance_target = {
+					amount = 10
+					tooltip = intelligency_agency_resistance_boost_tt
+				}
+				add_resistance = 5
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
+	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		random_list = {
-			33 = { #critical success
-				FROM.FROM = {
-					add_resistance_target = {
-						amount = 20
-						tooltip = intelligency_agency_resistance_boost_tt
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
 					}
-				}
-				FROM.FROM = {
-					add_compliance = -10
-					add_resistance = 15
 				}
 			}
-			67 = { #normal success
-				FROM.FROM = {
-					add_resistance_target = {
-						amount = 20
-						tooltip = intelligency_agency_resistance_boost_tt
+			random_list = {
+				33 = { #critical success
+					FROM.FROM = {
+						add_resistance_target = {
+							amount = 20
+							tooltip = intelligency_agency_resistance_boost_tt
+						}
+					}
+					FROM.FROM = {
+						add_compliance = -10
+						add_resistance = 15
 					}
 				}
-				FROM.FROM = {
-					add_compliance = -5
-					add_resistance = 10
+				67 = { #normal success
+					FROM.FROM = {
+						add_resistance_target = {
+							amount = 20
+							tooltip = intelligency_agency_resistance_boost_tt
+						}
+					}
+					FROM.FROM = {
+						add_compliance = -5
+						add_resistance = 10
+					}
 				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
 	}
@@ -841,6 +1057,19 @@ operation_targeted_sabotage_resources = { ### 15 3/35
 	equipment = {
 		communication_equipment = 200
 	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 30
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	risk_chance = 0.2
 	experience = 2
 	outcome_extra_chance = 0.25
@@ -848,32 +1077,57 @@ operation_targeted_sabotage_resources = { ### 15 3/35
 	risk_modifiers = { target_sabotage_risk operation_risk }
 	cost_modifiers = { target_sabotage_cost operation_cost }
 	outcome_execute = {
-		FROM.FROM = {
-			add_dynamic_modifier = {
-				modifier = sabotaged_resources
-				days = 45
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = targeted_sabotage_resources_2_tt
-		}
-		ROOT = {
-			random = {
-			40 = {
-			remove_operation_token = {
-				tag = FROM
-				token = token_drg
+			FROM.FROM = {
+				add_dynamic_modifier = {
+					modifier = sabotaged_resources
+					days = 45
+				}
+				custom_effect_tooltip = targeted_sabotage_resources_2_tt
 			}
-		   }
-		  }
+			ROOT = {
+				random = {
+					40 = {
+						remove_operation_token = {
+							tag = FROM
+							token = token_drg
+						}
+					}
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		
-		FROM.FROM = {
-			add_dynamic_modifier = {
-				modifier = sabotaged_resources
-				days = 60
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
 			}
-			custom_effect_tooltip = targeted_sabotage_resources_2_tt
+			FROM.FROM = {
+				add_dynamic_modifier = {
+					modifier = sabotaged_resources
+					days = 60
+				}
+				custom_effect_tooltip = targeted_sabotage_resources_2_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -940,6 +1194,19 @@ operation_targeted_sabotage_infrastructure = { ### 14 3/35
 	equipment = {
 		communication_equipment = 200
 	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 30
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	risk_chance = 0.2
 	experience = 2
 	outcome_extra_chance = 0.25
@@ -948,75 +1215,101 @@ operation_targeted_sabotage_infrastructure = { ### 14 3/35
 	cost_modifiers = { target_sabotage_cost operation_cost }
 	
 	outcome_execute = {
-		FROM.FROM = {
-			random_list = {
-				70 = {
-			    damage_building = {
-				type = air_base
-				damage = 1
-			    }
-			}
-				90 = {
-			    damage_building = {
-				type = supply_node 
-				damage = 1
-			    }
-			}
-			    80 = {
-			    damage_building = {
-				type = rail_way 
-				damage = 1
-			    }
-			}
-			    40 = {
-			    damage_building = {
-                type = arms_factory
-				damage = 1
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
 				}
 			}
-		}
-	}
-		custom_effect_tooltip = targeted_sabotage_infrastructure_2_tt
-		ROOT = {
-			random = {
-			40 = {
-			remove_operation_token = {
-				tag = FROM
-				token = token_drg
+			FROM.FROM = {
+				random_list = {
+					70 = {
+						damage_building = {
+							type = air_base
+							damage = 1
+						}
+					}
+					90 = {
+						damage_building = {
+							type = supply_node
+							damage = 1
+						}
+					}
+					80 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					40 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+				}
 			}
-		  }
+			custom_effect_tooltip = targeted_sabotage_infrastructure_2_tt
+			ROOT = {
+				random = {
+					40 = {
+						remove_operation_token = {
+							tag = FROM
+							token = token_drg
+						}
+					}
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
-	  }
 	}
 	outcome_extra_execute = { # SCOPE_OPERATION
-		FROM.FROM = {
-			random_list = {
-				20 = {
-			    damage_building = {
-				type = air_base
-				damage = 1
-			    }
-			}
-				40 = {
-			    damage_building = {
-				type = supply_node 
-				damage = 1
-			    }
-			}
-			    30 = {
-			    damage_building = {
-				type = rail_way 
-				damage = 1
-			    }
-			}
-			    10 = {
-			    damage_building = {
-                type = arms_factory
-				damage = 1
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
 				}
 			}
-	      }
-			custom_effect_tooltip = targeted_sabotage_infrastructure_3_tt
+			FROM.FROM = {
+				random_list = {
+					20 = {
+						damage_building = {
+							type = air_base
+							damage = 1
+						}
+					}
+					40 = {
+						damage_building = {
+							type = supply_node
+							damage = 1
+						}
+					}
+					30 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					10 = {
+						damage_building = {
+							type = arms_factory
+							damage = 1
+						}
+					}
+				}
+				custom_effect_tooltip = targeted_sabotage_infrastructure_3_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 	outcome_potential = {
@@ -1064,46 +1357,85 @@ operation_kill_general = {
 	equipment = {
 		
 	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 50
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
 	risk_chance = 0.8
 	experience = 2
 	outcome_extra_chance = 0.2
 
 	required_tokens = { token_drg }
 	outcome_execute = {
-		custom_effect_tooltip = kill_general_cet
-		random_list = {
-		30 = {
-		FROM = {
-			random_unit_leader = {
-			unit_leader_event = smo.21
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			custom_effect_tooltip = kill_general_cet
+			random_list = {
+				30 = {
+					FROM = {
+						random_unit_leader = {
+							unit_leader_event = smo.21
+						}
+					}
+				}
+				40 = {
+					FROM = {
+						random_unit_leader = {
+							unit_leader_event = smo.22
+						}
+					}
+				}
+				30 = {
+					FROM = {
+						country_event = smo.23
+					}
+				}
+			}
+			ROOT = {
+				remove_operation_token = {
+					tag = FROM
+					token = token_drg
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 20 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
 			}
 		}
-	    }
-		40 = {
-		FROM = {
-			random_unit_leader = {
-			unit_leader_event = smo.22
-			}
-		}
-	    }
-		30 = {
-		FROM = {
-			country_event = smo.23
-		}
-	    }
-	    }
-		ROOT = {
-			remove_operation_token = {
-				tag = FROM
-				token = token_drg
-			}
-		}
-	   }
+	}
 	outcome_extra_execute = {
-		FROM = {
-			country_event = smo.23
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						is_operative_captured = yes
+					}
+				}
+			}
+			FROM = {
+				country_event = smo.23
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 20 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
-      }
+	}
 	phases = {
 		targeted_enemy_unit_leader = { base = 100 }
 	}
