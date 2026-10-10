@@ -9,6 +9,12 @@ operation_infiltrate_armed_forces_airforce = { ### 6 1/55
 	desc = operation_infiltrate_armed_forces_airforce_desc
 	priority = 6
 
+	on_start = {
+		every_operative = {
+			clr_unit_leader_flag = es_oper_compromised
+		}
+	}
+
 	available = {
 		FROM = {
 			NOT = {
@@ -55,46 +61,70 @@ operation_infiltrate_armed_forces_airforce = { ### 6 1/55
 	outcome_modifiers = { operation_infiltrate_outcome operation_outcome }
 	cost_modifiers = { operation_infiltrate_cost operation_cost }
 	outcome_execute = {
-		ROOT = {
-			add_operation_token = {
-				tag = FROM
-				token = token_airforce
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
+					}
+				}
 			}
-		}
-		FROM = {
-			add_to_variable = { ES_intel_network_loss = 10 }
-			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			ROOT = {
+				add_operation_token = {
+					tag = FROM
+					token = token_airforce
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 
 	outcome_extra_execute = { # SCOPE_OPERATION
-		random_list = {
-			33 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_airforce
-					}
-					air_experience = 10
-					add_intel = {
-						target = FROM
-						airforce_intel = 10
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
 					}
 				}
 			}
-			67 = {
-				ROOT = {
-					add_operation_token = {
-						tag = FROM
-						token = token_airforce
+			random_list = {
+				33 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_airforce
+						}
+						air_experience = 10
+						add_intel = {
+							target = FROM
+							airforce_intel = 10
+						}
 					}
-					air_experience = 10
+				}
+				67 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_airforce
+						}
+						air_experience = 10
+					}
 				}
 			}
-		}
-		FROM = {
-			add_to_variable = { ES_intel_network_loss = 10 }
-			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
 		}
 	}
 
@@ -175,6 +205,12 @@ operation_minor_sabotage = { ### 7 2/20
 	desc = operation_minor_sabotage_desc
 	priority = 7
 
+	on_start = {
+		every_operative = {
+			clr_unit_leader_flag = es_oper_compromised
+		}
+	}
+
 	available = {
 		FROM = {
 			NOT = {
@@ -229,7 +265,10 @@ operation_minor_sabotage = { ### 7 2/20
 			80 = {
 				modifier = {
 					any_operative_leader = {
-						is_operative_captured = yes
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
 					}
 					factor = 0
 				}
@@ -276,7 +315,10 @@ operation_minor_sabotage = { ### 7 2/20
 			limit = {
 				NOT = {
 					any_operative_leader = {
-						is_operative_captured = yes
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
 					}
 				}
 			}
@@ -337,6 +379,12 @@ operation_sabotage_morale = { ### 15 3/40
 	desc = operation_sabotage_morale_desc
 	priority = 15
 
+	on_start = {
+		every_operative = {
+			clr_unit_leader_flag = es_oper_compromised
+		}
+	}
+
 	available = {
 		FROM = {
 			NOT = {
@@ -388,7 +436,10 @@ operation_sabotage_morale = { ### 15 3/40
 			80 = {
 				modifier = {
 					any_operative_leader = {
-						is_operative_captured = yes
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
 					}
 					factor = 0
 				}
