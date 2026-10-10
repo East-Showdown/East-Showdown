@@ -297,6 +297,17 @@ scripted_gui = {
 
 		effects = {
 			load_queue_tab_button_click = {
+				# Самолечение глобалов: on_startup не срабатывает при загрузке
+				# сейва, из-за чего массивы апгрейдов могли остаться пустыми и
+				# сетка отрисовалась бы пустой. Создаём их при первом открытии.
+				if = {
+					limit = { NOT = { has_variable = global.ES_auto_agency_upgrades^num } }
+					ES_auto_agency_init_globals = yes
+				}
+				else_if = {
+					limit = { check_variable = { global.ES_auto_agency_upgrades^num < 17 } }
+					ES_auto_agency_init_globals = yes
+				}
 				# Ленивая инициализация — пропуск on_startup экономит ~5000
 				# переменных на AI-нациях ради player-only фичи.
 				if = {
