@@ -50,12 +50,9 @@ scripted_gui = {
 							OR = {
 								check_variable = { i = 14 }
 								check_variable = { i = 15 }
+								check_variable = { i = 16 }
 							}
 							has_done_agency_upgrade = upgrade_form_department
-						}
-						AND = {
-							check_variable = { i = 16 }
-							has_done_agency_upgrade = upgrade_crypto_strength
 						}
 					}
 				}
@@ -143,10 +140,8 @@ scripted_gui = {
 				add_to_array = { ES_auto_agency_queue = i }
 				add_to_variable = { ES_auto_agency_upgrades_completed_and_queued^i = 1 }
 				ES_auto_agency_verify_queue = yes
-				# Игрок снова наполнил очередь — снимаем ожидание после Clear.
-				set_variable = { ES_auto_agency_queue_cleared = 0 }
 				# === TEMP-DEBUG ES_AA_DBG: факт добавления в очередь (удалить после диагностики) ===
-				log = "[ES_AA_DBG] QUEUE_ADD(click) | queue_num=[?ES_auto_agency_queue^num] cleared=[?ES_auto_agency_queue_cleared]"
+				log = "[ES_AA_DBG] QUEUE_ADD(click) | queue_num=[?ES_auto_agency_queue^num]"
 
 				if = {
 					limit = {
@@ -182,10 +177,8 @@ scripted_gui = {
 					}
 
 					ES_auto_agency_verify_queue = yes
-					# Игрок снова наполнил очередь — снимаем ожидание после Clear.
-					set_variable = { ES_auto_agency_queue_cleared = 0 }
 					# === TEMP-DEBUG ES_AA_DBG: факт добавления в очередь (удалить после диагностики) ===
-					log = "[ES_AA_DBG] QUEUE_ADD(shift) | queue_num=[?ES_auto_agency_queue^num] cleared=[?ES_auto_agency_queue_cleared]"
+					log = "[ES_AA_DBG] QUEUE_ADD(shift) | queue_num=[?ES_auto_agency_queue^num]"
 
 					if = {
 						limit = {
@@ -215,9 +208,6 @@ scripted_gui = {
 				}
 
 				clear_array = ES_auto_agency_queue
-				# Очередь очищена вручную: ON не должен сам выбирать случайный
-				# апгрейд, пока игрок снова не заполнит очередь.
-				set_variable = { ES_auto_agency_queue_cleared = 1 }
 				country_event = { id = ES_auto_agency.1 days = 1 }
 				ES_auto_agency_mark_dirty = yes
 			}
@@ -270,10 +260,6 @@ scripted_gui = {
 			auto_upgrades_on_button_click = {
 				set_variable = { ES_auto_agency_choice = 2 }
 				set_variable = { ES_auto_agency_dropdown_visible = 2 }
-				# Включение режима «Включено» снимает блокировку после ручной
-				# очистки очереди - иначе find_first_valid навсегда оставлял selected = -1
-				# и активное автоулучшение не появлялось в решениях.
-				set_variable = { ES_auto_agency_queue_cleared = 0 }
 				# Отложено, чтобы find_first_valid не срезал очередь в тот же тик,
 				# когда игрок переключил автоматизацию.
 				country_event = { id = ES_auto_agency.1 days = 1 }
