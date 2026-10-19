@@ -12,6 +12,25 @@ ES_auto_agency_init_globals = {
 	resize_array = { array = global.ES_auto_agency_names value = 0 size = 17 }
 	resize_array = { array = global.ES_auto_agency_gfx value = 0 size = 17 }
 	resize_array = { array = global.ES_auto_agency_max_upgrades value = 1 size = 17 }
+	resize_array = { array = global.ES_auto_agency_costs value = 0 size = 17 }
+
+	set_variable = { global.ES_auto_agency_costs^0 = 5 }
+	set_variable = { global.ES_auto_agency_costs^1 = 5 }
+	set_variable = { global.ES_auto_agency_costs^2 = 5 }
+	set_variable = { global.ES_auto_agency_costs^3 = 10 }
+	set_variable = { global.ES_auto_agency_costs^4 = 15 }
+	set_variable = { global.ES_auto_agency_costs^5 = 10 }
+	set_variable = { global.ES_auto_agency_costs^6 = 10 }
+	set_variable = { global.ES_auto_agency_costs^7 = 10 }
+	set_variable = { global.ES_auto_agency_costs^8 = 15 }
+	set_variable = { global.ES_auto_agency_costs^9 = 10 }
+	set_variable = { global.ES_auto_agency_costs^10 = 15 }
+	set_variable = { global.ES_auto_agency_costs^11 = 10 }
+	set_variable = { global.ES_auto_agency_costs^12 = 15 }
+	set_variable = { global.ES_auto_agency_costs^13 = 10 }
+	set_variable = { global.ES_auto_agency_costs^14 = 10 }
+	set_variable = { global.ES_auto_agency_costs^15 = 10 }
+	set_variable = { global.ES_auto_agency_costs^16 = 20 }
 
 	set_variable = { global.ES_auto_agency_upgrades^0 = token:ES_auto_agency_00_upgrade_economy_civilian }
 	set_variable = { global.ES_auto_agency_names^0 = token:ES_auto_agency_00_upgrade_economy_civilian_name }
@@ -225,6 +244,7 @@ ES_auto_agency_find_first_valid = {
 				limit = {
 					ES_auto_agency_v_index_valid = yes
 					ES_auto_agency_v_can_select = yes
+					ES_auto_agency_v_can_afford = yes
 				}
 
 				set_variable = { ES_auto_agency_selected_upgrade = v }
@@ -264,6 +284,7 @@ ES_auto_agency_select_random = {
 			limit = {
 				ES_auto_agency_v_can_select = yes
 				ES_auto_agency_v_slot_available = yes
+				ES_auto_agency_v_can_afford = yes
 			}
 
 			add_to_array = { ES_auto_agency_random_upgrade_to_select = v }
@@ -443,6 +464,18 @@ ES_auto_agency_get_upgrade_time = {
 	round_variable = ES_auto_agency_upgrade_time_days
 }
 
+ES_auto_agency_reserve_factories = {
+	set_variable = { ES_auto_agency_factory_use_value = global.ES_auto_agency_costs^ES_auto_agency_selected_upgrade }
+	add_dynamic_modifier = { modifier = ES_auto_agency_factory_use }
+	force_update_dynamic_modifier = yes
+}
+
+ES_auto_agency_release_factories = {
+	remove_dynamic_modifier = { modifier = ES_auto_agency_factory_use }
+	set_variable = { ES_auto_agency_factory_use_value = 0 }
+	force_update_dynamic_modifier = yes
+}
+
 ES_auto_agency_queue_push_front = {
 	# Вызывающий обязан `set_temp_variable = { push_front_val = N }` перед вызовом.
 	add_to_array = { ES_auto_agency_queue = push_front_val }
@@ -465,6 +498,14 @@ ES_auto_agency_queue_push_front = {
 }
 
 ES_auto_agency_reconcile_state = {
+	if = {
+		limit = {
+			NOT = { has_active_mission = ES_auto_agency_upgrade_in_progress }
+			check_variable = { ES_auto_agency_factory_use_value > 0 }
+		}
+		ES_auto_agency_release_factories = yes
+	}
+
 	# Восстановление «зависшего» выбора: миссия ушла, а выбор остался.
 	# Возвращаем его в начало очереди, чтобы он возобновился раньше уже
 	# стоящего в очереди.
@@ -512,6 +553,7 @@ ES_auto_agency_begin_if_possible = {
 			limit = { NOT = { check_variable = { ES_auto_agency_selected_upgrade = -1 } } }
 			# === TEMP-DEBUG ES_AA_DBG ===
 			log = "[ES_AA_DBG] begin_if_possible ACTIVATE_MISSION | selected=[?ES_auto_agency_selected_upgrade]"
+			ES_auto_agency_reserve_factories = yes
 			activate_mission = ES_auto_agency_upgrade_in_progress
 		}
 
@@ -543,6 +585,10 @@ ES_auto_agency_weekly_tick = {
 			is_ai = no
 			has_variable = ES_auto_agency_choice
 			check_variable = { ES_auto_agency_choice > 1 }
+		}
+		if = {
+			limit = { NOT = { has_variable = global.ES_auto_agency_costs^num } }
+			ES_auto_agency_init_globals = yes
 		}
 		ES_auto_agency_reconcile_state = yes
 		ES_auto_agency_begin_if_possible = yes
