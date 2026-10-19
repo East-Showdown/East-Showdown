@@ -38077,3 +38077,587 @@ RUS_alabuga_category = {
 		}
 	}	
 }
+
+RUS_drone_production_category = {
+	RUS_expand_lancet_production = {
+		icon = GFX_RUS_alabuga_production_start
+		cost = 50
+		fire_only_once = yes
+		days_remove = 30
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_sponsor_private_production
+		}
+
+		available = {
+			is_special_project_completed = sp:sp_RUS_modernization_of_zala_lancet
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_expand_lancet_production"
+			add_unit_bonus = {
+				category_all_infantry = {
+					breakthrough = 0.025
+					defense = 0.025
+				}
+			}
+		}
+	}
+	RUS_modernize_lancets_for_banderol = {
+		icon = GFX_RUS_UAV_rote_st_nicholas
+		cost = 0
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_sponsor_private_production
+		}
+
+		available = {
+			is_special_project_completed = sp:RUS_s8000_parcel
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_modernize_lancets_for_banderol"
+			add_ideas = RUS_lancet_banderol_modernization
+		}
+	}
+	RUS_kronstadt_subsidies = {
+		icon = GFX_RUS_alabuga_new_workshop
+		cost = 40
+		days_re_enable = 50
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_sponsor_private_production
+		}
+
+		available = {
+			NOT = { has_idea = RUS_kronstadt_subsidies_idea }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_kronstadt_subsidies"
+			add_timed_idea = {
+				idea = RUS_kronstadt_subsidies_idea
+				days = 50
+			}
+		}
+	}
+}
+
+RUS_artillery_program_category = {
+	RUS_switch_to_mobile_artillery = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_re_enable = 180
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			NOT = { has_idea = RUS_artillery_mobile_program }
+			NOT = { has_idea = RUS_artillery_mobile_program_15 }
+			NOT = { has_idea = RUS_artillery_mobile_program_20 }
+			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_switch_to_mobile_artillery"
+			if = {
+				limit = { has_idea = RUS_artillery_heavy_program_20 }
+				remove_idea = RUS_artillery_heavy_program_20
+			}
+			if = {
+				limit = { has_idea = RUS_artillery_heavy_program_15 }
+				remove_idea = RUS_artillery_heavy_program_15
+			}
+			if = {
+				limit = { has_idea = RUS_artillery_heavy_program }
+				remove_idea = RUS_artillery_heavy_program
+			}
+			add_ideas = RUS_artillery_mobile_program
+			set_country_flag = RUS_artillery_mobile_choice
+			clr_country_flag = RUS_artillery_heavy_choice
+			set_country_flag = {
+				flag = RUS_artillery_direction_cooldown
+				days = 180
+			}
+		}
+	}
+	RUS_switch_to_heavy_artillery = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_re_enable = 180
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			NOT = { has_idea = RUS_artillery_heavy_program }
+			NOT = { has_idea = RUS_artillery_heavy_program_15 }
+			NOT = { has_idea = RUS_artillery_heavy_program_20 }
+			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_switch_to_heavy_artillery"
+			if = {
+				limit = { has_idea = RUS_artillery_mobile_program_20 }
+				remove_idea = RUS_artillery_mobile_program_20
+			}
+			if = {
+				limit = { has_idea = RUS_artillery_mobile_program_15 }
+				remove_idea = RUS_artillery_mobile_program_15
+			}
+			if = {
+				limit = { has_idea = RUS_artillery_mobile_program }
+				remove_idea = RUS_artillery_mobile_program
+			}
+			add_ideas = RUS_artillery_heavy_program
+			set_country_flag = RUS_artillery_heavy_choice
+			clr_country_flag = RUS_artillery_mobile_choice
+			set_country_flag = {
+				flag = RUS_artillery_direction_cooldown
+				days = 180
+			}
+		}
+	}
+	RUS_upgrade_mobile_artillery = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_re_enable = 180
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			has_idea = RUS_artillery_mobile_program
+			NOT = { has_idea = RUS_artillery_mobile_program_15 }
+			NOT = { has_idea = RUS_artillery_mobile_program_20 }
+			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_mobile_artillery"
+			swap_ideas = {
+				remove_idea = RUS_artillery_mobile_program
+				add_idea = RUS_artillery_mobile_program_15
+			}
+			set_country_flag = {
+				flag = RUS_artillery_direction_cooldown
+				days = 180
+			}
+		}
+	}
+	RUS_upgrade_mobile_artillery_2 = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_re_enable = 180
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			has_idea = RUS_artillery_mobile_program_15
+			NOT = { has_idea = RUS_artillery_mobile_program_20 }
+			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_mobile_artillery_2"
+			swap_ideas = {
+				remove_idea = RUS_artillery_mobile_program_15
+				add_idea = RUS_artillery_mobile_program_20
+			}
+			set_country_flag = {
+				flag = RUS_artillery_direction_cooldown
+				days = 180
+			}
+		}
+	}
+	RUS_upgrade_heavy_artillery = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_re_enable = 180
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			has_idea = RUS_artillery_heavy_program
+			NOT = { has_idea = RUS_artillery_heavy_program_15 }
+			NOT = { has_idea = RUS_artillery_heavy_program_20 }
+			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_heavy_artillery"
+			swap_ideas = {
+				remove_idea = RUS_artillery_heavy_program
+				add_idea = RUS_artillery_heavy_program_15
+			}
+			set_country_flag = {
+				flag = RUS_artillery_direction_cooldown
+				days = 180
+			}
+		}
+	}
+	RUS_upgrade_heavy_artillery_2 = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_re_enable = 180
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			has_idea = RUS_artillery_heavy_program_15
+			NOT = { has_idea = RUS_artillery_heavy_program_20 }
+			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_heavy_artillery_2"
+			swap_ideas = {
+				remove_idea = RUS_artillery_heavy_program_15
+				add_idea = RUS_artillery_heavy_program_20
+			}
+			set_country_flag = {
+				flag = RUS_artillery_direction_cooldown
+				days = 180
+			}
+		}
+	}
+}
+
+RUS_best_machines_modernization_category = {
+	RUS_best_machines_modernization_stage_1 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_1
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_stage_1"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_stage_1: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_1
+				add_idea = RUS_best_machines_modernization_2
+			}
+		}
+	}
+	RUS_best_machines_modernization_stage_2 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_2
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_stage_2"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_stage_2: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_2
+				add_idea = RUS_best_machines_modernization_3
+			}
+		}
+	}
+	RUS_best_machines_modernization_stage_3 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_3
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_stage_3"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_stage_3: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_3
+				add_idea = RUS_best_machines_modernization_4
+			}
+		}
+	}
+	RUS_best_machines_modernization_t4_stage_1 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_t4_1
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t4_stage_1"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t4_stage_1: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_t4_1
+				add_idea = RUS_best_machines_modernization_t4_2
+			}
+		}
+	}
+	RUS_best_machines_modernization_t4_stage_2 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_t4_2
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t4_stage_2"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t4_stage_2: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_t4_2
+				add_idea = RUS_best_machines_modernization_t4_3
+			}
+		}
+	}
+	RUS_best_machines_modernization_t4_stage_3 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_t4_3
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t4_stage_3"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t4_stage_3: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_t4_3
+				add_idea = RUS_best_machines_modernization_t4_4
+			}
+		}
+	}
+	RUS_best_machines_modernization_t5_stage_1 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_t5_1
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t5_stage_1"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t5_stage_1: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_t5_1
+				add_idea = RUS_best_machines_modernization_t5_2
+			}
+		}
+	}
+	RUS_best_machines_modernization_t5_stage_2 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_t5_2
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t5_stage_2"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t5_stage_2: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_t5_2
+				add_idea = RUS_best_machines_modernization_t5_3
+			}
+		}
+	}
+	RUS_best_machines_modernization_t5_stage_3 = {
+		icon = GFX_RUS_car_factory_Muscovite
+		cost = 150
+		days_remove = 60
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_idea = RUS_best_machines_modernization_t5_3
+		}
+
+		available = {
+			original_tag = RUS
+		}
+
+		complete_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t5_stage_3"
+			add_offsite_building = {
+				type = arms_factory
+				level = -5
+			}
+		}
+
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision RUS_best_machines_modernization_t5_stage_3: remove_effect"
+			add_offsite_building = {
+				type = arms_factory
+				level = 5
+			}
+			swap_ideas = {
+				remove_idea = RUS_best_machines_modernization_t5_3
+				add_idea = RUS_best_machines_modernization_t5_4
+			}
+		}
+	}
+}
