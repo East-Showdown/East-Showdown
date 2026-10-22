@@ -1,0 +1,532 @@
+#Дополнительные операции разведывательных агентств.
+#Цепочка токенов: infiltrate_civilian (token_civilian) -> army/airforce (token_army/token_airforce) -> infiltrate_drg (token_drg).
+#Мелкие диверсии открываются токеном token_civilian, крупные и подрыв морали - токеном token_drg.
+
+operation_infiltrate_armed_forces_airforce = { ### 6 1/55
+	icon = GFX_operations_infiltrate_air_forces
+	map_icon = GFX_operations_infiltrate_air_forces_map
+	name = operation_infiltrate_armed_forces_airforce
+	desc = operation_infiltrate_armed_forces_airforce_desc
+	priority = 6
+
+	on_start = {
+		every_operative = {
+			clr_unit_leader_flag = es_oper_compromised
+		}
+	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
+	days = 20
+	network_strength = 40
+	operatives = 2
+
+	visible = {
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+		NOT = {
+			has_operation_token = {
+				tag = FROM
+				token = token_airforce
+			}
+		}
+		has_operation_token = {
+			tag = FROM
+			token = token_civilian
+		}
+	}
+
+	equipment = {
+
+	}
+
+	risk_chance = 0.1
+	outcome_extra_chance = 0.25
+	risk_modifiers = { operation_infiltrate_risk operation_risk }
+	outcome_modifiers = { operation_infiltrate_outcome operation_outcome }
+	cost_modifiers = { operation_infiltrate_cost operation_cost }
+	outcome_execute = {
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
+					}
+				}
+			}
+			ROOT = {
+				add_operation_token = {
+					tag = FROM
+					token = token_airforce
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
+		}
+	}
+
+	outcome_extra_execute = { # SCOPE_OPERATION
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
+					}
+				}
+			}
+			random_list = {
+				33 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_airforce
+						}
+						air_experience = 10
+						add_intel = {
+							target = FROM
+							airforce_intel = 10
+						}
+					}
+				}
+				67 = {
+					ROOT = {
+						add_operation_token = {
+							tag = FROM
+							token = token_airforce
+						}
+						air_experience = 10
+					}
+				}
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 10 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
+		}
+	}
+
+	outcome_potential = {
+		ROOT = {
+			add_operation_token = {
+				tag = FROM
+				token = token_airforce
+			}
+		}
+	}
+
+	phases = { #infiltration
+		infiltration_border = { base = 25 }
+		infiltration_submarine = { base = 25 }
+		infiltration_paradrop = {
+			base = 25
+			modifier = {
+				ROOT = {
+					has_equipment = {
+						transport_plane_equipment < 1
+					}
+				}
+				factor = 0
+			}
+		}
+		infiltration_diplomatic = {
+			base = 25
+			modifier = {
+				factor = 20
+				ROOT = { has_war = no }
+				FROM = {
+					has_war = no
+				}
+			}
+		}
+	}
+	phases = { #infiltrate military
+		infiltrate_military_bribe = { base = 25 }
+		infiltrate_military_seduction = { base = 25 }
+		infiltrate_military_turned_pow = {
+			base = 25
+			modifier = {
+				FROM = { has_war = no }
+				factor = 0
+			}
+		}
+		infiltrate_military_ideological_supporter = {
+			base = 25
+			modifier = {
+				FROM = { has_government = ROOT }
+				factor = 0
+			}
+		}
+	}
+	phases = { #exfiltration
+		exfiltration_air_pickup = {
+			base = 15
+			modifier = {
+				ROOT = {
+					has_equipment = {
+						transport_plane_equipment < 1
+					}
+				}
+				factor = 0
+			}
+		}
+		exfiltration_border = { base = 30 }
+		exfiltration_go_to_ground = { base = 30 }
+		exfiltration_submarine_pickup = { base = 25 }
+	}
+}
+
+operation_minor_sabotage = { ### 7 2/20
+	icon = GFX_operations_targeted_sabotage
+	map_icon = GFX_operations_targeted_sabotage_map
+	name = operation_minor_sabotage
+	desc = operation_minor_sabotage_desc
+	priority = 7
+
+	on_start = {
+		every_operative = {
+			clr_unit_leader_flag = es_oper_compromised
+		}
+	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 15
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
+	days = 5
+	network_strength = 15
+	operatives = 1
+	cost_multiplier = 0.25
+
+	visible = {
+		num_of_operatives > 0
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+		has_operation_token = {
+			tag = FROM
+			token = token_civilian
+		}
+		FROM = {
+			has_war_with = ROOT
+		}
+	}
+
+	selection_target = {
+		targets = { FROM }
+	}
+
+	selection_target_state = {
+		always = yes
+	}
+
+	equipment = {
+		communication_equipment = 100
+	}
+	risk_chance = 0.1
+	experience = 1
+	outcome_extra_chance = 0.1
+	outcome_modifiers = { target_sabotage_factor operation_outcome }
+	risk_modifiers = { target_sabotage_risk operation_risk }
+	cost_modifiers = { target_sabotage_cost operation_cost }
+	outcome_execute = {
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 15
+				}
+				FROM.FROM = {
+					random_list = {
+						60 = {
+							damage_building = {
+								type = rail_way
+								damage = 1
+							}
+						}
+						40 = {
+							damage_building = {
+								type = supply_node
+								damage = 1
+							}
+						}
+					}
+					custom_effect_tooltip = targeted_sabotage_infrastructure_2_tt
+				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 5 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
+			}
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
+		}
+	}
+	outcome_extra_execute = { # SCOPE_OPERATION
+		if = {
+			limit = {
+				NOT = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
+					}
+				}
+			}
+			every_operative = {
+				gain_xp = 15
+			}
+			FROM.FROM = {
+				random_list = {
+					50 = {
+						damage_building = {
+							type = rail_way
+							damage = 1
+						}
+					}
+					30 = {
+						damage_building = {
+							type = supply_node
+							damage = 1
+						}
+					}
+					20 = {
+						damage_building = {
+							type = air_base
+							damage = 1
+						}
+					}
+				}
+				custom_effect_tooltip = targeted_sabotage_infrastructure_3_tt
+			}
+			FROM = {
+				add_to_variable = { ES_intel_network_loss = 5 }
+				clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+			}
+		}
+	}
+	outcome_potential = {
+		custom_effect_tooltip = operation_outcome_sabotage_infrastructure_tt
+	}
+	phases = { #infiltration
+		infiltration_border = { base = 100 }
+	}
+	phases = { #sabotage
+		targeted_sabotage_destroy_bridge = { base = 25 }
+		targeted_sabotage_collapse_tunnel = { base = 25 }
+		targeted_sabotage_remove_roadsigns = { base = 25 }
+		targeted_sabotage_immobilize_rolling_stock = { base = 25 }
+	}
+	phases = { #exfiltration
+		exfiltration_border = { base = 40 }
+		exfiltration_go_to_ground = { base = 60 }
+	}
+}
+
+operation_sabotage_morale = { ### 15 3/40
+	icon = GFX_operations_coordinated_strike
+	map_icon = GFX_operations_coordinated_strike_map
+	name = operation_sabotage_morale
+	desc = operation_sabotage_morale_desc
+	priority = 15
+
+	on_start = {
+		every_operative = {
+			clr_unit_leader_flag = es_oper_compromised
+		}
+	}
+
+	available = {
+		FROM = {
+			NOT = {
+				check_variable = {
+					var = ES_intel_network_loss
+					value = 40
+					compare = greater_than_or_equals
+				}
+			}
+		}
+	}
+
+	days = 15
+	network_strength = 40
+	operatives = 2
+
+	visible = {
+		num_of_operatives > 1
+		network_national_coverage = {
+			target = FROM
+			value > 0
+		}
+		has_operation_token = {
+			tag = FROM
+			token = token_drg
+		}
+		FROM = {
+			has_war_with = ROOT
+		}
+	}
+
+	requirements = {
+		FROM = {
+			has_war = yes
+		}
+	}
+	required_tokens = { token_drg }
+	equipment = {
+		support_equipment = 500
+	}
+	risk_chance = 0.25
+	experience = 1.5
+	outcome_extra_chance = 0.25
+	outcome_modifiers = { target_sabotage_factor operation_outcome }
+	risk_modifiers = { target_sabotage_risk operation_risk }
+	cost_modifiers = { target_sabotage_cost operation_cost }
+	outcome_execute = {
+		random_list = {
+			80 = {
+				modifier = {
+					any_operative_leader = {
+						OR = {
+							is_operative_captured = yes
+							has_unit_leader_flag = es_oper_compromised
+						}
+					}
+					factor = 0
+				}
+				every_operative = {
+					gain_xp = 20
+				}
+				FROM = {
+					add_stability = -0.01
+					add_war_support = -0.01
+					if = {
+						limit = {
+							ROOT = { has_done_agency_upgrade = upgrade_psycho_warfare }
+						}
+						add_stability = -0.04
+						add_war_support = -0.04
+					}
+					custom_effect_tooltip = operation_sabotage_morale_2_tt
+				}
+				FROM = {
+					add_to_variable = { ES_intel_network_loss = 10 }
+					clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+				}
+			}
+			20 = {
+				# провал: цель не пострадала, агент ранен/захвачен/погиб
+				random_operative = {
+					limit = { is_operative_captured = no }
+					random_list = {
+						55 = { harm_operative_leader = 90 }
+						30 = { capture_operative = { captured_by = FROM } }
+						15 = { kill_operative = { killed_by = FROM } }
+					}
+				}
+			}
+		}
+		ROOT = {
+			random = {
+				40 = {
+					remove_operation_token = {
+						tag = FROM
+						token = token_drg
+					}
+				}
+			}
+		}
+	}
+	outcome_extra_execute = { # SCOPE_OPERATION
+		every_operative = {
+			gain_xp = 20
+		}
+		FROM = {
+			add_stability = -0.02
+			add_war_support = -0.02
+			if = {
+				limit = {
+					ROOT = { has_done_agency_upgrade = upgrade_psycho_warfare }
+				}
+				add_stability = -0.08
+				add_war_support = -0.08
+			}
+			custom_effect_tooltip = operation_sabotage_morale_3_tt
+		}
+		FROM = {
+			add_to_variable = { ES_intel_network_loss = 10 }
+			clamp_variable = { var = ES_intel_network_loss min = 0 max = 100 }
+		}
+	}
+	outcome_potential = {
+		custom_effect_tooltip = operation_sabotage_morale_tt
+		custom_effect_tooltip = operation_outcome_consumes_token_tt
+	}
+	phases = { #infiltration
+		infiltration_border = { base = 75 }
+		infiltration_diplomatic = {
+			base = 25
+			modifier = {
+				factor = 20
+				ROOT = { has_war = no }
+				FROM = {
+					has_war = no
+				}
+			}
+		}
+	}
+	phases = { #sabotage
+		targeted_sabotage_plant_explosives = { base = 90 }
+		targeted_sabotage_organize_more_meetings = { base = 10 }
+	}
+	phases = { #exfiltration
+		exfiltration_border = { base = 40 }
+		exfiltration_go_to_ground = { base = 60 }
+	}
+}
