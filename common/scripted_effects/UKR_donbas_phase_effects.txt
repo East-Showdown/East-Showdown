@@ -1,0 +1,39 @@
+# Country scope: UKR. Both prerequisites may be fulfilled in either order.
+UKR_try_complete_battle_for_donbas = {
+	if = {
+		limit = {
+			has_country_flag = UKR_donbas_phase_ready
+			has_completed_focus = UKR_united_front
+			NOT = { has_completed_focus = UKR_battle_for_donbas }
+		}
+		complete_national_focus = UKR_battle_for_donbas
+	}
+}
+
+# Restore readiness from existing Russian history/save flags without replaying rewards.
+UKR_init_donbas_phase = {
+	if = {
+		limit = {
+			OR = {
+				has_completed_focus = UKR_battle_for_donbas
+				RUS = {
+					OR = {
+						has_country_flag = Fail_Invasion
+						has_country_flag = RUS_failure_SMO
+						has_country_flag = RUS_failure_of_SMO
+					}
+				}
+			}
+		}
+		set_country_flag = UKR_donbas_phase_ready
+	}
+	if = {
+		limit = {
+			has_completed_focus = UKR_battle_for_donbas
+			NOT = { has_country_flag = UKR_start_battle_for_donbas }
+		}
+		set_country_flag = UKR_start_battle_for_donbas
+		mark_focus_tree_layout_dirty = yes
+	}
+	UKR_try_complete_battle_for_donbas = yes
+}
