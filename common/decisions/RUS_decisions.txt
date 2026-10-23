@@ -38933,3 +38933,96 @@ RUS_mastery_category = {
 		}
 	}
 }
+
+RUS_nrtk_program = {
+	RUS_nrtk_field_trials = {
+		icon = GFX_RUS_VPK_categories
+		cost = 0
+		days_remove = 90
+		visible = {
+			has_completed_focus = RUS_open_ground_drone_production
+			NOT = { has_country_flag = RUS_nrtk_trials_completed }
+		}
+		available = {
+			NOT = { has_army_experience < 20 }
+			custom_trigger_tooltip = {
+				tooltip = RUS_nrtk_deployed_company_tt
+				any_country_division = {
+					division_has_battalion_in_template = unnamed_vehicle_support
+					NOT = { unit_strength < 0.8 }
+				}
+			}
+		}
+		complete_effect = { army_experience = -20 }
+		cancel_trigger = {
+			NOT = {
+				any_country_division = {
+					division_has_battalion_in_template = unnamed_vehicle_support
+					NOT = { unit_strength < 0.8 }
+				}
+			}
+		}
+		cancel_effect = { army_experience = 20 }
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: RUS_nrtk_field_trials completed"
+			set_country_flag = RUS_nrtk_trials_completed
+			add_equipment_bonus = {
+				name = RUS_nrtk_trials_bonus
+				bonus = {
+					uifv_uran9_equipment = {
+						reliability = 0.10
+						instant = yes
+					}
+				}
+			}
+		}
+		ai_will_do = { factor = 5 }
+	}
+
+	RUS_nrtk_operator_training = {
+		icon = GFX_RUS_VPK_categories
+		cost = 50
+		days_remove = 60
+		fire_only_once = yes
+		visible = {
+			has_country_flag = RUS_nrtk_trials_completed
+			NOT = { has_country_flag = RUS_nrtk_operators_trained }
+		}
+		available = { NOT = { has_army_experience < 10 } }
+		complete_effect = { army_experience = -10 }
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: RUS_nrtk_operator_training completed"
+			set_country_flag = RUS_nrtk_operators_trained
+			set_technology = {
+				RUS_nrtk_operators_tech = 1
+				popup = no
+			}
+		}
+		ai_will_do = { factor = 5 }
+	}
+
+	RUS_nrtk_serial_standardization = {
+		icon = GFX_RUS_VPK_categories
+		cost = 75
+		days_remove = 90
+		fire_only_once = yes
+		visible = {
+			has_country_flag = RUS_nrtk_operators_trained
+			NOT = { has_country_flag = RUS_nrtk_series_standardized }
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: RUS_nrtk_serial_standardization completed"
+			set_country_flag = RUS_nrtk_series_standardized
+			add_equipment_bonus = {
+				name = RUS_nrtk_standardization_bonus
+				bonus = {
+					uifv_uran9_equipment = {
+						build_cost_ic = -0.05
+						instant = yes
+					}
+				}
+			}
+		}
+		ai_will_do = { factor = 5 }
+	}
+}
