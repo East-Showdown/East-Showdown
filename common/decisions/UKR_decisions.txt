@@ -18345,28 +18345,6 @@ UKR_strengthening_Ukrainian_cities_category = {
 			country_event = ukr.806 
 		}
 	}
-	UKR_reject_city_fortress = {
-		icon = GFX_UKR_president_ukraine_emblem
-		priority = 999
-		cost = 10
-		fire_only_once = yes
-		ai_will_do = {
-			factor = 5
-		}
-		visible = {
-			has_idea = UKR_city_fortress
-			has_war_with = RUS
-		}
-		available = {
-			war_length_with = {
-				tag = RUS
-				months > 14
-			}
-		}
-		complete_effect = {
-			remove_ideas = UKR_city_fortress
-		}
-	}
 }
 
 UKR_front_fortification_category = {
@@ -24348,6 +24326,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_West_airfield_lutsk = {
+		priority = -1
 		icon = GFX_UKR_VSY_Air_Force
 		cost = 15
 		fire_only_once = yes
@@ -24381,6 +24360,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_West_airfield_khmelnitskiy = {
+		priority = -2
 		icon = GFX_UKR_VSY_Air_Force
 		cost = 15
 		fire_only_once = yes
@@ -24414,6 +24394,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_West_airfield_vinitsa = {
+		priority = -3
 		icon = GFX_UKR_VSY_Air_Force
 		cost = 15
 		fire_only_once = yes
@@ -24597,6 +24578,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_North_air_Defense_of_Kiev = {
+		priority = -4
 		icon = GFX_UKR_VSY_ADS
 		cost = 20
 		fire_only_once = yes
@@ -24637,6 +24619,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_East_air_Defense_of_Kharkiv = {
+		priority = -5
 		icon = GFX_UKR_VSY_ADS
 		cost = 15
 		fire_only_once = yes
@@ -24692,6 +24675,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_South_air_Defense_of_Odessa = {
+		priority = -6
 		icon = GFX_UKR_VSY_ADS
 		cost = 15
 		fire_only_once = yes
@@ -24725,6 +24709,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_West_air_Defense_of_Lviv = {
+		priority = -7
 		icon = GFX_UKR_VSY_ADS
 		cost = 15
 		fire_only_once = yes
@@ -24758,6 +24743,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_West_air_Defense_of_Zhytomyr = {
+		priority = -8
 		icon = GFX_UKR_VSY_ADS
 		cost = 15
 		fire_only_once = yes
@@ -24791,6 +24777,7 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 	UKR_West_air_Defense_of_Rivne = {
+		priority = -9
 		icon = GFX_UKR_VSY_ADS
 		cost = 15
 		fire_only_once = yes
@@ -25324,34 +25311,6 @@ UKR_strengthening_Ukrainian_cities_category = {
 		}
 	}
 
-	UKR_EM = {
-		icon = GFX_UKR_VSY_defense
-		available = {
-			NOT = {
-				has_war_with = RUS
-			}
-		}
-		visible = {
-			has_war_with = RUS
-		}
-		activation = {
-			OR = {
-				has_war = yes
-			}
-			NOT = {
-				has_country_flag = UKR_EM_end
-			}
-		}
-		remove_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision UKR_EM"
-			set_country_flag = UKR_EM_end
-		}
-		days_mission_timeout = 30
-		days_remove = 0
-		allowed = {
-			original_tag = UKR
-		}
-	}
 	UKR_missile_9K79mod = {
 		#icon = GFX_404
 		visible = {
@@ -33638,12 +33597,17 @@ UKR_ministry_of_defense_category = {
 		}
 		custom_cost_text = UKR_ministry_cost_pp_50_ae_20
 
+		modifier = {
+			country_resource_electronic = -5
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_t64_t80_modernization_completed
 			check_variable = { UKR_ministry_t64_modernization_orders < 6 }
 		}
 
 		available = {
+			num_of_military_factories > 2
 			custom_trigger_tooltip = {
 				tooltip = UKR_ministry_has_200_base_t64_tt
 				check_variable = {
@@ -33655,6 +33619,7 @@ UKR_ministry_of_defense_category = {
 		}
 
 		complete_effect = {
+			custom_effect_tooltip = UKR_ministry_reserve_3_factories_tt
 			custom_effect_tooltip = UKR_ministry_t64_stockpile_debit_tt
 			hidden_effect = {
 				UKR_ministry_t64_consume_stockpile = yes
@@ -33662,6 +33627,8 @@ UKR_ministry_of_defense_category = {
 					limit = { NOT = { has_country_flag = UKR_ministry_t64_order_shortfall } }
 					add_political_power = -50
 					army_experience = -20
+					add_offsite_building = { type = arms_factory level = -3 }
+					set_country_flag = UKR_ministry_order_t64_modernization_factories_reserved
 				}
 			}
 		}
@@ -33670,10 +33637,25 @@ UKR_ministry_of_defense_category = {
 			hidden_trigger = { has_country_flag = UKR_ministry_t64_order_shortfall }
 		}
 		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_t64_modernization_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_t64_modernization_factories_reserved
+				}
+			}
 			hidden_effect = { clr_country_flag = UKR_ministry_t64_order_shortfall }
 		}
 
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_3_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_t64_modernization_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_t64_modernization_factories_reserved
+				}
+			}
 			if = {
 				limit = { NOT = { has_country_flag = UKR_ministry_t64_order_shortfall } }
 				hidden_effect = {
@@ -33706,12 +33688,17 @@ UKR_ministry_of_defense_category = {
 		}
 		custom_cost_text = UKR_ministry_cost_pp_50_ae_20
 
+		modifier = {
+			country_resource_electronic = -5
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_t72_modernization_completed
 			check_variable = { UKR_ministry_t72_modernization_orders < 6 }
 		}
 
 		available = {
+			num_of_military_factories > 2
 			custom_trigger_tooltip = {
 				tooltip = UKR_ministry_has_120_base_t72_tt
 				check_variable = {
@@ -33723,6 +33710,7 @@ UKR_ministry_of_defense_category = {
 		}
 
 		complete_effect = {
+			custom_effect_tooltip = UKR_ministry_reserve_3_factories_tt
 			custom_effect_tooltip = UKR_ministry_t72_stockpile_debit_tt
 			hidden_effect = {
 				UKR_ministry_t72_consume_stockpile = yes
@@ -33730,6 +33718,8 @@ UKR_ministry_of_defense_category = {
 					limit = { NOT = { has_country_flag = UKR_ministry_t72_order_shortfall } }
 					add_political_power = -50
 					army_experience = -20
+					add_offsite_building = { type = arms_factory level = -3 }
+					set_country_flag = UKR_ministry_order_t72_modernization_factories_reserved
 				}
 			}
 		}
@@ -33738,10 +33728,25 @@ UKR_ministry_of_defense_category = {
 			hidden_trigger = { has_country_flag = UKR_ministry_t72_order_shortfall }
 		}
 		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_t72_modernization_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_t72_modernization_factories_reserved
+				}
+			}
 			hidden_effect = { clr_country_flag = UKR_ministry_t72_order_shortfall }
 		}
 
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_3_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_t72_modernization_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_t72_modernization_factories_reserved
+				}
+			}
 			if = {
 				limit = { NOT = { has_country_flag = UKR_ministry_t72_order_shortfall } }
 				add_equipment_to_stockpile = {
@@ -33864,6 +33869,14 @@ UKR_ministry_of_defense_category = {
 		days_remove = 240
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 2
+		}
+
+		modifier = {
+			country_resource_electronic = -8
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_country_flag = UKR_ministry_bohdana_orders_unlocked
@@ -33871,7 +33884,30 @@ UKR_ministry_of_defense_category = {
 			check_variable = { UKR_ministry_2s22_bohdana_orders < 6 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -3 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_2s22_bohdana_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_2s22_bohdana_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_2s22_bohdana_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_3_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_2s22_bohdana_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_2s22_bohdana_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_2s22_bohdana_orders = 0 } }
 				add_equipment_to_stockpile = { type = sp_artillery_imv_light_4_equipment variant_name = "2С22 «Богдана»" amount = 260 producer = UKR }
@@ -33944,10 +33980,34 @@ UKR_ministry_of_defense_category = {
 		}
 
 		available = {
+			num_of_military_factories > 1
 			has_tech = ukr_artillery_2p22_bohdana
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_2p22_bohdana_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_2p22_bohdana_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_2p22_bohdana_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_2p22_bohdana_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_2p22_bohdana_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_2p22_bohdana_orders = 0 } }
 				add_equipment_to_stockpile = { type = ukr_artillery_2p22_bohdana_equipment amount = 300 producer = UKR }
@@ -34012,6 +34072,14 @@ UKR_ministry_of_defense_category = {
 		days_remove = 240
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 2
+		}
+
+		modifier = {
+			country_resource_electronic = -8
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_country_flag = UKR_ministry_olkha_orders_unlocked
@@ -34019,7 +34087,30 @@ UKR_ministry_of_defense_category = {
 			check_variable = { UKR_ministry_olkha_orders < 6 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -3 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_olkha_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_olkha_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_olkha_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_3_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_olkha_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 3 }
+					clr_country_flag = UKR_ministry_order_olkha_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_olkha_orders = 0 } }
 				add_equipment_to_stockpile = { type = sp_mlrs_mrv_wheeled_1_equipment variant_name = "Ольха" amount = 120 producer = UKR }
@@ -34083,12 +34174,39 @@ UKR_ministry_of_defense_category = {
 		cost = 30
 		days_remove = 80
 
+		available = {
+			num_of_military_factories > 1
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_completed_focus = UKR_revive_military_industrial_complex
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_kozak_family_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_kozak_family_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_kozak_family_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_kozak_family_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_kozak_family_factories_reserved
+				}
+			}
 			add_equipment_to_stockpile = {
 				type = imv_medium_3_equipment
 				variant_name = "Козак-7"
@@ -34131,13 +34249,40 @@ UKR_ministry_of_defense_category = {
 		days_remove = 90
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 1
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_completed_focus = UKR_increase_defense_industry_funding
 			check_variable = { UKR_ministry_novator_2_orders < 12 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_novator_2_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_novator_2_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_novator_2_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_novator_2_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_novator_2_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_novator_2_orders = 0 } }
 				add_equipment_to_stockpile = { type = imv_medium_3_equipment variant_name = "Новатор 2" amount = 800 producer = UKR }
@@ -34201,13 +34346,40 @@ UKR_ministry_of_defense_category = {
 		days_remove = 180
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 1
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_completed_focus = UKR_increase_defense_industry_funding
 			check_variable = { UKR_ministry_btr_3_and_btr_4_orders < 6 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_btr_3_and_btr_4_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_btr_3_and_btr_4_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_btr_3_and_btr_4_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_btr_3_and_btr_4_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_btr_3_and_btr_4_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_btr_3_and_btr_4_orders = 0 } }
 				add_equipment_to_stockpile = { type = apc_ukr_btr3_equipment variant_name = "БТР-3" amount = 150 producer = UKR }
@@ -34254,13 +34426,40 @@ UKR_ministry_of_defense_category = {
 		days_remove = 180
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 1
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_completed_focus = UKR_transition_to_wartime_economy
 			check_variable = { UKR_ministry_infantry_equipment_orders < 6 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_infantry_equipment_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_infantry_equipment_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_infantry_equipment_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_infantry_equipment_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_infantry_equipment_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_infantry_equipment_orders = 0 } }
 				add_equipment_to_stockpile = { type = infantry_m4wac47_equipment amount = 10000 producer = UKR }
@@ -34385,13 +34584,40 @@ UKR_ministry_of_defense_category = {
 		days_remove = 180
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 1
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_completed_focus = UKR_transition_to_wartime_economy
 			check_variable = { UKR_ministry_body_armor_uniform_orders < 6 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_body_armor_and_uniforms_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_body_armor_and_uniforms_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_body_armor_and_uniforms_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_body_armor_and_uniforms_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_body_armor_and_uniforms_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_body_armor_uniform_orders = 0 } }
 				add_equipment_to_stockpile = { type = infantry_body_armor_korsarm314_equipment amount = 30000 producer = UKR }
@@ -34486,13 +34712,40 @@ UKR_ministry_of_defense_category = {
 		days_remove = 180
 		days_re_enable = 1
 
+		available = {
+			num_of_military_factories > 1
+		}
+
 		visible = {
 			has_country_flag = UKR_ministry_army_equipment_question_resolved
 			has_completed_focus = UKR_transition_to_wartime_economy
 			check_variable = { UKR_ministry_portable_support_equipment_orders < 6 }
 		}
 
+		complete_effect = {
+			add_offsite_building = { type = arms_factory level = -2 }
+			hidden_effect = { set_country_flag = UKR_ministry_order_portable_support_equipment_factories_reserved }
+		}
+
+		cancel_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_portable_support_equipment_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_portable_support_equipment_factories_reserved
+				}
+			}
+		}
+
 		remove_effect = {
+			custom_effect_tooltip = UKR_ministry_return_2_factories_tt
+			hidden_effect = {
+				if = {
+					limit = { has_country_flag = UKR_ministry_order_portable_support_equipment_factories_reserved }
+					add_offsite_building = { type = arms_factory level = 2 }
+					clr_country_flag = UKR_ministry_order_portable_support_equipment_factories_reserved
+				}
+			}
 			if = {
 				limit = { check_variable = { UKR_ministry_portable_support_equipment_orders = 0 } }
 				add_equipment_to_stockpile = { type = infantry_grenade_launcher_rk3korsar_equipment amount = 5000 producer = UKR }
