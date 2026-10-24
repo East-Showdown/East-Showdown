@@ -75,6 +75,7 @@
 | `soft_attack`, `hard_attack` | `attack` | -70 % | 0 | +15 % | +30 % |
 | `breakthrough` | `breakthrough` | -65 % | 0 | +20 % | +35 % |
 | `defense` | `defense` | -15 % | 0 | +15 % | +25 % |
+| `supply_consumption` | `supply_consumption` | -70 % | 0 | +15 % | +30 % |
 
 Между точками значение меняется линейно. Значения по умолчанию заданы в `tools/ammo/ammunition_curves.txt`.
 
@@ -158,7 +159,7 @@ attack = { 0 = -0.7  1 = 0  1.25 = 0.15  2 = 0.3 }
 
 Правила:
 
-- Нужны все четыре кривые: `attack`, `breakthrough`, `defense`, `ai_aggressive`.
+- Нужны все пять кривых: `attack`, `breakthrough`, `defense`, `supply_consumption`, `ai_aggressive`.
 - Не меньше двух точек. Первая точка `0`, последняя `level_max_abs`. `s` строго растёт.
 - Число точек любое. Между точками значение линейно.
 - Значения - доли: -0.7 = -70 %. Для `ai_aggressive` - значение `ai_focus_aggressive_factor`.

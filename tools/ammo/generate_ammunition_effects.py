@@ -14,9 +14,11 @@ LOC_EN = ROOT / "localisation/english/ammo_ideas_l_english.yml"
 STEP_PERCENT = 5
 ARCHETYPES = ["artillery_equipment", "sp_artillery_chassis", "sp_heavy_artillery_chassis",
               "sp_mlrs_chassis", "sp_tos_chassis", "mortar_equipment"]
-STATS = [("soft_attack", "attack"), ("hard_attack", "attack"), ("breakthrough", "breakthrough"), ("defense", "defense")]
+STATS = [("soft_attack", "attack"), ("hard_attack", "attack"), ("breakthrough", "breakthrough"), ("defense", "defense"),
+         ("supply_consumption", "supply_consumption")]
 CURVE_VARIABLES = [("attack", "ammunition_bonus_attack"), ("breakthrough", "ammunition_bonus_breakthrough"),
-                   ("defense", "ammunition_bonus_defense"), ("ai_aggressive", "ammunition_effect_ai_focus_aggressive_factor")]
+                   ("defense", "ammunition_bonus_defense"),
+                   ("supply_consumption", "ammunition_bonus_supply_consumption"), ("ai_aggressive", "ammunition_effect_ai_focus_aggressive_factor")]
 PICTURE = "GFX_ammunition"
 STEP_VARIABLE = "ammunition_supply_step"
 

@@ -75,6 +75,7 @@ The idea gives `equipment_bonus` to the archetypes in the table above:
 | `soft_attack`, `hard_attack` | `attack` | -70 % | 0 | +15 % | +30 % |
 | `breakthrough` | `breakthrough` | -65 % | 0 | +20 % | +35 % |
 | `defense` | `defense` | -15 % | 0 | +15 % | +25 % |
+| `supply_consumption` | `supply_consumption` | -70 % | 0 | +15 % | +30 % |
 
 Values are linear between points. The defaults are set in `tools/ammo/ammunition_curves.txt`.
 
@@ -158,7 +159,7 @@ attack = { 0 = -0.7  1 = 0  1.25 = 0.15  2 = 0.3 }
 
 Rules:
 
-- All four curves are required: `attack`, `breakthrough`, `defense`, `ai_aggressive`.
+- All five curves are required: `attack`, `breakthrough`, `defense`, `supply_consumption`, `ai_aggressive`.
 - At least two points. The first point is `0`, the last is `level_max_abs`. `s` strictly increases.
 - Any number of points. Values are linear between points.
 - Values are fractions: -0.7 = -70 %. For `ai_aggressive` the value is `ai_focus_aggressive_factor`.
