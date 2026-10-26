@@ -454,15 +454,7 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_general_staf"
 			add_command_power = 35
 			army_experience = 10
-			add_field_marshal_role = {
-				Character = valery_gerasimov
-				traits={ skilled_staffer organizer war_theorist }
-				skill=5
-				attack_skill = 4
-				defense_skill = 4
-				planning_skill = 7
-				logistics_skill = 4
-			}
+			set_country_flag = RUS_valery_gerasimov_flag
 			set_country_flag = CIS_general_staff
 			custom_effect_tooltip = CIS_general_staff_cet
 			custom_effect_tooltip = CIS_general_staff_traits
@@ -2702,14 +2694,6 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus RUS_Daily_meetings_of_the_General_Staff"
 			add_command_power = 30
 			custom_effect_tooltip = RUS_Daily_meetings_of_the_General_Staff_cet
-			random_army_leader = {
-				limit = { NOT = { has_trait = butcher } }
-				add_unit_leader_trait = inflexible_strategist
-			}
-			random_army_leader = {
-				limit = { NOT = { has_trait = butcher } }
-				add_unit_leader_trait = inflexible_strategist
-			}
 			hidden_effect = {
 				add_to_variable = {	
 					var = RUS_VCRF_planning_speed
@@ -2757,10 +2741,6 @@ focus_tree = {
 			add_timed_idea = {
 				idea = RUS_army_maneuvers
 				days = 15
-			}
-			random_army_leader = {
-				limit = { NOT = { has_trait = butcher } }
-				add_unit_leader_trait = brilliant_strategist
 			}
 		}
 	}
@@ -3576,7 +3556,7 @@ focus_tree = {
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_massive_assaults_with_light_enginery focus = RUS_armored_assaults }
 		cost = 10
-		x = 0
+		x = -1
 		y = 4
 		available = {
 			has_tech = tech_fpv3
@@ -3602,10 +3582,10 @@ focus_tree = {
 		id = RUS_destroy_ukrainian_military_logistics
 		icon = GFX_404
 		relative_position_id = RUS_resumption_of_active_offensive_actions
-		prerequisite = { focus = RUS_army_of_drones }
+		prerequisite = { focus = RUS_massive_assaults_with_light_enginery focus = RUS_armored_assaults }
 		cost = 10
-		x = -1
-		y = 5
+		x = 1
+		y = 4
 		available = {
 		}
 		completion_reward = {	
@@ -3631,31 +3611,31 @@ focus_tree = {
 		}
 	}
 
-	focus = {
-		id = RUS_Strikes_energy_infrastructure
-		icon = GFX_RUS_Strikes_energy_infrastructure
-		relative_position_id = RUS_resumption_of_active_offensive_actions
-		prerequisite = { focus = RUS_army_of_drones }
-		cost = 1
-		x = 1
-		y = 5	
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			custom_effect_tooltip = in_development
-		}
-	}
+	# focus = {
+	# 	id = RUS_Strikes_energy_infrastructure
+	# 	icon = GFX_RUS_Strikes_energy_infrastructure
+	# 	relative_position_id = RUS_resumption_of_active_offensive_actions
+	# 	prerequisite = { focus = RUS_army_of_drones }
+	# 	cost = 1
+	# 	x = 1
+	# 	y = 5	
+	# 	ai_will_do = {
+	# 		factor = 1
+	# 	}
+	# 	completion_reward = {
+	# 		custom_effect_tooltip = in_development
+	# 	}
+	# }
 
 	focus = {
 		id = RUS_the_last_days_of_the_kyiv_regime
 		icon = GFX_RUS_the_last_days_of_the_kyiv_regime
 		relative_position_id = RUS_resumption_of_active_offensive_actions
 		prerequisite = { focus = RUS_destroy_ukrainian_military_logistics }
-		prerequisite = { focus = RUS_Strikes_energy_infrastructure }
+		prerequisite = { focus = RUS_army_of_drones }
 		cost = 10
 		x = 0
-		y = 6
+		y = 5
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = in_development
@@ -10113,13 +10093,9 @@ focus_tree = {
 				surrender_progress > 0.05
 				custom_trigger_tooltip = {
 					tooltip = RUS_forced_measures_trigger_2_tt
-					check_variable = { total_irrecoverable_loses_k > 20 }
+					check_variable = { total_irrecoverable_loses_k > 15 }
 				}
 				has_civil_war = yes
-				custom_trigger_tooltip = {
-					tooltip = RUS_forced_measures_trigger_tt
-					has_manpower < 1000
-				}
 				hidden_trigger = {
 					check_variable = { global.SCENARIO_SELECTED > 1 }
 				}
