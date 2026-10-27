@@ -276,10 +276,13 @@ EQUIPMENT_RULES = [
     {"archetype": ["hel_strike_equipment"], "ic": "helicopter", "supply": None},
     {"archetype": ["uav_strike_equipment", "uav_recon_equipment"], "ic": "drone", "supply": None},
     {"archetype": ["sam_missile_equipment"], "ic": "aa_missile", "supply": None},
-    {"archetype": ["ballistic_missile_equipment", "*_guided_missile_equipment",
-                   "*_anti_radar_missile_equipment", "*_guided_uav_equipment",
-                   "*_drone_missile_equipment"],
-     "ic": "missile", "supply": None},
+    # missiles - one rule per group, so each has its own IC multiplier
+    # RU: ракеты - отдельное правило на каждую группу, у каждой свой множитель IC
+    {"archetype": ["ballistic_missile_equipment"],      "ic": "missile", "ic_multiplier": 1.25, "supply": None},
+    {"archetype": ["*_guided_missile_equipment"],       "ic": "missile", "ic_multiplier": 1, "supply": None},
+    {"archetype": ["*_anti_radar_missile_equipment"],   "ic": "missile", "ic_multiplier": 1, "supply": None},
+    {"archetype": ["*_guided_uav_equipment"],           "ic": "missile", "ic_multiplier": 1, "supply": None},
+    {"archetype": ["*_drone_missile_equipment"],        "ic": "missile", "ic_multiplier": 1, "supply": None},
 
     # vehicle hulls (every armor archetype; modules are priced separately)
     {"type": ["armor"], "ic": "hull", "supply": None},
