@@ -75,6 +75,15 @@ NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throu
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
 NDefines.NMilitary.MIN_DIVISION_BRIGADE_HEIGHT = 4		-- Min height of regiments in division designer.
+NDefines.NMilitary.MAX_DIVISION_BRIGADE_WIDTH = 3		-- vanilla 5. Max width of regiments in division designer (non-HQ templates).
+NDefines.NMilitary.MAX_DIVISION_BRIGADE_HEIGHT = 4		-- vanilla 5. Max height of regiments in division designer (non-HQ templates).
+-- When the AI is deciding where to place battalions, it tries to place it in the position with the lowest number according to this grid.
+-- ES: 3x4 grid (row-major, 3 per row), fills column by column. Padded to 25 entries so it stays in bounds if the engine still reads it as 5x5.
+NDefines.NMilitary.AI_BATTALION_BUILD_ORDER = {	1,  5,  9,
+												2,  6,  10,
+												3,  7,  11,
+												4,  8,  12,
+												13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }
 NDefines.NMilitary.DIVISIONAL_COMMANDER_TRAIT_XP_REQUIREMENT = 600.0	--Get a trait if any valid options & xp gained >= this
 NDefines.NMilitary.MAX_DIVISION_SUPPORT_WIDTH = 2
 NDefines.NMilitary.MAX_DIVISION_SUPPORT_HEIGHT = 6
@@ -149,6 +158,7 @@ NDefines.NMilitary.OUT_OF_FUEL_EQUIPMENT_MULT = 0.1				-- 0.1 vanilla ratio of t
 NDefines.NMilitary.OUT_OF_FUEL_SPEED_MULT = 0.4					-- vanilla 0.4 speed mult that armies get when out of fuel
 NDefines.NMilitary.OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0		-- xp gain mult from training when a unit is out of fuel
 NDefines.NMilitary.FUEL_CAPACITY_DEFAULT_HOURS = 96				-- 96 vanilla default capacity if not specified
+NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_WIDTH = 3			-- vanilla 5. Max width of regimental supports in division designer (matches MAX_DIVISION_BRIGADE_WIDTH).
 NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_HEIGHT = 2			-- Max height of regimental supports in division designer.
 NDefines.NMilitary.REGIMENTAL_SUPPORT_REQUIRED_BATTALIONS = { 2 } 					-- For each regimental support row, how many battalions are required in the regiment to be able to place a support in that row.
 NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
