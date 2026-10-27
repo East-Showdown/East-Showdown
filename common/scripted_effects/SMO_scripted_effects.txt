@@ -397,19 +397,135 @@ map_plan_update_tick = {
 
 # THIS scope is COUNTRY
 
+# Input: temp_map_cooldown_days. Country scope; no scripted-effect parameters.
+map_plan_apply_cooldown_reduction = {
+	if = {
+		limit = { has_idea = RUS_last_days_of_the_kyiv_regime_idea }
+		multiply_temp_variable = { temp_map_cooldown_days = 0.7 }
+		round_temp_variable = temp_map_cooldown_days
+	}
+}
+
+# Input: temp_map_cooldown_days. Keep availability and the GUI flag in sync.
+map_plan_set_priority_direction_cooldown = {
+	map_plan_apply_cooldown_reduction = yes
+	set_variable = { map_plan_priority_direction_cooldown = global.num_days }
+	add_to_variable = { map_plan_priority_direction_cooldown = temp_map_cooldown_days }
+	clr_country_flag = map_plan_priority_direction_cooldown_flag
+	if = {
+		limit = { check_variable = { temp_map_cooldown_days > 0 } }
+		meta_effect = {
+			text = {
+				set_country_flag = {
+					flag = map_plan_priority_direction_cooldown_flag
+					days = [DAYS]
+					value = 1
+				}
+			}
+			DAYS = "[?temp_map_cooldown_days]"
+		}
+	}
+}
+
+# Input: temp_map_cooldown_days. Keep availability and the GUI flag in sync.
+map_plan_set_attack_cooldown = {
+	map_plan_apply_cooldown_reduction = yes
+	set_variable = { map_plan_attack_cooldown = global.num_days }
+	add_to_variable = { map_plan_attack_cooldown = temp_map_cooldown_days }
+	clr_country_flag = map_plan_attack_cooldown_flag
+	if = {
+		limit = { check_variable = { temp_map_cooldown_days > 0 } }
+		meta_effect = {
+			text = {
+				set_country_flag = {
+					flag = map_plan_attack_cooldown_flag
+					days = [DAYS]
+					value = 1
+				}
+			}
+			DAYS = "[?temp_map_cooldown_days]"
+		}
+	}
+}
+
+# Input: temp_map_cooldown_days. Keep availability and the GUI flag in sync.
+map_plan_set_defence_cooldown = {
+	map_plan_apply_cooldown_reduction = yes
+	set_variable = { map_plan_defence_cooldown = global.num_days }
+	add_to_variable = { map_plan_defence_cooldown = temp_map_cooldown_days }
+	clr_country_flag = map_plan_defence_cooldown_flag
+	if = {
+		limit = { check_variable = { temp_map_cooldown_days > 0 } }
+		meta_effect = {
+			text = {
+				set_country_flag = {
+					flag = map_plan_defence_cooldown_flag
+					days = [DAYS]
+					value = 1
+				}
+			}
+			DAYS = "[?temp_map_cooldown_days]"
+		}
+	}
+}
+
+# Input: temp_map_cooldown_days. Keep availability and the GUI flag in sync.
+map_plan_set_build_fortifications_cooldown = {
+	map_plan_apply_cooldown_reduction = yes
+	set_variable = { map_plan_build_fortifications_cooldown = global.num_days }
+	add_to_variable = { map_plan_build_fortifications_cooldown = temp_map_cooldown_days }
+	clr_country_flag = map_plan_build_fortifications_cooldown_flag
+	if = {
+		limit = { check_variable = { temp_map_cooldown_days > 0 } }
+		meta_effect = {
+			text = {
+				set_country_flag = {
+					flag = map_plan_build_fortifications_cooldown_flag
+					days = [DAYS]
+					value = 1
+				}
+			}
+			DAYS = "[?temp_map_cooldown_days]"
+		}
+	}
+}
+
+# Called once by the focus after adding the idea. Reduce only remaining time.
+map_plan_reduce_active_cooldown = {
+	if = {
+		limit = { check_variable = { map_plan_priority_direction_cooldown > global.num_days } }
+		set_temp_variable = { temp_map_cooldown_days = map_plan_priority_direction_cooldown }
+		subtract_from_temp_variable = { temp_map_cooldown_days = global.num_days }
+		map_plan_set_priority_direction_cooldown = yes
+	}
+	if = {
+		limit = { check_variable = { map_plan_attack_cooldown > global.num_days } }
+		set_temp_variable = { temp_map_cooldown_days = map_plan_attack_cooldown }
+		subtract_from_temp_variable = { temp_map_cooldown_days = global.num_days }
+		map_plan_set_attack_cooldown = yes
+	}
+	if = {
+		limit = { check_variable = { map_plan_defence_cooldown > global.num_days } }
+		set_temp_variable = { temp_map_cooldown_days = map_plan_defence_cooldown }
+		subtract_from_temp_variable = { temp_map_cooldown_days = global.num_days }
+		map_plan_set_defence_cooldown = yes
+	}
+	if = {
+		limit = { check_variable = { map_plan_build_fortifications_cooldown > global.num_days } }
+		set_temp_variable = { temp_map_cooldown_days = map_plan_build_fortifications_cooldown }
+		subtract_from_temp_variable = { temp_map_cooldown_days = global.num_days }
+		map_plan_set_build_fortifications_cooldown = yes
+	}
+}
+
 map_plan_priority_direction_set = {
 	if = {
 		limit = { map_plan_is_priority_direction_available = yes }
 
 		add_command_power = -100
 				
-		set_variable = { map_plan_priority_direction_cooldown = global.num_days }
-		add_to_variable = { map_plan_priority_direction_cooldown = 90 } # время действия модификатора + его подготовка (см. ниже в map_apply_modifier_action)
-		set_country_flag = {
-			flag = map_plan_priority_direction_cooldown_flag
-			days = 90
-			value = 1
-		}
+		set_temp_variable = { temp_map_cooldown_days = 90 }
+		map_plan_set_priority_direction_cooldown = yes
 		
 		set_variable = { temp_selected_region_index = selected_region }
 		set_temp_variable = { temp_modifier_type = 1 }
@@ -430,13 +546,8 @@ map_plan_attack_prepare = {
 
 		add_command_power = -100
 		
-		set_variable = { map_plan_attack_cooldown = global.num_days }
-		add_to_variable = { map_plan_attack_cooldown = 45 } # время действия модификатора + его подготовка (см. ниже в map_apply_modifier_action)
-		set_country_flag = {
-			flag = map_plan_attack_cooldown_flag
-			days = 45
-			value = 1
-		}
+		set_temp_variable = { temp_map_cooldown_days = 45 }
+		map_plan_set_attack_cooldown = yes
 	}
 }
 
@@ -453,13 +564,8 @@ map_plan_defence_prepare = {
 
 		add_command_power = -60
 
-		set_variable = { map_plan_defence_cooldown = global.num_days }
-		add_to_variable = { map_plan_defence_cooldown = 75 } # время действия модификатора + его подготовка (см. ниже в map_apply_modifier_action)
-		set_country_flag = {
-			flag = map_plan_defence_cooldown_flag
-			days = 75
-			value = 1
-		}
+		set_temp_variable = { temp_map_cooldown_days = 75 }
+		map_plan_set_defence_cooldown = yes
 		
 	}
 }
@@ -471,13 +577,8 @@ map_plan_build_fortifications_prepare_set = {
 
 		add_command_power = -50
 
-		set_variable = { map_plan_build_fortifications_cooldown = global.num_days }
-		add_to_variable = { map_plan_build_fortifications_cooldown = 45 }
-		set_country_flag = {
-			flag = map_plan_build_fortifications_cooldown_flag
-			days = 45
-			value = 1
-		}
+		set_temp_variable = { temp_map_cooldown_days = 45 }
+		map_plan_set_build_fortifications_cooldown = yes
 
 		set_variable = { temp_selected_region_index = selected_region }
 		set_temp_variable = { temp_modifier_type = 4 }
@@ -550,18 +651,8 @@ map_apply_modifier_action = {
 map_plan_priority_direction_set_scripted = {
 
 	# Cooldown
-	set_variable = { map_plan_priority_direction_cooldown = global.num_days }
-	add_to_variable = { map_plan_priority_direction_cooldown = temp_cooldown_days }
-	meta_effect = {
-		text = {
-			set_country_flag = {
-				flag = map_plan_priority_direction_cooldown_flag
-				days = [DAYS]
-				value = 1
-			}
-		}
-		DAYS = "[?temp_cooldown_days]"
-	}
+	set_temp_variable = { temp_map_cooldown_days = temp_cooldown_days }
+	map_plan_set_priority_direction_cooldown = yes
 	
 
 	if = {
@@ -618,18 +709,8 @@ map_plan_priority_direction_set_scripted = {
 map_plan_attack_prepare_scripted = {
 
 	# Cooldown
-	set_variable = { map_plan_attack_cooldown = global.num_days }
-	add_to_variable = { map_plan_attack_cooldown = temp_cooldown_days }
-	meta_effect = {
-		text = {
-			set_country_flag = {
-				flag = map_plan_attack_cooldown_flag
-				days = [DAYS]
-				value = 1
-			}
-		}
-		DAYS = "[?temp_cooldown_days]"
-	}
+	set_temp_variable = { temp_map_cooldown_days = temp_cooldown_days }
+	map_plan_set_attack_cooldown = yes
 	
 
 	if = {
@@ -686,18 +767,8 @@ map_plan_attack_prepare_scripted = {
 map_plan_defence_prepare_scripted = {
 
 	# Cooldown
-	set_variable = { map_plan_defence_cooldown = global.num_days }
-	add_to_variable = { map_plan_defence_cooldown = temp_cooldown_days }
-	meta_effect = {
-		text = {
-			set_country_flag = {
-				flag = map_plan_defence_cooldown_flag
-				days = [DAYS]
-				value = 1
-			}
-		}
-		DAYS = "[?temp_cooldown_days]"
-	}
+	set_temp_variable = { temp_map_cooldown_days = temp_cooldown_days }
+	map_plan_set_defence_cooldown = yes
 	
 
 	if = {
@@ -755,18 +826,8 @@ map_plan_defence_prepare_scripted = {
 map_plan_build_fortifications_prepare_set_scripted = {
 
 	# Cooldown
-	set_variable = { map_plan_build_fortifications_cooldown = global.num_days }
-	add_to_variable = { map_plan_build_fortifications_cooldown = temp_cooldown_days }
-	meta_effect = {
-		text = {
-			set_country_flag = {
-				flag = map_plan_build_fortifications_cooldown_flag
-				days = [DAYS]
-				value = 1
-			}
-		}
-		DAYS = "[?temp_cooldown_days]"
-	}
+	set_temp_variable = { temp_map_cooldown_days = temp_cooldown_days }
+	map_plan_set_build_fortifications_cooldown = yes
 	
 	
 	if = {
