@@ -87,7 +87,17 @@ def main():
         actual=hashlib.sha256(b''.join(a[selected].tobytes() for a in channels)).hexdigest()
         assert actual==expected['sha256'],f'{name}: protected main body changed'
     for name,expected in baseline['unchanged_files'].items():
-        assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==expected,f'{name}: changed'
+        data=(ROOT/name).read_bytes()
+        if name==EQUIPMENT_FILE:
+            # The later Zircon integration changes only its own sprite. Compare
+            # the historical Kinzhal baseline after undoing that exact binding.
+            data=data.replace(b'sprite = rus_zircon',b'sprite = missile_default')
+        candidates=[data]
+        if Path(name).suffix in ('.asset','.gfx','.txt'):
+            # Git may check out text with CRLF; baselines contain both conventions.
+            lf=data.replace(b'\r\n',b'\n')
+            candidates.extend([lf,lf.replace(b'\n',b'\r\n')])
+        assert any(hashlib.sha256(value).hexdigest()==expected for value in candidates),f'{name}: changed'
     rim=p[faces[parts=='nozzle_rim']].reshape(-1,3)
     mouth=rim[np.isclose(rim[:,2],5.)]
     radii=np.linalg.norm(mouth[:,:2],axis=1)
@@ -137,15 +147,18 @@ def main():
     before, after = block(original, EQUIPMENT), block(text, EQUIPMENT)
     # Works both before and after committing the integration.
     normalized = re.sub(r'\bsprite\s*=\s*\w+', 'sprite = rus_kinzhal', before)
-    assert text == original.replace(before, normalized, 1), 'Unrelated equipment changed'
+    expected=original.replace(before,normalized,1)
+    zircon=block(expected,'rus_medium_guided_missile_3m22')
+    expected=expected.replace(zircon,re.sub(r'\bsprite\s*=\s*\w+','sprite = rus_zircon',zircon),1)
+    assert text == expected, 'Unrelated equipment changed'
     assert 'sprite = rus_kinzhal' in after
-    assert 'sprite = missile_default' in block(text, 'rus_medium_guided_missile_3m22')
+    assert 'sprite = rus_zircon' in block(text, 'rus_medium_guided_missile_3m22')
     history = (ROOT / 'history/countries/RUS - Russia.txt').read_text(encoding='utf-8-sig')
     assert 'missile_rus_kh47 = 1' in history and f'type = {EQUIPMENT}' in history
     print('PASS: centered mesh, fourfold fins, open recessed nozzle, indexed vertices, PBR sources.')
     print('PASS: exact nose/main-body preservation, unchanged main fins/brackets/fairings and all textures.')
     print('PASS: continuous aft taper, compact centered nozzle, 45-degree staggered small fins with flush roots.')
-    print('PASS: unique registration, researched Russian equipment, only the Kinzhal sprite changed.')
+    print('PASS: unique registration, researched Russian equipment and preserved Zircon sprite binding.')
 
 
 if __name__ == '__main__':
