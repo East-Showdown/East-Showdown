@@ -1,0 +1,27 @@
+# Оперативный центр разведки: служебные эффекты.
+# Ранее использовал данные кастомной очереди агентства (ES_auto_agency), удалённой
+# после появления очереди улучшений в ванилле.
+
+# Список из 17 элементов для динамической сетки улучшений (индекс i = номер улучшения).
+ES_intel_command_init_globals = {
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_variable = global.ES_intel_command_upgrades^num }
+				check_variable = { global.ES_intel_command_upgrades^num < 17 }
+			}
+		}
+		resize_array = { array = global.ES_intel_command_upgrades value = 0 size = 17 }
+	}
+}
+
+# Счётчик для обновления скриптовых GUI только при реальных изменениях.
+ES_intel_command_mark_dirty = {
+	if = {
+		limit = { check_variable = { global.ES_intel_command_dirty < 10000 } }
+		add_to_variable = { global.ES_intel_command_dirty = 1 }
+	}
+	else = {
+		set_variable = { global.ES_intel_command_dirty = 1 }
+	}
+}
