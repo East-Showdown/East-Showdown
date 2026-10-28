@@ -1232,7 +1232,7 @@ UKR_verkhovna_rada_decisions_block = {
 }
 
 UKR_hold_cities_category = {
-		
+
 	UKR_hold_kyiv = {
 		icon = generic_civil_support
 		allowed = {
@@ -3481,7 +3481,7 @@ UKR_create_territorial_defence_category = {
 						controls_state = 103
 						controls_state = 926
 						controls_state = 101
-						
+
 					}
 					load_oob = UKR_Tro_Kharkov
 				}
@@ -3802,6 +3802,10 @@ UKR_create_territorial_defence_category = {
 						division_template = "Teretorialnaya oborona \"Skhid\""
 						disband = no
 					}
+					delete_unit_template_and_units = {
+						division_template = "Teretorialnaya oborona \"Skhid\" (BBM reconnaissance)"
+						disband = no
+					}
 					set_country_flag = TRO_Eastern_deleted
 					clr_country_flag = TRO_Eastern
 				}
@@ -3862,6 +3866,10 @@ UKR_create_territorial_defence_category = {
 				UKR = {
 					delete_unit_template_and_units = {
 						division_template = "Teretorialnaya oborona \"Zahid\""
+						disband = no
+					}
+					delete_unit_template_and_units = {
+						division_template = "Teretorialnaya oborona \"Zahid\" (BBM reconnaissance)"
 						disband = no
 					}
 					set_country_flag = TRO_western_deleted
@@ -3928,7 +3936,7 @@ UKR_create_territorial_defence_category = {
 			}
 		}
 		available = {
-				
+
 		}
 		days_remove = 7
 		cost = 10
@@ -11489,6 +11497,8 @@ UKR_Bombing_Russia = {
 }
 
 UKR_New_brigades_category = {
+	# Reserve the full spawned OOB manpower when a decision is selected.
+	# Replaced units return their surviving manpower on disband at completion.
 	UKR_reserve_corps = {
 		available = {
 			always = no
@@ -11538,11 +11548,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 8429
 			date > 2022.03.4
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -8430
+			hidden_effect = {
+				set_variable = { UKR_Form_1_obsp_reserved_manpower = 8430 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_1_obsp_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_1_obsp_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_1_obsp_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_1_obsp"
 			custom_effect_tooltip = UKR_Form_1_obsp_tt
 			hidden_effect = {
@@ -11555,6 +11577,7 @@ UKR_New_brigades_category = {
 	UKR_Form_3_shturmova = {
 		icon = GFX_decision_UKR_Form_3TH
 		available = {
+			has_manpower > 8377
 			date > 2022.10.14
 		}
 		ai_will_do = {
@@ -11566,14 +11589,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 60
 		cost = 100
+		complete_effect = {
+			add_manpower = -8378
+			hidden_effect = {
+				set_variable = { UKR_Form_3_shturmova_reserved_manpower = 8378 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_3_shturmova_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_3_shturmova_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_3_shturmova_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_3_shturmova"
 			custom_effect_tooltip = UKR_Form_3_shturmova_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "Batalion \"Azov-Dnipro\""
-					disband = no
-				}
+				es_remove_ukr_561572f75497 = yes
 				load_oob = UKR_Azov_Dnipro
 				if = {
 					limit = {
@@ -11594,6 +11625,7 @@ UKR_New_brigades_category = {
 	UKR_Form_5_shturmovyy_polk = {
 		icon = GFX_decision_UKR_Form_5TH
 		available = {
+			has_manpower > 3407
 			date > 2022.05.10
 		}
 		ai_will_do = {
@@ -11605,7 +11637,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 30
+		complete_effect = {
+			add_manpower = -3408
+			hidden_effect = {
+				set_variable = { UKR_Form_5_shturmovyy_polk_reserved_manpower = 3408 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_5_shturmovyy_polk_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_5_shturmovyy_polk_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_5_shturmovyy_polk_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_5_shturmovyy_polk"
 			custom_effect_tooltip = UKR_Form_5_shturmovyy_polk_tt
 			hidden_effect = {
@@ -11630,6 +11673,7 @@ UKR_New_brigades_category = {
 	UKR_Form_5_shturmova = {
 		icon = GFX_decision_UKR_Form_5TH
 		available = {
+			has_manpower > 7450
 			date > 2023.02.24
 		}
 		ai_will_do = {
@@ -11644,23 +11688,25 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -7451
+			hidden_effect = {
+				set_variable = { UKR_Form_5_shturmova_reserved_manpower = 7451 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_5_shturmova_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_5_shturmova_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_5_shturmova_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_5_shturmova"
 			custom_effect_tooltip = UKR_Form_5_shturmova_tt
 			hidden_effect = {
 				clr_country_flag = UKR_5_shturmovyy_polk_formed
-				delete_unit_template_and_units = {
-					division_template = "Shturmovyy batal'yon 5-ho shturmovoho polku"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Artyleriys'kyy batal'yon 5-ho shturmovoho polku"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Batalyon «Aydar»"
-					disband = yes
-				}
+				es_remove_ukr_2fbea920d486 = yes
+				es_remove_ukr_a058b1aedd7f = yes
+				es_remove_ukr_3dcc2e302788 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -11680,6 +11726,7 @@ UKR_New_brigades_category = {
 	UKR_Form_12_vazhka_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_12_vazhka_mekhanizovana
 		available = {
+			has_manpower > 5947
 			date > 2025.09.12
 		}
 		ai_will_do = {
@@ -11691,14 +11738,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 90
 		cost = 50
+		complete_effect = {
+			add_manpower = -5948
+			hidden_effect = {
+				set_variable = { UKR_Form_12_vazhka_mekhanizovana_reserved_manpower = 5948 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_12_vazhka_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_12_vazhka_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_12_vazhka_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_12_vazhka_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "12-y okremyy tankovyy batal'yon"
-					disband = yes
-				}
+				es_remove_ukr_b699ef8ba2c6 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -11717,6 +11772,7 @@ UKR_New_brigades_category = {
 	UKR_Form_21 = {
 		icon = GFX_decision_UKR_Form_21TH
 		available = {
+			has_manpower > 8319
 			has_country_flag = UKR_33_brigade_formation_started
 			date > 2023.02.28
 			has_completed_focus = UKR_form_new_brigades
@@ -11743,7 +11799,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 60
 		cost = 100
+		complete_effect = {
+			add_manpower = -8320
+			hidden_effect = {
+				set_variable = { UKR_Form_21_reserved_manpower = 8320 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_21_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_21_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_21_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_21"
 			custom_effect_tooltip = UKR_Form_21_tt
 			add_equipment_to_stockpile = {
@@ -11770,6 +11837,7 @@ UKR_New_brigades_category = {
 	UKR_Form_22 = {
 		icon = GFX_decision_UKR_Form_22TH
 		available = {
+			has_manpower > 5464
 			date > 2023.01.4
 		}
 		ai_will_do = {
@@ -11781,7 +11849,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5465
+			hidden_effect = {
+				set_variable = { UKR_Form_22_reserved_manpower = 5465 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_22_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_22_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_22_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_22"
 			custom_effect_tooltip = UKR_Form_22_tt
 			hidden_effect = {
@@ -11803,6 +11882,7 @@ UKR_New_brigades_category = {
 	UKR_Form_23 = {
 		icon = GFX_decision_UKR_Form_23TH
 		available = {
+			has_manpower > 6617
 			date > 2023.01.4
 		}
 		ai_will_do = {
@@ -11814,7 +11894,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -6618
+			hidden_effect = {
+				set_variable = { UKR_Form_23_reserved_manpower = 6618 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_23_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_23_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_23_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_23"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -11825,17 +11916,11 @@ UKR_New_brigades_category = {
 						}
 					}
 					load_oob = UKR_23ma
-					delete_unit_template_and_units = {
-						division_template = "Dobrovolchyy batalion OUN"
-						disband = yes
-					}
+					es_remove_ukr_1af0e0d0ae99 = yes
 				}
 				else = {
 					load_oob = UKR_23ma_alt
-					delete_unit_template_and_units = {
-						division_template = "Dobrovolchyy batalion OUN"
-						disband = yes
-						}
+					es_remove_ukr_1af0e0d0ae99 = yes
 					}
 				}
 			}
@@ -11844,6 +11929,7 @@ UKR_New_brigades_category = {
 	UKR_Form_29_vazhka_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_29_vazhka_mekhanizovana
 		available = {
+			has_manpower > 5042
 			date > 2025.09.27
 		}
 		ai_will_do = {
@@ -11855,7 +11941,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 300
 		cost = 50
+		complete_effect = {
+			add_manpower = -5043
+			hidden_effect = {
+				set_variable = { UKR_Form_29_vazhka_mekhanizovana_reserved_manpower = 5043 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_29_vazhka_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_29_vazhka_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_29_vazhka_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_29_vazhka_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -11877,6 +11974,7 @@ UKR_New_brigades_category = {
 	UKR_Form_31 = {
 		icon = GFX_decision_UKR_Form_31TH
 		available = {
+			has_manpower > 6909
 			date > 2023.02.17
 		}
 		visible = {
@@ -11888,7 +11986,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -6910
+			hidden_effect = {
+				set_variable = { UKR_Form_31_reserved_manpower = 6910 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_31_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_31_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_31_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_31"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -11910,6 +12019,7 @@ UKR_New_brigades_category = {
 	UKR_Form_32 = {
 		icon = GFX_decision_UKR_Form_32TH
 		available = {
+			has_manpower > 4254
 			date > 2023.02.28
 		}
 		visible = {
@@ -11921,7 +12031,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4255
+			hidden_effect = {
+				set_variable = { UKR_Form_32_reserved_manpower = 4255 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_32_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_32_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_32_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_32"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -11943,6 +12064,7 @@ UKR_New_brigades_category = {
 	UKR_Form_33 = {
 		icon = GFX_decision_UKR_Form_33T
 		available = {
+			has_manpower > 7414
 			date > 2023.01.4
 			has_completed_focus = UKR_form_new_brigades
 		}
@@ -11969,10 +12091,19 @@ UKR_New_brigades_category = {
 		days_remove = 30
 		cost = 50
 		complete_effect = {
+			add_manpower = -7415
+			hidden_effect = {
+				set_variable = { UKR_Form_33_reserved_manpower = 7415 }
+			}
 			set_country_flag = UKR_33_brigade_formation_started
 			ensure_unit_template_UKR_Leopard_batalion = yes
 		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_33_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_33_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_33_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_33"
 			custom_effect_tooltip = UKR_Form_33_tt
 			add_equipment_to_stockpile = {
@@ -11997,11 +12128,12 @@ UKR_New_brigades_category = {
 		}
 		fire_only_once = yes
 	}
-	
+
 	UKR_Form_41 = {
 		icon = GFX_decision_UKR_Form_41TH
 		available = {
-			has_completed_focus = UKR_form_new_brigades
+			has_manpower > 6064
+			has_completed_focus = Creation_of_new_brigades
 			date > 2023.02.24
 		}
 		ai_will_do = {
@@ -12013,7 +12145,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -6065
+			hidden_effect = {
+				set_variable = { UKR_Form_41_reserved_manpower = 6065 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_41_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_41_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_41_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_41"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12035,6 +12178,7 @@ UKR_New_brigades_category = {
 	UKR_Form_42_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_42TH
 		available = {
+			has_manpower > 6577
 			date > 2023.01.25
 		}
 		ai_will_do = {
@@ -12046,7 +12190,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -6578
+			hidden_effect = {
+				set_variable = { UKR_Form_42_mekhanizovana_reserved_manpower = 6578 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_42_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_42_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_42_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_42_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12068,6 +12223,7 @@ UKR_New_brigades_category = {
 	UKR_Form_43_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_43tn
 		available = {
+			has_manpower > 7342
 			date > 2023.03.02
 		}
 		ai_will_do = {
@@ -12079,7 +12235,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -7343
+			hidden_effect = {
+				set_variable = { UKR_Form_43_mekhanizovana_reserved_manpower = 7343 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_43_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_43_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_43_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_43_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12101,6 +12268,7 @@ UKR_New_brigades_category = {
 	UKR_Form_44_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_44tn
 		available = {
+			has_manpower > 5956
 			has_country_flag = UKR_33_brigade_formation_started
 			date > 2023.03.2
 		}
@@ -12113,7 +12281,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5957
+			hidden_effect = {
+				set_variable = { UKR_Form_44_mekhanizovana_reserved_manpower = 5957 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_44_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_44_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_44_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_43_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12135,6 +12314,13 @@ UKR_New_brigades_category = {
 	UKR_Form_47_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_47TH
 		available = {
+			if = {
+				limit = { has_country_flag = UKR_Form_47_mekhanizovana_executed_flag }
+				has_manpower > 720
+			}
+			else = {
+				has_manpower > 8289
+			}
 			if = {
 				limit = {
 					UKR = {
@@ -12173,7 +12359,27 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 100
 		cost = 100
+		complete_effect = {
+			if = {
+				limit = { has_country_flag = UKR_Form_47_mekhanizovana_executed_flag }
+				add_manpower = -721
+				hidden_effect = {
+					set_variable = { UKR_Form_47_mekhanizovana_reserved_manpower = 721 }
+				}
+			}
+			else = {
+				add_manpower = -8290
+				hidden_effect = {
+					set_variable = { UKR_Form_47_mekhanizovana_reserved_manpower = 8290 }
+				}
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_47_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_47_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_47_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_47_mekhanizovana"
 			if = {
 				limit = { 
@@ -12189,10 +12395,7 @@ UKR_New_brigades_category = {
 					variant_name = "M1A1"
 				}
 				hidden_effect = {
-					delete_unit_template_and_units = {
-						division_template = "Tankoviy batalion (Leopard) 47-yi okremoyi mekhanizovanoyi bryhady «Mahura»"
-						disband = yes
-					}
+					es_remove_ukr_2ac2312ece8d = yes
 				    if = {
 					    limit = {
 						   UKR = {
@@ -12237,10 +12440,7 @@ UKR_New_brigades_category = {
 					variant_name = "International MaxxPro"
 				}
 				hidden_effect = {
-					delete_unit_template_and_units = {
-					division_template = "211-y batalyon spetsialnoho pryznachennya"
-					disband = yes
-				}
+					es_remove_ukr_7fd7b9a3f9fe = yes
 					if = {
 					limit = {
 						UKR = {
@@ -12266,11 +12466,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 5500
 			date > 2025.01.24
 		}
 		days_remove = 30
 		cost = 70
+		complete_effect = {
+			add_manpower = -5501
+			hidden_effect = {
+				set_variable = { UKR_reform_59th_reserved_manpower = 5501 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_59th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_59th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_reform_59th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_reform_59th"
 			custom_effect_tooltip = UKR_59th_reorganize
 			add_equipment_to_stockpile = {
@@ -12279,26 +12491,11 @@ UKR_New_brigades_category = {
 					producer = "UKR"
 				}
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "Motopikhotnyy batalion 59-yi motopikhotnoyi bryhady"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Tankovyy batalion 59-yi motopikhotnoyi bryhady"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Samokhidno-artyleriyskyy batalion 59-yi motopikhotnoyi bryhady" 
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Artyleriyskyy batalion RSZV 59-yi motopikhotnoyi bryhady"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Striletskyy batalion 59-yi motopikhotnoyi bryhady"
-					disband = yes
-				}
+				es_remove_ukr_c68ca2f27b9c = yes
+				es_remove_ukr_6630ea86b7ed = yes
+				es_remove_ukr_99403b0688cf = yes
+				es_remove_ukr_442dceadb1df = yes
+				es_remove_ukr_a996adeda309 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -12310,7 +12507,7 @@ UKR_New_brigades_category = {
 				else = {
 					load_oob = UKR_59th_sht_alt
 				}
-				
+
 			}
 		}
 		fire_only_once = yes
@@ -12318,6 +12515,7 @@ UKR_New_brigades_category = {
 	UKR_Form_65_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_65TH
 		available = {
+			has_manpower > 7342
 			date > 2022.04.18
 		}
 		ai_will_do = {
@@ -12329,7 +12527,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -7343
+			hidden_effect = {
+				set_variable = { UKR_Form_65_mekhanizovana_reserved_manpower = 7343 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_65_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_65_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_65_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_65_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12341,6 +12550,7 @@ UKR_New_brigades_category = {
 	UKR_Form_66_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_66TH
 		available = {
+			has_manpower > 5532
 			date > 2022.04.18
 		}
 		ai_will_do = {
@@ -12352,14 +12562,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5533
+			hidden_effect = {
+				set_variable = { UKR_Form_66_mekhanizovana_reserved_manpower = 5533 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_66_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_66_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_66_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_66_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "Tankovyy batalion 17-yi tankovoyi bryhady"
-					disband = yes
-				}
+				es_remove_ukr_0a4250675f33 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -12378,6 +12596,7 @@ UKR_New_brigades_category = {
 	UKR_Form_67_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_67TH
 		available = {
+			has_manpower > 6922
 			date > 2022.11.01
 			has_completed_focus = UKR_form_new_brigades
 		}
@@ -12390,7 +12609,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 45
 		cost = 50
+		complete_effect = {
+			add_manpower = -6923
+			hidden_effect = {
+				set_variable = { UKR_Form_67_mekhanizovana_reserved_manpower = 6923 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_67_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_67_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_67_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_67_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12414,6 +12644,7 @@ UKR_New_brigades_category = {
 		#icon = 
 		fire_only_once = yes
 		available = {
+			has_manpower > 5049
 			tag = UKR
 			date > 2024.04.24
 		}
@@ -12439,16 +12670,24 @@ UKR_New_brigades_category = {
 		ai_will_do = {
 			factor = 100
 		}
+		complete_effect = {
+			add_manpower = -5050
+			hidden_effect = {
+				set_variable = { UKR_Reform_100_reserved_manpower = 5050 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_100_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_100_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_100_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_100"
 			custom_effect_tooltip = UKR_Reform_100_tt
 			hidden_effect = {
 				load_oob = UKR_100mekhanizovana
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "100-a bryhada terytorial'noyi oborony"
-						disband = yes
-					}
+					es_remove_ukr_6e6caaace9d1 = yes
 				}
 				clr_country_flag = 100a_TRO_formed
 			}
@@ -12477,34 +12716,45 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 7462
 			date > 2023.08.30
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -7463
+			hidden_effect = {
+				set_variable = { UKR_reform_92th_reserved_manpower = 7463 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_92th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_92th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_reform_92th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_reform_92th"
 			custom_effect_tooltip = UKR_92th_reorganize
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "Mekhanizovanyy batal'yon 92-yi mekhanizovanoyi bryhady"
-					disband = yes
+				add_equipment_to_stockpile = {
+					type = tank_sov_t64_equipment
+					variant_name = "Т-64БВ зр. 2017"
+					amount = 60
+					producer = UKR
 				}
-				delete_unit_template_and_units = {
-					division_template = "Artyleriys'kyy batal'yon RSZV 92-yi mekhanizovanoyi bryhady"
-					disband = yes
+
+				add_equipment_to_stockpile = {
+					type = tank_sov_t64_equipment
+					variant_name = "Т-64БВ зр. 2022"
+					amount = 50
+					producer = UKR
 				}
-				delete_unit_template_and_units = {
-					division_template = "Samokhidno-artyleriys'kyy batal'yon 92-yi mekhanizovanoyi bryhady" 
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Tankovyy batal'yon 92-yi mekhanizovanoyi bryhady"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "22-y motopikhotnyy batal'yon 92-yi mekhanizovanoyi bryhady"
-					disband = yes
-				}
+
+				es_remove_ukr_84b3792de6a3 = yes
+				es_remove_ukr_9e7a3d202f78 = yes
+				es_remove_ukr_61e72ba75c32 = yes
+				es_remove_ukr_ae8da105b2f6 = yes
+				es_remove_ukr_65f4cf4608d1 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -12516,7 +12766,7 @@ UKR_New_brigades_category = {
 				else = {
 					load_oob = UKR_92th_sht_alt
 				}
-				
+
 			}
 		}
 		fire_only_once = yes
@@ -12524,6 +12774,7 @@ UKR_New_brigades_category = {
 	UKR_Form_110_mekhanizovana = {
 		icon = GFX_decision_UKR_Form_110TH
 		available = {
+			has_manpower > 7767
 			date > 2022.03.8
 		}
 		ai_will_do = {
@@ -12537,7 +12788,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -7768
+			hidden_effect = {
+				set_variable = { UKR_Form_110_mekhanizovana_reserved_manpower = 7768 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_110_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_110_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_110_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_110_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12550,6 +12812,7 @@ UKR_New_brigades_category = {
     UKR_Form_116 = {
 		icon = GFX_decision_UKR_Form_116th
 		available = {
+			has_manpower > 4347
 			date > 2023.02.15
 			UKR = { 
 				has_country_flag = UKR_49th_disbanded
@@ -12564,14 +12827,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4348
+			hidden_effect = {
+				set_variable = { UKR_Form_116_reserved_manpower = 4348 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_116_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_116_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_116_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_116"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-						division_template = "Strilets'ki batal'yony (116-yi bryhady)"
-						disband = yes
-					}
+				es_remove_ukr_29782473b8b5 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -12591,6 +12862,7 @@ UKR_New_brigades_category = {
 	UKR_Form_117 = {
 		icon = GFX_decision_UKR_Form_117TH
 		available = {
+			has_manpower > 5252
 			date > 2023.01.31
 			UKR = { 
 				has_country_flag = UKR_49th_disbanded
@@ -12605,15 +12877,23 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5253
+			hidden_effect = {
+				set_variable = { UKR_Form_117_reserved_manpower = 5253 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_117_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_117_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_117_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_117"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				if = {
-					delete_unit_template_and_units = {
-						division_template = "Strilets'ki batal'yony (117-yi bryhady)"
-						disband = yes
-					}
+					es_remove_ukr_0da2be4147bf = yes
 					limit = {
 						UKR = {
 							controls_province = 15515
@@ -12633,6 +12913,7 @@ UKR_New_brigades_category = {
 	UKR_reform_117 = {
 		icon = GFX_decision_UKR_Form_117TH
 		available = {
+			has_manpower > 6087
 			date > 2024.11.3
 		}
 		visible = {
@@ -12647,27 +12928,26 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -6088
+			hidden_effect = {
+				set_variable = { UKR_reform_117_reserved_manpower = 6088 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_117_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_117_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_reform_117_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_reform_117"
 			custom_effect_tooltip = UKR_117th_reorganize
 			hidden_effect = {
 				clr_country_flag = UKR_form_117th_done
-				delete_unit_template_and_units = {
-						division_template = "Mekhanizovanyy batal'yon 117-yi mekhanizovanoyi bryhady"
-						disband = no
-					}
-				delete_unit_template_and_units = {
-						division_template = "Tankovyy batal'yon 117-yi mekhanizovanoyi bryhady"
-						disband = no
-					}
-				delete_unit_template_and_units = {
-						division_template = "Pikhotnyy batal'yon 117-yi mekhanizovanoyi bryhady"
-						disband = no
-					}
-				delete_unit_template_and_units = {
-						division_template = "Samokhidno-artyleriys'kyy batal'yon 117-yi mekhanizovanoyi bryhady"
-						disband = no
-					}
+				es_remove_ukr_46181b76b9a2 = yes
+				es_remove_ukr_c9783e179c2f = yes
+				es_remove_ukr_f3bc1da72474 = yes
+				es_remove_ukr_ca65de66fc97 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -12687,6 +12967,7 @@ UKR_New_brigades_category = {
 	UKR_Form_118 = {
 		icon = GFX_decision_UKR_Form_118TH
 		available = {
+			has_manpower > 5252
 			date > 2023.02.15
 			UKR = { 
 				has_country_flag = UKR_49th_disbanded
@@ -12701,14 +12982,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5253
+			hidden_effect = {
+				set_variable = { UKR_Form_118_reserved_manpower = 5253 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_118_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_118_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_118_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_118"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-						division_template = "Strilets'ki batal'yony (118-yi bryhady)"
-						disband = yes
-					}
+				es_remove_ukr_dc5cd270d905 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -12728,6 +13017,7 @@ UKR_New_brigades_category = {
 	UKR_expand_120_rozviduvalnyy_batalyon = {
 		icon = GFX_decision_UKR_expand_120_rozviduvalnyy_batalyon
 		available = {
+			has_manpower > 2714
 			date > 2023.09.05
 		}
 		ai_will_do = {
@@ -12739,7 +13029,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 180
 		cost = 30
+		complete_effect = {
+			add_manpower = -2715
+			hidden_effect = {
+				set_variable = { UKR_expand_120_rozviduvalnyy_batalyon_reserved_manpower = 2715 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_expand_120_rozviduvalnyy_batalyon_reserved_manpower
+			hidden_effect = { clear_variable = UKR_expand_120_rozviduvalnyy_batalyon_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_expand_120_rozviduvalnyy_batalyon_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_expand_120_rozviduvalnyy_batalyon"
 			custom_effect_tooltip = UKR_expand_120_rozviduvalnyy_batalyon_tt
 			hidden_effect = {
@@ -12755,10 +13056,7 @@ UKR_New_brigades_category = {
 					load_oob = UKR_120_rozviduvalnyy_polk_alt
 				}
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "120-y rozviduvalnyy batalyon"
-						disband = yes
-					}
+					es_remove_ukr_529c1ba2c0f6 = yes
 				}
 			}
 		}
@@ -12768,6 +13066,7 @@ UKR_New_brigades_category = {
 	UKR_expand_128_hirsko_shturmova = {
 		icon = GFX_decision_UKR_expand_128_hirsko_shturmova
 		available = {
+			has_manpower > 1649
 			date > 2025.12.25
 		}
 		ai_will_do = {
@@ -12779,16 +13078,24 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 30
+		complete_effect = {
+			add_manpower = -1650
+			hidden_effect = {
+				set_variable = { UKR_expand_128_hirsko_shturmova_reserved_manpower = 1650 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_expand_128_hirsko_shturmova_reserved_manpower
+			hidden_effect = { clear_variable = UKR_expand_128_hirsko_shturmova_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_expand_128_hirsko_shturmova_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_expand_128_hirsko_shturmova"
 			custom_effect_tooltip = UKR_expand_128_hirsko_shturmova_tt
 			hidden_effect = {
 				load_oob = UKR_128_hirsko_shturmova
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "Striletskyy batalyon 128-yi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_5cde53310d33 = yes
 				}
 			}
 		}
@@ -12805,11 +13112,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 2714
 			date > 2023.02.07
 		}	
 		days_remove = 120
 		cost = 30
+		complete_effect = {
+			add_manpower = -2715
+			hidden_effect = {
+				set_variable = { UKR_Form_Zvedena_bryhada_PS_ZSU_reserved_manpower = 2715 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_Zvedena_bryhada_PS_ZSU_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_Zvedena_bryhada_PS_ZSU_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_Zvedena_bryhada_PS_ZSU_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_Zvedena_bryhada_PS_ZSU"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12839,11 +13158,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 5429
 			date > 2023.07.23
 		}	
 		days_remove = 30
 		cost = 40
+		complete_effect = {
+			add_manpower = -5430
+			hidden_effect = {
+				set_variable = { UKR_Form_141th_reserved_manpower = 5430 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_141th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_141th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_141th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_141th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -12878,11 +13209,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4287
 			date > 2024.12.24
 		}
 		days_remove = 60
 		cost = 40
+		complete_effect = {
+			add_manpower = -4288
+			hidden_effect = {
+				set_variable = { UKR_Reform_141th_reserved_manpower = 4288 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_141th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_141th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_141th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_141th"
 			custom_effect_tooltip = UKR_141th_reorganize
 			hidden_effect = {
@@ -12899,10 +13242,7 @@ UKR_New_brigades_category = {
 				}
 				UKR = {
 					clr_country_flag = UKR_form_141th_done
-					delete_unit_template_and_units = {
-						division_template = "141-a okrema pikhotna bryhada"
-						disband = no
-					}
+					es_remove_ukr_7e4f5a27cbd8 = yes
 				}
 			}
 		}
@@ -12918,11 +13258,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 5429
 			date > 2023.07.23
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5430
+			hidden_effect = {
+				set_variable = { UKR_Form_142th_reserved_manpower = 5430 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_142th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_142th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_142th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_142th"
 			custom_effect_tooltip = New_brigades_tt
 			add_equipment_to_stockpile = {
@@ -12961,11 +13313,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4042
 			date > 2024.12.24
 		}
 		days_remove = 60
 		cost = 40
+		complete_effect = {
+			add_manpower = -4043
+			hidden_effect = {
+				set_variable = { UKR_Reform_142th_reserved_manpower = 4043 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_142th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_142th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_142th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_142th"
 			custom_effect_tooltip = UKR_142th_reorganize
 			hidden_effect = {
@@ -12982,10 +13346,7 @@ UKR_New_brigades_category = {
 				}
 				UKR = {
 					clr_country_flag = UKR_form_142th_done
-					delete_unit_template_and_units = {
-						division_template = "142-a okrema pikhotna bryhada"
-						disband = no
-					}
+					es_remove_ukr_464c2a227141 = yes
 				}
 			}
 		}
@@ -13001,11 +13362,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 8144
 			date > 2023.07.23
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -8145
+			hidden_effect = {
+				set_variable = { UKR_Form_143th_reserved_manpower = 8145 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_143th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_143th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_143th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_143th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13038,11 +13411,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 6757
 			date > 2024.12.24
 		}
 		days_remove = 60
 		cost = 40
+		complete_effect = {
+			add_manpower = -6758
+			hidden_effect = {
+				set_variable = { UKR_Reform_143th_reserved_manpower = 6758 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_143th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_143th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_143th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_143th"
 			custom_effect_tooltip = UKR_143th_reorganize
 			hidden_effect = {
@@ -13059,10 +13444,7 @@ UKR_New_brigades_category = {
 				}
 				UKR = {
 					clr_country_flag = UKR_form_143th_done
-					delete_unit_template_and_units = {
-						division_template = "143-a okrema pikhotna bryhada"
-						disband = no
-					}
+					es_remove_ukr_ada54e8b0813 = yes
 				}
 			}
 		}
@@ -13078,11 +13460,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4524
 			date > 2023.07.23
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4525
+			hidden_effect = {
+				set_variable = { UKR_Form_144th_reserved_manpower = 4525 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_144th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_144th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_144th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_144th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13115,11 +13509,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 6122
 			date > 2025.02.01
 		}
 		days_remove = 60
 		cost = 40
+		complete_effect = {
+			add_manpower = -6123
+			hidden_effect = {
+				set_variable = { UKR_Reform_144th_reserved_manpower = 6123 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_144th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_144th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_144th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_143th"
 			custom_effect_tooltip = UKR_144th_reorganize
 			add_equipment_to_stockpile = {
@@ -13142,10 +13548,7 @@ UKR_New_brigades_category = {
 				}
 					UKR = {
 					clr_country_flag = UKR_form_144th_done
-					delete_unit_template_and_units = {
-						division_template = "144-a okrema pikhotna bryhada" 
-						disband = no
-					}
+					es_remove_ukr_e69b7692cb1b = yes
 				}
 			}
 		}
@@ -13163,11 +13566,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 3379
 			date > 2023.10.10
 		}
 		days_remove = 60 
 		cost = 50
+		complete_effect = {
+			add_manpower = -3380
+			hidden_effect = {
+				set_variable = { UKR_Form_150th_reserved_manpower = 3380 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_150th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_150th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_150th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_150th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13197,24 +13612,30 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4094
 			date > 2024.10.30
 		}
 		days_remove = 60
 		cost = 50
+		complete_effect = {
+			add_manpower = -4095
+			hidden_effect = {
+				set_variable = { UKR_Form_40_B0_from_150th_reserved_manpower = 4095 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_40_B0_from_150th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_40_B0_from_150th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_40_B0_from_150th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: DecisionUKR_Form_40_B0_from_150th"
 			custom_effect_tooltip = UKR_Form_40_B0_from_150th_tt
 			hidden_effect = {
 				load_oob = UKR_40_Berehova_oborona
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "150-a okrema mekhanizovana bryhada"
-						disband = no
-					}
-					delete_unit_template_and_units = {
-						division_template = "Tankovyy batalyon 150-yi bryhady"
-						disband = no
-					}
+					es_remove_ukr_a6c4f5c28be2 = yes
+					es_remove_ukr_91ee20e64107 = yes
 					clr_country_flag = UKR_Form_150th_done
 				}
 			}
@@ -13232,11 +13653,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 2749
 			date > 2023.08.29
 		}
 		days_remove = 250
 		cost = 50
+		complete_effect = {
+			add_manpower = -2750
+			hidden_effect = {
+				set_variable = { UKR_Form_151th_reserved_manpower = 2750 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_151th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_151th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_151th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_151st"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13267,11 +13700,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4254
 			date > 2023.09.13
 		}
 		days_remove = 365
 		cost = 50
+		complete_effect = {
+			add_manpower = -4255
+			hidden_effect = {
+				set_variable = { UKR_Form_152th_reserved_manpower = 4255 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_152th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_152th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_152th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_152nd"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13302,11 +13747,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4979
 			date > 2023.08.29
 		}
 		days_remove = 250
 		cost = 50
+		complete_effect = {
+			add_manpower = -4980
+			hidden_effect = {
+				set_variable = { UKR_Form_153th_reserved_manpower = 4980 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_153th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_153th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_153th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_153th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13337,11 +13794,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 3349
 			date > 2023.09.13
 		}
 		days_remove = 360
 		cost = 50
+		complete_effect = {
+			add_manpower = -3350
+			hidden_effect = {
+				set_variable = { UKR_Form_154th_reserved_manpower = 3350 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_154th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_154th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_154th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_154th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13360,7 +13829,7 @@ UKR_New_brigades_category = {
 		}
 		fire_only_once = yes
 	}
-	
+
 	UKR_Form_155th = {
 		icon = GFX_decision_UKR_Form_155th
 		visible = {
@@ -13384,15 +13853,56 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 5896
 			date > 2024.02.29
 		}
 		fire_only_once = yes
 		days_remove = 300
 		cost = 100
+		complete_effect = {
+			add_manpower = -5897
+			hidden_effect = {
+				set_variable = { UKR_Form_155th_reserved_manpower = 5897 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_155th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_155th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_155th_reserved_manpower }
 			custom_effect_tooltip = UKR_Form_155th_tt
 			hidden_effect = {
 				load_oob = UKR_155th
+
+				add_equipment_to_stockpile = {
+					type = apc_fra_VAB_equipment
+					variant_name = "VAB"
+					amount = 150
+					producer = NTO
+				}
+
+				add_equipment_to_stockpile = {
+					type = sp_artillery_imv_light_3_equipment
+					variant_name = "Caesar"
+					amount = 26
+					producer = NTO
+				}
+
+				add_equipment_to_stockpile = {
+					type = light_tank_apc_fra_VAB_equipment
+					variant_name = "AMX-10RC"
+					amount = 30
+					producer = NTO
+				}
+
+				add_equipment_to_stockpile = {
+					type = tank_ger_leopard2_equipment
+					variant_name = "Leopard 2A4"
+					amount = 10
+					producer = NTO
+				}
+
 			}
 	    }
 	}
@@ -13408,11 +13918,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4014
 			date > 2024.08.12
 		}
 		days_remove = 180
 		cost = 50
+		complete_effect = {
+			add_manpower = -4015
+			hidden_effect = {
+				set_variable = { UKR_Form_156th_reserved_manpower = 4015 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_156th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_156th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_156th_reserved_manpower }
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				load_oob = UKR_156th
@@ -13432,11 +13954,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4254
 			date > 2024.02.2
 		}
 		days_remove = 220
 		cost = 50
+		complete_effect = {
+			add_manpower = -4255
+			hidden_effect = {
+				set_variable = { UKR_Form_157th_reserved_manpower = 4255 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_157th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_157th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_157th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_157th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13467,11 +14001,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4979
 			date > 2024.02.2
 		}
 		days_remove = 90
 		cost = 50
+		complete_effect = {
+			add_manpower = -4980
+			hidden_effect = {
+				set_variable = { UKR_Form_158th_reserved_manpower = 4980 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_158th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_158th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_158th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_158th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13502,11 +14048,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4254
 			date > 2024.03.12
 		}
 		days_remove = 500
 		cost = 20
+		complete_effect = {
+			add_manpower = -4255
+			hidden_effect = {
+				set_variable = { UKR_Form_159th_reserved_manpower = 4255 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_159th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_159th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_159th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_159th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13538,11 +14096,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 3349
 			date > 2024.06.25
 		}
 		days_remove = 400
 		cost = 20
+		complete_effect = {
+			add_manpower = -3350
+			hidden_effect = {
+				set_variable = { UKR_form_160th_reserved_manpower = 3350 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_form_160th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_form_160th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_form_160th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_form_160th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13563,11 +14133,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4194
 			date > 2024.06.21
 		}
 		days_remove = 600
 		cost = 20
+		complete_effect = {
+			add_manpower = -4195
+			hidden_effect = {
+				set_variable = { UKR_form_162th_reserved_manpower = 4195 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_form_162th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_form_162th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_form_162th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_form_162th"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -13585,7 +14167,7 @@ UKR_New_brigades_category = {
 			}
 		}
 	}
-	
+
 	UKR_reform_1_Siverska = {
 		icon = GFX_UKR_BR_1
 		priority = 990
@@ -13594,15 +14176,16 @@ UKR_New_brigades_category = {
 			has_completed_focus = Creation_of_new_brigades
 		}
 		available = {
+			has_manpower > 5947
 			date > 2025.07.07
 			hidden_trigger = {
 				OR = { controls_province = 2279 controls_province = 11555 }
 				OR = {
-					has_template = "Tankoviy batalion 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-					has_template = "Mekhanizovanyy batal'yon 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-					has_template = "Pechotniy batalion 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-					has_template = "Samokhidno-artileriyskiy batalion 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-					has_template = "Artileriyskiy batalion RSZV 1-yi okremoyi tankovoyi Siverskoyi bryhady"
+					has_country_flag = es_unit_group_ukr_9211313a9a7a
+					has_country_flag = es_unit_group_ukr_b56f59ca4cd3
+					has_country_flag = es_unit_group_ukr_9c8ff39c82e9
+					has_country_flag = es_unit_group_ukr_f7df1cc3d476
+					has_country_flag = es_unit_group_ukr_66ff0f816700
 				}
 			}
 		}
@@ -13610,31 +14193,34 @@ UKR_New_brigades_category = {
 		days_remove = 30
 		fire_only_once = yes
 		ai_will_do = { factor = 1 }
+		complete_effect = {
+			add_manpower = -5948
+			hidden_effect = {
+				set_variable = { UKR_reform_1_Siverska_reserved_manpower = 5948 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_1_Siverska_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_1_Siverska_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = {
+				# Refund if the spawn location was lost during formation.
+				if = {
+					limit = { NOT = { OR = { controls_province = 2279 controls_province = 11555 } } }
+					add_manpower = var:UKR_reform_1_Siverska_reserved_manpower
+				}
+				clear_variable = UKR_reform_1_Siverska_reserved_manpower
+			}
 			custom_effect_tooltip = UKR_reform_1_Siverska_tt
 			hidden_effect = {
 				if = {
 					limit = { OR = { controls_province = 2279 controls_province = 11555 } }
-					delete_unit_template_and_units = {
-						division_template = "Tankoviy batalion 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Mekhanizovanyy batal'yon 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Pechotniy batalion 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Samokhidno-artileriyskiy batalion 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artileriyskiy batalion RSZV 1-yi okremoyi tankovoyi Siverskoyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_34c98195e219 = yes
+					es_remove_ukr_6061cf398bdb = yes
+					es_remove_ukr_0ecb68cfa0b4 = yes
+					es_remove_ukr_57de3508961e = yes
+					es_remove_ukr_84a5a65b4ed1 = yes
 					UKR_spawn_1_Siverska_heavy = yes
 				}
 			}
@@ -13649,15 +14235,16 @@ UKR_New_brigades_category = {
 			has_completed_focus = Creation_of_new_brigades
 		}
 		available = {
+			has_manpower > 5947
 			date > 2025.07.17
 			hidden_trigger = {
 				OR = { controls_province = 5225 controls_province = 11555 }
 				OR = {
-					has_template = "Tankoviy batalion 3-y okremoy tankovoy bryhady"
-					has_template = "Mekhanizovanyy batal'yon 3-yi okremoyi tankovoyi bryhady"
-					has_template = "Pechotniy batalion 3-yi okremoyi tankovoyi bryhady"
-					has_template = "Samokhidno-artileriyskiy batalion 3-yi okremoyi tankovoyi bryhady"
-					has_template = "Artileriyskiy batalion RSZV 3-yi okremoyi tankovoyi bryhady"
+					has_country_flag = es_unit_group_ukr_2c0f675fde60
+					has_country_flag = es_unit_group_ukr_5567eede8cdf
+					has_country_flag = es_unit_group_ukr_8a8f4d39f1a4
+					has_country_flag = es_unit_group_ukr_c08feed26296
+					has_country_flag = es_unit_group_ukr_109d46378f85
 				}
 			}
 		}
@@ -13665,31 +14252,34 @@ UKR_New_brigades_category = {
 		days_remove = 30
 		fire_only_once = yes
 		ai_will_do = { factor = 1 }
+		complete_effect = {
+			add_manpower = -5948
+			hidden_effect = {
+				set_variable = { UKR_reform_3_Iron_reserved_manpower = 5948 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_3_Iron_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_3_Iron_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = {
+				# Refund if the spawn location was lost during formation.
+				if = {
+					limit = { NOT = { OR = { controls_province = 5225 controls_province = 11555 } } }
+					add_manpower = var:UKR_reform_3_Iron_reserved_manpower
+				}
+				clear_variable = UKR_reform_3_Iron_reserved_manpower
+			}
 			custom_effect_tooltip = UKR_reform_3_Iron_tt
 			hidden_effect = {
 				if = {
 					limit = { OR = { controls_province = 5225 controls_province = 11555 } }
-					delete_unit_template_and_units = {
-						division_template = "Tankoviy batalion 3-y okremoy tankovoy bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Mekhanizovanyy batal'yon 3-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Pechotniy batalion 3-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Samokhidno-artileriyskiy batalion 3-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artileriyskiy batalion RSZV 3-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_14ca11717231 = yes
+					es_remove_ukr_e23ea858e64f = yes
+					es_remove_ukr_88928bb253b1 = yes
+					es_remove_ukr_a535edd61edd = yes
+					es_remove_ukr_7312ddfedac6 = yes
 					UKR_spawn_3_Iron_heavy = yes
 				}
 			}
@@ -13704,15 +14294,16 @@ UKR_New_brigades_category = {
 			has_completed_focus = Creation_of_new_brigades
 		}
 		available = {
+			has_manpower > 5947
 			date > 2025.07.31
 			hidden_trigger = {
 				OR = { controls_province = 6432 controls_province = 11555 }
 				OR = {
-					has_template = "Tankoviy batalion 4-y okremoy tankovoy bryhady"
-					has_template = "Mekhanizovanyy batal'yon 4-yi okremoyi tankovoyi bryhady"
-					has_template = "Pechotniy batalion 4-yi okremoyi tankovoyi bryhady"
-					has_template = "Samokhidno-artileriyskiy batalion 4-yi okremoyi tankovoyi bryhady"
-					has_template = "Artileriyskiy batalion RSZV 4-yi okremoyi tankovoyi bryhady"
+					has_country_flag = es_unit_group_ukr_7e8cf3ff4252
+					has_country_flag = es_unit_group_ukr_8231aef3e1ac
+					has_country_flag = es_unit_group_ukr_40a928d06c65
+					has_country_flag = es_unit_group_ukr_d9f9537e0eda
+					has_country_flag = es_unit_group_ukr_5c803d009116
 				}
 			}
 		}
@@ -13720,31 +14311,34 @@ UKR_New_brigades_category = {
 		days_remove = 30
 		fire_only_once = yes
 		ai_will_do = { factor = 1 }
+		complete_effect = {
+			add_manpower = -5948
+			hidden_effect = {
+				set_variable = { UKR_reform_4_Vyhovskyi_reserved_manpower = 5948 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_4_Vyhovskyi_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_4_Vyhovskyi_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = {
+				# Refund if the spawn location was lost during formation.
+				if = {
+					limit = { NOT = { OR = { controls_province = 6432 controls_province = 11555 } } }
+					add_manpower = var:UKR_reform_4_Vyhovskyi_reserved_manpower
+				}
+				clear_variable = UKR_reform_4_Vyhovskyi_reserved_manpower
+			}
 			custom_effect_tooltip = UKR_reform_4_Vyhovskyi_tt
 			hidden_effect = {
 				if = {
 					limit = { OR = { controls_province = 6432 controls_province = 11555 } }
-					delete_unit_template_and_units = {
-						division_template = "Tankoviy batalion 4-y okremoy tankovoy bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Mekhanizovanyy batal'yon 4-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Pechotniy batalion 4-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Samokhidno-artileriyskiy batalion 4-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artileriyskiy batalion RSZV 4-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_d50767c2884c = yes
+					es_remove_ukr_94ef7b62a98c = yes
+					es_remove_ukr_983a637f23d1 = yes
+					es_remove_ukr_572d90989354 = yes
+					es_remove_ukr_7bbde8860ae9 = yes
 					UKR_spawn_4_Vyhovskyi_heavy = yes
 				}
 			}
@@ -13759,15 +14353,16 @@ UKR_New_brigades_category = {
 			has_completed_focus = Creation_of_new_brigades
 		}
 		available = {
+			has_manpower > 5947
 			date > 2024.10.31
 			hidden_trigger = {
 				OR = { controls_province = 6632 controls_province = 11555 }
 				OR = {
-					has_template = "Tankovyy batalion 17-yi tankovoyi bryhady"
-					has_template = "Mekhanizovanyy batal'yon 17-yi okremoyi tankovoyi bryhady"
-					has_template = "Pechotniy batalion 17-yi okremoyi tankovoyi bryhady"
-					has_template = "Samokhidno-artileriyskiy batalion 17-yi okremoyi tankovoyi bryhady"
-					has_template = "Artileriyskiy batalion RSZV 17-yi okremoyi tankovoyi bryhady"
+					has_country_flag = es_unit_group_ukr_bf4fab754f57
+					has_country_flag = es_unit_group_ukr_1fe514b1fdb0
+					has_country_flag = es_unit_group_ukr_dbf657245395
+					has_country_flag = es_unit_group_ukr_612b9c2c8457
+					has_country_flag = es_unit_group_ukr_3afb8afd5360
 				}
 			}
 		}
@@ -13775,31 +14370,34 @@ UKR_New_brigades_category = {
 		days_remove = 30
 		fire_only_once = yes
 		ai_will_do = { factor = 1 }
+		complete_effect = {
+			add_manpower = -5948
+			hidden_effect = {
+				set_variable = { UKR_reform_17_Kryvorizka_reserved_manpower = 5948 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_17_Kryvorizka_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_17_Kryvorizka_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = {
+				# Refund if the spawn location was lost during formation.
+				if = {
+					limit = { NOT = { OR = { controls_province = 6632 controls_province = 11555 } } }
+					add_manpower = var:UKR_reform_17_Kryvorizka_reserved_manpower
+				}
+				clear_variable = UKR_reform_17_Kryvorizka_reserved_manpower
+			}
 			custom_effect_tooltip = UKR_reform_17_Kryvorizka_tt
 			hidden_effect = {
 				if = {
 					limit = { OR = { controls_province = 6632 controls_province = 11555 } }
-					delete_unit_template_and_units = {
-						division_template = "Tankovyy batalion 17-yi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Mekhanizovanyy batal'yon 17-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Pechotniy batalion 17-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Samokhidno-artileriyskiy batalion 17-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artileriyskiy batalion RSZV 17-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_0a4250675f33 = yes
+					es_remove_ukr_51a0ea362b04 = yes
+					es_remove_ukr_001f731d0639 = yes
+					es_remove_ukr_452b400116e5 = yes
+					es_remove_ukr_8eb6bd294c5f = yes
 					UKR_spawn_17_Kryvorizka_heavy = yes
 				}
 			}
@@ -13814,6 +14412,7 @@ UKR_New_brigades_category = {
 			has_completed_focus = Creation_of_new_brigades
 		}
 		available = {
+			has_manpower > 5188
 			date > 2023.01.09
 			hidden_trigger = {
 				controls_province = 15141
@@ -13824,7 +14423,25 @@ UKR_New_brigades_category = {
 		days_remove = 40
 		fire_only_once = yes
 		ai_will_do = { factor = 1 }
+		complete_effect = {
+			add_manpower = -5189
+			hidden_effect = {
+				set_variable = { UKR_Form_5_tankova_reserved_manpower = 5189 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_5_tankova_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_5_tankova_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = {
+				# Refund if the spawn location was lost during formation.
+				if = {
+					limit = { NOT = { controls_province = 15141 } }
+					add_manpower = var:UKR_Form_5_tankova_reserved_manpower
+				}
+				clear_variable = UKR_Form_5_tankova_reserved_manpower
+			}
 			custom_effect_tooltip = UKR_Form_5_tankova_tt
 			hidden_effect = { UKR_spawn_5_tank_original = yes }
 		}
@@ -13839,6 +14456,7 @@ UKR_New_brigades_category = {
 			has_country_flag = UKR_5_tank_formed
 		}
 		available = {
+			has_manpower > 5186
 			has_country_flag = UKR_33_brigade_formation_started
 			date > 2024.12.18
 			hidden_trigger = {
@@ -13849,31 +14467,34 @@ UKR_New_brigades_category = {
 		days_remove = 30
 		fire_only_once = yes
 		ai_will_do = { factor = 1 }
+		complete_effect = {
+			add_manpower = -5187
+			hidden_effect = {
+				set_variable = { UKR_reform_5_heavy_reserved_manpower = 5187 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_5_heavy_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_5_heavy_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = {
+				# Refund if the spawn location was lost during formation.
+				if = {
+					limit = { NOT = { controls_province = 15141 } }
+					add_manpower = var:UKR_reform_5_heavy_reserved_manpower
+				}
+				clear_variable = UKR_reform_5_heavy_reserved_manpower
+			}
 			custom_effect_tooltip = UKR_reform_5_heavy_tt
 			hidden_effect = {
 				if = {
 					limit = { controls_province = 15141 }
-					delete_unit_template_and_units = {
-						division_template = "Tankoviy batalion 5-y okremoy tankovoy bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Mekhanizovanyy batal'yon 5-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Pechotniy batalion 5-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Samokhidno-artileriyskiy batalion 5-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artileriyskiy batalion RSZV 5-yi okremoyi tankovoyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_288a43f1cae0 = yes
+					es_remove_ukr_5eeab808153a = yes
+					es_remove_ukr_223eb9250196 = yes
+					es_remove_ukr_227ac0a840be = yes
+					es_remove_ukr_81821f098cd1 = yes
 					UKR_spawn_5_heavy = yes
 				}
 			}
@@ -13916,11 +14537,23 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4467
 			date > 2023.11.30
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4468
+			hidden_effect = {
+				set_variable = { UKR_Form_UKR_25_ha_okrema_desantno_shturmova_bryhada_reserved_manpower = 4468 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_UKR_25_ha_okrema_desantno_shturmova_bryhada_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_UKR_25_ha_okrema_desantno_shturmova_bryhada_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_UKR_25_ha_okrema_desantno_shturmova_bryhada_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_UKR_25_ha_okrema_desantno_shturmova_bryhada"
 			custom_effect_tooltip = New_25_ha_okrema_tt
 			add_equipment_to_stockpile = {
@@ -13931,20 +14564,17 @@ UKR_New_brigades_category = {
 			}
 			hidden_effect = {
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "Povitryano-desantniy batalion"
-						disband = no
-					}
-					delete_unit_template_and_units = {
-						division_template = "Samokhidno-artyleriys'kyy batal'yon 25-yi povitryanodesantnoyi bryhady"
-						disband = no
+					es_remove_ukr_22c87bd963a1 = yes
+					delete_unit = {
+						id = 11002501
+						disband = yes
 					}
 				}
 				if = { limit = { UKR = { controls_province = 410 } } 
 					load_oob = UKR_25TH
 				}
 				else = { load_oob = UKR_25TH_alt }
-				
+
 			}
 		}
 		fire_only_once = yes
@@ -13952,6 +14582,7 @@ UKR_New_brigades_category = {
     UKR_Form_46_aeromobylna = {
 		icon = GFX_decision_UKR_Form_46TH
 		available = {
+			has_manpower > 3672
 			date > 2022.04.05
 		}
 		ai_will_do = {
@@ -13965,14 +14596,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 80
 		cost = 50
+		complete_effect = {
+			add_manpower = -3673
+			hidden_effect = {
+				set_variable = { UKR_Form_46_aeromobylna_reserved_manpower = 3673 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_46_aeromobylna_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_46_aeromobylna_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_46_aeromobylna_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_46_aeromobylna"
 			custom_effect_tooltip = UKR_Form_46_aeromobylna_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "Batal'yonna taktychna hrupa DSHV"
-					disband = yes
-				}
+				es_remove_ukr_2a000e77224e = yes
 				if = {
 					limit = {
 						UKR = {
@@ -13991,6 +14630,7 @@ UKR_New_brigades_category = {
     UKR_reform_68_jager = {
 		icon = GFX_decision_UKR_Form_68TH
 		available = {
+			has_manpower > 7022
 			date > 2026.02.26
 			has_completed_focus = UKR_form_new_brigades
 		}
@@ -14003,19 +14643,24 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 60
 		cost = 50
+		complete_effect = {
+			add_manpower = -7023
+			hidden_effect = {
+				set_variable = { UKR_reform_68_jager_reserved_manpower = 7023 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_68_jager_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_68_jager_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_reform_68_jager_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_reform_68_jager"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "68-a yehers'ka bryhada"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artyleriys'kyy batal'yon 68-yi yehers'koyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_13e9611d8ab7 = yes
+					es_remove_ukr_05628297a74e = yes
 				}
 				if = {
 					limit = {
@@ -14036,6 +14681,7 @@ UKR_New_brigades_category = {
 	UKR_reform_71_mekhanizovana = {
 		icon = GFX_decision_UKR_reform_71th
 		available = {
+			has_manpower > 3672
 			date > 2025.12.01
 			has_completed_focus = UKR_form_new_brigades
 		}
@@ -14048,19 +14694,25 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 35
 		cost = 50
+		complete_effect = {
+			add_manpower = -3673
+			hidden_effect = {
+				set_variable = { UKR_reform_71_mekhanizovana_reserved_manpower = 3673 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_71_mekhanizovana_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_71_mekhanizovana_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_reform_71_mekhanizovana_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_reform_71_mekhanizovana"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				UKR = {
-					delete_unit_template_and_units = {
-						division_template = "71-a yehers'ka bryhada"
-						disband = yes
-					}
-					delete_unit_template_and_units = {
-						division_template = "Artyleriys'kyy batal'yon 71-yi yehers'koyi bryhady"
-						disband = yes
-					}
+					es_remove_ukr_a8bb56e165a1 = yes
+					es_remove_ukr_64421eece98c = yes
+					es_remove_ukr_f469f6c5c435 = yes
 				}
 				load_oob = UKR_71_airmobile
 			}
@@ -14070,6 +14722,7 @@ UKR_New_brigades_category = {
 	UKR_Form_77_aeromobylna = {
 		icon = GFX_decision_UKR_Form_77TH
 		available = {
+			has_manpower > 4307
 			date > 2022.10.28
 		}
 		ai_will_do = {
@@ -14081,7 +14734,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4308
+			hidden_effect = {
+				set_variable = { UKR_Form_77_aeromobylna_reserved_manpower = 4308 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_77_aeromobylna_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_77_aeromobylna_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_77_aeromobylna_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_77_aeromobylna"
 			custom_effect_tooltip = UKR_Form_77_aeromobylna_tt
 			hidden_effect = {
@@ -14093,6 +14757,7 @@ UKR_New_brigades_category = {
 	UKR_Form_78_desantno_shturmoviy_polk = {
 		icon = GFX_decision_UKR_Form_78TH
 		available = {
+			has_manpower > 2734
 			date > 2023.8.15
 		}
 		ai_will_do = {
@@ -14117,7 +14782,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 15
 		cost = 30
+		complete_effect = {
+			add_manpower = -2735
+			hidden_effect = {
+				set_variable = { UKR_Form_78_desantno_shturmoviy_polk_reserved_manpower = 2735 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_78_desantno_shturmoviy_polk_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_78_desantno_shturmoviy_polk_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_78_desantno_shturmoviy_polk_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_77_aeromobylna"
 			custom_effect_tooltip = UKR_Form_78_desantno_shturmoviy_polk_tt
 			hidden_effect = {
@@ -14130,6 +14806,7 @@ UKR_New_brigades_category = {
 	UKR_Reform_78_desantno_shturmoviy_polk = {
 		icon = GFX_decision_UKR_Form_78TH
 		available = {
+			has_manpower > 5222
 			tag = UKR
 			date > 2025.12.15
 		}
@@ -14142,7 +14819,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 90
 		cost = 50
+		complete_effect = {
+			add_manpower = -5223
+			hidden_effect = {
+				set_variable = { UKR_Reform_78_desantno_shturmoviy_polk_reserved_manpower = 5223 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_78_desantno_shturmoviy_polk_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_78_desantno_shturmoviy_polk_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_78_desantno_shturmoviy_polk_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_78_desantno_shturmoviy_polk"
 			custom_effect_tooltip = UKR_78_desantno_shturmoviy_polk_reformed
 			add_equipment_to_stockpile = {
@@ -14163,14 +14851,8 @@ UKR_New_brigades_category = {
 				else = {
 					load_oob = UKR_78_dsh_reformed_alt
 				}
-				delete_unit_template_and_units = {
-					division_template = "78-y desantno-shturmoviy polk"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Pikhotnyy batal'yon 78-ho okremoho desantno-shturmovoho polku"
-					disband = no
-				}
+				es_remove_ukr_aef7a6fc4d70 = yes
+				es_remove_ukr_4ddfbd4dfaf4 = yes
 				clr_country_flag = UKR_78_desantno_shturmoviy_polk_formed
 			}
 		}
@@ -14186,12 +14868,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 4469
 			date > 2023.02.18
 			has_completed_focus = UKR_form_new_brigades
 		}
 		days_remove = 90
 		cost = 50
+		complete_effect = {
+			add_manpower = -4470
+			hidden_effect = {
+				set_variable = { UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada_reserved_manpower = 4470 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada"
 			custom_effect_tooltip = UKR_Form_UKR_82_ha_okrema_desantno_shturmova_bryhada_tt
 			add_equipment_to_stockpile = {
@@ -14208,10 +14902,7 @@ UKR_New_brigades_category = {
 			}
 			hidden_effect = {
 				load_oob = UKR_82_ha_okrema_desantno_shturmova_bryhada
-				delete_unit_template_and_units = {
-					division_template = "Batal'yonno-taktychna hrupa 80-yi bryhady"
-					disband = yes
-				}
+				es_remove_ukr_c11b3e37a891 = yes
 			}
 		}
 		fire_only_once = yes
@@ -14239,12 +14930,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 2771
 			date > 2025.07.19
 		}
 		fire_only_once = yes
 		days_remove = 200
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_form_147th_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_form_147th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_form_147th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_form_147th_reserved_manpower }
 			custom_effect_tooltip = UKR_form_147th_tt
 			hidden_effect = {
 				if = { limit = { UKR = { controls_province = 6609 } } 
@@ -14282,16 +14985,28 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 2771
 			date > 2023.09.04
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_148th_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_148th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_148th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_148th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision_148th"
 			custom_effect_tooltip = UKR_Form_148th_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "148-y okremyy samokhidno-artyleriys'kyy dyvizion"
+				delete_unit = {
+					id = 15014801
 					disband = yes
 				}
 				if = { limit = { UKR = { controls_province = 4974 } }
@@ -14305,7 +15020,7 @@ UKR_New_brigades_category = {
 		fire_only_once = yes
 	}
 
-	
+
 	UKR_decision_category_header_sea_AFU = {
 		icon = GFX_UKR_decision_category_header_sea_AFU
 		allowed = {
@@ -14335,10 +15050,11 @@ UKR_New_brigades_category = {
 			}
 		}
 	}
-	
+
 	UKR_reform_32nd_artillery = {
 		icon = GFX_decision_UKR_reform_32nd_artillery
 		available = {
+			has_manpower > 2771
 			date > 2024.04.5
 		}
 		ai_will_do = {
@@ -14350,14 +15066,22 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 25
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_reform_32nd_artillery_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_reform_32nd_artillery_reserved_manpower
+			hidden_effect = { clear_variable = UKR_reform_32nd_artillery_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_reform_32nd_artillery_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_reform_32nd_artillery"
 			custom_effect_tooltip = UKR_32nd_reorganize_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "32-yy okremnyy reaktyvno artelriyskyy polk"
-					disband = yes
-				}
+				es_remove_ukr_b71b0e7013a1 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -14376,6 +15100,7 @@ UKR_New_brigades_category = {
 	UKR_Form_37 = {
 		icon = GFX_decision_UKR_Form_37TH
 		available = {
+			has_manpower > 4357
 			date > 2023.01.12
 		}
 		ai_will_do = {
@@ -14387,7 +15112,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30   
 		cost = 50
+		complete_effect = {
+			add_manpower = -4358
+			hidden_effect = {
+				set_variable = { UKR_Form_37_reserved_manpower = 4358 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_37_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_37_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_37_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_37"
 			custom_effect_tooltip = UKR_Form_37_tt
 			hidden_effect = {
@@ -14409,6 +15145,7 @@ UKR_New_brigades_category = {
 	UKR_Form_38 = {
 		icon = GFX_decision_UKR_Form_38TH
 		available = {
+			has_manpower > 4467
 			date > 2023.02.1
 		}
 		ai_will_do = {
@@ -14420,7 +15157,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4468
+			hidden_effect = {
+				set_variable = { UKR_Form_38_reserved_manpower = 4468 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_38_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_38_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_38_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_38"
 			custom_effect_tooltip = UKR_Form_38_tt
 			hidden_effect = {
@@ -14435,15 +15183,12 @@ UKR_New_brigades_category = {
 				else = {
 					load_oob = UKR_38ma_alt
 				}
-				delete_unit_template_and_units = {
-					division_template = "503-y okremyy batalion morskoy pechoti"
-					disband = yes
-				}
+				es_remove_ukr_4ecdd6e2a438 = yes
 			}
 		}
 		fire_only_once = yes
 	}
-	
+
 	UKR_decisions_header_category_artillery = {
 		icon = GFX_UKR_decision_header_category_artillery
 		allowed = {
@@ -14461,6 +15206,7 @@ UKR_New_brigades_category = {
 	UKR_Form_47 = {
 		icon = GFX_decisiom_UKR_Form_47TH_art
 		available = {
+			has_manpower > 2771
 			date > 2022.06.23
 		}
 		ai_will_do = {
@@ -14474,7 +15220,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_47_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_47_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_47_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_47_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_47"
 			custom_effect_tooltip = UKR_Form_47_tt
 			hidden_effect = {
@@ -14497,6 +15254,7 @@ UKR_New_brigades_category = {
 	UKR_Form_48 = {
 		icon = GFX_decision_UKR_Form_48TH
 		available = {
+			has_manpower > 2771
 			date > 2023.07.01
 		}
 		ai_will_do = {
@@ -14508,7 +15266,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_48_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_48_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_48_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_48_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_48"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14520,6 +15289,7 @@ UKR_New_brigades_category = {
 	UKR_Form_49 = {
 		icon = GFX_decision_UKR_Form_49TH
 		available = {
+			has_manpower > 2078
 			date > 2022.09.06
 		}
 		ai_will_do = {
@@ -14531,7 +15301,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 90
 		cost = 50
+		complete_effect = {
+			add_manpower = -2079
+			hidden_effect = {
+				set_variable = { UKR_Form_49_reserved_manpower = 2079 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_49_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_49_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_49_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_49"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14573,10 +15354,7 @@ UKR_New_brigades_category = {
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				clr_country_flag = UKR_49th_formed
-				delete_unit_template_and_units = {
-					division_template = "49-a artyleriyska bryhada"
-					disband = yes
-				}
+				es_remove_shared_ukr_group_01 = yes
 				set_country_flag = UKR_49th_disbanded
 			}
 		}
@@ -14585,6 +15363,7 @@ UKR_New_brigades_category = {
 	UKR_Form_50 = {
 		icon = "GFX_decision_UKR_Form_50TH"
 		available = {
+			has_manpower > 2771
 			date > 2025.10.12
 		}
 		ai_will_do = {
@@ -14596,7 +15375,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_50_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_50_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_50_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_50_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_50"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14612,13 +15402,14 @@ UKR_New_brigades_category = {
 					load_oob = UKR_50th_alt
 				}
 			}
-			
+
 		}
 		fire_only_once = yes
 	}
 	UKR_Form_52 = {
 		icon = "GFX_decision_UKR_Form_52nd"
 		available = {
+			has_manpower > 2771
 			date > 2025.09.6
 		}
 		ai_will_do = {
@@ -14630,7 +15421,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_52_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_52_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_52_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_52_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_52"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14652,6 +15454,7 @@ UKR_New_brigades_category = {
 	UKR_Form_54 = {
 		icon = "GFX_decision_UKR_Form_54th"
 		available = {
+			has_manpower > 2771
 			date > 2025.08.29
 		}
 		ai_will_do = {
@@ -14663,7 +15466,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_54_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_54_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_54_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_54_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_54"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14685,6 +15499,7 @@ UKR_New_brigades_category = {
 	UKR_Form_60 = {
 		icon = "GFX_decision_UKR_Form_60th"
 		available = {
+			has_manpower > 2771
 			date > 2025.07.10
 		}
 		ai_will_do = {
@@ -14696,7 +15511,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_60_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_60_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_60_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_60_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_60"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14718,6 +15544,7 @@ UKR_New_brigades_category = {
 	UKR_Form_68 = {
 		icon = "GFX_decision_UKR_Form_68th"
 		available = {
+			has_manpower > 2771
 			date > 2025.06.10
 		}
 		ai_will_do = {
@@ -14729,7 +15556,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Form_68_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_68_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_68_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_68_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_68"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14752,6 +15590,7 @@ UKR_New_brigades_category = {
 	UKR_Reform_27 = {
 		icon = "GFX_decision_UKR_Reform_27TH"
 		available = {
+			has_manpower > 2771
 			date > 2025.08.15
 		}
 		ai_will_do = {
@@ -14763,13 +15602,21 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -2772
+			hidden_effect = {
+				set_variable = { UKR_Reform_27_reserved_manpower = 2772 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_27_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_27_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_27_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_27"
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "27-a okrema reaktyvno-artyleriys'ka bryhada"
-					disband = no
-				}
+				es_remove_ukr_ac1f2f87f3eb = yes
 				if = {
 					limit = {
 						UKR = {
@@ -14804,6 +15651,7 @@ UKR_New_brigades_category = {
 	UKR_Form_16_artillery = {
 		icon = GFX_decision_UKR_Form_16_artillery
 		available = {
+			has_manpower > 2150
 			date > 2024.03.11
 		}
 		ai_will_do = {
@@ -14815,7 +15663,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 35
+		complete_effect = {
+			add_manpower = -2151
+			hidden_effect = {
+				set_variable = { UKR_Form_16_artillery_reserved_manpower = 2151 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_16_artillery_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_16_artillery_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_16_artillery_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_16_artillery"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
@@ -14837,6 +15696,7 @@ UKR_New_brigades_category = {
 	UKR_Form_17th = {
 		icon = GFX_decision_UKR_Form_18th
 		available = {
+			has_manpower > 3809
 			date > 2023.12.25
 		}
 		ai_will_do = {
@@ -14848,7 +15708,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 0
 		cost = 15
+		complete_effect = {
+			add_manpower = -3810
+			hidden_effect = {
+				set_variable = { UKR_Form_17th_reserved_manpower = 3810 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_17th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_17th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_17th_reserved_manpower }
 			custom_effect_tooltip = New_brigades_tt
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_17th"
 			hidden_effect = {
@@ -14871,6 +15742,7 @@ UKR_New_brigades_category = {
 	UKR_Reform_15th = {
 		icon = GFX_decision_UKR_Reform_18th
 		available = {
+			has_manpower > 3439
 			date > 2023.12.25
 		}
 		ai_will_do = {
@@ -14882,7 +15754,18 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 0
 		cost = 15
+		complete_effect = {
+			add_manpower = -3440
+			hidden_effect = {
+				set_variable = { UKR_Reform_15th_reserved_manpower = 3440 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Reform_15th_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Reform_15th_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Reform_15th_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Reform_15th"
 			hidden_effect = {
 				if = {
@@ -14896,10 +15779,7 @@ UKR_New_brigades_category = {
 				else = {
 					load_oob = UKR_Reform_18th_alt
 				}
-				delete_unit_template_and_units = {
-						division_template = "15-y polk NHU operatyvnoho pryznachennya" 
-						disband = yes
-				}
+				es_remove_ukr_4f7f7ce358c3 = yes
 			}
 		}
 		fire_only_once = yes 
@@ -14922,6 +15802,7 @@ UKR_New_brigades_category = {
 	UKR_Form_Lybart = {
 		icon = GFX_decision_UKR_Form_Lybart
 		available = {
+			has_manpower > 3435
 			date > 2025.04.15
 		}
 		ai_will_do = {
@@ -14936,15 +15817,23 @@ UKR_New_brigades_category = {
 		}
 		days_remove = 30
 		cost = 30
+		complete_effect = {
+			add_manpower = -3436
+			hidden_effect = {
+				set_variable = { UKR_Form_Lybart_reserved_manpower = 3436 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_Form_Lybart_reserved_manpower
+			hidden_effect = { clear_variable = UKR_Form_Lybart_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_Form_Lybart_reserved_manpower }
 			log = "[GetDateText]: [Root.GetName]: Decision UKR_Form_Lybart"
 			custom_effect_tooltip = New_brigades_tt
 			hidden_effect = {
 				clr_country_flag = UKR_azov_formed
-				delete_unit_template_and_units = {
-					division_template = "Shturmovyy batal'yon «Lyubart»"
-					disband = yes
-				}
+				es_remove_ukr_807c3f007fdf = yes
 				load_oob = UKR_form_lybart
 			}
 		}
@@ -14973,18 +15862,27 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 4917
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4918
+			hidden_effect = {
+				set_variable = { UKR_bureviy_reserved_manpower = 4918 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_bureviy_reserved_manpower
+			hidden_effect = { clear_variable = UKR_bureviy_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_bureviy_reserved_manpower }
 			custom_effect_tooltip = UKR_bureviy_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "1-a Prezydentska bryhada NHU"
-					disband = yes
-				}
+				es_remove_ukr_b09aff0c804b = yes
 				if = {
 					limit = {
 						UKR = {
@@ -15023,18 +15921,27 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 5640
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5641
+			hidden_effect = {
+				set_variable = { UKR_spartan_reserved_manpower = 5641 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_spartan_reserved_manpower
+			hidden_effect = { clear_variable = UKR_spartan_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_spartan_reserved_manpower }
 			custom_effect_tooltip = UKR_spartan_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "3-ya bryhada NHU"
-					disband = yes
-				}
+				es_remove_ukr_11383fba951c = yes
 				if = {
 					limit = {
 						UKR = {
@@ -15073,22 +15980,28 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 4707
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4708
+			hidden_effect = {
+				set_variable = { UKR_rubizh_reserved_manpower = 4708 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_rubizh_reserved_manpower
+			hidden_effect = { clear_variable = UKR_rubizh_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_rubizh_reserved_manpower }
 			custom_effect_tooltip = UKR_rubizh_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "4-a bryhada NHU"
-					disband = yes
-				}
-				delete_unit_template_and_units = {
-					division_template = "Dobrovolchyy zahin «Svoboda»"
-					disband = yes
-				}
+				es_remove_ukr_be81846af23c = yes
+				es_remove_ukr_a09a5491e37b = yes
 				if = {
 					limit = {
 						UKR = {
@@ -15127,12 +16040,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 6562
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 100
+		complete_effect = {
+			add_manpower = -6563
+			hidden_effect = {
+				set_variable = { UKR_azov_reserved_manpower = 6563 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_azov_reserved_manpower
+			hidden_effect = { clear_variable = UKR_azov_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_azov_reserved_manpower }
 			custom_effect_tooltip = UKR_azov_tt
 			hidden_effect = {
 				if = {
@@ -15174,18 +16099,27 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 4707
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -4708
+			hidden_effect = {
+				set_variable = { UKR_khartiya_reserved_manpower = 4708 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_khartiya_reserved_manpower
+			hidden_effect = { clear_variable = UKR_khartiya_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_khartiya_reserved_manpower }
 			custom_effect_tooltip = UKR_khartiya_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "Dobrovolchyy zahin «Khartiya»"
-					disband = yes
-				}
+				es_remove_ukr_01027ebb82ed = yes
 				if = {
 					limit = {
 						UKR = {
@@ -15224,18 +16158,27 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 5400
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -5401
+			hidden_effect = {
+				set_variable = { UKR_chervona_kalyna_reserved_manpower = 5401 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_chervona_kalyna_reserved_manpower
+			hidden_effect = { clear_variable = UKR_chervona_kalyna_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_chervona_kalyna_reserved_manpower }
 			custom_effect_tooltip = UKR_chervona_kalyna_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "8-y polk NHU"
-					disband = yes
-				}
+				es_remove_ukr_046cf4cf5f3c = yes
 				if = {
 					limit = {
 						UKR = {
@@ -15274,18 +16217,27 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 7188
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -7189
+			hidden_effect = {
+				set_variable = { UKR_kara_dag_reserved_manpower = 7189 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_kara_dag_reserved_manpower
+			hidden_effect = { clear_variable = UKR_kara_dag_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_kara_dag_reserved_manpower }
 			custom_effect_tooltip = UKR_kara_dag_tt
 			hidden_effect = {
-				delete_unit_template_and_units = {
-					division_template = "9-y polk NHU"
-					disband = yes
-				}
+				es_remove_ukr_6a518ce6ee10 = yes
 				if = {
 					limit = {
 						UKR = {
@@ -15311,12 +16263,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 8144
+			date > 2023.01.15
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 100
+		complete_effect = {
+			add_manpower = -8145
+			hidden_effect = {
+				set_variable = { UKR_form_lyut_reserved_manpower = 8145 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_form_lyut_reserved_manpower
+			hidden_effect = { clear_variable = UKR_form_lyut_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_form_lyut_reserved_manpower }
 			custom_effect_tooltip = UKR_form_lyut_tt
 			hidden_effect = {
 				if = { limit = { UKR = { controls_province = 5220 } }
@@ -15339,12 +16303,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2024.11.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 1809
+			date > 2024.01.01
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -1810
+			hidden_effect = {
+				set_variable = { UKR_form_forpost_reserved_manpower = 1810 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_form_forpost_reserved_manpower
+			hidden_effect = { clear_variable = UKR_form_forpost_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_form_forpost_reserved_manpower }
 			custom_effect_tooltip = UKR_form_forpost_tt
 			hidden_effect = {
 				load_oob = UKR_form_forpost
@@ -15362,12 +16338,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2024.04.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 1809
+			date > 2024.01.01
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -1810
+			hidden_effect = {
+				set_variable = { UKR_gart_reserved_manpower = 1810 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_gart_reserved_manpower
+			hidden_effect = { clear_variable = UKR_gart_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_gart_reserved_manpower }
 			custom_effect_tooltip = UKR_gart_tt
 			hidden_effect = {
 				load_oob = UKR_form_gart
@@ -15385,12 +16373,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
-			date > 2023.01.01
-			has_completed_focus = UKR_counteroffensive_guard
+			has_manpower > 1809
+			date > 2023.01.03
+			has_completed_focus = Counter_Step_Guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -1810
+			hidden_effect = {
+				set_variable = { UKR_stalevyy_kordon_reserved_manpower = 1810 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_stalevyy_kordon_reserved_manpower
+			hidden_effect = { clear_variable = UKR_stalevyy_kordon_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_stalevyy_kordon_reserved_manpower }
 			custom_effect_tooltip = UKR_stalevyy_kordon_tt
 			hidden_effect = {
 				load_oob = UKR_form_stalevyy_kordon
@@ -15408,12 +16408,24 @@ UKR_New_brigades_category = {
 			factor = 2000
 		}
 		available = {
+			has_manpower > 1809
 			date > 2024.01.01
 			has_completed_focus = UKR_counteroffensive_guard
 		}
 		days_remove = 30
 		cost = 50
+		complete_effect = {
+			add_manpower = -1810
+			hidden_effect = {
+				set_variable = { UKR_pomsta_reserved_manpower = 1810 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:UKR_pomsta_reserved_manpower
+			hidden_effect = { clear_variable = UKR_pomsta_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = UKR_pomsta_reserved_manpower }
 			custom_effect_tooltip = UKR_pomsta_tt
 			hidden_effect = {
 				load_oob = UKR_form_pomsta
@@ -27001,6 +28013,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18801201
 					}
 				}
 			}
@@ -27066,6 +28079,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17805901
 					}
 				}
 			}
@@ -27131,6 +28145,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17805401
 					}
 				}
 			}
@@ -27197,6 +28212,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17803401
 					}
 				}
 			}
@@ -27263,6 +28279,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17805001
 					}
 				}
 			}
@@ -27329,6 +28346,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17801901
 					}
 				}
 			}
@@ -27394,6 +28412,7 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17803701
 					}
 				}
 			}
@@ -27530,18 +28549,21 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 16000101
 					}
 					create_unit = {
 						division = "name = \"2-y pikhotnyy batal'yon Amerykano-brytans'koho korpusu\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.6 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 16000202
 					}
 					create_unit = {
 						division = "name = \"Mekhanizovanyy batal'yon Amerykano-brytans'koho korpusu\" division_template = \"Mekhanizovanyy batal'yon\" start_experience_factor = 0.6 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18802801
 					}
 				}
 				add_to_variable = {
@@ -27628,18 +28650,21 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17803101
 					}
 					create_unit = {
 						division = "name = \"2-y batal'yon «Mozart Group»\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17803102
 					}
 					create_unit = {
 						division = "name = \"3-y batal'yon «Mozart Group»\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.5 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17803103
 					}
 				}
 				add_to_variable = {
@@ -27722,12 +28747,14 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17800101
 					}
 					create_unit = {
 						division = "name = \"2-y batal'yon «Aegis Defense Services»\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17800102
 					}
 				}
 				add_to_variable = {
@@ -27814,24 +28841,28 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17801301
 					}
 					create_unit = {
 						division = "name = \"2-y batal'yon «Forward Observations Group»\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17801302
 					}
 					create_unit = {
 						division = "name = \"3-y batal'yon «Forward Observations Group»\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17801303
 					}
 					create_unit = {
 						division = "name = \"4-y batal'yon «Forward Observations Group\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.7 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 15801101
 					}
 				}
 				add_to_variable = {
@@ -27914,12 +28945,14 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18802901
 					}
 					create_unit = {
 						division = "name = \"Pikhotnyy batal'yon Baltіys'kogo dobrovol'chogo korpusu\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18803601
 					}
 				}
 			}
@@ -27986,12 +29019,14 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18801401
 					}
 					create_unit = {
 						division = "name = \"Pikhotnyy batal'yon Pol's'kogo dobrovol'chogo korpusu\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18803701
 					}
 				}
 			}
@@ -28058,12 +29093,14 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18801501
 					}
 					create_unit = {
 						division = "name = \"Mekhanizovanyy batal'yon Skandinavs'kogo dobrovol'chogo korpusu\" division_template = \"Mekhanizovanyy batal'yon\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18803001
 					}
 				}
 			}
@@ -28130,12 +29167,14 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 16000102
 					}
 					create_unit = {
 						division = "name = \"2-y batal'yon Nіmec'kogo dobrovol'chogo korpusu\" division_template = \"Batalyon Spetsnazu\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 16000203
 					}
 				}
 			}
@@ -28202,12 +29241,14 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 18801301
 					}
 					create_unit = {
 						division = "name = \"Batal'yon «Teror» Bіlorus'kogo dobrovol'chogo korpusu\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.4 start_equipment_factor = 0.01"
 						owner = UKR
 						prioritize_location = 1708
 						count = 1
+						id = 17805201
 					}
 				}
 			}
@@ -28294,13 +29335,13 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 	UKR_form_LSR = {
 		icon = GFX_UKR_form_LSR 
 		fire_only_once = yes
-		
+
 		visible = {
 			NOT = {
 				check_variable = { global.SCENARIO_SELECTED > 1 }
 			}
 		}
-		
+
 		available = {
 		}
 		days_remove = 30
@@ -28318,11 +29359,11 @@ UKR_IL_Territorial_Defense_Ukraine_category = {
 	UKR_form_RDK = {
 		icon = GFX_UKR_form_RDK
 		fire_only_once = yes
-		
+
 		visible = {
 			NOT = { check_variable = { global.SCENARIO_SELECTED > 2 } }
 		}
-		
+
 		available = {
 			date > 2022.08.22
 		}
@@ -28385,6 +29426,9 @@ UKR_GUR_Special_Units = {
 			set_technology = { 
 				assault_infantry = 1
 			}
+			set_country_flag = UKR_assault_template_editing_unlocked
+			ensure_unit_template_UKR_shturmovoy_batalion = yes
+			ensure_unit_template_UKR_Gornostrelkoviy_batalion = yes
 		}
 		fire_only_once = yes
 	}
@@ -28589,9 +29633,709 @@ UKR_GUR_Special_Units = {
 }
 
 ### строительство энергетики ###
+UKR_energy_construction = {
+	UKR_Dnepr_hpp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 420
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 169
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Dnepr_hpp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			169 = {
+				set_variable = {
+					energy_hydro_power_plant_operating_units = 8
+				}
+				set_variable = {
+					energy_hydro_power_plant_reconstruction_units = 0
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 1
+				}
+			}
+		}
+	}
+	UKR_Odessa_wpp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 256
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Odessa_wpp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			256 = {
+				add_building_construction = {
+					type = wind_power_plant
+					level = 3
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 1
+				}
+			}
+		}
+	}
+	UKR_mgtes = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 30
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 108
+				has_full_control_of_state = 197
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_mgtes
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			add_to_variable = {
+				energy_mobile_gas_turbine_power_plant_units = 2
+			}
+			custom_effect_tooltip = UKR_mgtes_tt
+		}
+	}
+	UKR_Nikolaev_wpp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 150
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 233
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Nikolaev_wpp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			233 = {
+				add_building_construction = {
+					type = wind_power_plant
+					level = 5
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_khmel_wpp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 93
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_khmel_wpp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			93 = {
+				add_building_construction = {
+					type = wind_power_plant
+					level = 3
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 1
+				}
+			}
+		}
+	}
+	UKR_Poltava_wpp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 128
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Poltava_wpp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			128 = {
+				add_building_construction = {
+					type = wind_power_plant
+					level = 3
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 1
+				}
+			}
+		}
+	}
+	#ТЭС
+	UKR_Kyiv_tppd = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 94
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Kyiv_tpp
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		timeout_effect = {
+			94 = {
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 6
+				}
+			}
+		}
+	}
+	UKR_ivano_frank_tppd = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 135
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_ivano_frank_tpp
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		timeout_effect = {
+			135 = {
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 6
+				}
+			}
+		}
+	}
+	UKR_kryvoriz_tppd = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 197
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_kryvoriz_tpp
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		timeout_effect = {
+			197 = {
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Darnitsya_tppd = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 95
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Darnitsya_tpp
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		timeout_effect = {
+			95 = {
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Tripol_tppd = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 106
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Tripol_tpp
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		timeout_effect = {
+			106 = {
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Dnerp_tppd = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 100
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 187
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Tripol_tpp
+		}
+		modifier = {
+			civilian_factory_use = 5
+		}
+		timeout_effect = {
+			187 = {
+				add_building_construction = {
+					type = thermal_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 4
+				}
+			}
+		}
+	}
+	UKR_khmel_3npp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 800
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 93
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_khmel3_npp
+		}
+		modifier = {
+			civilian_factory_use = 10
+		}
+
+		timeout_effect = {
+			93 = {
+				add_building_construction = {
+					type = nuclear_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 5
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_khmel_4npp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 800
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 93
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_khmel4_npp
+		}
+		modifier = {
+			civilian_factory_use = 10
+		}
+		timeout_effect = {
+			93 = {
+				add_building_construction = {
+					type = nuclear_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 5
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_khmel_5npp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 800
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 93
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_khmel5_npp
+		}
+		modifier = {
+			civilian_factory_use = 10
+		}
+		timeout_effect = {
+			93 = {
+				add_building_construction = {
+					type = nuclear_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 5
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_khmel_6npp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 800
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 93
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_khmel6_npp
+		}
+		modifier = {
+			civilian_factory_use = 10
+		}
+		timeout_effect = {
+			93 = {
+				add_building_construction = {
+					type = nuclear_power_plant
+					level = 1
+				}
+				add_building_construction = {
+					type = electrical_substation
+					level = 5
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Odessa_1spp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 256
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Odessa_spp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			256 = {
+				add_building_construction = {
+					type = solar_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Cherkasy_1spp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 118
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Cherkasy_spp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			118 = {
+				add_building_construction = {
+					type = solar_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Chernovtsy_1spp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 179
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Chernovtsy_spp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			179 = {
+				add_building_construction = {
+					type = solar_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Nikopol_1spp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 216
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Nikopol_spp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			216 = {
+				add_building_construction = {
+					type = solar_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Zytomir_1spp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 88
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Zytomir_spp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			88 = {
+				add_building_construction = {
+					type = solar_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+	UKR_Chernobyl_1spp = {
+		# icon = 
+		is_good = yes
+		fire_only_once = yes
+		days_mission_timeout = 80
+		selectable_mission = no
+		available = {
+			NOT = {
+				has_full_control_of_state = 68
+			}
+		}
+		activation = {
+			has_completed_focus = UKR_Chernobyl_spp
+		}
+		modifier = {
+			civilian_factory_use = 3
+		}
+		timeout_effect = {
+			68 = {
+				add_building_construction = {
+					type = solar_power_plant
+					level = 2
+				}
+				add_building_construction = {
+					type = electrical_substation_big
+					level = 2
+				}
+			}
+		}
+	}
+}
 
 POL_energy_category = {
-	
+	UKR_buy_mgtes = {
+		fire_only_once = no
+		available = {
+			has_completed_focus = UKR_usaid_mgtes
+		}
+		visible = {
+			tag = UKR
+			has_completed_focus = UKR_usaid_mgtes
+		}
+		days_remove = 7
+		days_re_enable = 14
+		cost = 100
+		ai_will_do = {
+			factor = 0
+		}
+		remove_effect = {
+			log = "[GetDateText]: [Root.GetName]: Decision UKR_buy_mgtes: remove_effect"
+			add_to_variable = {
+				energy_mobile_gas_turbine_power_plant_units = 1
+			}
+			custom_effect_tooltip = UKR_free_mgtes_tt
+		}
+	}
+
 }
 
 # UKR_ANMria_category = {
@@ -28763,6 +30507,9 @@ POL_energy_category = {
 # 	}
 # }
 
+UKR_nto_help_new_brigades_category = {
+
+}
 UKR_EMERGENCY_REQUEST_category = {
 	UKR_Emergency_offer = {
 		icon = GFX_UKR_Emergency_offer
