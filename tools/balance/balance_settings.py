@@ -130,7 +130,7 @@ IC_PROFILES = {
     "hull": {
         "base": 0, "round": 2,
         "weights": {
-            "breakthrough": 0.20,
+            "breakthrough": 0.25,
             "defense": 0.10,
             "hardness": 3,
             "armor_value": 0.01,
@@ -140,7 +140,7 @@ IC_PROFILES = {
     "engine": {
         "base": 0, "round": 2,
         "weights": {
-            "breakthrough": 0.20,
+            "breakthrough": 0.5,
             "reliability": 0.25,
             "maximum_speed": 0.10,
         },
@@ -148,7 +148,7 @@ IC_PROFILES = {
     "module": {
         "base": 0, "round": 2,
         "weights": {          # add_stats
-            "breakthrough": 0.20,
+            "breakthrough": 0.25,
             "defense": 0.10,
             "air_attack": 0.40,
             "soft_attack": 0.30,
@@ -160,7 +160,7 @@ IC_PROFILES = {
             "hardness": 3,
         },
         "mult_weights": {     # multiply_stats
-            "breakthrough": 2,
+            "breakthrough": 2.5,
             "defense": 1,
             "soft_attack": 4,
             "hard_attack": 6,
