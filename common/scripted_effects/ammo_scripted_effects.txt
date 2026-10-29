@@ -1,6 +1,6 @@
 # Переменные с суффиксом _k — в тысячах единиц боеприпасов, потоки — за день
 
-ammunition_init_rule_factor = {
+ammunition_init_globals = {
 	if = {
 		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_50 } }
 		set_variable = { global.ammunition_consumption_rule_factor = 0.5 }
@@ -80,6 +80,11 @@ ammunition_init_rule_factor = {
 	else = {
 		set_variable = { global.ammunition_consumption_rule_factor = 1 }
 	}
+	set_variable = { global.ammunition_rate_artillery = { value = constant:ammunition.k_towed_art multiply = 1000 } }
+	set_variable = { global.ammunition_rate_sp_art = { value = constant:ammunition.k_sp_art multiply = 1000 } }
+	set_variable = { global.ammunition_rate_sp_heavy_art = { value = constant:ammunition.k_sp_heavy_art multiply = 1000 } }
+	set_variable = { global.ammunition_rate_MRLS = { value = constant:ammunition.k_MRLS multiply = 1000 } }
+	set_variable = { global.ammunition_rate_TOS = { value = constant:ammunition.k_TOS multiply = 1000 } }
 }
 
 ammunition_init_country = {
@@ -93,8 +98,8 @@ ammunition_init_country = {
 ammunition_on_daily = {
 	# on_startup не срабатывает при загрузке сохранения прошлой версии мода
 	if = {
-		limit = { NOT = { has_variable = global.ammunition_consumption_rule_factor } }
-		ammunition_init_rule_factor = yes
+		limit = { NOT = { has_variable = global.ammunition_rate_artillery } }
+		ammunition_init_globals = yes
 	}
 	# Страны, появившиеся после старта игры, начинают с пустого склада
 	if = {
@@ -187,7 +192,6 @@ ammunition_calculate_base_consumption = {
 			add = { value = num_battalions_with_type@support_heavy_spa multiply = constant:ammunition.k_support_heavy_spa }
 			add = { value = num_battalions_with_type@support_mlrs multiply = constant:ammunition.k_support_mlrs }
 			add = { value = num_battalions_with_type@support_tos multiply = constant:ammunition.k_support_tos }
-			add = { value = num_battalions_with_type@mortar multiply = constant:ammunition.k_mortar }
 		}
 	}
 }
@@ -331,6 +335,8 @@ ammunition_clamp_level = {
 			clamp = { min = constant:ammunition.level_min max = ammunition_level_max }
 		}
 	}
+	set_variable = { ammunition_total_factor_off = { value = ammunition_factor_off multiply = ammunition_level } }
+	set_variable = { ammunition_total_factor_def = { value = ammunition_factor_def multiply = ammunition_level } }
 }
 
 ammunition_spend = {
@@ -412,6 +418,12 @@ ammunition_calculate_storage = {
 		set_variable = { ammo_days_to_empty = 0 }
 		set_variable = { ammo_frame_var = 1 }
 	}
+	set_variable = { ammo_days_count = { value = ammo_days_to_full add = ammo_days_to_empty } }
+	round_variable = ammo_days_count
+	set_variable = { ammo_days_mod10 = ammo_days_count }
+	modulo_variable = { var = ammo_days_mod10 value = 10 }
+	set_variable = { ammo_days_mod100 = ammo_days_count }
+	modulo_variable = { var = ammo_days_mod100 value = 100 }
 }
 
 # Требует temp_delta
