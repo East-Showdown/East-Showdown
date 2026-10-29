@@ -10744,8 +10744,12 @@ country_event = {
 				producer = RUS
 			}
 			add_equipment_bonus = {
-				name = RUS_T80_production_revival
+				name = RUS_soviet_tank_revival_bonus
 				bonus = {
+					tank_sov_t72_equipment = {
+						build_cost_ic = -0.05
+						instant = yes
+					}
 					tank_sov_t80_equipment = {
 						build_cost_ic = -0.10
 						instant = yes
@@ -12670,12 +12674,12 @@ country_event = {
 		log = "[GetDateText]: [Root.GetName]: es_rus_industry.1.a executed"
 		add_equipment_to_stockpile = {
 			type = sov_artillery_d20_equipment
-			amount = 120
+			amount = 250
 			producer = RUS
 		}
 		add_equipment_to_stockpile = {
 			type = sov_artillery_d30_equipment
-			amount = 120
+			amount = 250
 			producer = RUS
 		}
 	}
@@ -12688,17 +12692,88 @@ country_event = {
 			name = RUS_barrel_artillery_series_bonus
 			bonus = {
 				sov_artillery_d30_equipment = {
-					build_cost_ic = -0.15
+					build_cost_ic = -0.10
 					instant = yes
 				}
 				sov_artillery_2a36_equipment = {
-					build_cost_ic = -0.15
+					build_cost_ic = -0.10
 					instant = yes
 				}
 				sov_artillery_2a65_equipment = {
-					build_cost_ic = -0.15
+					build_cost_ic = -0.10
 					instant = yes
 				}
+			}
+		}
+	}
+}
+
+country_event = {
+	id = es_rus_industry.2
+	title = es_rus_industry.2.t
+	desc = es_rus_industry.2.desc
+	picture = GFX_country_event_010
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = es_rus_industry.2.a
+		ai_chance = { factor = 50 }
+		if = {
+			limit = { NOT = { has_country_flag = RUS_spa_chassis_choice_made } }
+			set_country_flag = RUS_spa_chassis_choice_made
+			set_country_flag = RUS_spa_tracked_choice
+			RUS_spa_tracked_series_apply_bonus = yes
+		}
+	}
+	option = {
+		name = es_rus_industry.2.b
+		ai_chance = { factor = 50 }
+		custom_effect_tooltip = RUS_spa_wheeled_growth_tt
+		if = {
+			limit = { NOT = { has_country_flag = RUS_spa_chassis_choice_made } }
+			set_country_flag = RUS_spa_chassis_choice_made
+			set_country_flag = RUS_spa_wheeled_choice
+			RUS_spa_wheeled_5_apply_bonus = yes
+			hidden_effect = { country_event = { id = es_rus_industry.3 days = 60 } }
+			if = {
+				limit = {
+					has_completed_focus = RUS_new_look_of_Russian_wheeled_vehicles
+					NOT = { has_country_flag = RUS_spa_wheeled_unification_bonus_applied }
+				}
+				RUS_spa_wheeled_unification_apply_bonus = yes
+			}
+		}
+	}
+}
+
+country_event = {
+	id = es_rus_industry.3
+	hidden = yes
+	is_triggered_only = yes
+	immediate = {
+		RUS_spa_migrate_direct_bonuses = yes
+		if = {
+			limit = {
+				has_country_flag = RUS_spa_wheeled_choice
+				NOT = { has_country_flag = RUS_spa_wheeled_20_bonus_applied }
+			}
+			if = {
+				limit = { has_country_flag = RUS_spa_wheeled_15_bonus_applied }
+				RUS_spa_wheeled_20_apply_bonus = yes
+			}
+			else_if = {
+				limit = { has_country_flag = RUS_spa_wheeled_10_bonus_applied }
+				RUS_spa_wheeled_15_apply_bonus = yes
+			}
+			else_if = {
+				limit = { has_country_flag = RUS_spa_wheeled_5_bonus_applied }
+				RUS_spa_wheeled_10_apply_bonus = yes
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = RUS_spa_wheeled_20_bonus_applied }
+				}
+				country_event = { id = es_rus_industry.3 days = 60 }
 			}
 		}
 	}
