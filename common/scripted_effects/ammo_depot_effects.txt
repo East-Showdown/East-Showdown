@@ -3,17 +3,39 @@
 # Эффект исхода рейда ammo_depot_strike, scope — экземпляр рейда.
 # Требует temp ammo_depot_loss_min, ammo_depot_loss_max (доля полевого склада области), ammo_depot_steps (ступени штрафа)
 ammo_depot_strike_hit = {
-	custom_effect_tooltip = ammo_depot_strike_victim_tt
 	hidden_effect = {
 		set_temp_variable = { ammo_depot_state = var:target_state }
 		var:victim_country = { ammo_depot_destroy_field_stock = yes }
+		set_variable = { ammo_depot_raid_loss_k = ammo_depot_loss_k }
+		set_variable = { ammo_depot_raid_loss_disp = ammo_depot_loss_k }
+		if = {
+			limit = { check_variable = { ammo_depot_loss_k < 1 } }
+			multiply_variable = { ammo_depot_raid_loss_disp = 1000 }
+		}
+		else_if = {
+			limit = { check_variable = { ammo_depot_loss_k > 999.999 } }
+			divide_variable = { ammo_depot_raid_loss_disp = 1000 }
+		}
 		var:target_state = { ammo_depot_raise_penalty = yes }
+	}
+	# Окно итога строит текст после эффектов: ветка выбирается по уже записанной потере
+	if = {
+		limit = { check_variable = { ammo_depot_raid_loss_k < 1 } }
+		custom_effect_tooltip = ammo_depot_strike_victim_u_tt
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_raid_loss_k < 1000 } }
+		custom_effect_tooltip = ammo_depot_strike_victim_k_tt
+	}
+	else = {
+		custom_effect_tooltip = ammo_depot_strike_victim_m_tt
 	}
 }
 
 # Scope — страна-жертва; требует temp ammo_depot_state, ammo_depot_loss_min, ammo_depot_loss_max
 ammo_depot_destroy_field_stock = {
 	ammo_depot_update_penalties = yes
+	set_temp_variable = { ammo_depot_loss_k = 0 }
 
 	set_temp_variable = { ammo_depot_rate_sum_k = 0 }
 	for_loop_effect = {
@@ -193,28 +215,92 @@ ammo_depot_update_penalties = {
 	set_variable = { ammo_depot_penalty_5 = { value = 1 subtract = ammo_depot_strike_resist multiply = -0.25 } }
 }
 
-# Scope — страна-жертва; успешный удар — исходы success и critical_success
-ammo_depot_count_successful_strike = {
-	add_to_variable = { ammo_depot_strikes_total = 1 }
-	add_to_array = { array = ammo_depot_strike_days value = global.num_days }
-	if = {
-		limit = { check_variable = { ammo_depot_strike_days^num > 3 } }
-		remove_from_array = { array = ammo_depot_strike_days index = 0 }
+# Эффект исхода рейда ammo_depot_strike, scope — экземпляр рейда.
+# Требует temp ammo_depot_outcome (1 failure, 2 limited_success, 3 success, 4 critical_success) и ammo_depot_loss_k
+ammo_depot_log_raid = {
+	hidden_effect = {
+		set_temp_variable = { ammo_depot_state = var:target_state }
+		set_temp_variable = { ammo_depot_other = var:victim_country }
+		var:actor_country = { ammo_depot_log_out = yes }
+		set_temp_variable = { ammo_depot_other = var:actor_country }
+		var:victim_country = {
+			ammo_depot_log_in = yes
+			ammo_depot_check_strikes_noticed = yes
+		}
 	}
+}
+
+# Журнал рейдов страны: in — по ней, out — её. Массивы: индекс 0 — последний рейд, не больше 5 записей.
+# Требует temp ammo_depot_outcome, ammo_depot_loss_k, ammo_depot_state, ammo_depot_other (другая сторона рейда)
+ammo_depot_log_in = {
+	if = {
+		limit = { check_variable = { ammo_depot_outcome = 1 } }
+		add_to_variable = { ammo_depot_in_misses = 1 }
+	}
+	else = {
+		add_to_variable = { ammo_depot_in_hits = 1 }
+	}
+	add_to_variable = { ammo_depot_in_loss_k = ammo_depot_loss_k }
+	add_to_array = { array = ammo_depot_in_days value = global.num_days index = 0 }
+	add_to_array = { array = ammo_depot_in_outcomes value = ammo_depot_outcome index = 0 }
+	add_to_array = { array = ammo_depot_in_losses_k value = ammo_depot_loss_k index = 0 }
+	add_to_array = { array = ammo_depot_in_states value = ammo_depot_state index = 0 }
+	add_to_array = { array = ammo_depot_in_countries value = ammo_depot_other index = 0 }
+	if = {
+		limit = { check_variable = { ammo_depot_in_days^num > 5 } }
+		remove_from_array = { array = ammo_depot_in_days index = 5 }
+		remove_from_array = { array = ammo_depot_in_outcomes index = 5 }
+		remove_from_array = { array = ammo_depot_in_losses_k index = 5 }
+		remove_from_array = { array = ammo_depot_in_states index = 5 }
+		remove_from_array = { array = ammo_depot_in_countries index = 5 }
+	}
+}
+
+ammo_depot_log_out = {
+	if = {
+		limit = { check_variable = { ammo_depot_outcome = 1 } }
+		add_to_variable = { ammo_depot_out_misses = 1 }
+	}
+	else = {
+		add_to_variable = { ammo_depot_out_hits = 1 }
+	}
+	add_to_variable = { ammo_depot_out_loss_k = ammo_depot_loss_k }
+	add_to_array = { array = ammo_depot_out_days value = global.num_days index = 0 }
+	add_to_array = { array = ammo_depot_out_outcomes value = ammo_depot_outcome index = 0 }
+	add_to_array = { array = ammo_depot_out_losses_k value = ammo_depot_loss_k index = 0 }
+	add_to_array = { array = ammo_depot_out_states value = ammo_depot_state index = 0 }
+	add_to_array = { array = ammo_depot_out_countries value = ammo_depot_other index = 0 }
+	if = {
+		limit = { check_variable = { ammo_depot_out_days^num > 5 } }
+		remove_from_array = { array = ammo_depot_out_days index = 5 }
+		remove_from_array = { array = ammo_depot_out_outcomes index = 5 }
+		remove_from_array = { array = ammo_depot_out_losses_k index = 5 }
+		remove_from_array = { array = ammo_depot_out_states index = 5 }
+		remove_from_array = { array = ammo_depot_out_countries index = 5 }
+	}
+}
+
+# Scope — страна-жертва. Порог потерь за всё время: доля вместимости складов или, если меньше, порог в тыс. ед —
+# ammo_depot_event_loss_threshold_k страны (задаётся в on_actions; 0 — не действует), без неё — константа
+ammo_depot_check_strikes_noticed = {
 	if = {
 		limit = { NOT = { has_country_flag = ammo_depot_strikes_noticed } }
-		set_temp_variable = { ammo_depot_window = global.num_days }
-		subtract_from_temp_variable = { ammo_depot_window = ammo_depot_strike_days^0 }
+		set_temp_variable = { ammo_depot_loss_limit_k = ammunition_max_storage_capacity_k }
+		multiply_temp_variable = { ammo_depot_loss_limit_k = constant:ammo_depot.event_loss_share }
+		set_temp_variable = { ammo_depot_threshold_k = constant:ammo_depot.event_loss_threshold_k }
+		if = {
+			limit = { has_variable = ammo_depot_event_loss_threshold_k }
+			set_temp_variable = { ammo_depot_threshold_k = ammo_depot_event_loss_threshold_k }
+		}
 		if = {
 			limit = {
-				OR = {
-					check_variable = { ammo_depot_strikes_total > 8 }
-					AND = {
-						check_variable = { ammo_depot_strike_days^num > 2 }
-						check_variable = { ammo_depot_window < 22 }
-					}
-				}
+				check_variable = { ammo_depot_threshold_k > 0 }
+				check_variable = { ammo_depot_threshold_k < ammo_depot_loss_limit_k }
 			}
+			set_temp_variable = { ammo_depot_loss_limit_k = ammo_depot_threshold_k }
+		}
+		if = {
+			limit = { check_variable = { ammo_depot_in_loss_k > ammo_depot_loss_limit_k } }
 			set_country_flag = ammo_depot_strikes_noticed
 			country_event = ammo_depot.1
 		}
