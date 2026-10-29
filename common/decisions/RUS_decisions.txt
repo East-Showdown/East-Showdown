@@ -36383,7 +36383,8 @@ RUS_artillery_program_category = {
 	RUS_switch_to_mobile_artillery = {
 		icon = GFX_RUS_34_Guards_Artillery
 		cost = 0
-		days_re_enable = 180
+		days_remove = 180
+		fire_only_once = yes
 		ai_will_do = { factor = 30 }
 
 		visible = {
@@ -36391,79 +36392,87 @@ RUS_artillery_program_category = {
 		}
 
 		available = {
-			NOT = { has_idea = RUS_artillery_mobile_program }
-			NOT = { has_idea = RUS_artillery_mobile_program_15 }
-			NOT = { has_idea = RUS_artillery_mobile_program_20 }
-			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
-		}
-
-		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_switch_to_mobile_artillery"
-			if = {
-				limit = { has_idea = RUS_artillery_heavy_program_20 }
-				remove_idea = RUS_artillery_heavy_program_20
-			}
-			if = {
-				limit = { has_idea = RUS_artillery_heavy_program_15 }
-				remove_idea = RUS_artillery_heavy_program_15
-			}
-			if = {
-				limit = { has_idea = RUS_artillery_heavy_program }
-				remove_idea = RUS_artillery_heavy_program
-			}
-			add_ideas = RUS_artillery_mobile_program
-			set_country_flag = RUS_artillery_mobile_choice
-			clr_country_flag = RUS_artillery_heavy_choice
-			set_country_flag = {
-				flag = RUS_artillery_direction_cooldown
-				days = 180
-			}
-		}
-	}
-	RUS_switch_to_heavy_artillery = {
-		icon = GFX_RUS_34_Guards_Artillery
-		cost = 0
-		days_re_enable = 180
-		ai_will_do = { factor = 30 }
-
-		visible = {
+			original_tag = RUS
 			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
-		}
-
-		available = {
-			NOT = { has_idea = RUS_artillery_heavy_program }
-			NOT = { has_idea = RUS_artillery_heavy_program_15 }
-			NOT = { has_idea = RUS_artillery_heavy_program_20 }
-			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_mobile_not_selected_tt
+				NOT = { check_variable = { RUS_artillery_program_direction = 1 } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_wait_tt
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+			}
 		}
 
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_switch_to_heavy_artillery"
-			if = {
-				limit = { has_idea = RUS_artillery_mobile_program_20 }
-				remove_idea = RUS_artillery_mobile_program_20
+			custom_effect_tooltip = RUS_artillery_program_started_tt
+			hidden_effect = {
+				RUS_artillery_program_reconcile = yes
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						NOT = { check_variable = { RUS_artillery_program_direction = 1 } }
+						NOT = { has_country_flag = RUS_artillery_program_in_progress }
+					}
+					set_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 1 }
+					set_variable = { RUS_artillery_pending_stage = 1 }
+					log = "[GetDateText]: [Root.GetName]: Artillery program started for 180 days: RUS_switch_to_mobile_artillery"
+				}
 			}
-			if = {
-				limit = { has_idea = RUS_artillery_mobile_program_15 }
-				remove_idea = RUS_artillery_mobile_program_15
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_completed_focus = RUS_expand_self_propelled_artillery_fleet }
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+				NOT = { check_variable = { RUS_artillery_pending_direction = 1 } }
+				NOT = { check_variable = { RUS_artillery_pending_stage = 1 } }
 			}
+		}
+
+		cancel_effect = {
 			if = {
-				limit = { has_idea = RUS_artillery_mobile_program }
-				remove_idea = RUS_artillery_mobile_program
+				limit = {
+					has_country_flag = RUS_artillery_program_in_progress
+					check_variable = { RUS_artillery_pending_direction = 1 }
+					check_variable = { RUS_artillery_pending_stage = 1 }
+				}
+				clr_country_flag = RUS_artillery_program_in_progress
+				set_variable = { RUS_artillery_pending_direction = 0 }
+				set_variable = { RUS_artillery_pending_stage = 0 }
+				log = "[GetDateText]: [Root.GetName]: Artillery program cancelled: RUS_switch_to_mobile_artillery"
 			}
-			add_ideas = RUS_artillery_heavy_program
-			set_country_flag = RUS_artillery_heavy_choice
-			clr_country_flag = RUS_artillery_mobile_choice
-			set_country_flag = {
-				flag = RUS_artillery_direction_cooldown
-				days = 180
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_switch_to_mobile_artillery_effect_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						has_country_flag = RUS_artillery_program_in_progress
+						check_variable = { RUS_artillery_pending_direction = 1 }
+						check_variable = { RUS_artillery_pending_stage = 1 }
+					}
+					set_variable = { RUS_artillery_program_direction = 1 }
+					set_variable = { RUS_artillery_program_stage = 1 }
+					clr_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 0 }
+					set_variable = { RUS_artillery_pending_stage = 0 }
+					RUS_artillery_program_reconcile = yes
+					log = "[GetDateText]: [Root.GetName]: Artillery program completed: RUS_switch_to_mobile_artillery"
+				}
 			}
 		}
 	}
 	RUS_upgrade_mobile_artillery = {
 		icon = GFX_RUS_34_Guards_Artillery
 		cost = 0
-		days_re_enable = 180
+		days_remove = 180
+		fire_only_once = yes
 		ai_will_do = { factor = 30 }
 
 		visible = {
@@ -36471,28 +36480,92 @@ RUS_artillery_program_category = {
 		}
 
 		available = {
-			has_idea = RUS_artillery_mobile_program
-			NOT = { has_idea = RUS_artillery_mobile_program_15 }
-			NOT = { has_idea = RUS_artillery_mobile_program_20 }
-			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+			original_tag = RUS
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_mobile_selected_tt
+				check_variable = { RUS_artillery_program_direction = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_stage_1_tt
+				check_variable = { RUS_artillery_program_stage = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_wait_tt
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+			}
 		}
 
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_mobile_artillery"
-			swap_ideas = {
-				remove_idea = RUS_artillery_mobile_program
-				add_idea = RUS_artillery_mobile_program_15
+			custom_effect_tooltip = RUS_artillery_program_started_tt
+			hidden_effect = {
+				RUS_artillery_program_reconcile = yes
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						check_variable = { RUS_artillery_program_direction = 1 }
+						check_variable = { RUS_artillery_program_stage = 1 }
+						NOT = { has_country_flag = RUS_artillery_program_in_progress }
+					}
+					set_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 1 }
+					set_variable = { RUS_artillery_pending_stage = 2 }
+					log = "[GetDateText]: [Root.GetName]: Artillery program started for 180 days: RUS_upgrade_mobile_artillery"
+				}
 			}
-			set_country_flag = {
-				flag = RUS_artillery_direction_cooldown
-				days = 180
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_completed_focus = RUS_expand_self_propelled_artillery_fleet }
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+				NOT = { check_variable = { RUS_artillery_pending_direction = 1 } }
+				NOT = { check_variable = { RUS_artillery_pending_stage = 2 } }
+			}
+		}
+
+		cancel_effect = {
+			if = {
+				limit = {
+					has_country_flag = RUS_artillery_program_in_progress
+					check_variable = { RUS_artillery_pending_direction = 1 }
+					check_variable = { RUS_artillery_pending_stage = 2 }
+				}
+				clr_country_flag = RUS_artillery_program_in_progress
+				set_variable = { RUS_artillery_pending_direction = 0 }
+				set_variable = { RUS_artillery_pending_stage = 0 }
+				log = "[GetDateText]: [Root.GetName]: Artillery program cancelled: RUS_upgrade_mobile_artillery"
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_upgrade_mobile_artillery_effect_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						has_country_flag = RUS_artillery_program_in_progress
+						check_variable = { RUS_artillery_pending_direction = 1 }
+						check_variable = { RUS_artillery_pending_stage = 2 }
+					}
+					set_variable = { RUS_artillery_program_direction = 1 }
+					set_variable = { RUS_artillery_program_stage = 2 }
+					clr_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 0 }
+					set_variable = { RUS_artillery_pending_stage = 0 }
+					RUS_artillery_program_reconcile = yes
+					log = "[GetDateText]: [Root.GetName]: Artillery program completed: RUS_upgrade_mobile_artillery"
+				}
 			}
 		}
 	}
 	RUS_upgrade_mobile_artillery_2 = {
 		icon = GFX_RUS_34_Guards_Artillery
 		cost = 0
-		days_re_enable = 180
+		days_remove = 180
+		fire_only_once = yes
 		ai_will_do = { factor = 30 }
 
 		visible = {
@@ -36500,27 +36573,180 @@ RUS_artillery_program_category = {
 		}
 
 		available = {
-			has_idea = RUS_artillery_mobile_program_15
-			NOT = { has_idea = RUS_artillery_mobile_program_20 }
-			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+			original_tag = RUS
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_mobile_selected_tt
+				check_variable = { RUS_artillery_program_direction = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_stage_2_tt
+				check_variable = { RUS_artillery_program_stage = 2 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_wait_tt
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+			}
 		}
 
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_mobile_artillery_2"
-			swap_ideas = {
-				remove_idea = RUS_artillery_mobile_program_15
-				add_idea = RUS_artillery_mobile_program_20
+			custom_effect_tooltip = RUS_artillery_program_started_tt
+			hidden_effect = {
+				RUS_artillery_program_reconcile = yes
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						check_variable = { RUS_artillery_program_direction = 1 }
+						check_variable = { RUS_artillery_program_stage = 2 }
+						NOT = { has_country_flag = RUS_artillery_program_in_progress }
+					}
+					set_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 1 }
+					set_variable = { RUS_artillery_pending_stage = 3 }
+					log = "[GetDateText]: [Root.GetName]: Artillery program started for 180 days: RUS_upgrade_mobile_artillery_2"
+				}
 			}
-			set_country_flag = {
-				flag = RUS_artillery_direction_cooldown
-				days = 180
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_completed_focus = RUS_expand_self_propelled_artillery_fleet }
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+				NOT = { check_variable = { RUS_artillery_pending_direction = 1 } }
+				NOT = { check_variable = { RUS_artillery_pending_stage = 3 } }
+			}
+		}
+
+		cancel_effect = {
+			if = {
+				limit = {
+					has_country_flag = RUS_artillery_program_in_progress
+					check_variable = { RUS_artillery_pending_direction = 1 }
+					check_variable = { RUS_artillery_pending_stage = 3 }
+				}
+				clr_country_flag = RUS_artillery_program_in_progress
+				set_variable = { RUS_artillery_pending_direction = 0 }
+				set_variable = { RUS_artillery_pending_stage = 0 }
+				log = "[GetDateText]: [Root.GetName]: Artillery program cancelled: RUS_upgrade_mobile_artillery_2"
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_upgrade_mobile_artillery_2_effect_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						has_country_flag = RUS_artillery_program_in_progress
+						check_variable = { RUS_artillery_pending_direction = 1 }
+						check_variable = { RUS_artillery_pending_stage = 3 }
+					}
+					set_variable = { RUS_artillery_program_direction = 1 }
+					set_variable = { RUS_artillery_program_stage = 3 }
+					clr_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 0 }
+					set_variable = { RUS_artillery_pending_stage = 0 }
+					RUS_artillery_program_reconcile = yes
+					log = "[GetDateText]: [Root.GetName]: Artillery program completed: RUS_upgrade_mobile_artillery_2"
+				}
+			}
+		}
+	}
+	RUS_switch_to_heavy_artillery = {
+		icon = GFX_RUS_34_Guards_Artillery
+		cost = 0
+		days_remove = 180
+		fire_only_once = yes
+		ai_will_do = { factor = 30 }
+
+		visible = {
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+		}
+
+		available = {
+			original_tag = RUS
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_heavy_not_selected_tt
+				NOT = { check_variable = { RUS_artillery_program_direction = 2 } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_wait_tt
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = RUS_artillery_program_started_tt
+			hidden_effect = {
+				RUS_artillery_program_reconcile = yes
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						NOT = { check_variable = { RUS_artillery_program_direction = 2 } }
+						NOT = { has_country_flag = RUS_artillery_program_in_progress }
+					}
+					set_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 2 }
+					set_variable = { RUS_artillery_pending_stage = 1 }
+					log = "[GetDateText]: [Root.GetName]: Artillery program started for 180 days: RUS_switch_to_heavy_artillery"
+				}
+			}
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_completed_focus = RUS_expand_self_propelled_artillery_fleet }
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+				NOT = { check_variable = { RUS_artillery_pending_direction = 2 } }
+				NOT = { check_variable = { RUS_artillery_pending_stage = 1 } }
+			}
+		}
+
+		cancel_effect = {
+			if = {
+				limit = {
+					has_country_flag = RUS_artillery_program_in_progress
+					check_variable = { RUS_artillery_pending_direction = 2 }
+					check_variable = { RUS_artillery_pending_stage = 1 }
+				}
+				clr_country_flag = RUS_artillery_program_in_progress
+				set_variable = { RUS_artillery_pending_direction = 0 }
+				set_variable = { RUS_artillery_pending_stage = 0 }
+				log = "[GetDateText]: [Root.GetName]: Artillery program cancelled: RUS_switch_to_heavy_artillery"
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_switch_to_heavy_artillery_effect_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						has_country_flag = RUS_artillery_program_in_progress
+						check_variable = { RUS_artillery_pending_direction = 2 }
+						check_variable = { RUS_artillery_pending_stage = 1 }
+					}
+					set_variable = { RUS_artillery_program_direction = 2 }
+					set_variable = { RUS_artillery_program_stage = 1 }
+					clr_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 0 }
+					set_variable = { RUS_artillery_pending_stage = 0 }
+					RUS_artillery_program_reconcile = yes
+					log = "[GetDateText]: [Root.GetName]: Artillery program completed: RUS_switch_to_heavy_artillery"
+				}
 			}
 		}
 	}
 	RUS_upgrade_heavy_artillery = {
 		icon = GFX_RUS_34_Guards_Artillery
 		cost = 0
-		days_re_enable = 180
+		days_remove = 180
+		fire_only_once = yes
 		ai_will_do = { factor = 30 }
 
 		visible = {
@@ -36528,28 +36754,92 @@ RUS_artillery_program_category = {
 		}
 
 		available = {
-			has_idea = RUS_artillery_heavy_program
-			NOT = { has_idea = RUS_artillery_heavy_program_15 }
-			NOT = { has_idea = RUS_artillery_heavy_program_20 }
-			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+			original_tag = RUS
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_heavy_selected_tt
+				check_variable = { RUS_artillery_program_direction = 2 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_stage_1_tt
+				check_variable = { RUS_artillery_program_stage = 1 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_wait_tt
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+			}
 		}
 
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_heavy_artillery"
-			swap_ideas = {
-				remove_idea = RUS_artillery_heavy_program
-				add_idea = RUS_artillery_heavy_program_15
+			custom_effect_tooltip = RUS_artillery_program_started_tt
+			hidden_effect = {
+				RUS_artillery_program_reconcile = yes
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						check_variable = { RUS_artillery_program_direction = 2 }
+						check_variable = { RUS_artillery_program_stage = 1 }
+						NOT = { has_country_flag = RUS_artillery_program_in_progress }
+					}
+					set_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 2 }
+					set_variable = { RUS_artillery_pending_stage = 2 }
+					log = "[GetDateText]: [Root.GetName]: Artillery program started for 180 days: RUS_upgrade_heavy_artillery"
+				}
 			}
-			set_country_flag = {
-				flag = RUS_artillery_direction_cooldown
-				days = 180
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_completed_focus = RUS_expand_self_propelled_artillery_fleet }
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+				NOT = { check_variable = { RUS_artillery_pending_direction = 2 } }
+				NOT = { check_variable = { RUS_artillery_pending_stage = 2 } }
+			}
+		}
+
+		cancel_effect = {
+			if = {
+				limit = {
+					has_country_flag = RUS_artillery_program_in_progress
+					check_variable = { RUS_artillery_pending_direction = 2 }
+					check_variable = { RUS_artillery_pending_stage = 2 }
+				}
+				clr_country_flag = RUS_artillery_program_in_progress
+				set_variable = { RUS_artillery_pending_direction = 0 }
+				set_variable = { RUS_artillery_pending_stage = 0 }
+				log = "[GetDateText]: [Root.GetName]: Artillery program cancelled: RUS_upgrade_heavy_artillery"
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_upgrade_heavy_artillery_effect_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						has_country_flag = RUS_artillery_program_in_progress
+						check_variable = { RUS_artillery_pending_direction = 2 }
+						check_variable = { RUS_artillery_pending_stage = 2 }
+					}
+					set_variable = { RUS_artillery_program_direction = 2 }
+					set_variable = { RUS_artillery_program_stage = 2 }
+					clr_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 0 }
+					set_variable = { RUS_artillery_pending_stage = 0 }
+					RUS_artillery_program_reconcile = yes
+					log = "[GetDateText]: [Root.GetName]: Artillery program completed: RUS_upgrade_heavy_artillery"
+				}
 			}
 		}
 	}
 	RUS_upgrade_heavy_artillery_2 = {
 		icon = GFX_RUS_34_Guards_Artillery
 		cost = 0
-		days_re_enable = 180
+		days_remove = 180
+		fire_only_once = yes
 		ai_will_do = { factor = 30 }
 
 		visible = {
@@ -36557,20 +36847,84 @@ RUS_artillery_program_category = {
 		}
 
 		available = {
-			has_idea = RUS_artillery_heavy_program_15
-			NOT = { has_idea = RUS_artillery_heavy_program_20 }
-			NOT = { has_country_flag = RUS_artillery_direction_cooldown }
+			original_tag = RUS
+			has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_heavy_selected_tt
+				check_variable = { RUS_artillery_program_direction = 2 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_stage_2_tt
+				check_variable = { RUS_artillery_program_stage = 2 }
+			}
+			custom_trigger_tooltip = {
+				tooltip = RUS_artillery_program_wait_tt
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+			}
 		}
 
 		complete_effect = {
-			log = "[GetDateText]: [Root.GetName]: Decision RUS_upgrade_heavy_artillery_2"
-			swap_ideas = {
-				remove_idea = RUS_artillery_heavy_program_15
-				add_idea = RUS_artillery_heavy_program_20
+			custom_effect_tooltip = RUS_artillery_program_started_tt
+			hidden_effect = {
+				RUS_artillery_program_reconcile = yes
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						check_variable = { RUS_artillery_program_direction = 2 }
+						check_variable = { RUS_artillery_program_stage = 2 }
+						NOT = { has_country_flag = RUS_artillery_program_in_progress }
+					}
+					set_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 2 }
+					set_variable = { RUS_artillery_pending_stage = 3 }
+					log = "[GetDateText]: [Root.GetName]: Artillery program started for 180 days: RUS_upgrade_heavy_artillery_2"
+				}
 			}
-			set_country_flag = {
-				flag = RUS_artillery_direction_cooldown
-				days = 180
+		}
+
+		cancel_trigger = {
+			OR = {
+				NOT = { has_completed_focus = RUS_expand_self_propelled_artillery_fleet }
+				NOT = { has_country_flag = RUS_artillery_program_in_progress }
+				NOT = { check_variable = { RUS_artillery_pending_direction = 2 } }
+				NOT = { check_variable = { RUS_artillery_pending_stage = 3 } }
+			}
+		}
+
+		cancel_effect = {
+			if = {
+				limit = {
+					has_country_flag = RUS_artillery_program_in_progress
+					check_variable = { RUS_artillery_pending_direction = 2 }
+					check_variable = { RUS_artillery_pending_stage = 3 }
+				}
+				clr_country_flag = RUS_artillery_program_in_progress
+				set_variable = { RUS_artillery_pending_direction = 0 }
+				set_variable = { RUS_artillery_pending_stage = 0 }
+				log = "[GetDateText]: [Root.GetName]: Artillery program cancelled: RUS_upgrade_heavy_artillery_2"
+			}
+		}
+
+		remove_effect = {
+			custom_effect_tooltip = RUS_upgrade_heavy_artillery_2_effect_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						original_tag = RUS
+						has_completed_focus = RUS_expand_self_propelled_artillery_fleet
+						has_country_flag = RUS_artillery_program_in_progress
+						check_variable = { RUS_artillery_pending_direction = 2 }
+						check_variable = { RUS_artillery_pending_stage = 3 }
+					}
+					set_variable = { RUS_artillery_program_direction = 2 }
+					set_variable = { RUS_artillery_program_stage = 3 }
+					clr_country_flag = RUS_artillery_program_in_progress
+					set_variable = { RUS_artillery_pending_direction = 0 }
+					set_variable = { RUS_artillery_pending_stage = 0 }
+					RUS_artillery_program_reconcile = yes
+					log = "[GetDateText]: [Root.GetName]: Artillery program completed: RUS_upgrade_heavy_artillery_2"
+				}
 			}
 		}
 	}
@@ -36578,7 +36932,7 @@ RUS_artillery_program_category = {
 
 RUS_best_machines_modernization_category = {
 	RUS_best_machines_modernization_stage_1 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36590,6 +36944,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36613,7 +36968,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_stage_2 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36625,6 +36980,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36648,7 +37004,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_stage_3 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36660,6 +37016,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36683,7 +37040,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_t4_stage_1 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36695,6 +37052,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36718,7 +37076,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_t4_stage_2 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36730,6 +37088,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36753,7 +37112,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_t4_stage_3 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36765,6 +37124,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36788,7 +37148,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_t5_stage_1 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36800,6 +37160,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36823,7 +37184,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_t5_stage_2 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36835,6 +37196,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
@@ -36858,7 +37220,7 @@ RUS_best_machines_modernization_category = {
 		}
 	}
 	RUS_best_machines_modernization_t5_stage_3 = {
-		icon = GFX_RUS_car_factory_Muscovite
+		icon = generic_formable_nations
 		cost = 150
 		days_remove = 60
 		fire_only_once = yes
@@ -36870,6 +37232,7 @@ RUS_best_machines_modernization_category = {
 
 		available = {
 			original_tag = RUS
+			NOT = { num_of_military_factories < 5 }
 		}
 
 		complete_effect = {
