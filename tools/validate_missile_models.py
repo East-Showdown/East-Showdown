@@ -35,7 +35,7 @@ def block(text,name):
 
 
 def check_model(folder,config,technology_file='common/technologies/missiles_rus.txt',
-                equipment_files=('common/units/equipment/ES_guided_missiles.txt',)):
+                equipment_files=('common/units/equipment/ES_guided_missiles.txt',), texture_size=512):
     meshfile,animfile,sprite,triangles,equipment=config
     directory=ROOT/'gfx/models/units/missiles'/folder
     path=directory/meshfile;tree=read(path)
@@ -83,9 +83,11 @@ def check_model(folder,config,technology_file='common/technologies/missiles_rus.
         assert np.max(np.abs(rotated-prop))>.5
     for name in ('diff','n','spec'):
         path=directory/mesh.child('material').get(name)[0];data=path.read_bytes()
-        assert data[:4]==b'DDS ' and Image.open(path).size==(512,512)
-        assert struct.unpack_from('<I',data,28)[0]==10
-        assert len(data)==128+sum((512>>i)**2*4 for i in range(10))
+        levels=texture_size.bit_length()
+        assert texture_size>0 and texture_size & (texture_size-1)==0
+        assert data[:4]==b'DDS ' and Image.open(path).size==(texture_size,texture_size)
+        assert struct.unpack_from('<I',data,28)[0]==levels
+        assert len(data)==128+sum((texture_size>>i)**2*4 for i in range(levels))
     asset=(ROOT/f'gfx/entities/{sprite}.asset').read_text(encoding='utf-8-sig')
     gfx=(ROOT/f'gfx/entities/{sprite}.gfx').read_text(encoding='utf-8-sig')
     active_asset=re.sub(r'#[^\n]*','',asset)
