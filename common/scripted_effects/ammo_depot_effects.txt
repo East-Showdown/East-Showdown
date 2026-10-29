@@ -1,0 +1,246 @@
+# Схема — docs/RAIDS.md
+
+# Эффект исхода рейда ammo_depot_strike, scope — экземпляр рейда.
+# Требует temp ammo_depot_loss_min, ammo_depot_loss_max (доля полевого склада области), ammo_depot_steps (ступени штрафа)
+ammo_depot_strike_hit = {
+	custom_effect_tooltip = ammo_depot_strike_victim_tt
+	hidden_effect = {
+		set_temp_variable = { ammo_depot_state = var:target_state }
+		var:victim_country = { ammo_depot_destroy_field_stock = yes }
+		var:target_state = { ammo_depot_raise_penalty = yes }
+	}
+}
+
+# Scope — страна-жертва; требует temp ammo_depot_state, ammo_depot_loss_min, ammo_depot_loss_max
+ammo_depot_destroy_field_stock = {
+	ammo_depot_update_penalties = yes
+
+	set_temp_variable = { ammo_depot_rate_sum_k = 0 }
+	for_loop_effect = {
+		start = 1
+		end = 11
+		value = ammo_depot_type
+		ammo_depot_count_type = yes
+		if = {
+			limit = { check_variable = { ammo_depot_n > 0 } }
+			ammo_depot_type_rate = yes
+			add_to_temp_variable = { ammo_depot_rate_sum_k = { value = ammo_depot_n multiply = ammo_depot_k } }
+		}
+	}
+
+	if = {
+		limit = {
+			check_variable = { ammo_depot_rate_sum_k > 0 }
+			check_variable = { ammunition_max_storage_capacity_k > 0 }
+		}
+		set_temp_variable_to_random = { var = ammo_depot_share min = 0 max = 1 }
+		set_temp_variable = {
+			ammo_depot_share = {
+				value = ammo_depot_loss_max
+				subtract = ammo_depot_loss_min
+				multiply = ammo_depot_share
+				add = ammo_depot_loss_min
+			}
+		}
+		set_temp_variable = {
+			ammo_depot_loss_k = {
+				value = ammo_depot_rate_sum_k
+				multiply = constant:ammunition.field_storage_days
+				multiply = ammunition_value_k
+				divide = ammunition_max_storage_capacity_k
+				multiply = ammo_depot_share
+				multiply = { value = 1 subtract = ammo_depot_strike_resist }
+			}
+		}
+		clamp_temp_variable = { var = ammo_depot_loss_k min = 0 max = ammunition_value_k }
+		subtract_from_variable = { ammunition_value_k = ammo_depot_loss_k }
+	}
+}
+
+# Число субюнитов типа ammo_depot_type в области ammo_depot_state — в temp ammo_depot_n; scope — страна-жертва
+ammo_depot_count_type = {
+	set_temp_variable = { ammo_depot_n = 0 }
+	set_temp_variable = { ammo_depot_probe = 0 }
+	if = {
+		limit = { ammo_depot_more_than_probe = yes }
+		set_temp_variable = { ammo_depot_low = 0 }
+		set_temp_variable = { ammo_depot_probe = 1 }
+		while_loop_effect = {
+			limit = { ammo_depot_more_than_probe = yes }
+			set_temp_variable = { ammo_depot_low = ammo_depot_probe }
+			multiply_temp_variable = { ammo_depot_probe = 2 }
+		}
+		# Число в (low; high]
+		set_temp_variable = { ammo_depot_high = ammo_depot_probe }
+		set_temp_variable = { ammo_depot_gap = { value = ammo_depot_high subtract = ammo_depot_low } }
+		while_loop_effect = {
+			limit = { check_variable = { ammo_depot_gap > 1 } }
+			set_temp_variable = { ammo_depot_probe = { value = ammo_depot_low add = ammo_depot_high divide = 2 } }
+			round_temp_variable = ammo_depot_probe
+			if = {
+				limit = { ammo_depot_more_than_probe = yes }
+				set_temp_variable = { ammo_depot_low = ammo_depot_probe }
+			}
+			else = {
+				set_temp_variable = { ammo_depot_high = ammo_depot_probe }
+			}
+			set_temp_variable = { ammo_depot_gap = { value = ammo_depot_high subtract = ammo_depot_low } }
+		}
+		set_temp_variable = { ammo_depot_n = ammo_depot_high }
+	}
+}
+
+# Расход субюнита типа ammo_depot_type — в temp ammo_depot_k; номера типов — как в ammo_depot_more_than_probe
+ammo_depot_type_rate = {
+	if = {
+		limit = { check_variable = { ammo_depot_type = 1 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_towed_art }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 2 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_artillery }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 3 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_sp_art }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 4 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_spa }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 5 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_sp_heavy_art }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 6 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_heavy_spa }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 7 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_MRLS }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 8 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_mlrs }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_type = 9 } }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_TOS }
+	}
+	else = {
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_tos }
+	}
+}
+
+# Scope — область, ROOT — экземпляр рейда; требует temp ammo_depot_steps
+ammo_depot_raise_penalty = {
+	set_temp_variable = { ammo_depot_level = 0 }
+	if = {
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ROOT.victim_country } }
+		set_temp_variable = { ammo_depot_level = 5 }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ROOT.victim_country }
+	}
+	else_if = {
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ROOT.victim_country } }
+		set_temp_variable = { ammo_depot_level = 4 }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ROOT.victim_country }
+	}
+	else_if = {
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ROOT.victim_country } }
+		set_temp_variable = { ammo_depot_level = 3 }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ROOT.victim_country }
+	}
+	else_if = {
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ROOT.victim_country } }
+		set_temp_variable = { ammo_depot_level = 2 }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ROOT.victim_country }
+	}
+	else_if = {
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ROOT.victim_country } }
+		set_temp_variable = { ammo_depot_level = 1 }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ROOT.victim_country }
+	}
+	add_to_temp_variable = { ammo_depot_level = ammo_depot_steps }
+
+	if = {
+		limit = { check_variable = { ammo_depot_level > 4 } }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ROOT.victim_country days = 21 }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_level = 4 } }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ROOT.victim_country days = 18 }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_level = 3 } }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ROOT.victim_country days = 15 }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_level = 2 } }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ROOT.victim_country days = 12 }
+	}
+	else = {
+		add_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ROOT.victim_country days = 7 }
+	}
+}
+
+# Модификатор области читает значения в scope страны дивизии: ступень штрафа хранится у жертвы
+ammo_depot_update_penalties = {
+	set_variable = { ammo_depot_penalty_1 = { value = 1 subtract = ammo_depot_strike_resist multiply = -0.05 } }
+	set_variable = { ammo_depot_penalty_2 = { value = 1 subtract = ammo_depot_strike_resist multiply = -0.1 } }
+	set_variable = { ammo_depot_penalty_3 = { value = 1 subtract = ammo_depot_strike_resist multiply = -0.15 } }
+	set_variable = { ammo_depot_penalty_4 = { value = 1 subtract = ammo_depot_strike_resist multiply = -0.2 } }
+	set_variable = { ammo_depot_penalty_5 = { value = 1 subtract = ammo_depot_strike_resist multiply = -0.25 } }
+}
+
+# Scope — страна-жертва; успешный удар — исходы success и critical_success
+ammo_depot_count_successful_strike = {
+	add_to_variable = { ammo_depot_strikes_total = 1 }
+	add_to_array = { array = ammo_depot_strike_days value = global.num_days }
+	if = {
+		limit = { check_variable = { ammo_depot_strike_days^num > 3 } }
+		remove_from_array = { array = ammo_depot_strike_days index = 0 }
+	}
+	if = {
+		limit = { NOT = { has_country_flag = ammo_depot_strikes_noticed } }
+		set_temp_variable = { ammo_depot_window = global.num_days }
+		subtract_from_temp_variable = { ammo_depot_window = ammo_depot_strike_days^0 }
+		if = {
+			limit = {
+				OR = {
+					check_variable = { ammo_depot_strikes_total > 8 }
+					AND = {
+						check_variable = { ammo_depot_strike_days^num > 2 }
+						check_variable = { ammo_depot_window < 22 }
+					}
+				}
+			}
+			set_country_flag = ammo_depot_strikes_noticed
+			country_event = ammo_depot.1
+		}
+	}
+}
+
+# Решение категории принято; требует temp ammo_depot_resist_delta
+ammo_depot_take_decision = {
+	add_to_variable = { ammo_depot_decisions_taken = 1 }
+	add_to_variable = { ammo_depot_strike_resist = ammo_depot_resist_delta }
+	clamp_variable = { var = ammo_depot_strike_resist min = 0 max = 1 }
+	ammo_depot_update_penalties = yes
+}
+
+ammo_depot_mission_timeout = {
+	set_temp_variable = { ammo_depot_missing = 7 }
+	subtract_from_temp_variable = { ammo_depot_missing = ammo_depot_decisions_taken }
+	if = {
+		limit = { check_variable = { ammo_depot_missing > 4 } }
+		add_timed_idea = { idea = ammo_depot_logistics_failure_3 days = 90 }
+	}
+	else_if = {
+		limit = { check_variable = { ammo_depot_missing > 2 } }
+		add_timed_idea = { idea = ammo_depot_logistics_failure_2 days = 90 }
+	}
+	else = {
+		add_timed_idea = { idea = ammo_depot_logistics_failure_1 days = 90 }
+	}
+}

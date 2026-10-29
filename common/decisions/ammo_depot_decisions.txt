@@ -1,0 +1,296 @@
+# Схема — docs/RAIDS.md
+ammo_depot_protection_category = {
+
+	ammo_depot_protection_mission = {
+		icon = generic_army_support
+		priority = 100
+		activation = { always = no }
+		available = {
+			check_variable = { ammo_depot_decisions_taken > 6 }
+		}
+		days_mission_timeout = 60
+		fire_only_once = yes
+		is_good = no
+		selectable_mission = no
+		timeout_effect = {
+			ammo_depot_mission_timeout = yes
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_dispersal = {
+		icon = generic_army_support
+		fire_only_once = yes
+		custom_cost_trigger = { has_army_experience > 49.9 }
+		custom_cost_text = ammo_depot_cost_xp_50
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 25 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.25 }
+				ammo_depot_take_decision = yes
+			}
+			army_experience = -50
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_relocation = {
+		icon = generic_trucks
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 29.9 }
+		custom_cost_text = ammo_depot_cost_cp_30
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 18 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.18 }
+				ammo_depot_take_decision = yes
+			}
+			add_command_power = -30
+			add_dynamic_modifier = { modifier = ammo_depot_relocation days = 60 }
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_wheeled_delivery = {
+		icon = generic_motorized
+		fire_only_once = yes
+		available = {
+			has_equipment = { motorized_equipment > 299 }
+		}
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 12 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.12 }
+				ammo_depot_take_decision = yes
+			}
+			add_equipment_to_stockpile = { type = motorized_equipment amount = -300 }
+			add_dynamic_modifier = { modifier = ammo_depot_wheeled_delivery days = 60 }
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_bunkers = {
+		icon = generic_fortification
+		fire_only_once = yes
+		custom_cost_trigger = { has_army_experience > 49.9 }
+		custom_cost_text = ammo_depot_cost_xp_50
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 10 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.10 }
+				ammo_depot_take_decision = yes
+			}
+			army_experience = -50
+			add_dynamic_modifier = { modifier = ammo_depot_bunkers days = 60 }
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_separate_storage = {
+		icon = generic_army_support
+		fire_only_once = yes
+		custom_cost_trigger = { has_army_experience > 24.9 }
+		custom_cost_text = ammo_depot_cost_xp_25
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 6 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.06 }
+				ammo_depot_take_decision = yes
+			}
+			army_experience = -25
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_fire_protection = {
+		icon = generic_civil_support
+		fire_only_once = yes
+		cost = 50
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 4 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.04 }
+				ammo_depot_take_decision = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_camouflage = {
+		icon = generic_operation
+		fire_only_once = yes
+		cost = 75
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_chance_tt VALUE = 20 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_camouflage
+				add_to_variable = { ammo_depot_strike_chance_malus = 0.20 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_air_defense = {
+		icon = generic_air
+		fire_only_once = yes
+		custom_cost_trigger = { has_army_experience > 24.9 }
+		custom_cost_text = ammo_depot_cost_xp_25
+		available = {
+			has_equipment = { aa_equipment > 99 }
+		}
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_chance_tt VALUE = 16 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_air_defense
+				add_to_variable = { ammo_depot_strike_chance_malus = 0.16 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+			army_experience = -25
+			add_equipment_to_stockpile = { type = aa_equipment amount = -100 }
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_electronic_warfare = {
+		icon = generic_research
+		fire_only_once = yes
+		available = {
+			has_equipment = { communication_equipment > 149 }
+		}
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_chance_tt VALUE = 12 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_electronic_warfare
+				add_to_variable = { ammo_depot_strike_chance_malus = 0.12 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+			add_equipment_to_stockpile = { type = communication_equipment amount = -150 }
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_counterintelligence = {
+		icon = generic_intelligence_operation
+		fire_only_once = yes
+		cost = 50
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_chance_tt VALUE = 8 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_counterintelligence
+				add_to_variable = { ammo_depot_strike_chance_malus = 0.08 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_restricted_zone = {
+		icon = generic_police_action
+		fire_only_once = yes
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_chance_tt VALUE = 4 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_restricted_zone
+				add_to_variable = { ammo_depot_strike_chance_malus = 0.04 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+			add_stability = -0.02
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_launcher_hunt = {
+		icon = generic_military
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 29.9 }
+		custom_cost_text = ammo_depot_cost_cp_30
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_counter_tt VALUE = 14 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_launcher_hunt
+				add_to_variable = { ammo_depot_counter_chance = 0.14 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+			add_command_power = -30
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_drone_recon = {
+		icon = generic_air
+		fire_only_once = yes
+		available = {
+			has_equipment = { uav_recon_equipment > 99 }
+		}
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_counter_tt VALUE = 6 }
+			hidden_effect = {
+				set_country_flag = ammo_depot_drone_recon
+				add_to_variable = { ammo_depot_counter_chance = 0.06 }
+				set_temp_variable = { ammo_depot_resist_delta = 0 }
+				ammo_depot_take_decision = yes
+			}
+			add_equipment_to_stockpile = { type = uav_recon_equipment amount = -100 }
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_logistics_protection = {
+		icon = generic_army_support
+		fire_only_once = yes
+		visible = {
+			check_variable = { ammo_depot_decisions_taken > 12 }
+		}
+		cost = 100
+		custom_cost_trigger = { has_army_experience > 49.9 }
+		custom_cost_text = ammo_depot_cost_xp_50
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 15 }
+			hidden_effect = {
+				add_to_variable = { ammo_depot_strike_resist = 0.15 }
+				clamp_variable = { var = ammo_depot_strike_resist min = 0 max = 1 }
+				ammo_depot_update_penalties = yes
+			}
+			army_experience = -50
+			add_ideas = ammo_depot_logistics_protection
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+}

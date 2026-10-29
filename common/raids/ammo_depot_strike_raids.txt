@@ -1,0 +1,208 @@
+# Схема — docs/RAIDS.md
+types = {
+	ammo_depot_strike = {
+		category = ammo_depot_strikes
+		days_to_prepare = 2
+		days_re_enable = 7
+		command_power = 0.4
+
+		allowed = {
+			has_dlc = "Gotterdammerung"
+		}
+
+		# Вычисляется для каждой области карты без страны: фильтр по врагу — в show_target
+		target_type = {
+			state = {
+				always = yes
+			}
+		}
+
+		show_target = {
+			has_war_with = FROM
+			FROM = { divisions_in_state = { state = var:target_state size > 0 } }
+		}
+
+		available = {
+			has_war_with = FROM
+			FROM = { ammo_depot_state_has_consumers = yes }
+		}
+
+		ai_will_do = {
+			base = 1
+			modifier = {
+				factor = 0
+				FROM = { check_variable = { ammo_ratio_var < 10 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 2 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 5 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 10 } }
+			}
+		}
+		ai_min_success_chance = 0.3
+
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+
+		arrow = {
+			type = ballistic
+		}
+
+		unit_model = {
+		}
+
+		# Рейд отбирает ракеты крыла по архетипу; дальность — air_range ракет крыла
+		unit_requirements = {
+			equipment = {
+				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
+				amount = { min = 4 }
+			}
+		}
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
+				amount = { min = 4 }
+			}
+		}
+
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+
+		success_factors = {
+			success = {
+				base = 0.6
+				anti_air = {
+					reference = 6
+					weight = -0.3
+				}
+				intel = {
+					reference = 100
+					weight = 0.1
+					start_weight = -0.1
+				}
+				ammo_depot_countermeasures = {
+					formula = {
+						base = 0
+						modifier = { add = 0.2 controller = { has_country_flag = ammo_depot_camouflage } }
+						modifier = { add = 0.16 controller = { has_country_flag = ammo_depot_air_defense } }
+						modifier = { add = 0.12 controller = { has_country_flag = ammo_depot_electronic_warfare } }
+						modifier = { add = 0.08 controller = { has_country_flag = ammo_depot_counterintelligence } }
+						modifier = { add = 0.04 controller = { has_country_flag = ammo_depot_restricted_zone } }
+					}
+					weight = -1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+
+			critical = {
+				base = 0.15
+				intel = {
+					reference = 100
+					weight = 0.1
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.15
+				}
+				ammo_depot_counter_battery = {
+					formula = {
+						base = 0
+						modifier = { add = 0.14 controller = { has_country_flag = ammo_depot_launcher_hunt } }
+						modifier = { add = 0.06 controller = { has_country_flag = ammo_depot_drone_recon } }
+					}
+					weight = 1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+		}
+
+		success_levels = {
+			failure = {
+				actor_effects = {
+					custom_effect_tooltip = ammo_depot_strike_counter_battery_tt
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = 0.25
+							ratio = yes
+						}
+						raid_damage_units = {
+							plane_loss = 4
+							ratio = no
+						}
+					}
+				}
+			}
+
+			limited_success = {
+				actor_effects = {
+					custom_effect_tooltip = ammo_depot_strike_missiles_tt
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = 4
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.1 }
+					set_temp_variable = { ammo_depot_loss_max = 0.3 }
+					set_temp_variable = { ammo_depot_steps = 1 }
+					ammo_depot_strike_hit = yes
+				}
+			}
+
+			success = {
+				actor_effects = {
+					custom_effect_tooltip = ammo_depot_strike_missiles_tt
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = 4
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.3 }
+					set_temp_variable = { ammo_depot_loss_max = 0.5 }
+					set_temp_variable = { ammo_depot_steps = 2 }
+					ammo_depot_strike_hit = yes
+					var:victim_country = { ammo_depot_count_successful_strike = yes }
+				}
+			}
+
+			critical_success = {
+				actor_effects = {
+					custom_effect_tooltip = ammo_depot_strike_missiles_tt
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = 4
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.5 }
+					set_temp_variable = { ammo_depot_loss_max = 0.9 }
+					set_temp_variable = { ammo_depot_steps = 3 }
+					ammo_depot_strike_hit = yes
+					var:victim_country = { ammo_depot_count_successful_strike = yes }
+				}
+			}
+		}
+	}
+}
