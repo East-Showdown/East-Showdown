@@ -1,7 +1,7 @@
 NDefines.NGame.START_DATE = "2022.1.1.1"
 NDefines.NGame.END_DATE = "2036.1.1.1"
 NDefines.NGame.MAP_SCALE_PIXEL_TO_KM = 0.514					-- Yes we did the math
-NDefines.NGame.SAVE_VERSION = 27								-- 0.7.1.4
+NDefines.NGame.SAVE_VERSION = 28								-- 0.8
 NDefines.NGame.HANDS_OFF_START_TAG = "URG"		-- tag for player country for -hands_off runs. use an existing tag that is less likely to affect the game
 NDefines.NGame.TRADE_ROUTE_RECALCULATE_FREQUENCY_DAYS = 30 -- Max recalculation time for all trade routes (0 means we do not recalucate prediodically trade routes)
 NDefines.NGame.FUEL_RESOURCE = "fuel_resource"
@@ -51,9 +51,9 @@ NDefines.NCountry.CONVOY_RANGE_FACTOR = 1                        -- how much ran
 NDefines.NCountry.STARTING_COMMAND_POWER = 50					-- starting command power for every country
 NDefines.NCountry.BASE_MAX_COMMAND_POWER = 400					-- base value for maximum command power
 NDefines.NCountry.BASE_COMMAND_POWER_GAIN = 1					-- base value for daily command power gain
-NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.17 -- 0.01
+NDefines.NCountry.AIR_SUPPLY_CONVERSION_SCALE = 0.0255 -- 0.01 (was 0.17, -85%)
 NDefines.NCountry.SPECIAL_FORCES_CAP_BASE = 0.03					-- Max ammount of special forces battalions is total number of non-special forces battalions multiplied by this and modified by a country modifier
-NDefines.NCountry.BASE_FUEL_GAIN_PER_OIL = 5.5						-- base amount of fuel gained hourly per excess oil
+NDefines.NCountry.BASE_FUEL_GAIN_PER_OIL = 4.5						-- base amount of fuel gained hourly per excess oil
 NDefines.NCountry.SPECIAL_FORCES_CAP_MIN = 0					-- You can have a minimum of this many special forces battalions regardless of the number of non-special forces battalions you have this can also be modified by a country modifier
 NDefines.NResistance.GARRISON_MANPOWER_LOST_BY_ATTACK = 0.016 	-- Ratio of manpower lost by garrison at each attack on garrison (this number will be reduced by the hardness of garrison template)
 NDefines.NProduction.CIC_BANK_SPEED_BOOST_FACTOR = 0.25                 -- The CIC bank can boost production speed with this factor (0.5 means 50 %)
@@ -61,6 +61,7 @@ NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_VALUE =
 NDefines.NProduction.MINIMUM_NUMBER_OF_FACTORIES_TAKEN_BY_CONSUMER_GOODS_PERCENT = 0.1	-- The minimum number of factories we have to put on consumer goods in percent.
 NDefines.NProduction.BASE_FACTORY_SPEED = 2 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 NDefines.NProduction.MAX_EQUIPMENT_RESOURCES_NEED = 6 -- vanila 3 Max number of different strategic resources an equipment can be dependent on.
+NDefines.NProduction.MAX_MIL_FACTORIES_PER_LINE = 75 -- vanilla 150, max number of military factories on one production line
 NDefines.NProduction.BASE_LAND_EQUIPMENT_CONVERSION_IC_COST_FACTOR = 0.1 -- vanilla 0.9, Fraction of the chassis industry cost which is always included in the conversion cost.
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 5	-- Weekly increase of PP.
 NDefines.NBuildings.MAX_BUILDING_LEVELS = 50			-- Max levels a building can have.
@@ -75,6 +76,15 @@ NDefines.NBuildings.SUPPLY_PORT_LEVEL_THROUGHPUT = 5   -- vanilla 3 supply throu
 NDefines.NBuildings.MAX_SHARED_SLOTS = 50				-- Max slots shared by factories
 NDefines.NBuildings.ANTI_AIR_SUPERIORITY_MULT = -1.0 --5.0
 NDefines.NMilitary.MIN_DIVISION_BRIGADE_HEIGHT = 4		-- Min height of regiments in division designer.
+NDefines.NMilitary.MAX_DIVISION_BRIGADE_WIDTH = 3		-- vanilla 5. Max width of regiments in division designer (non-HQ templates).
+NDefines.NMilitary.MAX_DIVISION_BRIGADE_HEIGHT = 4		-- vanilla 5. Max height of regiments in division designer (non-HQ templates).
+-- When the AI is deciding where to place battalions, it tries to place it in the position with the lowest number according to this grid.
+-- ES: 3x4 grid (row-major, 3 per row), fills column by column. Padded to 25 entries so it stays in bounds if the engine still reads it as 5x5.
+NDefines.NMilitary.AI_BATTALION_BUILD_ORDER = {	1,  5,  9,
+												2,  6,  10,
+												3,  7,  11,
+												4,  8,  12,
+												13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }
 NDefines.NMilitary.DIVISIONAL_COMMANDER_TRAIT_XP_REQUIREMENT = 600.0	--Get a trait if any valid options & xp gained >= this
 NDefines.NMilitary.MAX_DIVISION_SUPPORT_WIDTH = 2
 NDefines.NMilitary.MAX_DIVISION_SUPPORT_HEIGHT = 6
@@ -111,22 +121,16 @@ NDefines.NMilitary.LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 1 -- vanial 3 ho
 NDefines.NMilitary.ATTRITION_DAMAGE_ORG = 0.08					   -- vanila 0.08 ущерб от истощения Организации
 NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.002   -- #0.1 Chance for loosing equipment when suffer attrition. Scaled up the stronger attrition is. Then scaled down by equipment reliability.
 NDefines.NMilitary.COMBAT_MOVEMENT_SPEED = 0.33	               -- vanila 0.33 speed reduction base modifier in combat
-NDefines.NMilitary.SUPPLY_USE_FACTOR_MOVING = 1.5                -- Deprecated/Unused
-NDefines.NMilitary.SUPPLY_USE_FACTOR_INACTIVE = 0.95			   -- Deprecated/Unused
 NDefines.NMilitary.SUPPLY_GRACE = 72							   -- troops always carry 3 days of food and supply
 NDefines.NMilitary.SUPPLY_GRACE_MAX_REDUCE_PER_HOUR = 2          -- supply grace is not decreased instantly when it is buffed temporarily and buff is removed
 NDefines.NMilitary.SUPPLY_ORG_MAX_CAP = 0.30                     -- vanilla 0.35 Максимальная организация учитывается по этому показателю если полностью отсутствует снабжение
 NDefines.NMilitary.MAX_OUT_OF_SUPPLY_DAYS = 20 				   -- #was 30 how many days of shitty supply until max penalty achieved
-NDefines.NMilitary.OUT_OF_SUPPLY_ATTRITION = 0.20                 -- max attrition when out of supply
-NDefines.NMilitary.OUT_OF_SUPPLY_SPEED = -0.8                    -- max speed reduction from supply
-NDefines.NMilitary.NON_CORE_SUPPLY_SPEED = -0.5				   -- we are not running on our own VP supply so need to steal stuff along the way
 NDefines.NMilitary.NON_CORE_SUPPLY_AIR_SPEED = -0.25			   -- we are not running on our own VP supply so need to steal stuff along the way a bit less due to air supply
 NDefines.NMilitary.OUT_OF_SUPPLY_MORALE = -0.2                   -- max org regain reduction from supply
-NDefines.NMilitary.LOW_SUPPLY = 0.99							   -- When the supply status of an unit becomes low.
-NDefines.NMilitary.COMBAT_SUPPLY_LACK_ATTACKER_ATTACK = -0.25     -- attack combat penalty for attacker if out of supply
-NDefines.NMilitary.COMBAT_SUPPLY_LACK_ATTACKER_DEFEND = -0.65     -- defend combat penalty for attacker if out of supply
-NDefines.NMilitary.COMBAT_SUPPLY_LACK_DEFENDER_ATTACK = -0.35     -- attack combat penalty for defender if out of supply
-NDefines.NMilitary.COMBAT_SUPPLY_LACK_DEFENDER_DEFEND = -0.15     -- defend combat penalty for defender if out of supply
+NDefines.NMilitary.COMBAT_SUPPLY_LACK_ATTACKER_ATTACK = -0.30     -- attack combat penalty for attacker if out of supply
+NDefines.NMilitary.COMBAT_SUPPLY_LACK_ATTACKER_DEFEND = -0.70     -- defend combat penalty for attacker if out of supply
+NDefines.NMilitary.COMBAT_SUPPLY_LACK_DEFENDER_ATTACK = -0.40     -- attack combat penalty for defender if out of supply
+NDefines.NMilitary.COMBAT_SUPPLY_LACK_DEFENDER_DEFEND = -0.20     -- defend combat penalty for defender if out of supply
 NDefines.NMilitary.AVERAGE_SUPPLY_USE_PESSIMISM = 1.5					-- Multiplier for when AI calculates average supply use of entire army.
 NDefines.NMilitary.LAND_SPEED_MODIFIER = 0.45                    -- vanila 0.5 basic speed control скорость дивок
 NDefines.NMilitary.BASE_FORT_PENALTY = -0.15 					   -- vanilla -0.15 fort penalty
@@ -155,8 +159,9 @@ NDefines.NMilitary.OUT_OF_FUEL_EQUIPMENT_MULT = 0.1				-- 0.1 vanilla ratio of t
 NDefines.NMilitary.OUT_OF_FUEL_SPEED_MULT = 0.4					-- vanilla 0.4 speed mult that armies get when out of fuel
 NDefines.NMilitary.OUT_OF_FUEL_TRAINING_XP_GAIN_MULT = 0.0		-- xp gain mult from training when a unit is out of fuel
 NDefines.NMilitary.FUEL_CAPACITY_DEFAULT_HOURS = 96				-- 96 vanilla default capacity if not specified
+NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_WIDTH = 3			-- vanilla 5. Max width of regimental supports in division designer (matches MAX_DIVISION_BRIGADE_WIDTH).
 NDefines.NMilitary.MAX_REGIMENTAL_SUPPORT_HEIGHT = 2			-- Max height of regimental supports in division designer.
-NDefines.NMilitary.REGIMENTAL_SUPPORT_REQUIRED_BATTALIONS = { 2 } 					-- For each regimental support row, how many battalions are required in the regiment to be able to place a support in that row.
+NDefines.NMilitary.REGIMENTAL_SUPPORT_REQUIRED_BATTALIONS = { 2, 3 } 					-- For each regimental support row, how many battalions are required in the regiment to be able to place a support in that row.
 NDefines.NAir.AIR_WING_MAX_STATS_ATTACK = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_DEFENCE = 500 -- 100
 NDefines.NAir.AIR_WING_MAX_STATS_AGILITY = 500 -- 100
@@ -317,17 +322,10 @@ NDefines.NAI.PEACE_BID_FOLD_MINOR_VS_MAJOR = 1.0						-- Likelihood that AI mino
 NDefines.NAI.DESIRE_USE_XP_TO_UPDATE_LAND_TEMPLATE = 0    -- How quickly is desire to update/create templates accumulated
 NDefines.NAI.DAYS_BETWEEN_CHECK_BEST_TEMPLATE = 9999				-- Number of days between checking for the best template to use
 NDefines.NAI.DESIRE_USE_XP_TO_UNLOCK_LAND_DOCTRINE = 100    -- How quickly is desire to unlock new land doctrines accumulated
-NDefines.NOperatives.AGENCY_UPGRADE_DAYS = 20						-- Number of days needed to upgrade an intelligence agency
+NDefines.NOperatives.AGENCY_UPGRADE_DAYS = 35						-- Number of days needed to upgrade an intelligence agency
 NDefines.NOperatives.AGENCY_OPERATIVE_RECRUITMENT_TIME = 20			-- Number of days to wait to have operative to recruit when an operative slot first becomes available
 NDefines.NOperatives.OPERATIVE_BASE_INTEL_NETWORK_GAIN = 0.8				-- Base amount of network strength gain per day provided by an operative
 NDefines.NCharacter.ADVISOR_PROMOTION_COST = 0	-- Cost to promote someone to advisor
---defines to calculate the capitals supply. This will be also used for max supply of other nodes depending on how well they are connected to capital. Using the formula:
---CapitalSupply = CAPITAL_SUPPLY_BASE + (NumberOfCivilianFactories * CAPITAL_SUPPLY_CIVILIAN_FACTORIES) + (NumberOfMilitaryFactories * CAPITAL_SUPPLY_MILITARY_FACTORIES) + (NumberOfDockyards * CAPITAL_SUPPLY_DOCKYARDS)
-NDefines.NSupply.CAPITAL_SUPPLY_BASE = 10.0 -- vanilla 5.0 base supply for capital
-NDefines.NSupply.CAPITAL_SUPPLY_CIVILIAN_FACTORIES = 0.5 -- vannila 0.3 supply from one civilian factory #
-NDefines.NSupply.CAPITAL_SUPPLY_MILITARY_FACTORIES = 0.8 -- vannila 0.6 supply from one military factory
-NDefines.NSupply.CAPITAL_SUPPLY_DOCKYARDS = 0.65 -- #was 0.4 supply from one naval factory
--- defines that are used for supply reach for capital
 -- supply flow will start from INITIAL_SUPPLY_FLOW and will be reduced by a penalty on each province it travels (which depends on how far we are from our origin terrain etc)
 -- a supply reach >= 1.0 considered "perfect" and will be able to fully support units on that particular province (assuming you are not over capacity)
 NDefines.NSupply.CAPITAL_INITIAL_SUPPLY_FLOW = 7.0 -- #was 5.0 starting supply from
@@ -345,18 +343,11 @@ NDefines.NSupply.SUPPLY_FLOW_PENALTY_CROSSING_RIVERS = 0.40 -- #was 0.20 crossin
 NDefines.NSupply.SUPPLY_HUB_FULL_MOTORIZATION_BONUS = 3.2     ---vanilla 2.2
 -- How many trucks does it cost to fully motorize a hub
 NDefines.NSupply.SUPPLY_HUB_FULL_MOTORIZATION_TRUCK_COST = 180.0
-NDefines.NSupply.RAILWAY_BASE_FLOW = 15.0 		-- #was 10.0 how much base flow railway gives when a node connected to its capital/a naval node by a railway
+NDefines.NSupply.RAILWAY_BASE_FLOW = 5.0 		-- #was 10.0 how much base flow railway gives when a node connected to its capital/a naval node by a railway
 NDefines.NSupply.RAILWAY_FLOW_PER_LEVEL = 10.0 	--  #was 10.0 how much additional flow a railway level gives
-NDefines.NSupply.RAILWAY_FLOW_PENALTY_PER_DAMAGED = 10.5  --   #was 5.0 penalty to flow per damaged railway
-NDefines.NSupply.RAILWAY_MIN_FLOW = 2.5 		-- #was 5.0 	minimum railway flow can be reduced to
--- used for calculating "flow" from a naval node to another naval node when it is connected via a convoy route
--- NAVAL_BASE_MAX_SUPPLY_FLOW_FACTOR = 0.9 -- flow of the parent node is factored to this ratio (so at most it can transfer parent naval node flow * this define)
-NDefines.NSupply.NAVAL_BASE_FLOW = 10.0 -- was 5.0 max output/input of a naval node is limited by this base value + additional ratio for each level
-NDefines.NSupply.NAVAL_FLOW_PER_LEVEL = 6.0 -- was 3.0 max output/input of a naval node is limited by previous base value + this define per its level
-NDefines.NSupply.SUPPLY_NODE_MIN_SUPPLY_THRESHOLD = 1.0 -- if supply of a node is below this value it will be set to 0 -- Currently unused? This should happen when enough damage occurs
 NDefines.NSupply.INFRA_TO_SUPPLY = 0.8							-- was 0.3 each level of infra gives this many supply
-NDefines.NSupply.VP_TO_SUPPLY_BASE = 0.2							-- Bonus to supply from a VP no matter the level
-NDefines.NSupply.VP_TO_SUPPLY_BONUS_CONVERSION = 0.05			-- Bonus to supply local supplies from Victory Points multiplied by this aspect and rounded to closest integer
+NDefines.NSupply.VP_TO_SUPPLY_BASE = 0.05 --0.2							-- Bonus to supply from a VP no matter the level
+NDefines.NSupply.VP_TO_SUPPLY_BONUS_CONVERSION = 0.03	--0.05		-- Bonus to supply local supplies from Victory Points multiplied by this aspect and rounded to closest integer
 NDefines.NSupply.SUPPLY_FROM_DAMAGED_INFRA = 0.4                -- was 0.15 damaged infrastructure counts as this in supply calcs
 NDefines.NSupply.SUPPLY_BASE_MULT = 0.1							-- was 0.2 multiplier on supply base values
 NDefines.NSupply.SUPPLY_DISRUPTION_DAILY_RECOVERY = 2.0		-- was 1.5 every day nodes recover this much of their accumulated disruption.
@@ -431,7 +422,7 @@ NDefines.NMilitary.MAX_ARMY_EXPERIENCE = 999 --500
 NDefines.NMilitary.MAX_NAVY_EXPERIENCE = 999 --500
 NDefines.NMilitary.MAX_AIR_EXPERIENCE = 999 --500
 NDefines.NMilitary.FIELD_EXPERIENCE_MAX_PER_DAY	= 50 --1.2
-NDefines.NMilitary.INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.05 -- -0.10
+NDefines.NMilitary.INFRASTRUCTURE_MOVEMENT_SPEED_IMPACT = -0.025 -- -0.10
 NDefines.NMilitary.RETREAT_SPEED_FACTOR = 0.50 -- 0.25
 NDefines.NMilitary.WITHDRAWING_SPEED_FACTOR = 0.30 -- 0.15
 NDefines.NMilitary.PLANNING_MAX = 0.01 -- 0.30

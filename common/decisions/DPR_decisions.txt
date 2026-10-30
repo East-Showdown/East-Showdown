@@ -1,6 +1,31 @@
 DPR_main_gui = {
 	###до войны
 
+	DPR_reconstruct_saur_mogila = {
+		icon = GFX_saur
+		fire_only_once = yes
+		cost = 200
+		days_remove = 90
+
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_donbass_recovery_program
+		}
+
+		available = {
+			has_completed_focus = DPR_donbass_recovery_program
+		}
+
+		remove_effect = {
+			add_war_support = 0.10
+			country_event = {
+				id = DPR_super.1
+				days = 0
+			}
+		}
+
+	}
+
 	DPR_evacuate_donetsk_decision = {
 		icon = RUS_DPR_transfer
 		fire_only_once = yes
@@ -16,7 +41,144 @@ DPR_main_gui = {
 				}
 			}
 		}
+	DPR_restore_utilities_decision = {
+	icon = GFX_decision_generic_repair
 
+	cost = 35
+	days_remove = 30
+
+	visible = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	available = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	remove_effect = {
+		add_power_balance_value = {
+			id = DPR_public_mood_bop
+			value = 0.08
+			tooltip_side = DPR_public_mood_prosperity
+		}
+	}
+
+	ai_will_do = {
+		factor = 10
+	}
+}
+
+
+DPR_rebuild_housing_decision = {
+	icon = GFX_decision_generic_repair
+
+	cost = 40
+	days_remove = 35
+
+	visible = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	available = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	remove_effect = {
+		add_power_balance_value = {
+			id = DPR_public_mood_bop
+			value = 0.10
+			tooltip_side = DPR_public_mood_prosperity
+		}
+	}
+
+	ai_will_do = {
+		factor = 10
+	}
+}
+
+
+DPR_support_local_production_decision = {
+	icon = GFX_decision_generic_construct_civilian
+
+	cost = 45
+	days_remove = 40
+
+	visible = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	available = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	remove_effect = {
+		add_power_balance_value = {
+			id = DPR_public_mood_bop
+			value = 0.10
+			tooltip_side = DPR_public_mood_prosperity
+		}
+	}
+
+	ai_will_do = {
+		factor = 10
+	}
+}
+
+
+DPR_rebuild_transport_network_decision = {
+	icon = GFX_decision_generic_construct_civilian
+
+	cost = 50
+	days_remove = 45
+
+	visible = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	available = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	remove_effect = {
+		add_power_balance_value = {
+			id = DPR_public_mood_bop
+			value = 0.12
+			tooltip_side = DPR_public_mood_prosperity
+		}
+	}
+
+	ai_will_do = {
+		factor = 10
+	}
+}
+
+
+DPR_public_employment_program_decision = {
+	icon = GFX_decision_generic_construct_civilian
+
+	cost = 55
+	days_remove = 50
+
+	visible = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	available = {
+		has_completed_focus = DPR_national_living_standard
+	}
+
+	remove_effect = {
+		add_power_balance_value = {
+			id = DPR_public_mood_bop
+			value = 0.12
+			tooltip_side = DPR_public_mood_prosperity
+		}
+	}
+
+	ai_will_do = {
+		factor = 10
+	}
+}	
 		available = {
 			NOT = {
 				has_war_with = UKR
@@ -306,7 +468,7 @@ DPR_main_gui = {
 				amount = 250
 			}
 			add_equipment_to_stockpile = {
-				type = infantry_equipment_1	
+				type = infantry_ak74_equipment
 				amount = 1500
 				producer = RUS
 			}
@@ -439,7 +601,7 @@ DPR_main_gui = {
     }
 	DPR_russian_dobrobaty = {
 		icon = GFX_RUS_People_militia
-		
+
 		fire_only_once = yes
 		cost = 25
 		days_remove = 10
@@ -450,7 +612,7 @@ DPR_main_gui = {
 		}
 
 		available = {
-			
+
 		}
 		remove_effect = {
 			custom_effect_tooltip = DPR_russian_dobrobaty_cet
@@ -483,7 +645,7 @@ DPR_main_gui = {
 							load_oob = DPR_russian_dobrobaty_1
 						}
 					}
-					50 = {
+			50 = {
 						DPR = {
 							load_oob = DPR_russian_dobrobaty_2
 						}
@@ -573,23 +735,26 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
 
+		available = {
+			has_manpower > 1609
+		}
+		complete_effect = {
+			add_manpower = -1610
+			hidden_effect = {
+				set_variable = { DPR_expand_slav_brigade_decision_reserved_manpower = 1610 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_slav_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_slav_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_slav_brigade_decision_reserved_manpower }
 			add_command_power = 25
 			army_experience = 15
 			custom_effect_tooltip = DPR_expand_slav_brigade_decision_tt
 			hidden_effect = {
-				random_list = {
-					50 = {
-						DPR = {
-							load_oob = DPR_expand_slav_brigade_1
-						}
-					}
-					50 = {
-						DPR = {
-							load_oob = DPR_expand_slav_brigade_2
-						}
-					}
-				}
+				DPR = { load_oob = DPR_expand_slav_brigade_2 }
 			}
 		}
 		ai_will_do = {
@@ -605,12 +770,26 @@ DPR_main_gui = {
 		visible = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
+		available = {
+			has_manpower > 634
+		}
+		complete_effect = {
+			add_manpower = -635
+			hidden_effect = {
+				set_variable = { DPR_expand_gorlovka_brigade_decision_reserved_manpower = 635 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_gorlovka_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_gorlovka_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_gorlovka_brigade_decision_reserved_manpower }
 			add_command_power = 35 
 			army_experience = 20
 			custom_effect_tooltip = DPR_expand_gorlovka_brigade_decision_tt
 			add_equipment_to_stockpile = {
-				type = t72_chassis
+				type = tank_sov_t72_equipment
 				variant_name = "Т-72Б3"
 				amount = 50
 				producer = DPR
@@ -634,7 +813,21 @@ DPR_main_gui = {
 		visible = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
+		available = {
+			has_manpower > 1609
+		}
+		complete_effect = {
+			add_manpower = -1610
+			hidden_effect = {
+				set_variable = { DPR_expand_zaharchenko_brigade_decision_reserved_manpower = 1610 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_zaharchenko_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_zaharchenko_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_zaharchenko_brigade_decision_reserved_manpower }
 			add_command_power = 15
 			army_experience = 30
 			custom_effect_tooltip = DPR_expand_zaharchenko_brigade_decision_tt
@@ -642,13 +835,7 @@ DPR_main_gui = {
 				DPR = {
 					load_oob = DPR_expand_zaharchenko_brigade_1
 				}
-				random_list = {
-					50 = {
-						DPR = {
-							load_oob = DPR_expand_zaharchenko_brigade_2
-						}
-					}
-				}
+				DPR = { load_oob = DPR_expand_zaharchenko_brigade_2 }
 			}
 		}
 		ai_will_do = {
@@ -664,7 +851,21 @@ DPR_main_gui = {
 		visible = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
+		available = {
+			has_manpower > 804
+		}
+		complete_effect = {
+			add_manpower = -805
+			hidden_effect = {
+				set_variable = { DPR_expand_100th_brigade_decision_reserved_manpower = 805 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_100th_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_100th_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_100th_brigade_decision_reserved_manpower }
 			add_command_power = 15
 			army_experience = 10
 			custom_effect_tooltip = DPR_expand_100th_brigade_decision_tt
@@ -688,12 +889,17 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
 		available = {
+			has_manpower > 2164
 			has_completed_focus = DPR_Learn_from_Russia
 		}
 		complete_effect = {
+			add_manpower = -2165
+			hidden_effect = {
+				set_variable = { DPR_morpekhy_brigade_decision_reserved_manpower = 2165 }
+			}
 			division_template = {
 				name = "Motostrelkoviy Batalion Morskoy Pechoty"
-				is_locked = yes
+				is_locked = no
 				division_names_group = DPR_MAR_01
 				regiments = {
 					marine = {x = 0 y = 0}																				
@@ -703,22 +909,24 @@ DPR_main_gui = {
 					apc = {x = 1 y = 1 }							
 				}
 				support = {
-					engineer = {x = 0 y = 0}																				
-					field_hospital = {x = 0 y = 1}																				
-					signal_company = {x = 0 y = 2}																				
-					recon = {x = 0 y = 3}																				
-					logistics_company = {x = 0 y = 4}																				
-					sp_aa = {x = 0 y = 5}																				
-					artillery = {x = 1 y = 0}																						
-					maintenance_company = {x = 1 y = 1}																				
-					sniper = {x = 1 y = 2}																		
-					atgm = {x = 1 y = 3}														
-					mortar = {x = 1 y = 4}																		
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+					sp_aa = { x = 1 y = 2 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 			division_template = {
 				name = "Tankoviy Batalion Morskoy Pechoty"	# Tanki vrym vrym
-				is_locked = yes
+				is_locked = no
 				division_names_group = DPR_MAR_01
 				#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
 				regiments = {
@@ -729,31 +937,36 @@ DPR_main_gui = {
 					marine = {x = 1 y = 1}																																
 				}
 				support = {
-					engineer = {x = 0 y = 0}																				
-					field_hospital = {x = 0 y = 1}																				
-					signal_company = {x = 0 y = 2}																				
-					recon = {x = 0 y = 3}																				
-					logistics_company = {x = 0 y = 4}																				
-					sp_aa = {x = 0 y = 5}																				
-					artillery = {x = 1 y = 0}#не баг																						
-					maintenance_company = {x = 1 y = 1}		#не баг																				
-					sniper = {x = 1 y = 2}		#не баг																				
-					atgm = {x = 1 y = 3}														
-					mortar = {x = 1 y = 4}																		
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+					sp_aa = { x = 1 y = 2 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
+		cancel_effect = {
+			add_manpower = var:DPR_morpekhy_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_morpekhy_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_morpekhy_brigade_decision_reserved_manpower }
 			add_command_power = 25
 			army_experience = 10
 			navy_experience = 15
 			custom_effect_tooltip = DPR_morpekhy_brigade_decision_tt
 			hidden_effect = {
 				DPR = {
+					es_remove_dpr_9_marines = yes
 					load_oob = DPR_expand_marines
-				}
-				delete_units = {
-					division_template = "Marines batalion"
 				}
 			}
 		}
@@ -771,9 +984,21 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
 		available = {
+			has_manpower > 1305
 			has_completed_focus = DPR_superiority_of_russian_artillery
 		}
+		complete_effect = {
+			add_manpower = -1306
+			hidden_effect = {
+				set_variable = { DPR_expand_kalmius_brigade_decision_reserved_manpower = 1306 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_kalmius_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_kalmius_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_kalmius_brigade_decision_reserved_manpower }
 			add_command_power = 25
 			army_experience = 30
 			custom_effect_tooltip = DPR_expand_kalmius_brigade_decision_tt
@@ -796,9 +1021,21 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
 		available = {
+			has_manpower > 804
 			has_completed_focus = DPR_take_russian_mechanized_batalions_organisation
 		}
+		complete_effect = {
+			add_manpower = -805
+			hidden_effect = {
+				set_variable = { DPR_expand_vostok_brigade_decision_reserved_manpower = 805 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_vostok_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_vostok_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_vostok_brigade_decision_reserved_manpower }
 			add_command_power = 25
 			army_experience = 20
 			custom_effect_tooltip = DPR_expand_vostok_brigade_decision_tt
@@ -822,9 +1059,21 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
 		available = {
+			has_manpower > 1809
 			has_completed_focus = DPR_expand_the_first_army_corpus
 		}
+		complete_effect = {
+			add_manpower = -1810
+			hidden_effect = {
+				set_variable = { DPR_expand_khan_brigade_decision_reserved_manpower = 1810 }
+			}
+		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_khan_brigade_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_khan_brigade_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_khan_brigade_decision_reserved_manpower }
 			add_command_power = 40
 			army_experience = 45
 			custom_effect_tooltip = DPR_expand_khan_brigade_decision_tt
@@ -848,13 +1097,18 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_Expansion_of_the_NM_DPR
 		}
 		available = {
+			has_manpower > 664
 			has_completed_focus = DPR_expand_the_first_army_corpus
 			has_completed_focus = DPR_learn_russian_expirience_of_using_tonks
 		}
 		complete_effect = {
+			add_manpower = -665
+			hidden_effect = {
+				set_variable = { DPR_expand_otbf_kaskad_tanks_decision_reserved_manpower = 665 }
+			}
 			division_template = {
 				name = "Tankoviy Batalion OBTF «Kaskad»"	# Tanki vrym vrym
-				is_locked = yes
+				is_locked = no
 				division_names_group = DPR_MAR_01
 				#division_names_group = RUS_RART_01 # Группа названий для дивизий, необязательно
 				regiments = {
@@ -865,20 +1119,27 @@ DPR_main_gui = {
 					apc = {x = 1 y = 2}																																
 				}
 				support = {
-					artillery = { x = 1 y = 0 }
-					engineer = {x = 0 y = 0}																				
-					field_hospital = {x = 0 y = 1}																				
-					signal_company = {x = 0 y = 2}																				
-					recon = {x = 0 y = 3}																				
-					logistics_company = {x = 0 y = 4}																																																														
-					maintenance_company = {x = 1 y = 1}																			
-					sniper = {x = 1 y = 2}																			
-					atgm = {x = 1 y = 3}														
-					mortar = {x = 1 y = 4}																		
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
+		cancel_effect = {
+			add_manpower = var:DPR_expand_otbf_kaskad_tanks_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_expand_otbf_kaskad_tanks_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_expand_otbf_kaskad_tanks_decision_reserved_manpower }
 			add_command_power = 50
 			army_experience = 40
 			custom_effect_tooltip = DPR_expand_otbf_kaskad_tanks_decision_tt
@@ -910,26 +1171,28 @@ DPR_main_gui = {
 			division_template = {
 				name = "CHVK «Wagner»"
 				division_names_group = RUS_CHVK_Redut_names_group
-				is_locked = yes
+				is_locked = no
 				force_allow_recruiting = no
 				regiments = {
 					PMC_wagner = { x = 0 y = 0 }
 					PMC_wagner = { x = 0 y = 1 }
 					PMC_wagner = { x = 0 y = 2 }
-					prisoners = { x = 0 y = 3 }
-					prisoners = { x = 0 y = 4 }
+					prisoners = { x = 1 y = 0 }
+					prisoners = { x = 1 y = 1 }
 				}
 				support = {
-					engineer = { x = 0 y = 0 }
-					field_hospital = { x = 0 y = 1 }
-					signal_company = { x = 0 y = 2 }
-					recon = { x = 0 y = 3 }
-					logistics_company = { x = 0 y = 4 }
-					artillery = { x = 0 y = 5 }
-					maintenance_company = { x = 1 y = 0 }
-					sniper = { x = 1 y = 1 }
-					atgm = { x = 1 y = 2 }
-					mortar = { x = 1 y = 3 }
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
@@ -970,7 +1233,7 @@ DPR_main_gui = {
 			division_template = {
 				name = "CHVK «Redut»"
 				division_names_group = RUS_CHVK_Redut_names_group
-				is_locked = yes
+				is_locked = no
 				force_allow_recruiting = no
 				regiments = {
 					spetsnaz = { x = 0 y = 0 }
@@ -980,16 +1243,18 @@ DPR_main_gui = {
 					apc = { x = 1 y = 1 }
 				}
 				support = {
-					engineer = { x = 0 y = 0 }
-					field_hospital = { x = 0 y = 1 }
-					signal_company = { x = 0 y = 2 }
-					recon = { x = 0 y = 3 }
-					logistics_company = { x = 0 y = 4 }
-					artillery = { x = 0 y = 5 }
-					maintenance_company = { x = 1 y = 0 }
-					sniper = { x = 1 y = 1 }
-					atgm = { x = 1 y = 2 }
-					mortar = { x = 1 y = 3 }
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
@@ -1025,7 +1290,7 @@ DPR_main_gui = {
 			division_template = {
 				name = "CHVK «RSB-Group»"
 				division_names_group = RUS_CHVK_Redut_names_group
-				is_locked = yes
+				is_locked = no
 				force_allow_recruiting = no
 				regiments = {
 					spetsnaz = { x = 0 y = 0 }
@@ -1035,16 +1300,18 @@ DPR_main_gui = {
 					apc = { x = 1 y = 1 }
 				}
 				support = {
-					engineer = { x = 0 y = 0 }
-					field_hospital = { x = 0 y = 1 }
-					signal_company = { x = 0 y = 2 }
-					recon = { x = 0 y = 3 }
-					logistics_company = { x = 0 y = 4 }
-					artillery = { x = 0 y = 5 }
-					maintenance_company = { x = 1 y = 0 }
-					sniper = { x = 1 y = 1 }
-					atgm = { x = 1 y = 2 }
-					mortar = { x = 1 y = 3 }
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
@@ -1086,7 +1353,7 @@ DPR_main_gui = {
 			division_template = {
 				name = "CHVK «Patriot»"
 				division_names_group = RUS_CHVK_Redut_names_group
-				is_locked = yes
+				is_locked = no
 				force_allow_recruiting = no
 				regiments = {
 					spetsnaz = { x = 0 y = 0 }
@@ -1096,16 +1363,18 @@ DPR_main_gui = {
 					apc = { x = 1 y = 1 }
 				}
 				support = {
-					engineer = { x = 0 y = 0 }
-					field_hospital = { x = 0 y = 1 }
-					signal_company = { x = 0 y = 2 }
-					recon = { x = 0 y = 3 }
-					logistics_company = { x = 0 y = 4 }
-					artillery = { x = 0 y = 5 }
-					maintenance_company = { x = 1 y = 0 }
-					sniper = { x = 1 y = 1 }
-					atgm = { x = 1 y = 2 }
-					mortar = { x = 1 y = 3 }
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
@@ -1136,15 +1405,20 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_expand_the_first_army_corpus
 		}
 		available = {
+			has_manpower > 1729
 			RUS = {
 				has_completed_focus = RUS_cossacks_volunteers
 			}
 		}
 		complete_effect = {
+			add_manpower = -1730
+			hidden_effect = {
+				set_variable = { DPR_cossacks_batalion_decision_reserved_manpower = 1730 }
+			}
 			division_template = {
 				name = "Dobrovolcheskiy Kozachiy Batalion"
 				division_names_group = RUS_CHVK_Redut_names_group
-				is_locked = yes
+				is_locked = no
 				force_allow_recruiting = no
 				regiments = {
 					infantry = { x = 0 y = 0 }
@@ -1154,19 +1428,26 @@ DPR_main_gui = {
 					apc = { x = 2 y = 0 }
 				}
 				support = {
-					engineer = { x = 0 y = 0 }
-					field_hospital = { x = 0 y = 1 }
-					signal_company = { x = 0 y = 2 }
-					recon = { x = 0 y = 3 }
-					logistics_company = { x = 0 y = 4 }
-					artillery = { x = 0 y = 5 }
-					maintenance_company = { x = 1 y = 0 }
-					sniper = { x = 1 y = 1 }
-					mortar = { x = 1 y = 2 }
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
 				}
 			}
 		}
+		cancel_effect = {
+			add_manpower = var:DPR_cossacks_batalion_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_cossacks_batalion_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_cossacks_batalion_decision_reserved_manpower }
 			add_command_power = 45
 			army_experience = 5
 			custom_effect_tooltip = DPR_cossacks_brigade_decision_tt
@@ -1174,14 +1455,7 @@ DPR_main_gui = {
 				DPR = {
 					load_oob = DPR_Cossacks_1
 				}
-				random_list = {
-					50 = {}
-					50 = {
-						DPR = {
-							load_oob = DPR_Cossacks_2
-						}
-					}			
-				}
+				DPR = { load_oob = DPR_Cossacks_2 }
 			}
 		}
 		ai_will_do = {
@@ -1198,50 +1472,57 @@ DPR_main_gui = {
 		   	has_completed_focus = DPR_expand_the_first_army_corpus
 		}
 		available = {
+			has_manpower > 5789
 			RUS = {
 				has_completed_focus = RUS_mobilize_MVD
 			}
 		}
 		complete_effect = {
+			add_manpower = -5790
+			hidden_effect = {
+				set_variable = { DPR_bastion_polk_decision_reserved_manpower = 5790 }
+			}
 			division_template = {
 				name = "Batalion SpN MVD DPR «Bastion»"
 				division_names_group = RUS_CHVK_Redut_names_group
-				is_locked = yes
+				is_locked = no
 				force_allow_recruiting = no
 				regiments = {
 					spetsnaz = { x = 0 y = 0 }
 					spetsnaz = { x = 0 y = 1 }
-					infantry = { x = 0 y = 2 }
-					infantry = { x = 0 y = 3 }
-					infantry = { x = 0 y = 4 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
 				}
 				support = {
-					engineer = { x = 0 y = 0 }
-					field_hospital = { x = 0 y = 1 }
-					signal_company = { x = 0 y = 2 }
-					recon = { x = 0 y = 3 }
-					logistics_company = { x = 0 y = 4 }
-					artillery = { x = 0 y = 5 }
-					maintenance_company = { x = 1 y = 0 }
-					sniper = { x = 1 y = 1 }
-					mortar = { x = 1 y = 2 }
+					maintenance_company = { x = 0 y = 0 }
+					logistics_company = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+					engineer = { x = 0 y = 3 }
+					signal_company = { x = 0 y = 4 }
+					recon = { x = 1 y = 0 }
+					artillery = { x = 1 y = 1 }
+				}
+				regimental_support = {
+					mortar = { x = 0 y = 0 }
+					atgm = { x = 0 y = 1 }
+					sniper = { x = 1 y = 0 }
 				}
 			}
 		}
+		cancel_effect = {
+			add_manpower = var:DPR_bastion_polk_decision_reserved_manpower
+			hidden_effect = { clear_variable = DPR_bastion_polk_decision_reserved_manpower }
+		}
 		remove_effect = {
+			hidden_effect = { clear_variable = DPR_bastion_polk_decision_reserved_manpower }
 			add_command_power = 55
 			army_experience = 10
 			custom_effect_tooltip = DPR_bastion_brigade_decision_tt
 			hidden_effect = {
 				load_oob = DPR_Bastion_1
-				random = {
-					chance = 50
-					load_oob = DPR_Bastion_2
-				}
-				random = {
-					chance = 50
-					load_oob = DPR_Bastion_3
-				}		
+				load_oob = DPR_Bastion_2
+				load_oob = DPR_Bastion_3
 			}
 		}
 		ai_will_do = {
@@ -1252,24 +1533,24 @@ DPR_main_gui = {
 		activation = {
 			has_war_with = UKR
 			original_tag = DPR
-	
+
 			hidden_trigger = { #Проверяем, что у РФ боеприпасов больше в 10 раз, чем может поместиться на складах у ДНР
 				#Высчитываем, сколько место осталось у ДНР на складах
 				set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
-				
+
 				#Ограничиваем максимумом в 100к
 				clamp_temp_variable = {
 					var = ammo_needed
 					min = 0
 					max = 100
 				}
-				
+
 				#У РФ должно быть в 10 раз больше боеприпасов, чем у ДНР свободно
 				multiply_temp_variable = {
 					var = ammo_needed
 					value = 10
 				}
-				
+
 				RUS = {
 					check_variable = { ammunition_value_k > ammo_needed }
 				}
@@ -1281,26 +1562,26 @@ DPR_main_gui = {
 					tooltip = WGN_russia_have_ammo
 					#Высчитываем, сколько место осталось у ДНР на складах
 					set_temp_variable = { ammo_needed = ammunition_storage_free_value_k }
-					
+
 					#Ограничиваем максимумом в 100к
 					clamp_temp_variable = {
 						var = ammo_needed
 						min = 0
 						max = 100
 					}
-					
+
 					#У РФ должно быть в 10 раз больше боеприпасов, чем у ДНР свободно
 					multiply_temp_variable = {
 						var = ammo_needed
 						value = 10
 					}
-					
+
 					RUS = {
 						check_variable = { ammunition_value_k > ammo_needed }
 					}
 				}
 			}
-			
+
 		}
 		icon = WGN_ammo
 		fire_only_once = no
@@ -1315,13 +1596,13 @@ DPR_main_gui = {
 			  min = 0
 			  max = 100
 			}
-			
+
 			#Передаём боеприпасы
 			add_to_variable = { ammunition_value_k = ammo_needed }
 			RUS = {
 				subtract_from_variable = { ammunition_value_k = ammo_needed }
 			}
-			
+
 			custom_effect_tooltip = WGN_ammunition_supply_every_month
 		}
 	}
@@ -1407,7 +1688,7 @@ DPR_main_gui = {
 	}
 	DPR_attracting_voentorgs = {
 		icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 10
@@ -1462,7 +1743,7 @@ DPR_main_gui = {
 	}
 	DPR_fees_of_different_volunteers = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -1526,7 +1807,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_volunteer_organizations_infantry_weapon = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -1595,7 +1876,7 @@ DPR_main_gui = {
 					producer = RUS 
 				}
 
-				
+
 				add_equipment_to_stockpile = {  
 					type = aa_9k34_strela_3_equipment
 					amount = 100
@@ -1635,7 +1916,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_volunteer_organizations_support_equipment = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -1721,7 +2002,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_volunteer_organizations_cars = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -1791,7 +2072,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_volunteer_organizations_drones = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -1847,7 +2128,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_voenkory_organizations_infantry_weapon = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -1958,7 +2239,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_voenkory_organizations_support_equipment = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -2047,7 +2328,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_voenkory_organizations_cars = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -2119,7 +2400,7 @@ DPR_main_gui = {
 
 	DPR_fees_of_voenkory_organizations_drones = {
         icon = GFX_RUS_fees_of_volunteer_organizations
-		
+
 		is_good = yes
 		fire_only_once = no
 		days_mission_timeout = 21
@@ -2202,6 +2483,333 @@ DPR_main_gui = {
 				DPR_hum_industry_free_repair_factor = 0.5
 			}
 			custom_effect_tooltip = DPR_restore_donetsk_tt
+		}
+	}
+}
+
+DPR_public_mood_decisions_category = {
+
+	DPR_answer_letters_to_head_of_republic = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		cost = 75
+		days_remove = 10
+		days_re_enable = 20
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_power_balance_value = {
+				id = DPR_public_mood_bop
+				value = 0.025
+				tooltip_side = DPR_public_mood_prosperity
+			}
+		}
+	}
+
+	DPR_monitor_state_programs = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		cost = 80
+		days_remove = 10
+		days_re_enable = 20
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_power_balance_value = {
+				id = DPR_public_mood_bop
+				value = 0.03
+				tooltip_side = DPR_public_mood_prosperity
+			}
+		}
+	}
+
+	DPR_hold_meeting_with_population = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		cost = 85
+		days_remove = 10
+		days_re_enable = 20
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_power_balance_value = {
+				id = DPR_public_mood_bop
+				value = 0.035
+				tooltip_side = DPR_public_mood_prosperity
+			}
+		}
+	}
+
+	DPR_send_deputies_to_review_prices = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		cost = 90
+		days_remove = 10
+		days_re_enable = 20
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_power_balance_value = {
+				id = DPR_public_mood_bop
+				value = 0.04
+				tooltip_side = DPR_public_mood_prosperity
+			}
+		}
+	}
+
+	DPR_organize_waste_collection = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		cost = 95
+		days_remove = 10
+		days_re_enable = 20
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_power_balance_value = {
+				id = DPR_public_mood_bop
+				value = 0.045
+				tooltip_side = DPR_public_mood_prosperity
+			}
+		}
+	}
+
+	DPR_monitor_small_business_investments = {
+		icon = generic_formable_nations
+		fire_only_once = no
+		cost = 100
+		days_remove = 10
+		days_re_enable = 20
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_power_balance_value = {
+				id = DPR_public_mood_bop
+				value = 0.05
+				tooltip_side = DPR_public_mood_prosperity
+			}
+		}
+	}
+}
+
+DPR_economic_decisions_category = {
+
+	DPR_approve_russian_legislation = {
+		icon = GFX_zakonodatDPR
+		fire_only_once = yes
+		cost = 50
+		days_remove = 30
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_stability = 0.02
+			set_country_flag = DPR_russian_legislation_completed
+		}
+	}
+
+	DPR_integrate_with_russian_economy = {
+		icon = GFX_integraciadpr
+		fire_only_once = yes
+		cost = 50
+		days_remove = 30
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		available = {
+			has_country_flag = DPR_russian_legislation_completed
+		}
+		remove_effect = {
+			add_stability = 0.02
+			set_country_flag = DPR_russian_economy_completed
+		}
+	}
+
+	DPR_coordinate_russian_officials = {
+		icon = GFX_tesnieDPR
+		fire_only_once = yes
+		cost = 50
+		days_remove = 30
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		available = {
+			has_country_flag = DPR_russian_economy_completed
+		}
+		remove_effect = {
+			add_stability = 0.02
+			set_country_flag = DPR_russian_officials_completed
+		}
+	}
+
+	DPR_begin_transition_to_russian_standards = {
+		icon = GFX_russtandartDPR
+		fire_only_once = yes
+		cost = 50
+		days_remove = 120
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_national_living_standard
+		}
+		available = {
+			has_country_flag = DPR_russian_officials_completed
+		}
+		remove_effect = {
+			add_stability = 0.1
+		}
+	}
+}
+
+DPR_ozon_and_goods_category = {
+
+	DPR_ozon_intermediary_decision = {
+		icon = GFX_ozon
+		fire_only_once = yes
+		cost = 50
+		days_remove = 20
+		visible = {
+			original_tag = DPR
+			has_country_flag = DPR_marketplace_intermediaries_unlocked
+			has_completed_focus = DPR_national_living_standard
+		}
+		remove_effect = {
+			add_political_power = 20
+			add_stability = 0.015
+			custom_effect_tooltip = DPR_ozon_intermediary_decision_cet
+			add_to_variable = { DPR_consumer_goods_factories_cost_factor = -0.02 }
+			set_country_flag = DPR_ozon_intermediary_completed
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_wildberries_intermediary_decision = {
+		icon = GFX_wb
+		fire_only_once = yes
+		cost = 50
+		days_remove = 20
+		visible = {
+			original_tag = DPR
+			has_country_flag = DPR_marketplace_intermediaries_unlocked
+			has_completed_focus = DPR_national_living_standard
+
+		}
+		remove_effect = {
+			add_political_power = 20
+			add_stability = 0.015
+			custom_effect_tooltip = DPR_wildberries_intermediary_decision_cet
+			add_to_variable = { DPR_consumer_goods_factories_cost_factor = -0.02 }
+			set_country_flag = DPR_wildberries_intermediary_completed
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_sdek_intermediary_decision = {
+		icon = GFX_sdek
+		fire_only_once = yes
+		cost = 50
+		days_remove = 20
+		visible = {
+			original_tag = DPR
+			has_country_flag = DPR_marketplace_intermediaries_unlocked
+			has_completed_focus = DPR_national_living_standard
+
+		}
+		remove_effect = {
+			add_political_power = 25
+			add_stability = 0.02
+			custom_effect_tooltip = DPR_sdek_intermediary_decision_cet
+			add_to_variable = { DPR_economy_problems_production_speed_buildings_factor = 0.02 }
+			set_country_flag = DPR_sdek_intermediary_completed
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	### Связь  ###
+
+	DPR_miranda_agreement_decision = {
+		icon = GFX_miranda
+		fire_only_once = yes
+		cost = 50
+		days_remove = 20
+		visible = {
+			original_tag = DPR
+			has_country_flag = DPR_telecom_integration_unlocked
+			has_completed_focus = DPR_national_living_standard
+
+		}
+		remove_effect = {
+			add_political_power = 20
+			add_stability = 0.015
+			custom_effect_tooltip = DPR_miranda_agreement_decision_cet
+			set_country_flag = DPR_miranda_agreement_completed
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_phoenix_towers_upgrade_decision = {
+		icon = GFX_phoenix
+		fire_only_once = yes
+		cost = 45
+		days_remove = 20
+		visible = {
+			original_tag = DPR
+			has_country_flag = DPR_telecom_integration_unlocked
+			has_completed_focus = DPR_national_living_standard
+
+		}
+		remove_effect = {
+			add_political_power = 15
+			add_stability = 0.02
+			custom_effect_tooltip = DPR_phoenix_towers_upgrade_decision_cet
+			set_country_flag = DPR_phoenix_towers_upgraded
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_plus7_telecom_infrastructure_decision = {
+		icon = GFX_7plustele
+		fire_only_once = yes
+		cost = 55
+		days_remove = 25
+		visible = {
+			original_tag = DPR
+			has_country_flag = DPR_telecom_integration_unlocked
+			has_completed_focus = DPR_national_living_standard
+
+		}
+		remove_effect = {
+			add_political_power = 25
+			add_stability = 0.02
+			custom_effect_tooltip = DPR_plus7_telecom_infrastructure_decision_cet
+			set_country_flag = DPR_plus7_telecom_infrastructure_completed
+		}
+		ai_will_do = {
+			factor = 50
 		}
 	}
 }
@@ -2308,7 +2916,7 @@ DPR_army_gui = {
 			factor = 50
 		}
 	}
-	
+
 
 	DPR_find_the_equipment_decision = {
 		icon = GFX_DPR_NM_DPR_simbol
@@ -2422,7 +3030,7 @@ DPR_army_gui = {
 		remove_effect = {
 			army_experience = -25
 			add_equipment_to_stockpile = {
-				type = infantry_equipment_0
+				type = infantry_akm_equipment
 				amount = 2500
 				producer = DPR
 			}
@@ -2459,179 +3067,587 @@ DPR_army_gui = {
 					RUS = { 
 					ensure_unit_template_RUS_Pechotniy_batalion = yes
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 119-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 119-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 119-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 119-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800901
+						}
+						create_unit = {
+							division = "name = \"2.batalion 119-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800902
+						}
+						create_unit = {
+							division = "name = \"3.batalion 119-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800903
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 113-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 113-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 113-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 113-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011301
+						}
+						create_unit = {
+							division = "name = \"2.batalion 113-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011302
+						}
+						create_unit = {
+							division = "name = \"3.batalion 113-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011303
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 109-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 109-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 109-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 109-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800801
+						}
+						create_unit = {
+							division = "name = \"2.batalion 109-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800802
+						}
+						create_unit = {
+							division = "name = \"3.batalion 109-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800803
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 101-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 101-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 101-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 101-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010101
+						}
+						create_unit = {
+							division = "name = \"2.batalion 101-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010102
+						}
+						create_unit = {
+							division = "name = \"3.batalion 101-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010103
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 103-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 103-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 103-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 103-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010305
+						}
+						create_unit = {
+							division = "name = \"2.batalion 103-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010306
+						}
+						create_unit = {
+							division = "name = \"3.batalion 103-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010307
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 105-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 105-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 105-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 105-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010501
+						}
+						create_unit = {
+							division = "name = \"2.batalion 105-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010502
+						}
+						create_unit = {
+							division = "name = \"3.batalion 105-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24010503
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 107-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 107-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 107-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 107-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800701
+						}
+						create_unit = {
+							division = "name = \"2.batalion 107-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800702
+						}
+						create_unit = {
+							division = "name = \"3.batalion 107-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24800703
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 111-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 111-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 111-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 111-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011101
+						}
+						create_unit = {
+							division = "name = \"2.batalion 111-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011102
+						}
+						create_unit = {
+							division = "name = \"3.batalion 111-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011103
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 115-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 115-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 115-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 115-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011501
+						}
+						create_unit = {
+							division = "name = \"2.batalion 115-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011502
+						}
+						create_unit = {
+							division = "name = \"3.batalion 115-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011503
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 117-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 117-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 117-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 117-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011701
+						}
+						create_unit = {
+							division = "name = \"2.batalion 117-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011702
+						}
+						create_unit = {
+							division = "name = \"3.batalion 117-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24011703
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 121-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 121-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 121-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 121-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24801015
+						}
+						create_unit = {
+							division = "name = \"2.batalion 121-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24801016
+						}
+						create_unit = {
+							division = "name = \"3.batalion 121-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24801017
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 123-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 123-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 123-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 123-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012301
+						}
+						create_unit = {
+							division = "name = \"2.batalion 123-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012302
+						}
+						create_unit = {
+							division = "name = \"3.batalion 123-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012303
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 125-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 125-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 125-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 125-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012501
+						}
+						create_unit = {
+							division = "name = \"2.batalion 125-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012502
+						}
+						create_unit = {
+							division = "name = \"3.batalion 125-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012503
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 127-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 127-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 127-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 127-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012705
+						}
+						create_unit = {
+							division = "name = \"2.batalion 127-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012706
+						}
+						create_unit = {
+							division = "name = \"3.batalion 127-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012707
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 129-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 129-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 129-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 129-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012901
+						}
+						create_unit = {
+							division = "name = \"2.batalion 129-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012902
+						}
+						create_unit = {
+							division = "name = \"3.batalion 129-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24012903
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 131-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 131-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 131-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 131-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24013101
+						}
+						create_unit = {
+							division = "name = \"2.batalion 131-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24013102
+						}
+						create_unit = {
+							division = "name = \"3.batalion 131-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24013103
+						}
 					}
 					random_controlled_state = {
-						create_unit = { division = "name = \"1.batalion 133-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"2.batalion 133-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
-						create_unit = { division = "name = \"3.batalion 133-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = RUS }
+						create_unit = {
+							division = "name = \"1.batalion 133-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24013301
+						}
+						create_unit = {
+							division = "name = \"2.batalion 133-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24013302
+						}
+						create_unit = {
+							division = "name = \"3.batalion 133-ogo otdelnogo polka\" division_template = \"Pechotniy batalion\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+							owner = RUS
+							id = 24013303
+						}
 					}					
 				}
 
 				}
-		
+
 				else = { 
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011901
+					}
+					create_unit = {
+						division = "name = \"2.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011902
+					}
+					create_unit = {
+						division = "name = \"3.batalion 119-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011903
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 113-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 113-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 113-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 113-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011301
+					}
+					create_unit = {
+						division = "name = \"2.batalion 113-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011302
+					}
+					create_unit = {
+						division = "name = \"3.batalion 113-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011303
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 109-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 109-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 109-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 109-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010901
+					}
+					create_unit = {
+						division = "name = \"2.batalion 109-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010902
+					}
+					create_unit = {
+						division = "name = \"3.batalion 109-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010903
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 101-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 101-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 101-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 101-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010101
+					}
+					create_unit = {
+						division = "name = \"2.batalion 101-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010102
+					}
+					create_unit = {
+						division = "name = \"3.batalion 101-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010103
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 103-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 103-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 103-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 103-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010301
+					}
+					create_unit = {
+						division = "name = \"2.batalion 103-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010302
+					}
+					create_unit = {
+						division = "name = \"3.batalion 103-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010303
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 105-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 105-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 105-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 105-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010501
+					}
+					create_unit = {
+						division = "name = \"2.batalion 105-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010502
+					}
+					create_unit = {
+						division = "name = \"3.batalion 105-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010503
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 107-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 107-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 107-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 107-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010701
+					}
+					create_unit = {
+						division = "name = \"2.batalion 107-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010702
+					}
+					create_unit = {
+						division = "name = \"3.batalion 107-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34010703
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 111-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 111-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 111-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 111-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011101
+					}
+					create_unit = {
+						division = "name = \"2.batalion 111-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011102
+					}
+					create_unit = {
+						division = "name = \"3.batalion 111-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011103
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 115-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 115-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 115-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 115-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011501
+					}
+					create_unit = {
+						division = "name = \"2.batalion 115-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011502
+					}
+					create_unit = {
+						division = "name = \"3.batalion 115-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011503
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 117-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 117-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 117-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 117-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011701
+					}
+					create_unit = {
+						division = "name = \"2.batalion 117-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011702
+					}
+					create_unit = {
+						division = "name = \"3.batalion 117-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34011703
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 121-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 121-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 121-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 121-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012101
+					}
+					create_unit = {
+						division = "name = \"2.batalion 121-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012102
+					}
+					create_unit = {
+						division = "name = \"3.batalion 121-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012103
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 123-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 123-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 123-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 123-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012301
+					}
+					create_unit = {
+						division = "name = \"2.batalion 123-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012302
+					}
+					create_unit = {
+						division = "name = \"3.batalion 123-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012303
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 125-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 125-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 125-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 125-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012501
+					}
+					create_unit = {
+						division = "name = \"2.batalion 125-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012502
+					}
+					create_unit = {
+						division = "name = \"3.batalion 125-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012503
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 127-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 127-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 127-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 127-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012701
+					}
+					create_unit = {
+						division = "name = \"2.batalion 127-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012702
+					}
+					create_unit = {
+						division = "name = \"3.batalion 127-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012703
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 129-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 129-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 129-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 129-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012901
+					}
+					create_unit = {
+						division = "name = \"2.batalion 129-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012902
+					}
+					create_unit = {
+						division = "name = \"3.batalion 129-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34012903
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 131-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 131-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 131-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 131-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34013101
+					}
+					create_unit = {
+						division = "name = \"2.batalion 131-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34013102
+					}
+					create_unit = {
+						division = "name = \"3.batalion 131-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34013103
+					}
 				}
 				random_controlled_state = {
-					create_unit = { division = "name = \"1.batalion 133-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"2.batalion 133-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
-					create_unit = { division = "name = \"3.batalion 133-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"  owner = DPR }
+					create_unit = {
+						division = "name = \"1.batalion 133-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34013301
+					}
+					create_unit = {
+						division = "name = \"2.batalion 133-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34013302
+					}
+					create_unit = {
+						division = "name = \"3.batalion 133-ogo otdelnogo polka\" division_template = \"Strelkoviy Batalion Rezerva NM DPR\" start_experience_factor = 0.1 start_equipment_factor = 0.01"
+						owner = DPR
+						id = 34013303
+					}
 				}
 				}
 
@@ -2643,7 +3659,1108 @@ DPR_army_gui = {
 	}
 }
 DPR_MGB_gui = {
-	
+	DPR_main_strike_912 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 912 }
+		}
+		available = {
+			UKR = { controls_state = 912 }
+		}
+		highlight_states = { highlight_state_targets = { state = 912 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			912 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_714 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 714 }
+		}
+		available = {
+			UKR = { controls_state = 714 }
+		}
+		highlight_states = { highlight_state_targets = { state = 714 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			714 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+
+	DPR_main_strike_906 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 906 }
+		}
+		available = {
+			UKR = { controls_state = 906 }
+		}
+		highlight_states = { highlight_state_targets = { state = 906 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			906 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_907 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 907 }
+		}
+		available = {
+			UKR = { controls_state = 907 }
+		}
+		highlight_states = { highlight_state_targets = { state = 907 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			907 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_910 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 910 }
+		}
+		available = {
+			UKR = { controls_state = 910 }
+		}
+		highlight_states = { highlight_state_targets = { state = 910 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			910 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_894 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 894 }
+		}
+		available = {
+			UKR = { controls_state = 894 }
+		}
+		highlight_states = { highlight_state_targets = { state = 894 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			894 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_908 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 908 }
+		}
+		available = {
+			UKR = { controls_state = 908 }
+		}
+		highlight_states = { highlight_state_targets = { state = 908 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			908 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_909 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 909 }
+		}
+		available = {
+			UKR = { controls_state = 909 }
+		}
+		highlight_states = { highlight_state_targets = { state = 909 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			909 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_165 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 165 }
+		}
+		available = {
+			UKR = { controls_state = 165 }
+		}
+		highlight_states = { highlight_state_targets = { state = 165 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			165 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_149 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 149 }
+		}
+		available = {
+			UKR = { controls_state = 149 }
+		}
+		highlight_states = { highlight_state_targets = { state = 149 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			149 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_182 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 182 }
+		}
+		available = {
+			UKR = { controls_state = 182 }
+		}
+		highlight_states = { highlight_state_targets = { state = 182 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			182 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_213 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 213 }
+		}
+		available = {
+			UKR = { controls_state = 213 }
+		}
+		highlight_states = { highlight_state_targets = { state = 213 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			213 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_237 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 237 }
+		}
+		available = {
+			UKR = { controls_state = 237 }
+		}
+		highlight_states = { highlight_state_targets = { state = 237 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			237 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+DPR_donvoku_reopening_decision = {
+		icon = GFX_donvoky
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 29 }
+		custom_cost_text = decision_cost_CP_30
+		days_remove = 60
+
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_part_of_one_whole
+		}
+		available = {
+			has_completed_focus = DPR_part_of_one_whole
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -30
+			}
+		}
+		remove_effect = {
+			army_experience = 15
+			custom_effect_tooltip = DPR_donvoku_reopening_decision_cet
+			add_to_variable = { DPR_NM_DPR_army_org_factor = 0.02 }
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+DPR_uav_operators_training_decision = {
+		icon = GFX_bpla
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 24 }
+		custom_cost_text = decision_cost_CP_25
+		days_remove = 30
+
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_part_of_one_whole
+		}
+		available = {
+			has_completed_focus = DPR_part_of_one_whole
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -25
+			}
+		}
+		remove_effect = {
+			army_experience = 10
+			custom_effect_tooltip = DPR_uav_operators_training_decision_cet
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+DPR_uav_workshops_decision = {
+		icon = GFX_mastersk
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 29 }
+		custom_cost_text = decision_cost_CP_30
+		days_remove = 45
+
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_part_of_one_whole
+		}
+		available = {
+			has_completed_focus = DPR_part_of_one_whole
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -30
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = DPR_uav_workshops_decision_cet
+			add_ideas = DPR_uav_workshops_idea
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+DPR_military_stores_integration_decision = {
+		icon = GFX_voentorg
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 24 }
+		custom_cost_text = decision_cost_CP_25
+		days_remove = 20
+
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_part_of_one_whole
+			NOT = { has_country_flag = DPR_military_stores_integrated }
+		}
+		available = {
+			has_completed_focus = DPR_part_of_one_whole
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -25
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = DPR_military_stores_integration_decision_cet
+			add_equipment_to_stockpile = {
+				type = body_armor_equipment
+				amount = 1500
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_equipment
+				amount = 1500
+				producer = RUS
+			}
+			set_country_flag = DPR_military_stores_integrated
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+DPR_smoothbore_shotguns_decision = {
+		icon = GFX_DPR_NM_DPR_simbol
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 19 }
+		custom_cost_text = decision_cost_CP_20
+		days_remove = 20
+
+		visible = {
+			original_tag = DPR
+			has_completed_focus = DPR_part_of_one_whole
+		}
+		available = {
+			has_completed_focus = DPR_part_of_one_whole
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -20
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = DPR_smoothbore_shotguns_decision_cet
+			add_equipment_to_stockpile = {
+				type = infantry_akm_equipment
+				amount = 1500
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = body_armor_equipment
+				amount = 1500
+				producer = RUS
+			}
+			add_equipment_to_stockpile = {
+				type = uniform_equipment
+				amount = 1500
+				producer = RUS
+			}
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+	DPR_main_strike_205 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 205 }
+		}
+		available = {
+			UKR = { controls_state = 205 }
+		}
+		highlight_states = { highlight_state_targets = { state = 205 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			205 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_189 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 189 }
+		}
+		available = {
+			UKR = { controls_state = 189 }
+		}
+		highlight_states = { highlight_state_targets = { state = 189 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			189 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_221 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 221 }
+		}
+		available = {
+			UKR = { controls_state = 221 }
+		}
+		highlight_states = { highlight_state_targets = { state = 221 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			221 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_711 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 711 }
+		}
+		available = {
+			UKR = { controls_state = 711 }
+		}
+		highlight_states = { highlight_state_targets = { state = 711 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			711 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_716 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 716 }
+		}
+		available = {
+			UKR = { controls_state = 716 }
+		}
+		highlight_states = { highlight_state_targets = { state = 716 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			716 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_713 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 713 }
+		}
+		available = {
+			UKR = { controls_state = 713 }
+		}
+		highlight_states = { highlight_state_targets = { state = 713 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			713 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_717 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 717 }
+		}
+		available = {
+			UKR = { controls_state = 717 }
+		}
+		highlight_states = { highlight_state_targets = { state = 717 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			717 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_892 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 892 }
+		}
+		available = {
+			UKR = { controls_state = 892 }
+		}
+		highlight_states = { highlight_state_targets = { state = 892 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			892 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_891 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 891 }
+		}
+		available = {
+			UKR = { controls_state = 891 }
+		}
+		highlight_states = { highlight_state_targets = { state = 891 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			891 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_897 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 897 }
+		}
+		available = {
+			UKR = { controls_state = 897 }
+		}
+		highlight_states = { highlight_state_targets = { state = 897 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			897 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_896 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 896 }
+		}
+		available = {
+			UKR = { controls_state = 896 }
+		}
+		highlight_states = { highlight_state_targets = { state = 896 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			896 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_895 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 895 }
+		}
+		available = {
+			UKR = { controls_state = 895 }
+		}
+		highlight_states = { highlight_state_targets = { state = 895 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			895 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_899 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 899 }
+		}
+		available = {
+			UKR = { controls_state = 899 }
+		}
+		highlight_states = { highlight_state_targets = { state = 899 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			899 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_898 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 898 }
+		}
+		available = {
+			UKR = { controls_state = 898 }
+		}
+		highlight_states = { highlight_state_targets = { state = 898 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			898 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_904 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 904 }
+		}
+		available = {
+			UKR = { controls_state = 904 }
+		}
+		highlight_states = { highlight_state_targets = { state = 904 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			904 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_903 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 903 }
+		}
+		available = {
+			UKR = { controls_state = 903 }
+		}
+		highlight_states = { highlight_state_targets = { state = 903 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			903 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_901 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 901 }
+		}
+		available = {
+			UKR = { controls_state = 901 }
+		}
+		highlight_states = { highlight_state_targets = { state = 901 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			901 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_902 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 902 }
+		}
+		available = {
+			UKR = { controls_state = 902 }
+		}
+		highlight_states = { highlight_state_targets = { state = 902 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			902 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_715 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 715 }
+		}
+		available = {
+			UKR = { controls_state = 715 }
+		}
+		highlight_states = { highlight_state_targets = { state = 715 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			715 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+	DPR_main_strike_893 = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 9 }
+		custom_cost_text = decision_cost_CP_10
+		days_remove = 10
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+			UKR = { controls_state = 893 }
+		}
+		available = {
+			UKR = { controls_state = 893 }
+		}
+		highlight_states = { highlight_state_targets = { state = 893 } }
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -10
+			}
+			893 = {
+				add_dynamic_modifier = {
+					modifier = map_plan_attack_modifier
+					scope = DPR
+					days = 10
+				}
+			}
+		}
+		ai_will_do = { factor = 50 }
+	}
+
+
+
+
+
+
 	DPR_fight_the_saboteurs_decision = {
 		icon = GFX_MGB_decision
 		fire_only_once = yes
@@ -2670,7 +4787,6 @@ DPR_MGB_gui = {
 			army_experience = 25
 			add_command_power = 35
 			custom_effect_tooltip = DPR_fight_the_saboteurs_decision_cet
-			#set_variable = { DPR_Pushilin_republic_operative_slot = 1 }
 			set_variable = { DPR_Pushilin_republic_decryption_factor = 0.065 }
 		}
 		ai_will_do = {
@@ -2824,7 +4940,7 @@ DPR_MGB_gui = {
 			factor = 50
 		}
 	}
-	
+
 	DPR_fight_the_saboteurs_2_decision = {
 		icon = GFX_MGB_decision
 		fire_only_once = yes
@@ -2880,7 +4996,7 @@ DPR_MGB_gui = {
 			factor = 50
 		}
 	}
-	
+
 	DPR_Form_assault_brigades = {
 		icon = GFX_decision_DPR_Form_assault_brigades
 		available = {
@@ -2905,7 +5021,7 @@ DPR_MGB_gui = {
 
 	DPR_russian_motostrelky = {
 		icon = GFX_RUS_People_militia
-		
+
 		fire_only_once = yes
 		cost = 55
 		days_remove = 20
@@ -2915,7 +5031,7 @@ DPR_MGB_gui = {
 		}
 
 		available = {
-			
+
 		}
 		remove_effect = {
 			custom_effect_tooltip = DPR_russian_motostrelky_tt
@@ -2959,7 +5075,7 @@ DPR_MGB_gui = {
 							load_oob = DPR_russian_motostrelky_1
 						}
 					}
-					50 = {
+			50 = {
 						DPR = {
 							load_oob = DPR_russian_motostrelky_2
 						}
@@ -2974,7 +5090,7 @@ DPR_MGB_gui = {
 
 	DPR_joint_meetings = {
 		icon = GFX_RUS_general_staff
-		
+
 		fire_only_once = no
 		cost = 25
 		days_remove = 7
@@ -2984,7 +5100,7 @@ DPR_MGB_gui = {
 		}
 
 		available = {
-			
+
 		}
 		modifier = {
 			command_power_gain = 1.5
@@ -3007,7 +5123,7 @@ DPR_MGB_gui = {
 
 	DPR_defence_the_communications_decision = {
 		icon = GFX_DPR_NM_DPR_simbol
-		
+
 		fire_only_once = yes
 		custom_cost_trigger = { command_power > 24 }
 		custom_cost_text = decision_cost_CP_25
@@ -3018,7 +5134,7 @@ DPR_MGB_gui = {
 		}
 
 		available = {
-			
+
 		}
 		complete_effect = {
 			hidden_effect = {
@@ -3049,7 +5165,7 @@ DPR_MGB_gui = {
 		}
 
 		available = {
-			
+
 		}
 		remove_effect = {
 			add_command_power = 25
@@ -3264,6 +5380,13 @@ DPR_MGB_gui = {
 			factor = 50
 		}
 	}
+
+	#Часть единого целого
+
+
+
+
+
 }
 
 DPR_shelling_category = {
@@ -3331,33 +5454,6 @@ DPR_shelling_category = {
 		}
 	}
 
-	DPR_shturm_decision = {
-		icon = GFX_RUS_trips
-		fire_only_once = yes
-		custom_cost_trigger = { command_power > 39 }
-		custom_cost_text = decision_cost_CP_40	
-		
-		days_remove = 12
-		visible = {
-		   	has_completed_focus = DPR_first_donetzzzzk_army_corps
-		}
-		complete_effect = {
-			hidden_effect = {
-				add_command_power = -40
-			}
-		}
-		remove_effect = {
-			add_command_power = 45
-			custom_effect_tooltip = DPR_shturm_decision_cet
-			add_to_variable = { DPR_NM_DPR_breakthrough_factor = 0.125 }
-			add_to_variable = { DPR_NM_DPR_experience_loss_factor = 0.05 }	
-			add_to_variable = { DPR_NM_DPR_army_attack_factor = 0.075 }
-		}
-		ai_will_do = {
-			factor = 50
-		}
-	}
-
 	DPR_contract_service_ads_decision = {
 		icon = GFX_RUS_return_conscripts
 		fire_only_once = no
@@ -3379,6 +5475,61 @@ DPR_shelling_category = {
 		}
 		ai_will_do = {
 			factor = 50
+		}
+	}
+
+	#Часть единого целого
+
+
+
+
+
+
+	DPR_shturm_decision = {
+		icon = GFX_RUS_trips
+		fire_only_once = yes
+		custom_cost_trigger = { command_power > 39 }
+		custom_cost_text = decision_cost_CP_40
+		days_remove = 12
+		visible = {
+			has_completed_focus = DPR_main_strike_direction
+		}
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -40
+			}
+		}
+		remove_effect = {
+			add_command_power = 45
+			custom_effect_tooltip = DPR_shturm_decision_cet
+			add_to_variable = { DPR_NM_DPR_breakthrough_factor = 0.125 }
+			add_to_variable = { DPR_NM_DPR_experience_loss_factor = 0.05 }
+			add_to_variable = { DPR_NM_DPR_army_attack_factor = 0.075 }
+		}
+		ai_will_do = {
+			factor = 50
+		}
+	}
+
+}
+
+DPR_mainland_shield_category = {
+	DPR_request_air_defense_from_mainland = {
+		icon = GFX_ppo
+		cost = 0
+		days_remove = 5
+		days_re_enable = 60
+
+		available = {
+			OR = {
+				check_variable = { DPR_air_defense_radar_requests < 1 }
+				check_variable = { DPR_air_defense_large_requests < 3 }
+				check_variable = { DPR_air_defense_small_requests < 3 }
+			}
+		}
+
+		remove_effect = {
+			country_event = { id = DPR.200 days = 0 }
 		}
 	}
 

@@ -1,0 +1,140 @@
+# Триггеры состояния внедрения и спецслужб для оперативного центра разведки.
+# Все значения читаются из реальных operation tokens страны-игрока (переданы целевым странам).
+
+ES_has_token_civilian_1 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_civilian }
+	}
+}
+
+ES_has_token_civilian_2 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_civilian_2 }
+	}
+}
+
+ES_has_token_civilian_3 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_civilian_3 }
+	}
+}
+
+ES_has_token_army_1 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_army }
+	}
+}
+
+ES_has_token_army_2 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_army_2 }
+	}
+}
+
+ES_has_token_army_3 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_army_3 }
+	}
+}
+
+ES_has_token_air_1 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_airforce }
+	}
+}
+
+ES_has_token_air_2 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_airforce_2 }
+	}
+}
+
+ES_has_token_air_3 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_airforce_3 }
+	}
+}
+
+ES_has_token_info_1 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_info }
+	}
+}
+
+ES_has_token_info_2 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_info_2 }
+	}
+}
+
+ES_has_token_info_3 = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_info_3 }
+	}
+}
+
+ES_has_token_drg = {
+	any_country = {
+		has_operation_token = { tag = PREV token = token_drg }
+	}
+}
+
+# ==== Состояние сети внедрения (переменная ES_intel_network_loss на целевой стране) ====
+# Критический риск: хотя бы одна страна-носитель сети близка к раскрытию (> 54, т.е. >= 55).
+ES_intel_network_critical = {
+	any_country = {
+		OR = {
+			has_operation_token = { tag = PREV token = token_civilian }
+			has_operation_token = { tag = PREV token = token_civilian_2 }
+			has_operation_token = { tag = PREV token = token_civilian_3 }
+			has_operation_token = { tag = PREV token = token_army }
+			has_operation_token = { tag = PREV token = token_army_2 }
+			has_operation_token = { tag = PREV token = token_army_3 }
+			has_operation_token = { tag = PREV token = token_airforce }
+			has_operation_token = { tag = PREV token = token_airforce_2 }
+			has_operation_token = { tag = PREV token = token_airforce_3 }
+			has_operation_token = { tag = PREV token = token_info }
+			has_operation_token = { tag = PREV token = token_info_2 }
+			has_operation_token = { tag = PREV token = token_info_3 }
+			has_operation_token = { tag = PREV token = token_drg }
+		}
+		check_variable = { ES_intel_network_loss > 54 }
+	}
+}
+
+# Повышенный риск: хотя бы одна страна-носитель сети под наблюдением (> 34, т.е. >= 35).
+ES_intel_network_at_risk = {
+	any_country = {
+		OR = {
+			has_operation_token = { tag = PREV token = token_civilian }
+			has_operation_token = { tag = PREV token = token_civilian_2 }
+			has_operation_token = { tag = PREV token = token_civilian_3 }
+			has_operation_token = { tag = PREV token = token_army }
+			has_operation_token = { tag = PREV token = token_army_2 }
+			has_operation_token = { tag = PREV token = token_army_3 }
+			has_operation_token = { tag = PREV token = token_airforce }
+			has_operation_token = { tag = PREV token = token_airforce_2 }
+			has_operation_token = { tag = PREV token = token_airforce_3 }
+			has_operation_token = { tag = PREV token = token_info }
+			has_operation_token = { tag = PREV token = token_info_2 }
+			has_operation_token = { tag = PREV token = token_info_3 }
+			has_operation_token = { tag = PREV token = token_drg }
+		}
+		check_variable = { ES_intel_network_loss > 34 }
+	}
+}
+
+# Сеть стабильна: нет стран с повышенным риском раскрытия.
+ES_intel_network_stable = {
+	NOT = { ES_intel_network_at_risk = yes }
+}
+
+# Спецоперации доступны: открыт хотя бы один канал диверсий/ударов.
+ES_intel_specops_unlocked = {
+	OR = {
+		ES_has_token_civilian_2 = yes
+		ES_has_token_civilian_3 = yes
+		ES_has_token_air_2 = yes
+		ES_has_token_army_3 = yes
+	}
+}

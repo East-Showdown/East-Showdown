@@ -1,0 +1,538 @@
+# Переменные с суффиксом _k — в тысячах единиц боеприпасов, потоки — за день
+
+ammunition_init_globals = {
+	if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_50 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 0.5 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_60 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 0.6 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_70 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 0.7 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_80 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 0.8 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_90 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 0.9 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_110 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.1 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_120 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.2 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_130 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.3 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_140 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.4 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_150 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.5 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_160 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.6 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_170 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.7 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_180 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.8 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_190 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 1.9 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_200 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 2 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_225 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 2.25 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_250 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 2.5 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_275 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 2.75 }
+	}
+	else_if = {
+		limit = { has_game_rule = { rule = es_ammunition_consumption_factor option = ES_AMMUNITION_CONSUMPTION_FACTOR_RULE_300 } }
+		set_variable = { global.ammunition_consumption_rule_factor = 3 }
+	}
+	else = {
+		set_variable = { global.ammunition_consumption_rule_factor = 1 }
+	}
+	set_variable = { global.ammunition_rate_artillery = { value = constant:ammunition.k_towed_art multiply = 1000 } }
+	set_variable = { global.ammunition_rate_sp_art = { value = constant:ammunition.k_sp_art multiply = 1000 } }
+	set_variable = { global.ammunition_rate_sp_heavy_art = { value = constant:ammunition.k_sp_heavy_art multiply = 1000 } }
+	set_variable = { global.ammunition_rate_MRLS = { value = constant:ammunition.k_MRLS multiply = 1000 } }
+	set_variable = { global.ammunition_rate_TOS = { value = constant:ammunition.k_TOS multiply = 1000 } }
+}
+
+ammunition_init_country = {
+	set_variable = { ammunition_produce_factor = constant:ammunition.produce_share_start }
+	set_variable = { ammunition_recovery_factor = { value = 1 subtract = ammunition_produce_factor } }
+	set_variable = { ammunition_level = 1 }
+	add_dynamic_modifier = { modifier = ammunition_effects }
+	add_dynamic_modifier = { modifier = ammunition_RUS_genstab_limitation }
+}
+
+ammunition_on_daily = {
+	# on_startup не срабатывает при загрузке сохранения прошлой версии мода
+	if = {
+		limit = { NOT = { has_variable = global.ammunition_rate_artillery } }
+		ammunition_init_globals = yes
+	}
+	# Страны, появившиеся после старта игры, начинают с пустого склада
+	if = {
+		limit = { NOT = { has_variable = ammunition_level } }
+		if = {
+			limit = { NOT = { has_variable = ammunition_value_k } }
+			set_variable = { ammunition_value_k = 0 }
+			set_variable = { ammunition_old_value_k = 0 }
+		}
+		ammunition_init_country = yes
+	}
+	ammunition_calculate_generation = yes
+	ammunition_calculate_need = yes
+	ammunition_calculate_auto_level = yes
+	if = {
+		limit = {
+			OR = {
+				is_ai = yes
+				NOT = { has_country_flag = ammunition_supply_factor_ai_disable }
+			}
+		}
+		set_variable = { ammunition_level = ammunition_level_auto }
+	}
+	ammunition_clamp_level = yes
+	ammunition_spend = yes
+	ammunition_calculate_storage = yes
+	ammunition_calculate_effects = yes
+	ammunition_update_idea = yes
+	ammunition_update_display = yes
+}
+
+ammunition_calculate_generation = {
+	# modifier daily_ammunition_gain — в единицах, не в тысячах
+	set_variable = { ammunition_plans_production_base_value = { value = modifier@daily_ammunition_gain divide = 1000 } }
+	set_variable = { ammunition_plants_efficiency_factor_var = { value = 1 add = modifier@ammunition_plants_efficiency_factor max = 0 } }
+	set_variable = { ammunition_produce_efficiency_factor_var = { value = 1 add = modifier@ammunition_produce_efficiency_factor max = 0 } }
+	set_variable = {
+		ammunition_recovery_efficiency_factor_var = {
+			value = constant:ammunition.recovery_efficiency_base
+			add = modifier@ammunition_recovery_efficiency_factor
+			max = 0
+		}
+	}
+	set_variable = { ammunition_plants_production_value = { value = ammunition_plans_production_base_value multiply = ammunition_plants_efficiency_factor_var } }
+
+	set_variable = { ammunition_produce_factor_result = ammunition_produce_factor }
+	set_variable = { ammunition_recovery_factor_result = ammunition_recovery_factor }
+	set_variable = {
+		ammunition_recovery_value_k = {
+			value = ammunition_plants_production_value
+			multiply = ammunition_recovery_factor
+			multiply = ammunition_recovery_efficiency_factor_var
+		}
+	}
+	if = {
+		limit = { check_variable = { ammunition_recovery_value_k > ammunition_old_value_k } }
+		set_temp_variable = {
+			ammunition_recovery_excess = {
+				value = ammunition_recovery_value_k
+				subtract = ammunition_old_value_k
+				divide = ammunition_recovery_value_k
+			}
+		}
+		add_to_variable = { ammunition_produce_factor_result = { value = ammunition_recovery_excess multiply = ammunition_recovery_factor } }
+		multiply_variable = { ammunition_recovery_factor_result = { value = 1 subtract = ammunition_recovery_excess } }
+		set_variable = { ammunition_recovery_value_k = ammunition_old_value_k }
+	}
+	set_variable = {
+		ammunition_produce_value_k = {
+			value = ammunition_plants_production_value
+			multiply = ammunition_produce_factor_result
+			multiply = ammunition_produce_efficiency_factor_var
+		}
+	}
+	set_variable = { ammunition_generation_value_k = { value = ammunition_produce_value_k add = ammunition_recovery_value_k } }
+}
+
+# Пишет в temp ammunition_base_k расход всех расходующих субюнитов текущей страны или генерала за день при множителе 1
+ammunition_calculate_base_consumption = {
+	set_temp_variable = {
+		ammunition_base_k = {
+			value = num_battalions_with_type@towed_art
+			multiply = constant:ammunition.k_towed_art
+			add = { value = num_battalions_with_type@sp_art multiply = constant:ammunition.k_sp_art }
+			add = { value = num_battalions_with_type@sp_heavy_art multiply = constant:ammunition.k_sp_heavy_art }
+			add = { value = num_battalions_with_type@MRLS multiply = constant:ammunition.k_MRLS }
+			add = { value = num_battalions_with_type@TOS multiply = constant:ammunition.k_TOS }
+			add = { value = num_battalions_with_type@artillery multiply = constant:ammunition.k_artillery }
+			add = { value = num_battalions_with_type@support_spa multiply = constant:ammunition.k_support_spa }
+			add = { value = num_battalions_with_type@support_heavy_spa multiply = constant:ammunition.k_support_heavy_spa }
+			add = { value = num_battalions_with_type@support_mlrs multiply = constant:ammunition.k_support_mlrs }
+			add = { value = num_battalions_with_type@support_tos multiply = constant:ammunition.k_support_tos }
+		}
+	}
+}
+
+ammunition_calculate_need = {
+	set_variable = {
+		ammunition_factor_off = {
+			value = constant:ammunition.factor_off
+			multiply = global.ammunition_consumption_rule_factor
+			multiply = { value = 1 add = modifier@ammunition_consumption_offensive_factor max = 0 }
+		}
+	}
+	set_variable = {
+		ammunition_factor_def = {
+			value = constant:ammunition.factor_def
+			multiply = global.ammunition_consumption_rule_factor
+			multiply = { value = 1 add = modifier@ammunition_consumption_defensive_factor max = 0 }
+		}
+	}
+
+	set_temp_variable = { ammunition_divisions_sum = 0 }
+	set_temp_variable = { ammunition_divisions_off_sum = 0 }
+	set_temp_variable = { ammunition_divisions_def_sum = 0 }
+	set_temp_variable = { ammunition_need_sum_k = 0 }
+	set_temp_variable = { ammunition_factor_off_temp = ammunition_factor_off }
+	set_temp_variable = { ammunition_factor_def_temp = ammunition_factor_def }
+
+	# Без войны боёв нет, расход нулевой
+	if = {
+		limit = {
+			OR = {
+				has_war = yes
+				is_ai = no
+			}
+		}
+		# Фельдмаршал считает субюниты своих армий: пропуск исключает двойной счёт
+		every_army_leader = {
+			limit = {
+				is_assigned = yes
+				is_leading_army_group = no
+				check_variable = { num_units > 0 }
+			}
+			add_to_temp_variable = { ammunition_divisions_sum = num_units }
+			add_to_temp_variable = { ammunition_divisions_off_sum = num_units_offensive_combats }
+			add_to_temp_variable = { ammunition_divisions_def_sum = num_units_defensive_combats }
+
+			ammunition_calculate_base_consumption = yes
+			add_to_temp_variable = {
+				ammunition_need_sum_k = {
+					value = num_units_offensive_combats
+					multiply = ammunition_factor_off_temp
+					add = { value = num_units_defensive_combats multiply = ammunition_factor_def_temp }
+					multiply = ammunition_base_k
+					divide = num_units
+				}
+			}
+		}
+	}
+
+	set_variable = { ammunition_divisions = ammunition_divisions_sum }
+	set_variable = { ammunition_divisions_off = ammunition_divisions_off_sum }
+	set_variable = { ammunition_divisions_def = ammunition_divisions_def_sum }
+	set_variable = { ammunition_need_level_1_k = ammunition_need_sum_k }
+
+	if = {
+		limit = { check_variable = { ammunition_need_level_1_k > 0 } }
+		set_variable = { ammunition_need_reference_k = ammunition_need_level_1_k }
+	}
+	else = {
+		# Вне боя запас меряется расходом всех субюнитов страны в обороне
+		ammunition_calculate_base_consumption = yes
+		set_variable = { ammunition_need_reference_k = { value = ammunition_base_k multiply = ammunition_factor_def } }
+	}
+	set_temp_variable = { ammunition_net_need_k = { value = ammunition_need_reference_k subtract = ammunition_generation_value_k } }
+
+	# Предел в 1000 дней не даёт делению переполнить фиксированную точку
+	if = {
+		limit = { check_variable = { ammunition_net_need_k > 0 } }
+		set_variable = {
+			ammunition_days_at_level_1 = {
+				value = ammunition_value_k
+				min = { value = ammunition_net_need_k multiply = 1000 }
+				divide = ammunition_net_need_k
+			}
+		}
+	}
+	else = {
+		set_variable = { ammunition_days_at_level_1 = 1000 }
+	}
+}
+
+ammunition_calculate_auto_level = {
+	if = {
+		limit = { check_variable = { ammunition_need_reference_k > 0 } }
+		# На границах диапазона обе формулы дают 1, поэтому уровень непрерывен
+		set_variable = {
+			ammunition_level_auto_base = {
+				value = ammunition_value_k
+				divide = constant:ammunition.ai_days_low
+				add = ammunition_generation_value_k
+				divide = ammunition_need_reference_k
+			}
+		}
+		if = {
+			limit = { check_variable = { ammunition_level_auto_base > 1 } }
+			set_variable = {
+				ammunition_level_auto_base = {
+					value = ammunition_value_k
+					divide = constant:ammunition.ai_days_high
+					add = ammunition_generation_value_k
+					divide = ammunition_need_reference_k
+					max = 1
+				}
+			}
+		}
+		set_variable = { ammunition_level_auto_base = { value = ammunition_level_auto_base max = constant:ammunition.ai_level_min } }
+	}
+	else = {
+		set_variable = { ammunition_level_auto_base = 1 }
+	}
+	set_variable = { ammunition_level_auto = { value = ammunition_level_auto_base add = modifier@ammunition_level_target } }
+}
+
+ammunition_clamp_level = {
+	set_variable = {
+		ammunition_level_max = {
+			value = constant:ammunition.level_max_base
+			add = modifier@ammunition_level_cap
+			clamp = { min = constant:ammunition.level_min max = constant:ammunition.level_max_abs }
+		}
+	}
+	set_variable = {
+		ammunition_level = {
+			value = ammunition_level
+			clamp = { min = constant:ammunition.level_min max = ammunition_level_max }
+		}
+	}
+	set_variable = {
+		ammunition_level_auto = {
+			value = ammunition_level_auto
+			clamp = { min = constant:ammunition.level_min max = ammunition_level_max }
+		}
+	}
+	set_variable = { ammunition_total_factor_off = { value = ammunition_factor_off multiply = ammunition_level } }
+	set_variable = { ammunition_total_factor_def = { value = ammunition_factor_def multiply = ammunition_level } }
+}
+
+ammunition_spend = {
+	set_variable = { ammunition_need_k = { value = ammunition_need_level_1_k multiply = ammunition_level } }
+	set_variable = { ammunition_available_k = { value = ammunition_value_k add = ammunition_generation_value_k } }
+
+	if = {
+		limit = { check_variable = { ammunition_need_k > 0 } }
+		set_variable = { ammunition_spent_k = { value = ammunition_need_k min = ammunition_available_k } }
+		set_variable = { ammunition_cover = { value = ammunition_spent_k divide = ammunition_need_k } }
+	}
+	else_if = {
+		limit = { check_variable = { ammunition_available_k > 0 } }
+		set_variable = { ammunition_spent_k = 0 }
+		set_variable = { ammunition_cover = 1 }
+	}
+	else = {
+		set_variable = { ammunition_spent_k = 0 }
+		set_variable = { ammunition_cover = 0 }
+	}
+	set_variable = { ammunition_supply = { value = ammunition_level multiply = ammunition_cover } }
+
+	set_variable = { ammunition_value_k = { value = ammunition_available_k subtract = ammunition_spent_k } }
+	subtract_from_variable = { ammunition_old_value_k = ammunition_recovery_value_k }
+	set_variable = { ammunition_delta_value_k = { value = ammunition_generation_value_k subtract = ammunition_spent_k } }
+}
+
+ammunition_calculate_storage = {
+	ammunition_calculate_base_consumption = yes
+	set_variable = { ammunition_field_storage_capacity_k = { value = ammunition_base_k multiply = constant:ammunition.field_storage_days } }
+	set_variable = { ammunition_silos_capacity_k = modifier@ammunition_capacity_k }
+	set_variable = { ammunition_max_storage_capacity_k = { value = ammunition_silos_capacity_k add = ammunition_field_storage_capacity_k } }
+
+	set_temp_variable = {
+		ammunition_excess_k = {
+			value = ammunition_value_k
+			add = ammunition_old_value_k
+			subtract = ammunition_max_storage_capacity_k
+		}
+	}
+	if = {
+		limit = { check_variable = { ammunition_excess_k > 0 } }
+		if = {
+			limit = { check_variable = { ammunition_old_value_k < ammunition_excess_k } }
+			set_variable = { ammunition_old_value_k = 0 }
+			set_variable = { ammunition_value_k = { value = ammunition_value_k min = ammunition_max_storage_capacity_k max = 0 } }
+		}
+		else = {
+			subtract_from_variable = { ammunition_old_value_k = ammunition_excess_k }
+		}
+	}
+
+	set_variable = { sum_ammunition_value_k = { value = ammunition_value_k add = ammunition_old_value_k } }
+	set_variable = { ammunition_storage_free_value_k = { value = ammunition_max_storage_capacity_k subtract = sum_ammunition_value_k } }
+	if = {
+		limit = { check_variable = { ammunition_max_storage_capacity_k > 0 } }
+		set_variable = { ammunition_silos_filling_factor = { value = sum_ammunition_value_k divide = ammunition_max_storage_capacity_k } }
+		set_variable = { ammo_ratio_var = { value = ammunition_value_k divide = ammunition_max_storage_capacity_k multiply = 100 } }
+	}
+	else = {
+		set_variable = { ammunition_silos_filling_factor = 0 }
+		set_variable = { ammo_ratio_var = 0 }
+	}
+
+	if = {
+		limit = { check_variable = { ammunition_delta_value_k > 0 } }
+		set_variable = { ammo_days_to_full = { value = ammunition_storage_free_value_k divide = ammunition_delta_value_k } }
+		set_variable = { ammo_days_to_empty = 0 }
+		set_variable = { ammo_frame_var = 2 }
+	}
+	else_if = {
+		limit = { check_variable = { ammunition_delta_value_k < 0 } }
+		set_variable = { ammo_days_to_full = 0 }
+		set_variable = { ammo_days_to_empty = { value = ammunition_value_k divide = ammunition_delta_value_k multiply = -1 } }
+		set_variable = { ammo_frame_var = 3 }
+	}
+	else = {
+		set_variable = { ammo_days_to_full = 0 }
+		set_variable = { ammo_days_to_empty = 0 }
+		set_variable = { ammo_frame_var = 1 }
+	}
+	set_variable = { ammo_days_count = { value = ammo_days_to_full add = ammo_days_to_empty } }
+	round_variable = ammo_days_count
+	set_variable = { ammo_days_mod10 = ammo_days_count }
+	modulo_variable = { var = ammo_days_mod10 value = 10 }
+	set_variable = { ammo_days_mod100 = ammo_days_count }
+	modulo_variable = { var = ammo_days_mod100 value = 100 }
+}
+
+# Требует temp_delta
+ammunition_change_produce_recovery_factors = {
+	set_variable = { ammunition_produce_factor = { value = ammunition_produce_factor add = temp_delta clamp = { min = 0 max = 1 } } }
+	set_variable = { ammunition_recovery_factor = { value = 1 subtract = ammunition_produce_factor } }
+}
+
+# Требует temp_delta
+ammunition_change_level = {
+	add_to_variable = { ammunition_level = temp_delta }
+	ammunition_clamp_level = yes
+}
+
+# Требует temp_delta. Под автоматизацией и у ИИ уровень задаёт модификатор ammunition_level_target
+ammunition_raise_level = {
+	if = {
+		limit = {
+			is_ai = no
+			has_country_flag = ammunition_supply_factor_ai_disable
+		}
+		# Иначе предел из модификатора, добавленного тем же событием, обновится только на следующий день
+		force_update_dynamic_modifier = yes
+		ammunition_change_level = yes
+	}
+}
+
+# Требует temp ammunition_disp_in в тысячах; пишет temp ammunition_disp_out и ammunition_disp_unit: 0 — единицы, 1 — k, 2 — M
+ammunition_scale_for_display = {
+	set_temp_variable = { ammunition_disp_abs = ammunition_disp_in }
+	if = {
+		limit = { check_variable = { ammunition_disp_abs < 0 } }
+		multiply_temp_variable = { ammunition_disp_abs = -1 }
+	}
+	if = {
+		limit = { check_variable = { ammunition_disp_abs < 1 } }
+		set_temp_variable = { ammunition_disp_out = { value = ammunition_disp_in multiply = 1000 } }
+		set_temp_variable = { ammunition_disp_unit = 0 }
+	}
+	else_if = {
+		limit = { check_variable = { ammunition_disp_abs < 1000 } }
+		set_temp_variable = { ammunition_disp_out = ammunition_disp_in }
+		set_temp_variable = { ammunition_disp_unit = 1 }
+	}
+	else = {
+		set_temp_variable = { ammunition_disp_out = { value = ammunition_disp_in divide = 1000 } }
+		set_temp_variable = { ammunition_disp_unit = 2 }
+	}
+}
+
+ammunition_update_display = {
+	set_temp_variable = { ammunition_disp_in = ammunition_value_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_value_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_value_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_max_storage_capacity_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_max_storage_capacity_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_max_storage_capacity_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_generation_value_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_generation_value_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_generation_value_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_need_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_need_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_need_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_spent_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_spent_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_spent_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_available_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_available_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_available_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_produce_value_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_produce_value_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_produce_value_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_recovery_value_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_recovery_value_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_recovery_value_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_delta_value_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_delta_value_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_delta_value_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_plans_production_base_value }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_plans_production_base_value_disp = ammunition_disp_out }
+	set_variable = { ammunition_plans_production_base_value_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_plants_production_value }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_plants_production_value_disp = ammunition_disp_out }
+	set_variable = { ammunition_plants_production_value_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_silos_capacity_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_silos_capacity_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_silos_capacity_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_field_storage_capacity_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_field_storage_capacity_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_field_storage_capacity_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_old_value_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_old_value_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_old_value_k_unit = ammunition_disp_unit }
+	set_temp_variable = { ammunition_disp_in = ammunition_need_reference_k }
+	ammunition_scale_for_display = yes
+	set_variable = { ammunition_need_reference_k_disp = ammunition_disp_out }
+	set_variable = { ammunition_need_reference_k_unit = ammunition_disp_unit }
+}
