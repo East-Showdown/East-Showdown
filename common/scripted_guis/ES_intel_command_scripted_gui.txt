@@ -10,7 +10,7 @@ scripted_gui = {
 		window_name = "ES_intel_command_launcher"
 		parent_window_name = agency_branches
 
-		dirty = global.ES_auto_agency_dirty
+		dirty = global.ES_intel_command_dirty
 
 		visible = {
 			always = no
@@ -24,15 +24,8 @@ scripted_gui = {
 				}
 				else = {
 					
-					# заполняется только при открытии окна AUTO-AGENCY или на старте игры.
-					if = {
-						limit = { NOT = { has_variable = global.ES_auto_agency_upgrades^num } }
-						ES_auto_agency_init_globals = yes
-					}
-					else_if = {
-						limit = { check_variable = { global.ES_auto_agency_upgrades^num < 17 } }
-						ES_auto_agency_init_globals = yes
-					}
+					# список улучшений для сетки заполняется при открытии окна (on_startup не срабатывает при загрузке сейва).
+					ES_intel_command_init_globals = yes
 					if = {
 						limit = { NOT = { has_variable = ES_intel_selection } }
 						set_variable = { ES_intel_selection = 0 }
@@ -43,7 +36,7 @@ scripted_gui = {
 					}
 					set_country_flag = ES_intel_command_gui_open
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 		}
 	}
@@ -53,7 +46,7 @@ scripted_gui = {
 		context_type = player_context
 		window_name = "ES_intel_command_window"
 
-		dirty = global.ES_auto_agency_dirty
+		dirty = global.ES_intel_command_dirty
 
 		visible = {
 			always = no
@@ -63,7 +56,7 @@ scripted_gui = {
 			close_intel_command_button_click = {
 				clr_country_flag = ES_intel_command_gui_open
 				set_variable = { ES_intel_selection = 0 }
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Гражданское направление
@@ -75,7 +68,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 1 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Военное направление
@@ -87,7 +80,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 2 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Авиационное направление
@@ -99,7 +92,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 3 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Информационное направление
@@ -111,7 +104,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 4 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# ДРГ
@@ -123,7 +116,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 5 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Информационная война: политическое давление
@@ -135,7 +128,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 6 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Информационная война: дипломатическая изоляция
@@ -147,7 +140,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 7 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Информационная война: контроль торговли
@@ -159,7 +152,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 8 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Спецоперации: диверсии и удары
@@ -171,7 +164,7 @@ scripted_gui = {
 				else = {
 					set_variable = { ES_intel_selection = 9 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 
 			# Улучшение агентства: выбрать для справки
@@ -187,7 +180,7 @@ scripted_gui = {
 					set_variable = { ES_intel_upgrade_index = i }
 					set_variable = { ES_intel_selection = 100 }
 				}
-				ES_auto_agency_mark_dirty = yes
+				ES_intel_command_mark_dirty = yes
 			}
 		}
 
@@ -196,7 +189,7 @@ scripted_gui = {
 				image = "[ES_intel_agency_logo_gfx]"
 			}
 			intel_upgrade_button = {
-				image = "[ES_auto_agency_upgrade_icon]"
+				image = "[ES_intel_upg_grid_icon]"
 			}
 			intel_upgrade_sel = {
 				image = "[ES_intel_upg_entry_sel]"
@@ -266,7 +259,7 @@ scripted_gui = {
 
 		dynamic_lists = {
 			intel_upgrades_gridbox = {
-				array = global.ES_auto_agency_upgrades
+				array = global.ES_intel_command_upgrades
 				change_scope = no
 				entry_container = "intel_upgrade_item"
 			}
