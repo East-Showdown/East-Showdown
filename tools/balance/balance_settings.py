@@ -109,8 +109,8 @@ IC_PROFILES = {
     "inf_weapons": {          # mortar, atgm, aa, grenade launchers
         "base": 0, "round": 2,
         "weights": {
-            "soft_attack": 0.15,
-            "hard_attack": 0.20,
+            "soft_attack": 0.12,
+            "hard_attack": 0.14,
             "ap_attack": 0.005,
             "air_attack": 0.40,
         },
@@ -268,7 +268,7 @@ EQUIPMENT_RULES = [
      "ic": "inf_weapons", "supply": "infantry"},
 
     # towed artillery: priced like vehicle modules ("add_stats" weights), +50% IC
-    {"archetype": ["artillery_equipment"], "ic": "module", "ic_multiplier": 1.5, "supply": "vehicle"},
+    {"archetype": ["artillery_equipment"], "ic": "module", "ic_multiplier": 0.8, "supply": "vehicle"},
 
     # air
     {"archetype": ["fighter_equipment"], "ic": "multirole", "supply": None},
