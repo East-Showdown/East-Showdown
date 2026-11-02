@@ -1,0 +1,265 @@
+# Exact named-variant transfers from the Polish reserve to Ukraine.
+# Keep producer and variant_name together: Polish designs are POL-owned;
+# the M1A2 SEP v3 supplied to Poland is an NTO design.
+# Debit first and measure the actual change. A short debit is rolled back;
+# only a complete shipment is credited to Ukraine and the aid ledger.
+
+POL_transfer_fixed_BMP_to_ukraine = {
+	if = {
+		limit = { country_exists = UKR }
+		set_temp_variable = { POL_fixed_transfer_removed = num_equipment@ifv_sov_bmp1_equipment }
+		add_equipment_to_stockpile = {
+			type = ifv_sov_bmp1_equipment
+			variant_name = "BWP-1"
+			producer = POL
+			amount = -50
+		}
+		subtract_from_temp_variable = { POL_fixed_transfer_removed = num_equipment@ifv_sov_bmp1_equipment }
+		if = {
+			limit = { check_variable = { POL_fixed_transfer_removed = 50 } }
+			UKR = {
+				add_equipment_to_stockpile = {
+					type = ifv_sov_bmp1_equipment
+					variant_name = "BWP-1"
+					producer = POL
+					amount = 50
+				}
+			}
+			add_to_variable = { _POL_weapons_list_ifv_equipment_var = 50 }
+		}
+		else = {
+			if = {
+				limit = { check_variable = { POL_fixed_transfer_removed > 0 } }
+				add_equipment_to_stockpile = {
+					type = ifv_sov_bmp1_equipment
+					variant_name = "BWP-1"
+					producer = POL
+					amount = POL_fixed_transfer_removed
+				}
+			}
+			add_political_power = 10
+			log = "[GetDateText]: POL fixed shipment BWP-1 failed: insufficient exact variant; political power refunded"
+		}
+	}
+	else = { add_political_power = 10 }
+}
+
+POL_transfer_fixed_BTR_to_ukraine = {
+	if = {
+		limit = { country_exists = UKR }
+		set_temp_variable = { POL_fixed_transfer_removed = num_equipment@apc_pol_rosomak_equipment }
+		add_equipment_to_stockpile = {
+			type = apc_pol_rosomak_equipment
+			variant_name = "KTO Rosomak"
+			producer = POL
+			amount = -50
+		}
+		subtract_from_temp_variable = { POL_fixed_transfer_removed = num_equipment@apc_pol_rosomak_equipment }
+		if = {
+			limit = { check_variable = { POL_fixed_transfer_removed = 50 } }
+			UKR = {
+				add_equipment_to_stockpile = {
+					type = apc_pol_rosomak_equipment
+					variant_name = "KTO Rosomak"
+					producer = POL
+					amount = 50
+				}
+			}
+			add_to_variable = { _POL_weapons_list_afv_equipment_var = 50 }
+		}
+		else = {
+			if = {
+				limit = { check_variable = { POL_fixed_transfer_removed > 0 } }
+				add_equipment_to_stockpile = {
+					type = apc_pol_rosomak_equipment
+					variant_name = "KTO Rosomak"
+					producer = POL
+					amount = POL_fixed_transfer_removed
+				}
+			}
+			add_political_power = 10
+			log = "[GetDateText]: POL fixed shipment KTO Rosomak failed: insufficient exact variant; political power refunded"
+		}
+	}
+	else = { add_political_power = 10 }
+}
+
+POL_transfer_fixed_tanks_to_ukraine = {
+	if = {
+		limit = { country_exists = UKR }
+		set_temp_variable = { POL_fixed_transfer_removed = num_equipment@tank_sov_t72_equipment }
+		add_equipment_to_stockpile = {
+			type = tank_sov_t72_equipment
+			variant_name = "PT-91 Twardy"
+			producer = POL
+			amount = -50
+		}
+		subtract_from_temp_variable = { POL_fixed_transfer_removed = num_equipment@tank_sov_t72_equipment }
+		if = {
+			limit = { check_variable = { POL_fixed_transfer_removed = 50 } }
+			UKR = {
+				add_equipment_to_stockpile = {
+					type = tank_sov_t72_equipment
+					variant_name = "PT-91 Twardy"
+					producer = POL
+					amount = 50
+				}
+			}
+			add_to_variable = { _POL_weapons_list_tanks_equipment_var = 50 }
+		}
+		else = {
+			if = {
+				limit = { check_variable = { POL_fixed_transfer_removed > 0 } }
+				add_equipment_to_stockpile = {
+					type = tank_sov_t72_equipment
+					variant_name = "PT-91 Twardy"
+					producer = POL
+					amount = POL_fixed_transfer_removed
+				}
+			}
+			add_political_power = 10
+			log = "[GetDateText]: POL fixed shipment PT-91 Twardy failed: insufficient exact variant; political power refunded"
+		}
+	}
+	else = { add_political_power = 10 }
+}
+
+# D-30 has its own equipment type and needs no named designer variant.
+POL_transfer_fixed_artillery_to_ukraine = {
+	if = {
+		limit = {
+			country_exists = UKR
+			has_equipment = { sov_artillery_d30_equipment > 49 }
+		}
+		send_equipment = {
+			equipment = sov_artillery_d30_equipment
+			amount = 50
+			target = UKR
+		}
+		add_to_variable = { _POL_weapons_list_artillery_equipment_var = 50 }
+	}
+	else = {
+		add_political_power = 10
+		log = "[GetDateText]: POL fixed shipment D-30 failed: insufficient stock or recipient missing; political power refunded"
+	}
+}
+
+POL_transfer_fixed_SPG_to_ukraine = {
+	if = {
+		limit = { country_exists = UKR }
+		set_temp_variable = { POL_fixed_transfer_removed = num_equipment@sp_artillery_tank_eng_challenger1_equipment }
+		add_equipment_to_stockpile = {
+			type = sp_artillery_tank_eng_challenger1_equipment
+			variant_name = "AHS Krab"
+			producer = POL
+			amount = -50
+		}
+		subtract_from_temp_variable = { POL_fixed_transfer_removed = num_equipment@sp_artillery_tank_eng_challenger1_equipment }
+		if = {
+			limit = { check_variable = { POL_fixed_transfer_removed = 50 } }
+			UKR = {
+				add_equipment_to_stockpile = {
+					type = sp_artillery_tank_eng_challenger1_equipment
+					variant_name = "AHS Krab"
+					producer = POL
+					amount = 50
+				}
+			}
+			add_to_variable = { _POL_weapons_list_spa_equipment_var = 50 }
+		}
+		else = {
+			if = {
+				limit = { check_variable = { POL_fixed_transfer_removed > 0 } }
+				add_equipment_to_stockpile = {
+					type = sp_artillery_tank_eng_challenger1_equipment
+					variant_name = "AHS Krab"
+					producer = POL
+					amount = POL_fixed_transfer_removed
+				}
+			}
+			add_political_power = 10
+			log = "[GetDateText]: POL fixed shipment AHS Krab failed: insufficient exact variant; political power refunded"
+		}
+	}
+	else = { add_political_power = 10 }
+}
+
+POL_transfer_fixed_abrams_to_ukraine = {
+	if = {
+		limit = { country_exists = UKR }
+		set_temp_variable = { POL_fixed_transfer_removed = num_equipment@tank_usa_abrams_equipment }
+		add_equipment_to_stockpile = {
+			type = tank_usa_abrams_equipment
+			variant_name = "M1A2 SEP v3"
+			producer = NTO
+			amount = -10
+		}
+		subtract_from_temp_variable = { POL_fixed_transfer_removed = num_equipment@tank_usa_abrams_equipment }
+		if = {
+			limit = { check_variable = { POL_fixed_transfer_removed = 10 } }
+			UKR = {
+				add_equipment_to_stockpile = {
+					type = tank_usa_abrams_equipment
+					variant_name = "M1A2 SEP v3"
+					producer = NTO
+					amount = 10
+				}
+			}
+			add_to_variable = { _POL_weapons_list_abrams_equipment_var = 10 }
+		}
+		else = {
+			if = {
+				limit = { check_variable = { POL_fixed_transfer_removed > 0 } }
+				add_equipment_to_stockpile = {
+					type = tank_usa_abrams_equipment
+					variant_name = "M1A2 SEP v3"
+					producer = NTO
+					amount = POL_fixed_transfer_removed
+				}
+			}
+			add_political_power = 20
+			log = "[GetDateText]: POL fixed shipment M1A2 SEP v3 failed: insufficient exact variant; political power refunded"
+		}
+	}
+	else = { add_political_power = 20 }
+}
+
+POL_transfer_fixed_leopard_to_ukraine = {
+	if = {
+		limit = { country_exists = UKR }
+		set_temp_variable = { POL_fixed_transfer_removed = num_equipment@tank_ger_leopard2_equipment }
+		add_equipment_to_stockpile = {
+			type = tank_ger_leopard2_equipment
+			variant_name = "Leopard 2A4"
+			producer = POL
+			amount = -10
+		}
+		subtract_from_temp_variable = { POL_fixed_transfer_removed = num_equipment@tank_ger_leopard2_equipment }
+		if = {
+			limit = { check_variable = { POL_fixed_transfer_removed = 10 } }
+			UKR = {
+				add_equipment_to_stockpile = {
+					type = tank_ger_leopard2_equipment
+					variant_name = "Leopard 2A4"
+					producer = POL
+					amount = 10
+				}
+			}
+			add_to_variable = { _POL_weapons_list_leopard2_equipment_var = 10 }
+		}
+		else = {
+			if = {
+				limit = { check_variable = { POL_fixed_transfer_removed > 0 } }
+				add_equipment_to_stockpile = {
+					type = tank_ger_leopard2_equipment
+					variant_name = "Leopard 2A4"
+					producer = POL
+					amount = POL_fixed_transfer_removed
+				}
+			}
+			add_political_power = 20
+			log = "[GetDateText]: POL fixed shipment Leopard 2A4 failed: insufficient exact variant; political power refunded"
+		}
+	}
+	else = { add_political_power = 20 }
+}

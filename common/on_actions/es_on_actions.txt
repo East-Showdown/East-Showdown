@@ -1824,6 +1824,20 @@ on_actions = {
 				set_variable = { global.var_SMO_landing_Vasilkov_fail = 50 }
 				set_variable = { WGN.WGN_Andrey_Troshev_Redoubt_var = 50 }
 			}
+
+			if = {
+				limit = { has_start_date = 2022.1.1 }
+				UKR = {
+					set_variable = { UKR_Ukraines_ground_forces_army_core_defence_factor = 0.08 }
+					force_update_dynamic_modifier = yes
+					set_fuel_ratio = 1
+					add_ideas = UKR_cross_border_fuel_supplies
+					if = {
+						limit = { has_war_with = RUS }
+						UKR_disrupt_cross_border_fuel_supplies = yes
+					}
+				}
+			}
 		}
 	}
 	on_declare_war = {
@@ -1974,6 +1988,16 @@ on_actions = {
 
 			}
 
+
+			if = {
+				limit = {
+					OR = {
+						AND = { tag = RUS FROM = { tag = UKR } }
+						AND = { tag = UKR FROM = { tag = RUS } }
+					}
+				}
+				UKR = { UKR_disrupt_cross_border_fuel_supplies = yes }
+			}
 		}
 	}
 	on_monthly_RBZ = {
@@ -2378,6 +2402,14 @@ on_actions = {
 					}
 				}
 				subtract_from_variable = { ES_intel_network_loss = 1 }
+			}
+
+			UKR = {
+				# Also covers joining an ongoing war while already fighting another country.
+				if = {
+					limit = { has_idea = UKR_cross_border_fuel_supplies has_war_with = RUS }
+					UKR_disrupt_cross_border_fuel_supplies = yes
+				}
 			}
 		}
 	}
@@ -3333,4 +3365,12 @@ on_actions = {
 
 
 
+	on_war = {
+		effect = {
+			if = {
+				limit = { tag = UKR has_war_with = RUS }
+				UKR_disrupt_cross_border_fuel_supplies = yes
+			}
+		}
+	}
 }
