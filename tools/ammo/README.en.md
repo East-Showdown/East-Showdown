@@ -29,6 +29,7 @@ Only the sub-units in the table consume ammunition. Bonuses and penalties apply 
 | `sp_heavy_artillery_chassis` | `sp_heavy_art` | `support_heavy_spa` |
 | `sp_mlrs_chassis` | `MRLS` | `support_mlrs` |
 | `sp_tos_chassis` | `TOS` | `support_tos` |
+| `mortar_equipment` | | `mortar` |
 
 Consumption is counted per general. A general counts if he is assigned to an army, leads at least one division
 and does not lead an army group (a field marshal is skipped; his armies count through their own generals).
@@ -132,6 +133,7 @@ Block `ammunition`. Script reads a constant as `constant:ammunition.<name>`.
 | `k_TOS` | TOS battalion consumption | k per day | 0.1 |
 | `k_artillery`, `k_support_spa`, `k_support_heavy_spa`, `k_support_mlrs` | support company consumption | k per day | 0.04 |
 | `k_support_tos` | TOS company consumption | k per day | 0.05 |
+| `k_mortar` | mortar company consumption | k per day | 0.01 |
 | `factor_off` | consumption multiplier of attacking divisions | multiplier | 2 |
 | `factor_def` | consumption multiplier of defending divisions | multiplier | 1 |
 | `level_min` | lower bound of the level | share | 0 |

@@ -13,7 +13,7 @@ LOC_EN = ROOT / "localisation/english/ammo_ideas_l_english.yml"
 
 STEP_PERCENT = 5
 ARCHETYPES = ["artillery_equipment", "sp_artillery_chassis", "sp_heavy_artillery_chassis",
-              "sp_mlrs_chassis", "sp_tos_chassis"]
+              "sp_mlrs_chassis", "sp_tos_chassis", "mortar_equipment"]
 STATS = [("soft_attack", "attack"), ("hard_attack", "attack"), ("breakthrough", "breakthrough"), ("defense", "defense"),
          ("supply_consumption", "supply_consumption")]
 CURVE_VARIABLES = [("attack", "ammunition_bonus_attack"), ("breakthrough", "ammunition_bonus_breakthrough"),
@@ -138,9 +138,9 @@ def main():
     write(CURVE_EFFECTS, curve_effects_file(curves))
     write(EFFECTS, effects_file(steps))
     write(LOC_RU, loc_file("l_russian:", "Обеспеченность боеприпасами",
-                           "Бонус действует на артиллерию, САУ, РСЗО и ТОС.", steps), bom=True)
+                           "Бонус действует на артиллерию, САУ, РСЗО, ТОС и миномёты.", steps), bom=True)
     write(LOC_EN, loc_file("l_english:", "Ammunition supply",
-                           "The bonus applies to artillery, self-propelled guns, MLRS and TOS.", steps), bom=True)
+                           "The bonus applies to artillery, self-propelled guns, MLRS, TOS and mortars.", steps), bom=True)
 
 
 if __name__ == "__main__":
