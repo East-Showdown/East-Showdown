@@ -22,12 +22,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -48,7 +52,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 		starting_point = {
@@ -74,7 +78,7 @@ types = {
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -90,7 +94,7 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -116,8 +120,30 @@ types = {
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -134,68 +160,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -203,13 +176,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -226,69 +199,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -296,13 +215,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -319,69 +238,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -389,13 +254,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -436,12 +301,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -461,7 +330,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 4 }
+				amount = { min = 6 }
 			}
 		}
 		starting_point = {
@@ -486,10 +355,6 @@ types = {
 					reference = 6
 					weight = -0.5
 				}
-				interception = {
-					reference = 5 
-					weight = -0.15
-				}
 				intel = {
 					weight = 0.1
 					reference = 100
@@ -501,10 +366,6 @@ types = {
 				anti_air = {
 					reference = 6
 					weight = 0.30
-				}
-				interception = {
-					reference = 5 
-					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -529,8 +390,30 @@ types = {
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }
+					set_temp_variable = { raid_planes_lost = 6 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -547,68 +430,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -616,13 +446,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -639,69 +469,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -709,13 +485,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -732,69 +508,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -802,13 +524,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -848,12 +570,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@air_base > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -873,7 +599,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { ukr_drone_missile_equipment nto_guided_uav_equipment ukr_guided_uav_equipment rus_guided_uav_equipment }
-				amount = { min = 12 }
+				amount = { min = 100 }
 			}
 		}
 		starting_point = {
@@ -885,20 +611,22 @@ types = {
 			success = {
 				base = 0.1
 				strategic_bomber = {
-					weight = 0.20
-					reference = 200
+					weight = 0.6
+					reference = 100
+					start_weight = -0.10
 				}
 				air_agility = {
-					reference = 15
-					weight = 0.15
+					reference = 20
+					weight = 0.4
+					start_weight = -0.10
 				}
 				anti_air = {
 					reference = 6
-					weight = -0.2 #Снижен для дронов
+					weight = -0.5
 				}
 				interception = {
-					reference = 5 
-					weight = -0.10 #Снижен для дронов
+					reference = 12 
+					weight = -0.15
 				}
 				intel = {
 					weight = 0.1
@@ -913,25 +641,52 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 			}
 
 			critical = {
 				base = 0.01
+				air_agility = {
+					reference = 30
+					start_reference = 10
+					weight = 0.10
+				}
 				strategic_bomber = {
-					weight = 0.05
-					reference = 400
-					start_reference = 200
+					weight = 0.15
+					reference = 150
+					start_reference = 100
 				}
 			}
 		}
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = air_base
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }
+					set_temp_variable = { raid_planes_lost = 100 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -948,68 +703,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 0.3 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 0.2 } } set_temp_variable = { building_damage_by_missile = 0.2 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1017,13 +719,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1040,69 +742,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1110,13 +758,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1133,69 +781,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.airBase = THIS.building_level@air_base }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 2.5 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { airBase > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = airBase }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 2 } } set_temp_variable = { building_damage_by_missile = 2 } }
-
-					var:target_state = {
 						if = { limit = { air_base > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@air_base }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1203,13 +797,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1251,10 +845,15 @@ types = {
 		
 		show_target = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -1276,7 +875,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 	
@@ -1303,7 +902,7 @@ types = {
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -1319,7 +918,7 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -1345,8 +944,30 @@ types = {
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = radar_station
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1363,68 +984,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1432,13 +1000,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1455,69 +1023,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1525,13 +1039,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1548,69 +1062,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1618,13 +1078,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1666,10 +1126,15 @@ types = {
 		
 		show_target = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -1718,7 +1183,7 @@ types = {
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -1734,7 +1199,7 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -1760,6 +1225,28 @@ types = {
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = radar_station
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
 					set_temp_variable = { raid_planes_lost = 8 }
 
@@ -1778,68 +1265,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1847,7 +1281,7 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
@@ -1870,69 +1304,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -1940,7 +1320,7 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
@@ -1963,69 +1343,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2033,7 +1359,7 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
@@ -2081,10 +1407,15 @@ types = {
 		
 		show_target = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@radar_station > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -2106,7 +1437,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { ukr_drone_missile_equipment nto_guided_uav_equipment ukr_guided_uav_equipment rus_guided_uav_equipment }
-				amount = { min = 12 }
+				amount = { min = 100 }
 			}
 		}
 	
@@ -2119,20 +1450,22 @@ types = {
 			success = {
 				base = 0.1
 				strategic_bomber = {
-					weight = 0.20
-					reference = 200
+					weight = 0.6
+					reference = 100
+					start_weight = -0.10
 				}
 				air_agility = {
-					reference = 15
-					weight = 0.15
+					reference = 20
+					weight = 0.4
+					start_weight = -0.10
 				}
 				anti_air = {
 					reference = 6
-					weight = -0.2 #Снижен для дронов
+					weight = -0.5
 				}
 				interception = {
-					reference = 5 
-					weight = -0.10 #Снижен для дронов
+					reference = 12 
+					weight = -0.15
 				}
 				intel = {
 					weight = 0.1
@@ -2147,25 +1480,52 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 			}
 
 			critical = {
 				base = 0.01
+				air_agility = {
+					reference = 30
+					start_reference = 10
+					weight = 0.10
+				}
 				strategic_bomber = {
-					weight = 0.05
-					reference = 400
-					start_reference = 200
+					weight = 0.15
+					reference = 150
+					start_reference = 100
 				}
 			}
 		}
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = radar_station
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }
+					set_temp_variable = { raid_planes_lost = 100 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2182,68 +1542,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 0.3 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 0.2 } } set_temp_variable = { building_damage_by_missile = 0.2 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2251,13 +1558,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2274,69 +1581,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2344,13 +1597,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2367,69 +1620,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.radarstation = THIS.building_level@radar_station }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 2.5 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { radarstation > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = radarstation }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 2 } } set_temp_variable = { building_damage_by_missile = 2 } }
-
-					var:target_state = {
 						if = { limit = { radar_station > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@radar_station }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2437,13 +1636,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2484,12 +1683,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@synthetic_refinery > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@synthetic_refinery > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@synthetic_refinery > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -2511,7 +1714,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 	
@@ -2538,7 +1741,7 @@ types = {
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -2554,7 +1757,7 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -2580,8 +1783,30 @@ types = {
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = synthetic_refinery
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2598,68 +1823,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.syntheticRefinery = THIS.building_level@synthetic_refinery }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { syntheticRefinery > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = syntheticRefinery }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2667,13 +1839,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2690,69 +1862,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.syntheticRefinery = THIS.building_level@synthetic_refinery }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { syntheticRefinery > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = syntheticRefinery }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2760,13 +1878,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2783,69 +1901,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.syntheticRefinery = THIS.building_level@synthetic_refinery }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { syntheticRefinery > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = syntheticRefinery }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -2853,13 +1917,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2900,12 +1964,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@synthetic_refinery > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@synthetic_refinery > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@synthetic_refinery > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -2927,7 +1995,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { ukr_guided_uav_equipment nto_guided_uav_equipment ukr_drone_missile_equipment rus_guided_uav_equipment }
-				amount = { min = 12 }
+				amount = { min = 100 }
 			}
 		}
 	
@@ -2940,20 +2008,22 @@ types = {
 			success = {
 				base = 0.1
 				strategic_bomber = {
-					weight = 0.20
-					reference = 200
+					weight = 0.6
+					reference = 100
+					start_weight = -0.10
 				}
 				air_agility = {
-					reference = 15
-					weight = 0.15
+					reference = 20
+					weight = 0.4
+					start_weight = -0.10
 				}
 				anti_air = {
 					reference = 6
-					weight = -0.2 #Снижен для дронов
+					weight = -0.5
 				}
 				interception = {
-					reference = 5 
-					weight = -0.10 #Снижен для дронов
+					reference = 12 
+					weight = -0.15
 				}
 				intel = {
 					weight = 0.1
@@ -2968,25 +2038,52 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 			}
 
 			critical = {
 				base = 0.01
+				air_agility = {
+					reference = 30
+					start_reference = 10
+					weight = 0.10
+				}
 				strategic_bomber = {
-					weight = 0.05
-					reference = 400
-					start_reference = 200
+					weight = 0.15
+					reference = 150
+					start_reference = 100
 				}
 			}
 		}
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = synthetic_refinery
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }
+					set_temp_variable = { raid_planes_lost = 100 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3003,68 +2100,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.syntheticRefinery = THIS.building_level@synthetic_refinery }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 0.3 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { syntheticRefinery > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = syntheticRefinery }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 0.2 } } set_temp_variable = { building_damage_by_missile = 0.2 } }
-
-					var:target_state = {
 						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3072,13 +2116,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3095,69 +2139,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.syntheticRefinery = THIS.building_level@synthetic_refinery }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { syntheticRefinery > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = syntheticRefinery }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3165,13 +2155,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3188,69 +2178,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.syntheticRefinery = THIS.building_level@synthetic_refinery }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 2.5 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { syntheticRefinery > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = syntheticRefinery }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 2 } } set_temp_variable = { building_damage_by_missile = 2 } }
-
-					var:target_state = {
 						if = { limit = { synthetic_refinery > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@synthetic_refinery }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3258,13 +2194,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3305,12 +2241,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@fuel_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@fuel_silo > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@fuel_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -3332,7 +2272,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 	
@@ -3359,7 +2299,7 @@ types = {
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -3375,7 +2315,7 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -3401,8 +2341,30 @@ types = {
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = fuel_silo
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3419,68 +2381,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.fuelsilo = THIS.building_level@fuel_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { fuelsilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = fuelsilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3488,13 +2397,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3511,69 +2420,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.fuelsilo = THIS.building_level@fuel_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { fuelsilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = fuelsilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3581,13 +2436,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3604,69 +2459,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.fuelsilo = THIS.building_level@fuel_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { fuelsilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = fuelsilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3674,13 +2475,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3721,12 +2522,16 @@ types = {
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@fuel_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@fuel_silo > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@fuel_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -3748,7 +2553,7 @@ types = {
 		unit_requirements = {
 			equipment = {
 				type = { ukr_guided_uav_equipment nto_guided_uav_equipment ukr_drone_missile_equipment rus_guided_uav_equipment }
-				amount = { min = 12 }
+				amount = { min = 100 }
 			}
 		}
 	
@@ -3761,20 +2566,22 @@ types = {
 			success = {
 				base = 0.1
 				strategic_bomber = {
-					weight = 0.20
-					reference = 200
+					weight = 0.6
+					reference = 100
+					start_weight = -0.10
 				}
 				air_agility = {
-					reference = 15
-					weight = 0.15
+					reference = 20
+					weight = 0.4
+					start_weight = -0.10
 				}
 				anti_air = {
 					reference = 6
-					weight = -0.2 #Снижен для дронов
+					weight = -0.5
 				}
 				interception = {
-					reference = 5 
-					weight = -0.10 #Снижен для дронов
+					reference = 12 
+					weight = -0.15
 				}
 				intel = {
 					weight = 0.1
@@ -3789,25 +2596,52 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 			}
 
 			critical = {
 				base = 0.01
+				air_agility = {
+					reference = 30
+					start_reference = 10
+					weight = 0.10
+				}
 				strategic_bomber = {
-					weight = 0.05
-					reference = 400
-					start_reference = 200
+					weight = 0.15
+					reference = 150
+					start_reference = 100
 				}
 			}
 		}
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = fuel_silo
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }
+					set_temp_variable = { raid_planes_lost = 100 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3824,68 +2658,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.fuelsilo = THIS.building_level@fuel_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 0.3 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { fuelsilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = fuelsilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 0.2 } } set_temp_variable = { building_damage_by_missile = 0.2 } }
-
-					var:target_state = {
 						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3893,13 +2674,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -3916,69 +2697,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.fuelsilo = THIS.building_level@fuel_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { fuelsilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = fuelsilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -3986,13 +2713,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -4009,69 +2736,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.fuelsilo = THIS.building_level@fuel_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 2.5 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { fuelsilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = fuelsilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 2 } } set_temp_variable = { building_damage_by_missile = 2 } }
-
-					var:target_state = {
 						if = { limit = { fuel_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@fuel_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -4079,13 +2752,13 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -4127,10 +2800,15 @@ types = {
 		
 		show_target = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@anti_air_building > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@anti_air_building > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@anti_air_building > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
@@ -4179,7 +2857,7 @@ types = {
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -4195,7 +2873,7 @@ types = {
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -4221,6 +2899,28 @@ types = {
 	
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { anti_air_building > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@anti_air_building }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							meta_effect = {
+								text = {
+									damage_building = {
+										type = anti_air_building
+										damage = [DAM]
+									}
+								}
+								DAM = "[?raid_dmg]"
+							}
+						}
+					}
+				}
 				actor_effects = {
 					set_temp_variable = { raid_planes_lost = 8 }
 
@@ -4239,68 +2939,15 @@ types = {
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.antiairbuilding = THIS.building_level@anti_air_building }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { antiairbuilding > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = antiairbuilding }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { anti_air_building > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@anti_air_building }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -4308,7 +2955,7 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
@@ -4331,69 +2978,15 @@ types = {
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.antiairbuilding = THIS.building_level@anti_air_building }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { antiairbuilding > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = antiairbuilding }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { anti_air_building > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@anti_air_building }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -4401,7 +2994,7 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}
@@ -4424,69 +3017,15 @@ types = {
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.antiairbuilding = THIS.building_level@anti_air_building }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { antiairbuilding > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = antiairbuilding }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { anti_air_building > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@anti_air_building }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
 							meta_effect = {
 								text = {
 									damage_building = {
@@ -4494,7 +3033,7 @@ types = {
 										damage = [DAM]
 									}
 								}
-								DAM = "[?building_damage_by_missile]"
+								DAM = "[?raid_dmg]"
 							}
 						}
 					}

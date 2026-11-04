@@ -8,3 +8,199 @@ d_add_ammunition = {
 		FROM.ammunition_value_k = args^0
 	}
 }
+
+# =====================================================================
+# Bridge / dam test commands (see console_commands.md)
+# <pos> = object position 0-28, the same number used in raids and
+# decisions. Output is written to the console and to game.log.
+# Run bridge_list first to see every position.
+# =====================================================================
+
+# --- helpers (not commands) ---
+es_bridge_console_check_pos = {
+	set_temp_variable = { b_ok = 0 }
+	if = {
+		limit = {
+			check_variable = { bpos > -1 }
+			check_variable = { bpos < global.dnipro_obj_max_hp^num }
+		}
+		set_temp_variable = { b_ok = 1 }
+	}
+	else = {
+		log = "BRIDGE TEST: position [?bpos|.0] does not exist, use 0 - [?global.dnipro_obj_max_hp^num|.0] minus one"
+	}
+}
+
+es_bridge_console_print = {
+	set_temp_variable = { b_tok = global.dnipro_objects^bpos }
+	set_temp_variable = { b_flag = global.dnipro_obj_strait^bpos }
+	set_temp_variable = { b_hp = global.dnipro_obj_current_hp^bpos }
+	set_temp_variable = { b_max = global.dnipro_obj_max_hp^bpos }
+	set_temp_variable = { b_crit = global.dnipro_obj_critical_hp^bpos }
+	set_temp_variable = { b_start = global.dnipro_obj_start_loss_hp^bpos }
+	set_temp_variable = { b_loss = global.dnipro_obj_damage^bpos }
+	set_temp_variable = { b_dead = global.dnipro_obj_is_destroyed^bpos }
+	set_temp_variable = { b_owner = global.bridges_province_controllers^bpos }
+	set_temp_variable = { b_blocked = 0 }
+	meta_effect = {
+		F = "[?b_flag.GetTokenKey]"
+		text = {
+			if = { limit = { has_global_flag = [F] } set_temp_variable = { b_blocked = 1 } }
+		}
+	}
+	log = "BRIDGE TEST: [?bpos|.0] [?b_tok.GetTokenKey] - HP [?b_hp|.1] / [?b_max|.0], blocks below [?b_crit|.1], blocked [?b_blocked|.0], destroyed [?b_dead|.0], erodes below [?b_start|.0] by [?b_loss|.1] per week, owner [?b_owner|.0] (1 UKR, 2 RUS), flag [?b_flag.GetTokenKey]"
+}
+
+# Apply the instant part of a weekly tick: clamp HP, blocking flags, destruction news.
+# No erosion and no repair, so the HP you set stays exact.
+es_bridge_console_apply = {
+	for_each_loop = {
+		array = global.dnipro_obj_max_hp
+		index = i
+		clamp_variable = { var = global.dnipro_obj_current_hp^i min = 0 max = global.dnipro_obj_max_hp^i }
+	}
+	BOR = {
+		autoblocking_all_dnipro_straits_objects = yes
+		execute_destruction_scenario_dnipro_objects = yes
+	}
+}
+
+# --- commands ---
+
+# bridge_list - print every bridge/dam
+d_bridge_list = {
+	log = "BRIDGE TEST: ---- [?global.dnipro_obj_max_hp^num|.0] objects ----"
+	for_each_loop = {
+		array = global.dnipro_obj_max_hp
+		index = list_i
+		set_temp_variable = { bpos = list_i }
+		es_bridge_console_print = yes
+	}
+}
+
+# bridge_info <pos> - print one bridge/dam
+d_bridge_info = {
+	set_temp_variable = { bpos = args^0 }
+	es_bridge_console_check_pos = yes
+	if = { limit = { check_variable = { b_ok = 1 } }
+		es_bridge_console_print = yes
+	}
+}
+
+# bridge_hp <pos> <hp> - set HP and apply blocking/destruction immediately
+d_bridge_hp = {
+	set_temp_variable = { bpos = args^0 }
+	set_temp_variable = { b_new = args^1 }
+	es_bridge_console_check_pos = yes
+	if = { limit = { check_variable = { b_ok = 1 } }
+		set_variable = { global.dnipro_obj_current_hp^bpos = b_new }
+		es_bridge_console_apply = yes
+		es_bridge_console_print = yes
+	}
+}
+
+# bridge_damage <pos> <amount> - subtract HP exactly like a raid does (no update until the weekly tick)
+d_bridge_damage = {
+	set_temp_variable = { bpos = args^0 }
+	set_temp_variable = { b_amount = args^1 }
+	es_bridge_console_check_pos = yes
+	if = { limit = { check_variable = { b_ok = 1 } }
+		subtract_from_variable = { global.dnipro_obj_current_hp^bpos = b_amount }
+		es_bridge_console_print = yes
+	}
+}
+
+# bridge_week [n] - run the full weekly update n times (default 1): erosion, ownership, repair, blocking, news
+d_bridge_week = {
+	set_temp_variable = { b_weeks = args^0 }
+	if = { limit = { check_variable = { b_weeks < 1 } } set_temp_variable = { b_weeks = 1 } }
+	for_loop_effect = {
+		end = b_weeks
+		value = week_i
+		BOR = { update_all_dnipro_objects = yes }
+	}
+	log = "BRIDGE TEST: ran [?b_weeks|.0] weekly update(s)"
+}
+
+# bridge_reset <pos> - full HP, clear the destroyed mark (news can fire again), reapply blocking
+d_bridge_reset = {
+	set_temp_variable = { bpos = args^0 }
+	es_bridge_console_check_pos = yes
+	if = { limit = { check_variable = { b_ok = 1 } }
+		set_variable = { global.dnipro_obj_current_hp^bpos = global.dnipro_obj_max_hp^bpos }
+		set_variable = { global.dnipro_obj_is_destroyed^bpos = 0 }
+		es_bridge_console_apply = yes
+		es_bridge_console_print = yes
+	}
+}
+
+# bridge_unlock - unlock and open the blow-up decisions for the player
+d_bridge_unlock = {
+	UKR = { set_country_flag = UKR_Blow_up_the_bridges }
+	FROM = { set_variable = { blowing_bridges_decisions_is_open = 1 } }
+	log = "BRIDGE TEST: blow-up decisions unlocked for [FROM.GetName]"
+}
+
+
+# =====================================================================
+# Raid target test commands (see console_commands.md)
+# <state> = state ID (hover a state with the "debug" console command on)
+# =====================================================================
+
+# --- helpers (state scope, not commands) ---
+es_raid_test_print_state = {
+	set_temp_variable = { rs_u0 = THIS.non_damaged_building_level@arms_factory }
+	set_temp_variable = { rs_t0 = THIS.building_level@arms_factory }
+	set_temp_variable = { rs_u1 = THIS.non_damaged_building_level@ammunition_plant }
+	set_temp_variable = { rs_t1 = THIS.building_level@ammunition_plant }
+	set_temp_variable = { rs_u2 = THIS.non_damaged_building_level@ammunition_silo }
+	set_temp_variable = { rs_t2 = THIS.building_level@ammunition_silo }
+	set_temp_variable = { rs_u3 = THIS.non_damaged_building_level@thermal_power_plant }
+	set_temp_variable = { rs_t3 = THIS.building_level@thermal_power_plant }
+	set_temp_variable = { rs_u4 = THIS.non_damaged_building_level@electrical_substation }
+	set_temp_variable = { rs_t4 = THIS.building_level@electrical_substation }
+	set_temp_variable = { rs_u5 = THIS.non_damaged_building_level@electrical_substation_big }
+	set_temp_variable = { rs_t5 = THIS.building_level@electrical_substation_big }
+	set_temp_variable = { rs_u6 = THIS.non_damaged_building_level@synthetic_refinery }
+	set_temp_variable = { rs_t6 = THIS.building_level@synthetic_refinery }
+	set_temp_variable = { rs_u7 = THIS.non_damaged_building_level@fuel_silo }
+	set_temp_variable = { rs_t7 = THIS.building_level@fuel_silo }
+	set_temp_variable = { rs_u8 = THIS.non_damaged_building_level@air_base }
+	set_temp_variable = { rs_t8 = THIS.building_level@air_base }
+	set_temp_variable = { rs_u9 = THIS.non_damaged_building_level@radar_station }
+	set_temp_variable = { rs_t9 = THIS.building_level@radar_station }
+	set_temp_variable = { rs_u10 = THIS.non_damaged_building_level@anti_air_building }
+	set_temp_variable = { rs_t10 = THIS.building_level@anti_air_building }
+	log = "RAID TEST: [THIS.GetName] undamaged / total - arms [?rs_u0|.1]/[?rs_t0|.1], ammo plant [?rs_u1|.1]/[?rs_t1|.1], ammo silo [?rs_u2|.1]/[?rs_t2|.1], thermal [?rs_u3|.1]/[?rs_t3|.1], subst [?rs_u4|.1]/[?rs_t4|.1], subst big [?rs_u5|.1]/[?rs_t5|.1], refinery [?rs_u6|.1]/[?rs_t6|.1], fuel silo [?rs_u7|.1]/[?rs_t7|.1], airbase [?rs_u8|.1]/[?rs_t8|.1], radar [?rs_u9|.1]/[?rs_t9|.1], AA [?rs_u10|.1]/[?rs_t10|.1]"
+}
+es_raid_test_wreck_state = {
+	if = { limit = { arms_factory > 0 } damage_building = { type = arms_factory damage = 50 } }
+	if = { limit = { ammunition_plant > 0 } damage_building = { type = ammunition_plant damage = 50 } }
+	if = { limit = { ammunition_silo > 0 } damage_building = { type = ammunition_silo damage = 50 } }
+	if = { limit = { thermal_power_plant > 0 } damage_building = { type = thermal_power_plant damage = 50 } }
+	if = { limit = { electrical_substation > 0 } damage_building = { type = electrical_substation damage = 50 } }
+	if = { limit = { electrical_substation_big > 0 } damage_building = { type = electrical_substation_big damage = 50 } }
+	if = { limit = { synthetic_refinery > 0 } damage_building = { type = synthetic_refinery damage = 50 } }
+	if = { limit = { fuel_silo > 0 } damage_building = { type = fuel_silo damage = 50 } }
+	if = { limit = { air_base > 0 } damage_building = { type = air_base damage = 50 } }
+	if = { limit = { radar_station > 0 } damage_building = { type = radar_station damage = 50 } }
+	if = { limit = { anti_air_building > 0 } damage_building = { type = anti_air_building damage = 50 } }
+}
+
+# raid_state_info <state> - print undamaged / total levels of every raid-target building
+d_raid_state_info = {
+	set_temp_variable = { rs = args^0 }
+	meta_effect = {
+		S = "[?rs|.0]"
+		text = { [S] = { es_raid_test_print_state = yes } }
+	}
+}
+
+# raid_wreck <state> - fully damage every raid-target building in the state, then print it
+d_raid_wreck = {
+	set_temp_variable = { rs = args^0 }
+	meta_effect = {
+		S = "[?rs|.0]"
+		text = { [S] = { es_raid_test_wreck_state = yes es_raid_test_print_state = yes } }
+	}
+}

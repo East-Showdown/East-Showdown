@@ -172,7 +172,7 @@ NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.15 -- 1 vanilla Higher value = more shot d
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
 NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
 NDefines.NAir.THRUST_WEIGHT_AGILITY_FACTOR = 0.5								-- For plane designs additive agility bonus per point of thrust exceeding weight
-NDefines.NAir.AIR_WING_MAX_SIZE = 20 							-- Max amount of airplanes in wing
+NDefines.NAir.AIR_WING_MAX_SIZE = 100 							-- Max amount of airplanes in wing
 NDefines.NAir.AIR_WING_AVERAGE_SIZE = 20 						-- Eyeballed average amount of airplanes in wing. Used when calculating air volunteer.
 NDefines.NAir.AIR_WING_BOMB_DAMAGE_FACTOR = 0.5					-- Used to balance the damage done while bombing.
 NDefines.NAir.BIGGEST_AGILITY_FACTOR_DIFF = 3.0					-- biggest factor difference in agility for doing damage (caps to this)
