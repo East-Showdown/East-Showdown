@@ -28,7 +28,7 @@ public class StateUpdater {
     // key = number, not preceded by a word char or '.' (so dates like 1939.1.1 are not matched)
     private static final Pattern ENTRY_PATTERN = Pattern.compile("(?<![\\w.])(\\w+)\\s*=\\s*(\\d+)(?![\\w.])");
     private static final Pattern SUBSTATION_PATTERN =
-            Pattern.compile("(?<![\\w.])(" + BIG + "|" + SMALL + ")\\s*=\\s*\\d+(?![\\w.])");
+            Pattern.compile("(?<![\\w.])(" + BIG + "|" + SMALL + ")\\s*=\\s*(\\d+)(?![\\w.])");
 
     static {
         energyConsumptionMap.put("arms_factory", 0.075);
@@ -266,13 +266,41 @@ public class StateUpdater {
             System.out.println("Required number of " + SMALL + ": " + small);
         }
 
-        // Remove existing substation entries that sit directly in the buildings block (from the end backwards)
+        // Existing substation entries directly in the buildings block.
+        // Keep the first entry of each type and change only its number, so the rest of the line
+        // (indentation, trailing spaces, comments) stays byte-for-byte the same.
         List<Matcher> existing = p.directMatches(SUBSTATION_PATTERN, buildings[0], buildings[1]);
+        List<int[]> deletions = new ArrayList<>();   // {start, end}
+        List<int[]> numberEdits = new ArrayList<>(); // {start, end, newValue}
+        boolean haveBig = false, haveSmall = false;
+        for (Matcher m : existing) {
+            boolean isBig = m.group(1).equals(BIG);
+            int wanted = addSubstations ? (isBig ? big : small) : 0;
+            boolean seen = isBig ? haveBig : haveSmall;
+            if (wanted > 0 && !seen) {
+                if (Integer.parseInt(m.group(2)) != wanted) {
+                    numberEdits.add(new int[]{m.start(2), m.end(2), wanted});
+                    System.out.println("Updated the number of " + m.group(1) + ": " + m.group(2) + " -> " + wanted);
+                }
+            } else {
+                deletions.add(new int[]{m.start(), m.end()});
+                System.out.println("Substation has been removed: " + p.text.substring(m.start(), m.end()));
+            }
+            if (isBig) haveBig = true; else haveSmall = true;
+        }
+
+        // Apply edits from the end of the file backwards so earlier offsets stay valid
+        List<int[]> all = new ArrayList<>();
+        for (int[] d : deletions) all.add(new int[]{d[0], d[1], -1});
+        all.addAll(numberEdits);
+        all.sort((a, b) -> Integer.compare(b[0], a[0]));
         StringBuilder sb = new StringBuilder(text);
-        for (int i = existing.size() - 1; i >= 0; i--) {
-            Matcher m = existing.get(i);
-            if (!addSubstations) System.out.println("Substation has been removed: " + p.text.substring(m.start(), m.end()));
-            int s = m.start(), e = m.end();
+        for (int[] edit : all) {
+            int s = edit[0], e = edit[1];
+            if (edit[2] >= 0) {
+                sb.replace(s, e, String.valueOf(edit[2]));
+                continue;
+            }
             int ls = sb.lastIndexOf("\n", s - 1) + 1;
             int le = sb.indexOf("\n", e);
             if (le == -1) le = sb.length();
@@ -287,7 +315,9 @@ public class StateUpdater {
         }
         text = sb.toString();
 
-        if (addSubstations && (big > 0 || small > 0)) {
+        int insertBig = (addSubstations && !haveBig) ? big : 0;
+        int insertSmall = (addSubstations && !haveSmall) ? small : 0;
+        if (insertBig > 0 || insertSmall > 0) {
             p = new Parsed(text);
             state = p.findBlock("state", 0, 0, p.analysis.length());
             history = p.findBlock("history", 1, state[0] + 1, state[1]);
@@ -295,8 +325,14 @@ public class StateUpdater {
             int insertAt = buildings[0] + 1;
 
             StringBuilder ins = new StringBuilder();
-            if (big > 0) ins.append("\n").append(entryIndent).append(BIG).append(" = ").append(big);
-            if (small > 0) ins.append("\n").append(entryIndent).append(SMALL).append(" = ").append(small);
+            if (insertBig > 0) {
+                ins.append("\n").append(entryIndent).append(BIG).append(" = ").append(insertBig);
+                System.out.println(BIG + " added: " + insertBig);
+            }
+            if (insertSmall > 0) {
+                ins.append("\n").append(entryIndent).append(SMALL).append(" = ").append(insertSmall);
+                System.out.println(SMALL + " added: " + insertSmall);
+            }
 
             // If something else follows "{" on the same line, move it to its own line
             int le = text.indexOf('\n', insertAt);
