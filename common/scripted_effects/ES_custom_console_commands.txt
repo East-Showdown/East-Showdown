@@ -247,3 +247,166 @@ d_raid_wreck = {
 		}
 	}
 }
+
+
+# =====================================================================
+# Substation test commands (see console_commands.md)
+# Output is written to the console and to game.log.
+# Expected results use 0.8 per big and 0.13 per small substation
+# (global.energy_substation_*_transfer_capacity_power).
+# =====================================================================
+
+# --- helpers (not commands) ---
+
+# In: t_demand, t_big, t_small, trg_state. Runs the real calculation without building anything.
+es_substation_test_case = {
+	set_temp_variable = { shortage = t_demand }
+	set_temp_variable = { substation_dry_run = 1 }
+	ESAPI_int_add_substations_for_demand = yes
+	set_temp_variable = { substation_dry_run = 0 }
+
+	if = {
+		limit = {
+			check_variable = { big_needed = t_big }
+			check_variable = { small_needed = t_small }
+		}
+		add_to_temp_variable = { t_pass = 1 }
+		log = "SUBSTATION TEST: PASS demand [?t_demand|.3] -> [?big_needed|.0] big + [?small_needed|.0] small"
+	}
+	else = {
+		add_to_temp_variable = { t_fail = 1 }
+		log = "SUBSTATION TEST: FAIL demand [?t_demand|.3] -> [?big_needed|.0] big + [?small_needed|.0] small, expected [?t_big|.0] big + [?t_small|.0] small"
+	}
+}
+
+# --- commands ---
+
+# round_test - show how round_temp_variable rounds (the substation formulas expect nearest)
+d_round_test = {
+	set_temp_variable = { r1 = 0.4 }
+	round_temp_variable = r1
+	set_temp_variable = { r2 = 0.5 }
+	round_temp_variable = r2
+	set_temp_variable = { r3 = 0.6 }
+	round_temp_variable = r3
+	set_temp_variable = { r4 = 1.5 }
+	round_temp_variable = r4
+	# floor pattern: x - 0.499, ceil pattern: x + 0.499
+	set_temp_variable = { r5 = 0.501 }
+	round_temp_variable = r5
+	set_temp_variable = { r6 = 2.499 }
+	round_temp_variable = r6
+	set_temp_variable = { r7 = 2.5 }
+	round_temp_variable = r7
+	log = "SUBSTATION TEST: round 0.4=[?r1|.0] 0.5=[?r2|.0] 0.6=[?r3|.0] 1.5=[?r4|.0] | floor(1.0)=[?r5|.0] (want 1), ceil(2.0)=[?r6|.0] (want 2), ceil(2.001)=[?r7|.0] (want 3, 2 only matters for demands 0.001 above a whole substation)"
+
+	if = {
+		limit = {
+			check_variable = { r1 = 0 }
+			check_variable = { r3 = 1 }
+			check_variable = { r5 = 1 }
+			check_variable = { r6 = 2 }
+		}
+		log = "SUBSTATION TEST: PASS - round_temp_variable rounds to nearest, the substation formulas are correct"
+	}
+	else_if = {
+		limit = { check_variable = { r3 = 0 } }
+		log = "SUBSTATION TEST: FAIL - round_temp_variable rounds DOWN, the substation formulas must be changed"
+	}
+	else = {
+		log = "SUBSTATION TEST: FAIL - unexpected rounding, see the values above"
+	}
+}
+
+# substation_selftest [state] - run the substation calculation for fixed demands and compare with
+# the expected result. Builds nothing. Uses your capital unless a state ID is given
+# (the state needs free substation slots, otherwise the slot fallback changes the result).
+d_substation_selftest = {
+	if = {
+		limit = { check_variable = { args^num > 0 } }
+		set_temp_variable = { trg_state = args^0 }
+	}
+	else = {
+		FROM = { capital_scope = { set_temp_variable = { trg_state = THIS } } }
+	}
+	set_temp_variable = { t_pass = 0 }
+	set_temp_variable = { t_fail = 0 }
+	log = "SUBSTATION TEST: ---- selftest, big = [?global.energy_substation_big_transfer_capacity_power|.3], small = [?global.energy_substation_transfer_capacity_power|.3] ----"
+	var:trg_state = { log = "SUBSTATION TEST: slot checks use state [THIS.GetName]" }
+
+	# 1 arms factory
+	set_temp_variable = { t_demand = 0.075 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 1 }
+	es_substation_test_case = yes
+	# exactly one small
+	set_temp_variable = { t_demand = 0.13 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 1 }
+	es_substation_test_case = yes
+	# just above one small
+	set_temp_variable = { t_demand = 0.131 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 2 }
+	es_substation_test_case = yes
+	# 3 arms factories
+	set_temp_variable = { t_demand = 0.225 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 2 }
+	es_substation_test_case = yes
+	# 5 dockyards
+	set_temp_variable = { t_demand = 0.5 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 4 }
+	es_substation_test_case = yes
+	# 7 small would give 0.91 >= 0.8, so one big instead
+	set_temp_variable = { t_demand = 0.79 }
+	set_temp_variable = { t_big = 1 }
+	set_temp_variable = { t_small = 0 }
+	es_substation_test_case = yes
+	# exactly one big
+	set_temp_variable = { t_demand = 0.8 }
+	set_temp_variable = { t_big = 1 }
+	set_temp_variable = { t_small = 0 }
+	es_substation_test_case = yes
+	set_temp_variable = { t_demand = 1.0 }
+	set_temp_variable = { t_big = 1 }
+	set_temp_variable = { t_small = 2 }
+	es_substation_test_case = yes
+	set_temp_variable = { t_demand = 1.6 }
+	set_temp_variable = { t_big = 2 }
+	set_temp_variable = { t_small = 0 }
+	es_substation_test_case = yes
+	set_temp_variable = { t_demand = 2.1 }
+	set_temp_variable = { t_big = 2 }
+	set_temp_variable = { t_small = 4 }
+	es_substation_test_case = yes
+
+	log = "SUBSTATION TEST: ---- [?t_pass|.0] passed, [?t_fail|.0] failed ----"
+}
+
+# substation_add <state> [amount] - real ESAPI_add_state_building call: queue [amount] arms factories
+# (default 1) with energy check on, and print the substations it queued.
+# 1 arms factory should queue 0 big + 1 small. Check the construction queue afterwards.
+d_substation_add = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "SUBSTATION TEST: usage: substation_add <state id> [amount of arms factories]"
+	}
+	else = {
+		set_temp_variable = { api_state_id = args^0 }
+		set_temp_variable = { api_amount = 1 }
+		if = { limit = { check_variable = { args^num > 1 } }
+			set_temp_variable = { api_amount = args^1 }
+		}
+		set_temp_variable = { api_building_type = token:arms_factory }
+		set_temp_variable = { api_consider_energy_opt = 1 }
+		set_temp_variable = { api_put_extra_slots_opt = 0 }
+		set_temp_variable = { big_needed = 0 }
+		set_temp_variable = { small_needed = 0 }
+
+		ESAPI_add_state_building = yes
+
+		log = "SUBSTATION TEST: state [?api_state_id|.0]: queued [?api_amount|.0] arms factory, demand [?shortage|.3] -> [?big_needed|.0] big + [?small_needed|.0] small substations queued (1 arms factory should give 0 big + 1 small)"
+	}
+}

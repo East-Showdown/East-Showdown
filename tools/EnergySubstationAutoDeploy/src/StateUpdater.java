@@ -18,8 +18,8 @@ public class StateUpdater {
     private static final Map<Integer, Double> hydroPowerMap = new HashMap<>();
     private static final double ENERGY_PER_100K_POPULATION = 0.012;
 
-    private static final double SUBSTATION_BIG_CAPACITY = 0.75;
-    private static final double SUBSTATION_CAPACITY = 0.10;
+    private static final double SUBSTATION_BIG_CAPACITY = 0.8;
+    private static final double SUBSTATION_CAPACITY = 0.13;
     private static final double EPS = 1e-9;
 
     private static final String BIG = "electrical_substation_big";

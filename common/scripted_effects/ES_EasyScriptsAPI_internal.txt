@@ -78,110 +78,14 @@ ESAPI_int_transfer_state_building = {
 	}	
 
 	if = {
-		limit = { 
-			check_variable = {
-				check_energy = 1
-			}
-		}
+		limit = { check_variable = { check_energy = 1 } }
 
 		ESAPI_int_resolve_building_consumption = yes
 
+		set_temp_variable = { shortage = amount }
+		multiply_temp_variable = { shortage = pwr_per_build }
 
-        set_temp_variable = { shortage = amount }
-        multiply_temp_variable = { shortage = pwr_per_build }
-
-        set_temp_variable = { big_out = global.energy_substation_big_transfer_capacity_power }
-        set_temp_variable = { small_out = global.energy_substation_transfer_capacity_power }
-
-		set_temp_variable = { big_needed = shortage }          
-		divide_temp_variable = { big_needed = big_out }          
-		subtract_from_temp_variable = { big_needed = 0.001 }      
-		round_temp_variable = big_needed
-		clamp_temp_variable = { var = big_needed min = 0 }
-
-		set_temp_variable = { rest_left = shortage }
-		set_temp_variable = { tmp_power = big_needed }
-		multiply_temp_variable = { tmp_power = big_out }        
-		subtract_from_temp_variable = { rest_left = tmp_power } 
-		clamp_temp_variable = { var = rest_left min = 0 }     
-
-		set_temp_variable = { small_needed = rest_left }
-		divide_temp_variable = { small_needed = small_out }      
-		add_to_temp_variable = { small_needed = 0.999 }     
-		round_temp_variable = small_needed                     
-		clamp_temp_variable = { var = small_needed min = 0 }
-
-        set_temp_variable = { subs_total = big_needed }
-        add_to_temp_variable = { subs_total = small_needed }
-	}
-
-
-	if = { 
-    	limit = { 
-			check_variable = { big_needed > 0 }  
-
-			var:trg_state = { 
-			meta_trigger = {
-				NEED = "[?big_needed|.0]" 
-				text = {
-					free_building_slots = {
-						building = electrical_substation_big
-						size > [NEED]               
-						include_locked  = yes
-					}
-				}
-			}
-		}
-	}
-
-	var:trg_state = { 
-		meta_effect = {
-			NEED = "[?big_needed|.0]"
-			text = {
-				add_building_construction = {
-					type = electrical_substation_big
-					level = [NEED]
-				}
-			}
-		}	
-	}
-
-	subtract_from_temp_variable = { rest_left = big_needed }
-
-	}
-
-
-
-	if = { 
-		limit = { 
-			check_variable = { small_needed > 0 }
-
-			var:trg_state = { 
-			meta_trigger = {
-				NEED = "[?small_needed|.0]" 
-				text = {
-					free_building_slots = {
-						building = electrical_substation
-						size > [NEED]               
-						include_locked  = yes
-					}
-				}
-			}
-		}			
-		}
-
-	var:trg_state = { 
-		meta_effect = {
-			NEED = "[?small_needed|.0]"
-			text = {
-				add_building_construction = {
-					type = electrical_substation
-					level = [NEED]
-				}
-			}
-		}	
-	}
-
+		ESAPI_int_add_substations_for_demand = yes
 	}
 }
 
@@ -219,99 +123,16 @@ ESAPI_int_add_state_building = {
         }
     }
 
-    if = {
-        limit = {
-            check_variable = { 
-				check_energy = 1 
-			}
-        }
+	if = {
+		limit = { check_variable = { check_energy = 1 } }
 
-        ESAPI_int_resolve_building_consumption = yes
+		ESAPI_int_resolve_building_consumption = yes
 
-        set_temp_variable = { shortage = amount }
-        multiply_temp_variable = { shortage = pwr_per_build }
+		set_temp_variable = { shortage = amount }
+		multiply_temp_variable = { shortage = pwr_per_build }
 
-        set_temp_variable = { big_out   = global.energy_substation_big_transfer_capacity_power }
-        set_temp_variable = { small_out = global.energy_substation_transfer_capacity_power }
-
-        set_temp_variable = { big_needed = shortage }
-        divide_temp_variable = { big_needed = big_out }
-        subtract_from_temp_variable = { big_needed = 0.001 }
-        round_temp_variable = big_needed
-        clamp_temp_variable = { var = big_needed min = 0 }
-
-        set_temp_variable = { rest_left = shortage }
-        set_temp_variable = { tmp_power = big_needed }
-        multiply_temp_variable = { tmp_power = big_out }
-        subtract_from_temp_variable = { rest_left = tmp_power }
-        clamp_temp_variable = { var = rest_left min = 0 }
-
-        set_temp_variable = { small_needed = rest_left }
-        divide_temp_variable = { small_needed = small_out }
-        add_to_temp_variable = { small_needed = 0.999 }
-        round_temp_variable  = small_needed
-        clamp_temp_variable  = { var = small_needed min = 0 }
-
-        if = {
-            limit = {
-                check_variable = { big_needed > 0 }
-
-                var:trg_state = {
-                    meta_trigger = {
-                        NEED = "[?big_needed|.0]"
-                        text = {
-                            free_building_slots = {
-                                building = electrical_substation_big
-                                size > [NEED]
-                                include_locked = yes
-                            }
-                        }
-                    }
-                }
-            }
-			var:trg_state = {
-				meta_effect = {
-					NEED = "[?big_needed|.0]"
-					text = {
-						add_building_construction = {
-							type  = electrical_substation_big
-							level = [NEED]
-						}
-					}
-				}
-			}
-        }
-        if = {
-            limit = {
-                check_variable = { small_needed > 0 }
-
-                var:trg_state = {
-                    meta_trigger = {
-                        NEED = "[?small_needed|.0]"
-                        text = {
-                            free_building_slots = {
-                                building = electrical_substation
-                                size > [NEED]
-                                include_locked = yes
-                            }
-                        }
-                    }
-                }
-            }
-			var:trg_state = {
-				meta_effect = {
-					NEED = "[?small_needed|.0]"
-					text = {
-						add_building_construction = {
-							type  = electrical_substation
-							level = [NEED]
-						}
-					}
-				}
-			}			
-        }
-
-    }
+		ESAPI_int_add_substations_for_demand = yes
+	}
 	
 	if = { 
 		limit = { 
@@ -329,7 +150,153 @@ ESAPI_int_add_state_building = {
 				} 
 			}
 		}
-    log = "[EasyScriptsAPI] ESAPI_UNREACHABLE_CONDITION_ERROR: transfer_state_building – not enough free slots in state [?trg_state|0]."
+    log = "[EasyScriptsAPI] ESAPI_UNREACHABLE_CONDITION_ERROR: add_state_building – not enough free slots in state [?trg_state|0]."
+	}
+}
+
+
+
+# -----------------------------------------------------------
+# PRIVATE: ESAPI_int_add_substations_for_demand
+# INPUT:	trg_state (temp) – state that gets the substations
+#			shortage  (temp) – extra energy demand to cover
+# OUTPUT:	big_needed, small_needed (temp) – substations queued
+#
+# Big substations cover whole big_out chunks, small ones cover the rest.
+# round_temp_variable rounds to the nearest integer:
+#   x - 0.499 -> round = floor(x),  x + 0.499 -> round = ceil(x)
+# Substations have their own slots (shares_slots = no), so if there is
+# no room for big ones the whole demand is covered with small ones.
+# Set temp substation_dry_run = 1 to only calculate (used by the
+# substation_selftest console command), nothing is built then.
+# -----------------------------------------------------------
+ESAPI_int_add_substations_for_demand = {
+	set_temp_variable = { big_needed = 0 }
+	set_temp_variable = { small_needed = 0 }
+
+	if = {
+		limit = { check_variable = { shortage > 0 } }
+
+		set_temp_variable = { big_out   = global.energy_substation_big_transfer_capacity_power }
+		set_temp_variable = { small_out = global.energy_substation_transfer_capacity_power }
+
+		# big_needed = floor(shortage / big_out)
+		set_temp_variable = { big_needed = shortage }
+		divide_temp_variable = { big_needed = big_out }
+		subtract_from_temp_variable = { big_needed = 0.499 }
+		round_temp_variable = big_needed
+		clamp_temp_variable = { var = big_needed min = 0 }
+
+		# rest_left = shortage - big_needed * big_out
+		set_temp_variable = { tmp_power = big_needed }
+		multiply_temp_variable = { tmp_power = big_out }
+		set_temp_variable = { rest_left = shortage }
+		subtract_from_temp_variable = { rest_left = tmp_power }
+		clamp_temp_variable = { var = rest_left min = 0 }
+
+		# small_needed = ceil(rest_left / small_out)
+		set_temp_variable = { small_needed = rest_left }
+		divide_temp_variable = { small_needed = small_out }
+		add_to_temp_variable = { small_needed = 0.499 }
+		round_temp_variable = small_needed
+		clamp_temp_variable = { var = small_needed min = 0 }
+
+		# If the small ones give at least as much as one big one, build a big one instead
+		set_temp_variable = { tmp_power = small_needed }
+		multiply_temp_variable = { tmp_power = small_out }
+		if = {
+			limit = { NOT = { check_variable = { tmp_power < big_out } } }
+			add_to_temp_variable = { big_needed = 1 }
+			set_temp_variable = { small_needed = 0 }
+		}
+
+		# free_building_slots uses "size >", so compare with (needed - 1) to allow exactly "needed" free slots
+		set_temp_variable = { big_slots_check = big_needed }
+		subtract_from_temp_variable = { big_slots_check = 1 }
+
+		if = {
+			limit = {
+				check_variable = { big_needed > 0 }
+				NOT = {
+					var:trg_state = {
+						meta_trigger = {
+							NEED = "[?big_slots_check|.0]"
+							text = {
+								free_building_slots = {
+									building = electrical_substation_big
+									size > [NEED]
+								}
+							}
+						}
+					}
+				}
+			}
+			# No room for big substations: cover the whole demand with small ones
+			set_temp_variable = { big_needed = 0 }
+			set_temp_variable = { small_needed = shortage }
+			divide_temp_variable = { small_needed = small_out }
+			add_to_temp_variable = { small_needed = 0.499 }
+			round_temp_variable = small_needed
+			clamp_temp_variable = { var = small_needed min = 0 }
+		}
+
+		set_temp_variable = { small_slots_check = small_needed }
+		subtract_from_temp_variable = { small_slots_check = 1 }
+
+		if = {
+			limit = {
+				check_variable = { small_needed > 0 }
+				NOT = {
+					var:trg_state = {
+						meta_trigger = {
+							NEED = "[?small_slots_check|.0]"
+							text = {
+								free_building_slots = {
+									building = electrical_substation
+									size > [NEED]
+								}
+							}
+						}
+					}
+				}
+			}
+			log = "[EasyScriptsAPI] ESAPI_SOFT_FAIL: not enough free substation slots in state [?trg_state|0], demand of [?shortage|.3] is not fully covered (needed [?big_needed|0] big + [?small_needed|0] small)."
+			set_temp_variable = { small_needed = 0 }
+		}
+
+		if = {
+			limit = { NOT = { check_variable = { substation_dry_run = 1 } } }
+
+			if = {
+				limit = { check_variable = { big_needed > 0 } }
+				var:trg_state = {
+					meta_effect = {
+						NEED = "[?big_needed|.0]"
+						text = {
+							add_building_construction = {
+								type  = electrical_substation_big
+								level = [NEED]
+							}
+						}
+					}
+				}
+			}
+
+			if = {
+				limit = { check_variable = { small_needed > 0 } }
+				var:trg_state = {
+					meta_effect = {
+						NEED = "[?small_needed|.0]"
+						text = {
+							add_building_construction = {
+								type  = electrical_substation
+								level = [NEED]
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -347,6 +314,8 @@ ESAPI_int_add_state_building = {
 # -----------------------------------------------------------
 
 ESAPI_int_resolve_building_consumption = { 
+		set_temp_variable = { pwr_per_build = 0 }
+
 		if = {
 			limit = { check_variable = { bld_token = token:arms_factory } }
 			set_temp_variable = { pwr_per_build = global.energy_arms_factory_consumption_power }
@@ -366,6 +335,10 @@ ESAPI_int_resolve_building_consumption = {
 		if = {
 			limit = { check_variable = { bld_token = token:synthetic_refinery } }
 			set_temp_variable = { pwr_per_build = global.energy_synthetic_refinery_consumption_power }
+		}
+		if = {
+			limit = { check_variable = { bld_token = token:electronic_factory } }
+			set_temp_variable = { pwr_per_build = global.energy_electronic_factory_consumption_power }
 		}
 
 	if = {
