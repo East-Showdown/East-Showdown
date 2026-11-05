@@ -4,8 +4,14 @@ d_start_smo = {
 	}
 }
 d_add_ammunition = {
-	add_to_variable = {
-		FROM.ammunition_value_k = args^0
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "usage: add_ammunition <amount>"
+	}
+	else = {
+		add_to_variable = {
+			FROM.ammunition_value_k = args^0
+		}
 	}
 }
 
@@ -80,39 +86,58 @@ d_bridge_list = {
 
 # bridge_info <pos> - print one bridge/dam
 d_bridge_info = {
-	set_temp_variable = { bpos = args^0 }
-	es_bridge_console_check_pos = yes
-	if = { limit = { check_variable = { b_ok = 1 } }
-		es_bridge_console_print = yes
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "BRIDGE TEST: usage: bridge_info <pos>  (pos 0-28, run bridge_list to see them)"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			es_bridge_console_print = yes
+		}
 	}
 }
 
 # bridge_hp <pos> <hp> - set HP and apply blocking/destruction immediately
 d_bridge_hp = {
-	set_temp_variable = { bpos = args^0 }
-	set_temp_variable = { b_new = args^1 }
-	es_bridge_console_check_pos = yes
-	if = { limit = { check_variable = { b_ok = 1 } }
-		set_variable = { global.dnipro_obj_current_hp^bpos = b_new }
-		es_bridge_console_apply = yes
-		es_bridge_console_print = yes
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 2 } }
+		log = "BRIDGE TEST: usage: bridge_hp <pos> <hp>"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		set_temp_variable = { b_new = args^1 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			set_variable = { global.dnipro_obj_current_hp^bpos = b_new }
+			es_bridge_console_apply = yes
+			es_bridge_console_print = yes
+		}
 	}
 }
 
 # bridge_damage <pos> <amount> - subtract HP exactly like a raid does (no update until the weekly tick)
 d_bridge_damage = {
-	set_temp_variable = { bpos = args^0 }
-	set_temp_variable = { b_amount = args^1 }
-	es_bridge_console_check_pos = yes
-	if = { limit = { check_variable = { b_ok = 1 } }
-		subtract_from_variable = { global.dnipro_obj_current_hp^bpos = b_amount }
-		es_bridge_console_print = yes
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 2 } }
+		log = "BRIDGE TEST: usage: bridge_damage <pos> <amount>"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		set_temp_variable = { b_amount = args^1 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			subtract_from_variable = { global.dnipro_obj_current_hp^bpos = b_amount }
+			es_bridge_console_print = yes
+		}
 	}
 }
 
 # bridge_week [n] - run the full weekly update n times (default 1): erosion, ownership, repair, blocking, news
 d_bridge_week = {
-	set_temp_variable = { b_weeks = args^0 }
+	set_temp_variable = { b_weeks = 1 }
+	if = { limit = { check_variable = { args^num > 0 } } set_temp_variable = { b_weeks = args^0 } }
 	if = { limit = { check_variable = { b_weeks < 1 } } set_temp_variable = { b_weeks = 1 } }
 	for_loop_effect = {
 		end = b_weeks
@@ -124,13 +149,19 @@ d_bridge_week = {
 
 # bridge_reset <pos> - full HP, clear the destroyed mark (news can fire again), reapply blocking
 d_bridge_reset = {
-	set_temp_variable = { bpos = args^0 }
-	es_bridge_console_check_pos = yes
-	if = { limit = { check_variable = { b_ok = 1 } }
-		set_variable = { global.dnipro_obj_current_hp^bpos = global.dnipro_obj_max_hp^bpos }
-		set_variable = { global.dnipro_obj_is_destroyed^bpos = 0 }
-		es_bridge_console_apply = yes
-		es_bridge_console_print = yes
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "BRIDGE TEST: usage: bridge_reset <pos>"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			set_variable = { global.dnipro_obj_current_hp^bpos = global.dnipro_obj_max_hp^bpos }
+			set_variable = { global.dnipro_obj_is_destroyed^bpos = 0 }
+			es_bridge_console_apply = yes
+			es_bridge_console_print = yes
+		}
 	}
 }
 
@@ -189,18 +220,30 @@ es_raid_test_wreck_state = {
 
 # raid_state_info <state> - print undamaged / total levels of every raid-target building
 d_raid_state_info = {
-	set_temp_variable = { rs = args^0 }
-	meta_effect = {
-		S = "[?rs|.0]"
-		text = { [S] = { es_raid_test_print_state = yes } }
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "RAID TEST: usage: raid_state_info <state id>"
+	}
+	else = {
+		set_temp_variable = { rs = args^0 }
+		meta_effect = {
+			S = "[?rs|.0]"
+			text = { [S] = { es_raid_test_print_state = yes } }
+		}
 	}
 }
 
 # raid_wreck <state> - fully damage every raid-target building in the state, then print it
 d_raid_wreck = {
-	set_temp_variable = { rs = args^0 }
-	meta_effect = {
-		S = "[?rs|.0]"
-		text = { [S] = { es_raid_test_wreck_state = yes es_raid_test_print_state = yes } }
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "RAID TEST: usage: raid_wreck <state id>"
+	}
+	else = {
+		set_temp_variable = { rs = args^0 }
+		meta_effect = {
+			S = "[?rs|.0]"
+			text = { [S] = { es_raid_test_wreck_state = yes es_raid_test_print_state = yes } }
+		}
 	}
 }
