@@ -278,8 +278,8 @@ EQUIPMENT_RULES = [
     {"archetype": ["sam_missile_equipment"], "ic": "aa_missile", "supply": None},
     # missiles - one rule per group, so each has its own IC multiplier
     # RU: ракеты - отдельное правило на каждую группу, у каждой свой множитель IC
-    {"archetype": ["ballistic_missile_equipment"],      "ic": "missile", "ic_multiplier": 1.25, "supply": None},
-    {"archetype": ["*_heavy_guided_missile_equipment"], "ic": "missile", "ic_multiplier": 1.25, "supply": None},
+    {"archetype": ["ballistic_missile_equipment"],      "ic": "missile", "ic_multiplier": 1.4, "supply": None},
+    {"archetype": ["*_heavy_guided_missile_equipment"], "ic": "missile", "ic_multiplier": 1.4, "supply": None},
     {"archetype": ["*_guided_missile_equipment"],       "ic": "missile", "ic_multiplier": 1, "supply": None},
     {"archetype": ["*_anti_radar_missile_equipment"],   "ic": "missile", "ic_multiplier": 1, "supply": None},
     {"archetype": ["*_guided_uav_equipment"],           "ic": "missile", "ic_multiplier": 1, "supply": None},

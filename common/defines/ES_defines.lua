@@ -63,6 +63,7 @@ NDefines.NProduction.BASE_FACTORY_SPEED = 2 				-- Base factory speed multiplier
 NDefines.NProduction.MAX_EQUIPMENT_RESOURCES_NEED = 6 -- vanila 3 Max number of different strategic resources an equipment can be dependent on.
 NDefines.NProduction.MAX_MIL_FACTORIES_PER_LINE = 75 -- vanilla 150, max number of military factories on one production line
 NDefines.NProduction.BASE_LAND_EQUIPMENT_CONVERSION_IC_COST_FACTOR = 0.1 -- vanilla 0.9, Fraction of the chassis industry cost which is always included in the conversion cost.
+NDefines.NProduction.CONVERSION_SPEED_BONUS = 0.5 -- vanilla 0, Modifier to the production speed when converting equipment
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 5	-- Weekly increase of PP.
 NDefines.NBuildings.MAX_BUILDING_LEVELS = 50			-- Max levels a building can have.
 NDefines.NBuildings.AIRBASE_CAPACITY_MULT = 50		-- Each level of airbase building multiplied by this gives capacity (max operational value). Value is int. 1 for each airplane.
