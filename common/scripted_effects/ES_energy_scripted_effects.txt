@@ -551,6 +551,24 @@ postcalculate_energy_in_country = {
 			remove_dynamic_modifier = { modifier = energy_global_blackout }
 		} 
 	}
+
+	# Статус блэкаута для карты: 0 - норма, 1 - локальный, 2 - глобальный.
+	# Режим карты читает эту переменную, а не динамические модификаторы: карта
+	# перерисовывается в отдельном потоке, и чтение модификаторов во время их
+	# добавления/удаления здесь роняет игру.
+	every_controlled_state = {
+		if = {
+			limit = { has_dynamic_modifier = { modifier = energy_global_blackout } }
+			set_variable = { energy_blackout_status = 2 }
+		}
+		else_if = {
+			limit = { has_dynamic_modifier = { modifier = energy_local_blackout } }
+			set_variable = { energy_blackout_status = 1 }
+		}
+		else = {
+			set_variable = { energy_blackout_status = 0 }
+		}
+	}
 }
 
 # THIS scope is country

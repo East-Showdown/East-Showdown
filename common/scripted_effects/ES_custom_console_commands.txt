@@ -410,3 +410,41 @@ d_substation_add = {
 		log = "SUBSTATION TEST: state [?api_state_id|.0]: queued [?api_amount|.0] arms factory, demand [?shortage|.3] -> [?big_needed|.0] big + [?small_needed|.0] small substations queued (1 arms factory should give 0 big + 1 small)"
 	}
 }
+
+
+# =====================================================================
+# Energy map mode test commands (see console_commands.md)
+# The blackout map mode reads energy_blackout_status on each state:
+# 0 = OK (green), 1 = local blackout (red), 2 = global blackout (yellow).
+# The weekly energy calculation overwrites it, so a value set here
+# lasts until that country's next weekly tick.
+# =====================================================================
+
+# blackout_set <state> <0|1|2> - set the blackout status shown on the map
+d_blackout_set = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 2 } }
+		log = "BLACKOUT TEST: usage: blackout_set <state id> <0 ok | 1 local | 2 global>"
+	}
+	else = {
+		set_temp_variable = { bs = args^0 }
+		set_temp_variable = { bv = args^1 }
+		var:bs = {
+			set_variable = { energy_blackout_status = bv }
+			log = "BLACKOUT TEST: [THIS.GetName] status set to [?bv|.0]. Unpause for one day: the map should change color (1 red, 2 yellow, 0 green)."
+		}
+	}
+}
+
+# blackout_info <state> - print the status and the energy numbers behind it
+d_blackout_info = {
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "BLACKOUT TEST: usage: blackout_info <state id>"
+	}
+	else = {
+		set_temp_variable = { bs = args^0 }
+		var:bs = {
+			log = "BLACKOUT TEST: [THIS.GetName] status [?energy_blackout_status|.0] (0 ok, 1 local, 2 global), supply factor [?energy_netto_factor|.2], consumption [?energy_consumption|.3], substation capacity [?energy_transfer_capacity|.3]"
+		}
+	}
+}
