@@ -99,14 +99,18 @@ scripted_gui = {
 			}
 
 			WGN_quartering_Molkino_click = {
-				WGN_refresh_molkino_slots = yes
+				WGN_update_molkino_order_count = yes
 				if = {
 					limit = { WGN_can_order_molkino_unit = yes }
+					if = {
+						limit = { check_variable = { WGN_count_of_unit_quartering > 0 } }
+						WGN_assign_old_molkino_queue = yes
+					}
 					add_manpower = -861
 					add_command_power = -50
 					subtract_from_variable = { map_africa_manpower_pool_free = 861 }
 					if = {
-						limit = { check_variable = { WGN_molkino_slots_used < 8 } }
+						limit = { check_variable = { WGN_molkino_orders_used < 5 } }
 						add_to_variable = { WGN_molkino_veterans = 1 }
 						if = {
 							limit = { NOT = { has_active_mission = WGN_quartering_the_unit_Molkino } }
@@ -114,7 +118,7 @@ scripted_gui = {
 						}
 					}
 					else_if = {
-						limit = { check_variable = { WGN_molkino_slots_used < 12 } }
+						limit = { check_variable = { WGN_molkino_orders_used < 8 } }
 						add_to_variable = { WGN_molkino_trained = 1 }
 						if = {
 							limit = { NOT = { has_active_mission = WGN_quartering_the_unit_Molkino_1 } }
@@ -128,7 +132,7 @@ scripted_gui = {
 							activate_mission = WGN_quartering_the_unit_Molkino_2
 						}
 					}
-					add_to_variable = { WGN_molkino_slots_used = 1 }
+					add_to_variable = { WGN_molkino_orders_used = 1 }
 				}
 			}
 			WGN_open_africa_gui_button_click = {

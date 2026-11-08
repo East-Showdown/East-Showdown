@@ -1,19 +1,11 @@
-# Count whole professional assault detachments, regardless of their current strength.
-WGN_refresh_molkino_slots = {
-	if = {
-		limit = { check_variable = { WGN_count_of_unit_quartering > 0 } }
-		WGN_assign_old_molkino_queue = yes
-	}
-	set_variable = { WGN_molkino_fielded = 0 }
-	every_country_division = {
-		limit = { division_has_majority_template = PMC_wagner }
-		WGN = { add_to_variable = { WGN_molkino_fielded = 1 } }
-	}
-	set_variable = { WGN_molkino_slots_used = WGN_molkino_fielded }
-	add_to_variable = { WGN_molkino_slots_used = WGN_count_of_unit_quartering }
-	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_veterans }
-	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_trained }
-	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_recruits }
+# Only orders placed through the Molkino button consume its campaign allowance.
+WGN_update_molkino_order_count = {
+	set_variable = { WGN_molkino_orders_used = WGN_molkino_orders_delivered }
+	add_to_variable = { WGN_molkino_orders_used = WGN_count_of_unit_quartering }
+	add_to_variable = { WGN_molkino_orders_used = WGN_molkino_veterans }
+	add_to_variable = { WGN_molkino_orders_used = WGN_molkino_trained }
+	add_to_variable = { WGN_molkino_orders_used = WGN_molkino_recruits }
+	clamp_variable = { var = WGN_molkino_orders_used max = 11 }
 }
 
 # Old saves used one paid queue for all three missions. The first timeout owned it.
@@ -64,13 +56,13 @@ WGN_assign_old_molkino_queue = {
 # Called by a mission timeout. Only its own batch may deploy.
 WGN_prepare_molkino_delivery = {
 	set_variable = { WGN_count_of_unit_quartering = 0 }
-	WGN_refresh_molkino_slots = yes
-	set_temp_variable = { WGN_molkino_to_deploy = 16 }
-	subtract_from_temp_variable = { WGN_molkino_to_deploy = WGN_molkino_fielded }
+	set_temp_variable = { WGN_molkino_to_deploy = 11 }
+	subtract_from_temp_variable = { WGN_molkino_to_deploy = WGN_molkino_orders_delivered }
 	clamp_temp_variable = { var = WGN_molkino_to_deploy min = 0 max = WGN_molkino_batch }
-	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_to_deploy }
+	add_to_variable = { WGN_molkino_orders_delivered = WGN_molkino_to_deploy }
+	WGN_update_molkino_order_count = yes
 
-	# Other events may have filled slots after these orders were paid for.
+	# Refund any excess paid orders carried over from a save with the old limit.
 	set_temp_variable = { WGN_molkino_unfilled = WGN_molkino_batch }
 	subtract_from_temp_variable = { WGN_molkino_unfilled = WGN_molkino_to_deploy }
 	if = {
