@@ -268,13 +268,19 @@ def load_items(settings):
 # Calculation
 # ---------------------------------------------------------------------------
 def calc(profile, stats, mult, kind, no_negative=()):
+    # A profile with "fixed" ignores all stats and always gives that value
+    # (e.g. manual loaders cost 0 IC).
+    if profile.get("fixed") is not None:
+        v = float(profile["fixed"])
+        return v, [("fixed", None, None, v)]
+    all_negative = "*" in no_negative
     parts = []
     total = profile.get("base", 0) or 0
     if total:
         parts.append(("base", None, None, total))
     for s, w in profile.get("weights", {}).items():
         v = stats.get(s, 0.0)
-        if v < 0 and s in no_negative:
+        if v < 0 and (all_negative or s in no_negative):
             parts.append((s + " (negative, ignored)", v, w, 0.0))
             continue
         if v:
@@ -283,7 +289,7 @@ def calc(profile, stats, mult, kind, no_negative=()):
     if kind == "module":
         for s, w in profile.get("mult_weights", {}).items():
             v = mult.get(s, 0.0)
-            if v < 0 and s in no_negative:
+            if v < 0 and (all_negative or s in no_negative):
                 parts.append(("x " + s + " (negative, ignored)", v, w, 0.0))
                 continue
             if v:
