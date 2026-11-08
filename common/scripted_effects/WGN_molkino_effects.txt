@@ -1,0 +1,85 @@
+# Count whole professional assault detachments, regardless of their current strength.
+WGN_refresh_molkino_slots = {
+	if = {
+		limit = { check_variable = { WGN_count_of_unit_quartering > 0 } }
+		WGN_assign_old_molkino_queue = yes
+	}
+	set_variable = { WGN_molkino_fielded = 0 }
+	every_country_division = {
+		limit = { division_has_majority_template = PMC_wagner }
+		WGN = { add_to_variable = { WGN_molkino_fielded = 1 } }
+	}
+	set_variable = { WGN_molkino_slots_used = WGN_molkino_fielded }
+	add_to_variable = { WGN_molkino_slots_used = WGN_count_of_unit_quartering }
+	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_veterans }
+	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_trained }
+	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_recruits }
+}
+
+# Old saves used one paid queue for all three missions. The first timeout owned it.
+# Assign it before opening another mission, so a new short order cannot consume it.
+WGN_assign_old_molkino_queue = {
+	set_temp_variable = { WGN_molkino_first_timeout = 32 }
+	if = {
+		limit = {
+			has_active_mission = WGN_quartering_the_unit_Molkino
+			check_variable = { days_mission_timeout@WGN_quartering_the_unit_Molkino < WGN_molkino_first_timeout }
+		}
+		set_temp_variable = { WGN_molkino_first_timeout = days_mission_timeout@WGN_quartering_the_unit_Molkino }
+		set_temp_variable = { WGN_molkino_old_tier = 1 }
+	}
+	if = {
+		limit = {
+			has_active_mission = WGN_quartering_the_unit_Molkino_1
+			check_variable = { days_mission_timeout@WGN_quartering_the_unit_Molkino_1 < WGN_molkino_first_timeout }
+		}
+		set_temp_variable = { WGN_molkino_first_timeout = days_mission_timeout@WGN_quartering_the_unit_Molkino_1 }
+		set_temp_variable = { WGN_molkino_old_tier = 2 }
+	}
+	if = {
+		limit = {
+			has_active_mission = WGN_quartering_the_unit_Molkino_2
+			check_variable = { days_mission_timeout@WGN_quartering_the_unit_Molkino_2 < WGN_molkino_first_timeout }
+		}
+		set_temp_variable = { WGN_molkino_first_timeout = days_mission_timeout@WGN_quartering_the_unit_Molkino_2 }
+		set_temp_variable = { WGN_molkino_old_tier = 3 }
+	}
+	if = {
+		limit = { check_variable = { WGN_molkino_old_tier = 1 } }
+		add_to_variable = { WGN_molkino_veterans = WGN_count_of_unit_quartering }
+		set_variable = { WGN_count_of_unit_quartering = 0 }
+	}
+	else_if = {
+		limit = { check_variable = { WGN_molkino_old_tier = 2 } }
+		add_to_variable = { WGN_molkino_trained = WGN_count_of_unit_quartering }
+		set_variable = { WGN_count_of_unit_quartering = 0 }
+	}
+	else_if = {
+		limit = { check_variable = { WGN_molkino_old_tier = 3 } }
+		add_to_variable = { WGN_molkino_recruits = WGN_count_of_unit_quartering }
+		set_variable = { WGN_count_of_unit_quartering = 0 }
+	}
+}
+
+# Called by a mission timeout. Only its own batch may deploy.
+WGN_prepare_molkino_delivery = {
+	set_variable = { WGN_count_of_unit_quartering = 0 }
+	WGN_refresh_molkino_slots = yes
+	set_temp_variable = { WGN_molkino_to_deploy = 16 }
+	subtract_from_temp_variable = { WGN_molkino_to_deploy = WGN_molkino_fielded }
+	clamp_temp_variable = { var = WGN_molkino_to_deploy min = 0 max = WGN_molkino_batch }
+	add_to_variable = { WGN_molkino_slots_used = WGN_molkino_to_deploy }
+
+	# Other events may have filled slots after these orders were paid for.
+	set_temp_variable = { WGN_molkino_unfilled = WGN_molkino_batch }
+	subtract_from_temp_variable = { WGN_molkino_unfilled = WGN_molkino_to_deploy }
+	if = {
+		limit = { check_variable = { WGN_molkino_unfilled > 0 } }
+		set_temp_variable = { WGN_molkino_people = WGN_molkino_unfilled }
+		multiply_temp_variable = { WGN_molkino_people = 861 }
+		add_to_variable = { map_africa_manpower_pool_free = WGN_molkino_people }
+		add_manpower = WGN_molkino_people
+		multiply_temp_variable = { WGN_molkino_unfilled = 50 }
+		add_command_power = WGN_molkino_unfilled
+	}
+}
