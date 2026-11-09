@@ -55,6 +55,7 @@ precalculate_energy_in_country = {
 	set_variable = { energy_industrial_complexes_consumption = 0 }
 	set_variable = { energy_dockyards_consumption = 0 }
 	set_variable = { energy_synthetic_refineries_consumption = 0 }
+	set_variable = { energy_electronic_factories_consumption = 0 }
 
 	set_variable = { energy_consumption = 0 }
 	set_variable = { energy_generation = 0 }
@@ -112,6 +113,10 @@ recalculate_country_energy_data = {
 	set_variable = { energy_synthetic_refinery_consumption_power = global.energy_synthetic_refinery_consumption_power }
 	multiply_variable = { energy_synthetic_refinery_consumption_power = energy_buldings_consumption_factor_modifier }
 	clamp_variable = { var = energy_synthetic_refinery_consumption_power min = 0 }
+
+	set_variable = { energy_electronic_factory_consumption_power = global.energy_electronic_factory_consumption_power }
+	multiply_variable = { energy_electronic_factory_consumption_power = energy_buldings_consumption_factor_modifier }
+	clamp_variable = { var = energy_electronic_factory_consumption_power min = 0 }
 	
 	# ============ Генерация постройками ============
 	set_temp_variable = { energy_buldings_generation_factor_modifier = 1 }
@@ -151,7 +156,7 @@ recalculate_country_energy_data = {
 	clamp_variable = { var = energy_substation_transfer_capacity_power min = 0 }
 
 	set_temp_variable = { energy_substation_big_transfer_capacity_power_modifier = 1 }
-	add_to_temp_variable = { energy_substation_big_transfer_caenergy_substation_big_transfer_capacity_power_modifierpacity_power = modifier@energy_substation_big_transfer_capacity_power }
+	add_to_temp_variable = { energy_substation_big_transfer_capacity_power_modifier = modifier@energy_substation_big_transfer_capacity_power }
 
 	set_variable = { energy_substation_big_transfer_capacity_power = global.energy_substation_big_transfer_capacity_power }
 	multiply_variable = { energy_substation_big_transfer_capacity_power = energy_substation_big_transfer_capacity_power_modifier }
@@ -283,6 +288,10 @@ calculate_energy_local_consumption = {
 	multiply_variable = { energy_synthetic_refineries_consumption = PREV.energy_synthetic_refinery_consumption_power }
 	add_to_variable = { energy_buildings_consumption = energy_synthetic_refineries_consumption }
 
+	set_variable = { energy_electronic_factories_consumption = non_damaged_building_level@electronic_factory }
+	multiply_variable = { energy_electronic_factories_consumption = PREV.energy_electronic_factory_consumption_power }
+	add_to_variable = { energy_buildings_consumption = energy_electronic_factories_consumption }
+
 	# Сумарные локальные затраты энергии
 	set_variable = { energy_consumption = energy_population_consumption }
 	add_to_variable = { PREV.energy_population_consumption = energy_population_consumption }
@@ -318,6 +327,10 @@ calculate_energy_country_consumption = {
 	multiply_variable = { energy_synthetic_refineries_consumption = energy_synthetic_refinery_consumption_power }
 	add_to_variable = { energy_buildings_consumption = energy_synthetic_refineries_consumption }
 
+	set_variable = { energy_electronic_factories_consumption = modifier@electronic_factories }
+	multiply_variable = { energy_electronic_factories_consumption = energy_electronic_factory_consumption_power }
+	add_to_variable = { energy_buildings_consumption = energy_electronic_factories_consumption }
+
 	# Сумарные локальные затраты энергии
 	set_variable = { energy_consumption = energy_population_consumption }
 	add_to_variable = { energy_consumption = energy_buildings_consumption }
@@ -338,11 +351,11 @@ calculate_energy_country_offsite_consumption = {
 
 	set_temp_variable = { energy_offsite_dockyards_consumption = offsite_dockyards }
 	multiply_temp_variable = { energy_offsite_dockyards_consumption = energy_dockyard_consumption_power }
-	add_to_variable = { energy_consumption = energy_dockyards_consumption }
+	add_to_variable = { energy_consumption = energy_offsite_dockyards_consumption }
 
 	set_temp_variable = { energy_offsite_synthetic_refineries_consumption = offsite_synthetic_refineries }
 	multiply_temp_variable = { energy_offsite_synthetic_refineries_consumption = energy_synthetic_refinery_consumption_power }
-	add_to_variable = { energy_consumption = energy_synthetic_refineries_consumption }
+	add_to_variable = { energy_consumption = energy_offsite_synthetic_refineries_consumption }
 }
 
 calculate_energy_country_import_export = {
@@ -537,6 +550,24 @@ postcalculate_energy_in_country = {
 			limit = { has_dynamic_modifier = { modifier = energy_global_blackout } }
 			remove_dynamic_modifier = { modifier = energy_global_blackout }
 		} 
+	}
+
+	# Статус блэкаута для карты: 0 - норма, 1 - локальный, 2 - глобальный.
+	# Режим карты читает эту переменную, а не динамические модификаторы: карта
+	# перерисовывается в отдельном потоке, и чтение модификаторов во время их
+	# добавления/удаления здесь роняет игру.
+	every_controlled_state = {
+		if = {
+			limit = { has_dynamic_modifier = { modifier = energy_global_blackout } }
+			set_variable = { energy_blackout_status = 2 }
+		}
+		else_if = {
+			limit = { has_dynamic_modifier = { modifier = energy_local_blackout } }
+			set_variable = { energy_blackout_status = 1 }
+		}
+		else = {
+			set_variable = { energy_blackout_status = 0 }
+		}
 	}
 }
 

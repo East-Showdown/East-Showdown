@@ -175,7 +175,7 @@ tools/            Development tools
 
 ## 📋 Specifications
 
-- **Supported HOI4 version:** 1.17.*
+- **Supported HOI4 version:** 1.19.*
 - **Steam Workshop ID:** 2948642461
 - **Languages:** Russian (primary), English, Ukrainian
 - **Replace paths:** 66 directives replacing base game content

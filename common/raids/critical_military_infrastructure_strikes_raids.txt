@@ -21,17 +21,21 @@ types ={
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				arms_factory > 0
+			building = {
+				type = arms_factory
 			}
 		}
 		target_icon = GFX_other_target_icon
@@ -47,7 +51,7 @@ types ={
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 	
@@ -74,7 +78,7 @@ types ={
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -90,7 +94,7 @@ types ={
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -117,8 +121,45 @@ types ={
 		success_levels = {
 
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -136,82 +177,44 @@ types ={
 
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -228,83 +231,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -321,83 +285,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -437,17 +362,21 @@ types ={
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				arms_factory > 0
+			building = {
+				type = arms_factory
 			}
 		}
 		target_icon = GFX_other_target_icon
@@ -460,8 +389,8 @@ types ={
 		}
 		unit_requirements = {
 			equipment = {
-				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 4 }
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment }
+				amount = { min = 6 }
 			}
 		}
 		starting_point = {
@@ -486,10 +415,6 @@ types ={
 					reference = 6
 					weight = -0.5
 				}
-				interception = {
-					reference = 5 
-					weight = -0.15
-				}
 				intel = {
 					weight = 0.1
 					reference = 100
@@ -501,10 +426,6 @@ types ={
 				anti_air = {
 					reference = 6
 					weight = 0.30
-				}
-				interception = {
-					reference = 5 
-					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -529,8 +450,45 @@ types ={
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }
+					set_temp_variable = { raid_planes_lost = 6 }
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
 						LOSSES = [?raid_planes_lost]
@@ -546,83 +504,44 @@ types ={
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -639,83 +558,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -732,83 +612,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -848,17 +689,21 @@ types ={
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				arms_factory > 0
+			building = {
+				type = arms_factory
 			}
 		}
 		target_icon = GFX_other_target_icon
@@ -874,7 +719,7 @@ types ={
 		unit_requirements = {
 			equipment = {
 				type = { ukr_drone_missile_equipment nto_guided_uav_equipment ukr_guided_uav_equipment rus_guided_uav_equipment }
-				amount = { min = 12 }
+				amount = { min = 100 }
 			}
 		}
 	
@@ -887,20 +732,22 @@ types ={
 			success = {
 				base = 0.1
 				strategic_bomber = {
-					weight = 0.20
-					reference = 200
+					weight = 0.6
+					reference = 100
+					start_weight = -0.10
 				}
 				air_agility = {
-					reference = 15
-					weight = 0.15
+					reference = 20
+					weight = 0.4
+					start_weight = -0.10
 				}
 				anti_air = {
 					reference = 6
-					weight = -0.2 #Снижен для дронов
+					weight = -0.5
 				}
 				interception = {
-					reference = 5 
-					weight = -0.10 #Снижен для дронов
+					reference = 12 
+					weight = -0.15
 				}
 				intel = {
 					weight = 0.1
@@ -915,17 +762,22 @@ types ={
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 			}
 
 			critical = {
 				base = 0.01
+				air_agility = {
+					reference = 30
+					start_reference = 10
+					weight = 0.10
+				}
 				strategic_bomber = {
-					weight = 0.05
-					reference = 400
-					start_reference = 200
+					weight = 0.15
+					reference = 150
+					start_reference = 100
 				}
 			}
 		}
@@ -933,8 +785,45 @@ types ={
 		success_levels = {
 
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }
+					set_temp_variable = { raid_planes_lost = 100 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -952,82 +841,44 @@ types ={
 
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 0.3 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 0.2 } } set_temp_variable = { building_damage_by_missile = 0.2 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1044,83 +895,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 0.5 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1.25 } } set_temp_variable = { building_damage_by_missile = 1.25 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1137,83 +949,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.armsFactory = THIS.building_level@arms_factory }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 2.5 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 5 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { armsFactory > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = armsFactory }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 2 } } set_temp_variable = { building_damage_by_missile = 2 } }
-
-					var:target_state = {
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 100 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1256,17 +1029,21 @@ types ={
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				ammunition_plant > 0
+			building = {
+				type = ammunition_plant
 			}
 		}
 	
@@ -1283,7 +1060,7 @@ types ={
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 	
@@ -1310,7 +1087,7 @@ types ={
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -1326,7 +1103,7 @@ types ={
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -1352,8 +1129,45 @@ types ={
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 					
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1370,82 +1184,44 @@ types ={
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionPlant = THIS.building_level@ammunition_plant }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionPlant > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionPlant }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1462,82 +1238,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionPlant = THIS.building_level@ammunition_plant }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionPlant > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionPlant }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1554,82 +1292,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionPlant = THIS.building_level@ammunition_plant }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionPlant > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionPlant }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1670,15 +1370,20 @@ types ={
 		
 		show_target = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				ammunition_plant > 0
+			building = {
+				type = ammunition_plant
 			}
 		}
 		target_icon = GFX_other_target_icon
@@ -1692,8 +1397,8 @@ types ={
 
 		unit_requirements = {
 			equipment = {
-				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 4 }
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment }
+				amount = { min = 6 }
 			}
 		}
 		starting_point = {
@@ -1718,10 +1423,6 @@ types ={
 					reference = 6
 					weight = -0.5
 				}
-				interception = {
-					reference = 5 
-					weight = -0.15
-				}
 				intel = {
 					weight = 0.1
 					reference = 100
@@ -1733,10 +1434,6 @@ types ={
 				anti_air = {
 					reference = 6
 					weight = 0.30
-				}
-				interception = {
-					reference = 5 
-					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -1761,8 +1458,45 @@ types ={
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }
+					set_temp_variable = { raid_planes_lost = 6 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -1779,82 +1513,44 @@ types ={
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionPlant = THIS.building_level@ammunition_plant }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionPlant > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionPlant }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1871,83 +1567,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionPlant = THIS.building_level@ammunition_plant }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionPlant > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionPlant }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -1964,83 +1621,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionPlant = THIS.building_level@ammunition_plant }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionPlant > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionPlant }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2083,17 +1701,21 @@ types ={
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				ammunition_silo > 0
+			building = {
+				type = ammunition_silo
 			}
 		}
 	
@@ -2110,7 +1732,7 @@ types ={
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
-				amount = { min = 8 }
+				amount = { min = 10 }
 			}
 		}
 	
@@ -2137,7 +1759,7 @@ types ={
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -2153,7 +1775,7 @@ types ={
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -2179,8 +1801,45 @@ types ={
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }
+					set_temp_variable = { raid_planes_lost = 10 }
 					
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2197,82 +1856,44 @@ types ={
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.building_level@ammunition_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionSilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionSilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2289,82 +1910,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.building_level@ammunition_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionSilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionSilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2381,82 +1964,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.building_level@ammunition_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionSilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionSilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 10 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2496,17 +2041,21 @@ types ={
 		visible = { }
 		
 		show_target = {
-			
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		available = {
 			has_war_with = FROM
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 } }	# at least 1 undamaged level
+		}
+		launchable = {
+			var:target_state = { check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 } }	# at least 1 undamaged level
 		}
 	
 		target_type = {
-			state = {
-				ammunition_silo > 0
+			building = {
+				type = ammunition_silo
 			}
 		}
 		target_icon = GFX_other_target_icon
@@ -2520,8 +2069,8 @@ types ={
 
 		unit_requirements = {
 			equipment = {
-				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis }
-				amount = { min = 4 }
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment }
+				amount = { min = 6 }
 			}
 		}
 		starting_point = {
@@ -2546,10 +2095,6 @@ types ={
 					reference = 6
 					weight = -0.5
 				}
-				interception = {
-					reference = 5 
-					weight = -0.15
-				}
 				intel = {
 					weight = 0.1
 					reference = 100
@@ -2561,10 +2106,6 @@ types ={
 				anti_air = {
 					reference = 6
 					weight = 0.30
-				}
-				interception = {
-					reference = 5 
-					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -2589,8 +2130,45 @@ types ={
 
 		success_levels = {
 			failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.1-0.4 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.1 max = 0.4 }
+
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
+						}
+					}
+				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }
+					set_temp_variable = { raid_planes_lost = 6 }
 
 					custom_effect_tooltip = {
 						localization_key = plane_raid_losses_tt
@@ -2607,82 +2185,44 @@ types ={
 			}
 			limited_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.building_level@ammunition_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (0.5-1.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.5 max = 1.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionSilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionSilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 0.5 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2699,83 +2239,44 @@ types ={
 			}
 			success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.building_level@ammunition_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (1.0-2.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 1.25 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionSilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionSilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 1 } } set_temp_variable = { building_damage_by_missile = 1 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2792,83 +2293,44 @@ types ={
 			}
 			critical_success = {
 				victim_effects = {
-
 					var:target_state = {
-						set_temp_variable = { ROOT.ammunitionSilo = THIS.building_level@ammunition_silo }
-						set_temp_variable = { ROOT.aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { ROOT.radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { ROOT.rocket_mult = THIS.non_damaged_building_level@rocket_site }
-					}
+						# Damage: random roll for this outcome (2.0-6.0 levels), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 6.0 }
 
-					add_to_temp_variable = { radar_mult = 0.5 }
-					multiply_temp_variable = { aa_defense = radar_mult }
-					multiply_temp_variable = { rocket_mult = radar_mult }
-
-					if = {
-						limit = {
-							NOT = { check_variable = { rocket_mult = 0 } }
-						}
-						multiply_temp_variable = { aa_defense = rocket_mult }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense = 0 }
-							}
-							add_to_temp_variable = { aa_defense = rocket_mult }
-						}
-					}
-					set_temp_variable = { building_damage_by_missile = 4 }
-
-					set_temp_variable_to_random = {
-						var = missile_luck_mod
-						min = 0.4
-						max = 0.6
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = missile_luck_mod }
-
-					if = {
-						limit = {
-							check_variable = { aa_defense > 0 }
-						}
-						divide_temp_variable = { building_damage_by_missile = aa_defense }
-					}
-
-					multiply_temp_variable = { building_damage_by_missile = 3 }
-
-					set_temp_variable = { target_split_var = 0 }
-
-					if = { limit = { check_variable = { ammunitionSilo > 0 } } add_to_temp_variable = { target_split_var = 1 } }
-
-					divide_temp_variable = { building_damage_by_missile = target_split_var }
-
-					set_temp_variable = { max_clamp = ammunitionSilo }
-
-					clamp_temp_variable = {
-						var = building_damage_by_missile
-						min = 0
-						max = max_clamp
-					}
-
-					#Грантия на единичный урон
-					if = { limit = { check_variable = { building_damage_by_missile < 3 } } set_temp_variable = { building_damage_by_missile = 3 } }
-
-					var:target_state = {
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage_by_missile]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 4 }  
+					set_temp_variable = { raid_planes_lost = 6 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -2897,8 +2359,35 @@ types ={
 		}
 		allowed = { has_dlc = "Gotterdammerung" }
 		
-		show_target = { has_war_with = FROM }
-		available = { has_war_with = FROM }
+		show_target = {
+			has_war_with = FROM
+			var:target_state = {	# at least 1 undamaged level of any targeted building
+				OR = {
+					check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 }
+				}
+			}
+		}
+		available = {
+			has_war_with = FROM
+			var:target_state = {	# at least 1 undamaged level of any targeted building
+				OR = {
+					check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 }
+				}
+			}
+		}
+		launchable = {
+			var:target_state = {	# at least 1 undamaged level of any targeted building
+				OR = {
+					check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 }
+				}
+			}
+		}
 	
 		target_type = {
 			state = {
@@ -2917,8 +2406,8 @@ types ={
 	
 		unit_requirements = {
 			equipment = {
-				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment ballistic_missile_chassis  }
-				amount = { min = 8 }
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment  }
+				amount = { min = 12 }
 			}
 		}
 	
@@ -2944,10 +2433,6 @@ types ={
 					reference = 6
 					weight = -0.5
 				}
-				interception = {
-					reference = 5 
-					weight = -0.15
-				}
 				intel = {
 					weight = 0.1
 					reference = 100
@@ -2959,10 +2444,6 @@ types ={
 				anti_air = {
 					reference = 6
 					weight = 0.30
-				}
-				interception = {
-					reference = 5 
-					weight = 0.15
 				}
 				air_agility = {
 					reference = 200
@@ -2987,6 +2468,133 @@ types ={
 
 		success_levels = {
 				failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.2-0.8 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.2 max = 0.8 }
+
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
+						}
+
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
+						}
+
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
+						}
+
+						if = { limit = { infrastructure > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
+						}
+					}
+				}
 					actor_effects = {
 						set_temp_variable = { raid_planes_lost = 8 }
 						custom_effect_tooltip = {
@@ -3005,58 +2613,133 @@ types ={
 			limited_success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+						# Damage: random roll for this outcome (1.0-2.0 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-						add_to_temp_variable = { radar_mult = 0.5 }
-						multiply_temp_variable = { aa_defense = radar_mult }
-						multiply_temp_variable = { rocket_mult = radar_mult }
-
-						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
-							multiply_temp_variable = { aa_defense = rocket_mult }
-							if = { limit = { check_variable = { aa_defense = 0 } } 
-								add_to_temp_variable = { aa_defense = rocket_mult }
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 
-						set_temp_variable = { building_damage = 2 }
-						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
-						multiply_temp_variable = { building_damage = luck }
-
-						if = { limit = { check_variable = { aa_defense > 0 } } 
-							divide_temp_variable = { building_damage = aa_defense }
-						}
-						multiply_temp_variable = { building_damage = 3 }
-
-						set_temp_variable = { targets = 0 }
-						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
-
-						if = { limit = { check_variable = { targets > 0 } } 
-							divide_temp_variable = { building_damage = targets }
-						}
-
-						clamp_temp_variable = { var = building_damage min = 1 max = 4 }
-
-						if = { limit = { arms_factory > 0 }
-							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
-						}
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
 						}
+
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
 						}
+
 						if = { limit = { infrastructure > 0 }
-							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 12 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -3075,57 +2758,134 @@ types ={
 			success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
-
-						add_to_temp_variable = { radar_mult = 0.5 }
-						multiply_temp_variable = { aa_defense = radar_mult }
-						multiply_temp_variable = { rocket_mult = radar_mult }
-
-						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
-							multiply_temp_variable = { aa_defense = rocket_mult }
-							if = { limit = { check_variable = { aa_defense = 0 } } add_to_temp_variable = { aa_defense = rocket_mult } }
-						}
-
-						set_temp_variable = { building_damage = 2.5 }
-						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
-						multiply_temp_variable = { building_damage = luck }
-
-						if = { limit = { check_variable = { aa_defense > 0 } } 
-							divide_temp_variable = { building_damage = aa_defense }
-						}
-						multiply_temp_variable = { building_damage = 3 }
-
-						set_temp_variable = { targets = 0 }
-						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
-
-						if = { limit = { check_variable = { targets > 0 } } 
-							divide_temp_variable = { building_damage = targets }
-						}
-
-						clamp_temp_variable = { var = building_damage min = 1.5 max = 5 }
+						# Damage: random roll for this outcome (2.0-4.0 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 4.0 }
 
 						if = { limit = { arms_factory > 0 }
-							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
 						}
+
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
 						}
+
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
 						}
+
 						if = { limit = { infrastructure > 0 }
-							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
 						}
 					}
 				}
 				actor_effects = {
 
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 12 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -3144,106 +2904,134 @@ types ={
 			critical_success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
-
-						add_to_temp_variable = { radar_mult = 0.5 }
-						multiply_temp_variable = { aa_defense = radar_mult }
-						multiply_temp_variable = { rocket_mult = radar_mult }
-
-						if = {
-							limit = {
-								NOT = { check_variable = { rocket_mult = 0 } }
-							}
-							multiply_temp_variable = { aa_defense = rocket_mult }
-
-							if = {
-								limit = {
-									check_variable = { aa_defense = 0 }
-								}
-								add_to_temp_variable = { aa_defense = rocket_mult }
-							}
-						}
-
-						set_temp_variable = { building_damage = 5 }
-
-						set_temp_variable_to_random = {
-							var = luck
-							min = 0.4
-							max = 0.6
-						}
-
-						multiply_temp_variable = { building_damage = luck }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense > 0 }
-							}
-							divide_temp_variable = { building_damage = aa_defense }
-						}
-
-						multiply_temp_variable = { building_damage = 3 }
-
-						set_temp_variable = { targets = 0 }
-						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
-
-
-						if = { 
-							limit = { check_variable = { targets > 0 } } 
-							divide_temp_variable = { building_damage = targets }
-						}
-
-						clamp_temp_variable = {
-							var = building_damage
-							min = 2.5
-							max = 8
-						}
+						# Damage: random roll for this outcome (4.0-12.0 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 4.0 max = 12.0 }
 
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
+
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
+
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
+
 						if = { limit = { infrastructure > 0 }
-							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
 						}
 					}
 				}
 
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 8 }  
+					set_temp_variable = { raid_planes_lost = 12 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -3273,8 +3061,35 @@ types ={
 		}
 		allowed = { has_dlc = "Gotterdammerung" }
 		
-		show_target = { has_war_with = FROM }
-		available = { has_war_with = FROM }
+		show_target = {
+			has_war_with = FROM
+			var:target_state = {	# at least 1 undamaged level of any targeted building
+				OR = {
+					check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 }
+				}
+			}
+		}
+		available = {
+			has_war_with = FROM
+			var:target_state = {	# at least 1 undamaged level of any targeted building
+				OR = {
+					check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 }
+				}
+			}
+		}
+		launchable = {
+			var:target_state = {	# at least 1 undamaged level of any targeted building
+				OR = {
+					check_variable = { THIS.non_damaged_building_level@arms_factory > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_plant > 0.99 }
+					check_variable = { THIS.non_damaged_building_level@ammunition_silo > 0.99 }
+				}
+			}
+		}
 	
 		target_type = {
 			state = {
@@ -3294,7 +3109,7 @@ types ={
 		unit_requirements = {
 			equipment = {
 				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
-				amount = { min = 12 }
+				amount = { min = 20 }
 			}
 		}
 	
@@ -3321,7 +3136,7 @@ types ={
 					weight = -0.5
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = -0.15
 				}
 				intel = {
@@ -3337,7 +3152,7 @@ types ={
 					weight = 0.30
 				}
 				interception = {
-					reference = 5 
+					reference = 12 
 					weight = 0.15
 				}
 				air_agility = {
@@ -3363,6 +3178,133 @@ types ={
 
 		success_levels = {
 				failure = {
+				victim_effects = {
+					var:target_state = {
+						# Damage: random roll for this outcome (0.2-0.8 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 0.2 max = 0.8 }
+
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
+						}
+
+						if = { limit = { ammunition_plant > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
+						}
+
+						if = { limit = { ammunition_silo > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
+						}
+
+						if = { limit = { infrastructure > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
+						}
+					}
+				}
 					actor_effects = {
 						set_temp_variable = { raid_planes_lost = 12 }
 						custom_effect_tooltip = {
@@ -3381,58 +3323,133 @@ types ={
 			limited_success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
+						# Damage: random roll for this outcome (1.0-2.0 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 1.0 max = 2.0 }
 
-						add_to_temp_variable = { radar_mult = 0.5 }
-						multiply_temp_variable = { aa_defense = radar_mult }
-						multiply_temp_variable = { rocket_mult = radar_mult }
-
-						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
-							multiply_temp_variable = { aa_defense = rocket_mult }
-							if = { limit = { check_variable = { aa_defense = 0 } } 
-								add_to_temp_variable = { aa_defense = rocket_mult }
+						if = { limit = { arms_factory > 0 }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
 
-						set_temp_variable = { building_damage = 2 }
-						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
-						multiply_temp_variable = { building_damage = luck }
-
-						if = { limit = { check_variable = { aa_defense > 0 } } 
-							divide_temp_variable = { building_damage = aa_defense }
-						}
-						multiply_temp_variable = { building_damage = 3 }
-
-						set_temp_variable = { targets = 0 }
-						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
-
-						if = { limit = { check_variable = { targets > 0 } } 
-							divide_temp_variable = { building_damage = targets }
-						}
-
-						clamp_temp_variable = { var = building_damage min = 1 max = 4 }
-
-						if = { limit = { arms_factory > 0 }
-							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
-						}
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
 						}
+
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
 						}
+
 						if = { limit = { infrastructure > 0 }
-							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
 						}
 					}
 				}
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 20 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -3451,57 +3468,134 @@ types ={
 			success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
-
-						add_to_temp_variable = { radar_mult = 0.5 }
-						multiply_temp_variable = { aa_defense = radar_mult }
-						multiply_temp_variable = { rocket_mult = radar_mult }
-
-						if = { limit = { NOT = { check_variable = { rocket_mult = 0 } } }
-							multiply_temp_variable = { aa_defense = rocket_mult }
-							if = { limit = { check_variable = { aa_defense = 0 } } add_to_temp_variable = { aa_defense = rocket_mult } }
-						}
-
-						set_temp_variable = { building_damage = 2.5 }
-						set_temp_variable_to_random = { var = luck min = 0.4 max = 0.6 }
-						multiply_temp_variable = { building_damage = luck }
-
-						if = { limit = { check_variable = { aa_defense > 0 } } 
-							divide_temp_variable = { building_damage = aa_defense }
-						}
-						multiply_temp_variable = { building_damage = 3 }
-
-						set_temp_variable = { targets = 0 }
-						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
-
-						if = { limit = { check_variable = { targets > 0 } } 
-							divide_temp_variable = { building_damage = targets }
-						}
-
-						clamp_temp_variable = { var = building_damage min = 1.5 max = 5 }
+						# Damage: random roll for this outcome (2.0-4.0 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 2.0 max = 4.0 }
 
 						if = { limit = { arms_factory > 0 }
-							meta_effect = { text = { damage_building = { type = arms_factory damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
+							}
 						}
+
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_plant damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
+							}
 						}
+
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = { text = { damage_building = { type = ammunition_silo damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
+							}
 						}
+
 						if = { limit = { infrastructure > 0 }
-							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
 						}
 					}
 				}
 				actor_effects = {
 
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 20 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt
@@ -3520,106 +3614,134 @@ types ={
 			critical_success = {
 				victim_effects = {
 					var:target_state = {
-						set_temp_variable = { aa_defense = THIS.non_damaged_building_level@anti_air_building }
-						set_temp_variable = { radar_mult = THIS.non_damaged_building_level@radar_station }
-						set_temp_variable = { rocket_mult = THIS.non_damaged_building_level@rocket_site }
-
-						add_to_temp_variable = { radar_mult = 0.5 }
-						multiply_temp_variable = { aa_defense = radar_mult }
-						multiply_temp_variable = { rocket_mult = radar_mult }
-
-						if = {
-							limit = {
-								NOT = { check_variable = { rocket_mult = 0 } }
-							}
-							multiply_temp_variable = { aa_defense = rocket_mult }
-
-							if = {
-								limit = {
-									check_variable = { aa_defense = 0 }
-								}
-								add_to_temp_variable = { aa_defense = rocket_mult }
-							}
-						}
-
-						set_temp_variable = { building_damage = 5 }
-
-						set_temp_variable_to_random = {
-							var = luck
-							min = 0.4
-							max = 0.6
-						}
-
-						multiply_temp_variable = { building_damage = luck }
-
-						if = {
-							limit = {
-								check_variable = { aa_defense > 0 }
-							}
-							divide_temp_variable = { building_damage = aa_defense }
-						}
-
-						multiply_temp_variable = { building_damage = 3 }
-
-						set_temp_variable = { targets = 0 }
-						if = { limit = { arms_factory > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_plant > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { ammunition_silo > 0 } add_to_temp_variable = { targets = 1 } }
-						if = { limit = { infrastructure > 0 } add_to_temp_variable = { targets = 1 } }
-
-
-						if = { 
-							limit = { check_variable = { targets > 0 } } 
-							divide_temp_variable = { building_damage = targets }
-						}
-
-						clamp_temp_variable = {
-							var = building_damage
-							min = 2.5
-							max = 8
-						}
+						# Damage: random roll for this outcome (4.0-12.0 levels, double damage for mass strikes), capped at the undamaged building levels.
+						# Air defence affects only the success chance (success_factors), not the damage.
+						set_temp_variable_to_random = { var = raid_dmg_roll min = 4.0 max = 12.0 }
 
 						if = { limit = { arms_factory > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = arms_factory
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@arms_factory }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_arms_factory = raid_dmg }
+								multiply_variable = { raid_last_dmg_arms_factory = 100 }
+								round_variable = raid_last_dmg_arms_factory
+								divide_variable = { raid_last_dmg_arms_factory = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = arms_factory
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_arms_factory > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_arms_factory }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = arms_factory
+								}
 							}
 						}
+
 						if = { limit = { ammunition_plant > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_plant
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_plant }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_plant = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_plant = 100 }
+								round_variable = raid_last_dmg_ammunition_plant
+								divide_variable = { raid_last_dmg_ammunition_plant = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_plant
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_plant > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_plant }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_plant
+								}
 							}
 						}
+
 						if = { limit = { ammunition_silo > 0 }
-							meta_effect = {
-								text = {
-									damage_building = {
-										type = ammunition_silo
-										damage = [DAM]
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@ammunition_silo }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_ammunition_silo = raid_dmg }
+								multiply_variable = { raid_last_dmg_ammunition_silo = 100 }
+								round_variable = raid_last_dmg_ammunition_silo
+								divide_variable = { raid_last_dmg_ammunition_silo = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = ammunition_silo
+											damage = [DAM]
+										}
 									}
+									DAM = "[?raid_dmg]"
 								}
-								DAM = "[?building_damage]"
+							}
+							if = { limit = { check_variable = { raid_last_dmg_ammunition_silo > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_ammunition_silo }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = ammunition_silo
+								}
 							}
 						}
+
 						if = { limit = { infrastructure > 0 }
-							meta_effect = { text = { damage_building = { type = infrastructure damage = [DAM] } } DAM = "[?building_damage]" }
+							set_temp_variable = { raid_dmg = raid_dmg_roll }
+							set_temp_variable = { raid_dmg_cap = THIS.non_damaged_building_level@infrastructure }
+							clamp_temp_variable = { var = raid_dmg min = 0 max = raid_dmg_cap }
+							# Real damage is applied hidden and stored; the result popup re-evaluates this block
+							# AFTER execution (building already damaged, new random roll), so it must read the stored value.
+							hidden_effect = {
+								set_variable = { raid_last_dmg_infrastructure = raid_dmg }
+								multiply_variable = { raid_last_dmg_infrastructure = 100 }
+								round_variable = raid_last_dmg_infrastructure
+								divide_variable = { raid_last_dmg_infrastructure = 100 }
+								meta_effect = {
+									text = {
+										damage_building = {
+											type = infrastructure
+											damage = [DAM]
+										}
+									}
+									DAM = "[?raid_dmg]"
+								}
+							}
+							if = { limit = { check_variable = { raid_last_dmg_infrastructure > 0 } }
+								set_temp_variable = { raid_dmg_shown = raid_last_dmg_infrastructure }	# stored real damage (shown by the loc)
+								custom_effect_tooltip = {
+									localization_key = es_raid_dmg_result_tt
+									BUILDING = infrastructure
+								}
+							}
 						}
 					}
 				}
 
 				actor_effects = {
-					set_temp_variable = { raid_planes_lost = 12 }  
+					set_temp_variable = { raid_planes_lost = 20 }  
 
 					custom_effect_tooltip = {
 						localization_key = missiles_raid_losses_tt

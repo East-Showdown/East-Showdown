@@ -7,8 +7,9 @@ Used by balance_calc.py. Plain Python dicts - edit the numbers, rerun the calcul
   build_cost_ic       = BASE + sum(stat * IC weight)              (+ sum(multiply_stat * MULT weight) for modules)
   supply_consumption  = sum(stat * SUPPLY weight)
 
-Negative stats reduce the cost, except those listed in IC_IGNORE_NEGATIVE
-(reliability by default), which never lower build_cost_ic.
+Negative stats never lower build_cost_ic: IC_IGNORE_NEGATIVE = ["*"] covers every
+stat (list single stats instead to ignore only those). A profile with "fixed"
+always gives that value, whatever the stats (manual loaders are free).
 
 =============================================================================
 ИНСТРУКЦИЯ (RU)
@@ -24,8 +25,10 @@ common/units/equipment/modules.
                        затем * ic_multiplier из правила (если задан)
   supply_consumption = сумма(стат * вес снабжения)
 
-  Отрицательные статы уменьшают стоимость, КРОМЕ статов из списка
-  IC_IGNORE_NEGATIVE (по умолчанию reliability) - их минус в IC не считается.
+  Отрицательные статы НЕ уменьшают стоимость: IC_IGNORE_NEGATIVE = ["*"]
+  означает все статы (можно вместо "*" перечислить отдельные статы).
+  Профиль с "fixed" всегда даёт это значение, независимо от статов
+  (ручное заряжание бесплатно).
   Для модулей берутся статы из add_stats, для снаряжения - статы самого
   варианта (недостающие наследуются от архетипа).
 
@@ -105,12 +108,16 @@ SUPPLY_PROFILES = {
 #     mult_weights - только модули: IC за 1.0 (=100%) в multiply_stats
 # ---------------------------------------------------------------------------
 IC_PROFILES = {
+    # ---- fixed cost -------------------------------------------------------
+    # RU: фиксированная стоимость, статы не учитываются
+    "free": {"fixed": 0, "round": 2},   # manual loaders: a loader is crew, not hardware
+
     # ---- infantry -------------------------------------------------------
     "inf_weapons": {          # mortar, atgm, aa, grenade launchers
         "base": 0, "round": 2,
         "weights": {
-            "soft_attack": 0.15,
-            "hard_attack": 0.20,
+            "soft_attack": 0.12,
+            "hard_attack": 0.14,
             "ap_attack": 0.005,
             "air_attack": 0.40,
         },
@@ -268,7 +275,7 @@ EQUIPMENT_RULES = [
      "ic": "inf_weapons", "supply": "infantry"},
 
     # towed artillery: priced like vehicle modules ("add_stats" weights), +50% IC
-    {"archetype": ["artillery_equipment"], "ic": "module", "ic_multiplier": 1.5, "supply": "vehicle"},
+    {"archetype": ["artillery_equipment"], "ic": "module", "ic_multiplier": 0.8, "supply": "vehicle"},
 
     # air
     {"archetype": ["fighter_equipment"], "ic": "multirole", "supply": None},
@@ -278,8 +285,8 @@ EQUIPMENT_RULES = [
     {"archetype": ["sam_missile_equipment"], "ic": "aa_missile", "supply": None},
     # missiles - one rule per group, so each has its own IC multiplier
     # RU: ракеты - отдельное правило на каждую группу, у каждой свой множитель IC
-    {"archetype": ["ballistic_missile_equipment"],      "ic": "missile", "ic_multiplier": 1.25, "supply": None},
-    {"archetype": ["*_heavy_guided_missile_equipment"], "ic": "missile", "ic_multiplier": 1.25, "supply": None},
+    {"archetype": ["ballistic_missile_equipment"],      "ic": "missile", "ic_multiplier": 1.4, "supply": None},
+    {"archetype": ["*_heavy_guided_missile_equipment"], "ic": "missile", "ic_multiplier": 1.4, "supply": None},
     {"archetype": ["*_guided_missile_equipment"],       "ic": "missile", "ic_multiplier": 1, "supply": None},
     {"archetype": ["*_anti_radar_missile_equipment"],   "ic": "missile", "ic_multiplier": 1, "supply": None},
     {"archetype": ["*_guided_uav_equipment"],           "ic": "missile", "ic_multiplier": 1, "supply": None},
@@ -290,19 +297,35 @@ EQUIPMENT_RULES = [
 ]
 
 MODULE_RULES = [
+    # manual loaders (tank, APC, artillery, MLRS) cost no IC
+    # RU: ручное заряжание (танки, БТР, артиллерия, РСЗО) - 0 IC
+    {"name": ["*_hand_loader"], "ic": "free", "supply": "vehicle"},
     {"category": ["*engine*"], "ic": "engine", "supply": None},
     # artillery / MLRS guns: +50% IC
     {"file": ["arty_guns_modules_ES.txt"], "ic": "module", "ic_multiplier": 1.5, "supply": "vehicle"},
     # missile guidance / bodies / warheads - not covered by the notes
     {"file": ["missile_modules_ES.txt", "rocket_warheads_ES.txt"], "ic": None, "supply": None},
+    # add-on protection: the formula prices defense/breakthrough, so scale by real cost of the kit
+    # RU: навесная защита - формула считает защиту/прорыв, поправка на реальную стоимость комплекта
+    {"name": ["*_antidrone_cage"], "ic": "module", "ic_multiplier": 0.4, "supply": "vehicle"},
+    {"name": ["*_antidrone_screen"], "ic": "module", "ic_multiplier": 0.7, "supply": "vehicle"},
+    {"name": ["*_antidrone_turtle"], "ic": "module", "ic_multiplier": 0.5, "supply": "vehicle"},
+    {"name": ["*_addarm_applique"], "ic": "module", "ic_multiplier": 3, "supply": "vehicle"},
+    {"name": ["*_addarm_combined"], "ic": "module", "ic_multiplier": 1.5, "supply": "vehicle"},
+    # armoured engineer vehicle kits: keep engineering kits at 2-5 IC whatever stat they give
+    # RU: инженерные комплекты ИМР - 2-5 IC независимо от того, какой параметр дают
+    {"category": ["aev_kit_clearing"], "ic": "module", "ic_multiplier": 0.6, "supply": "vehicle"},
+    {"category": ["aev_kit_breaching"], "ic": "module", "ic_multiplier": 10, "supply": "vehicle"},
+    {"name": ["aev_front_dozer"], "ic": "module", "ic_multiplier": 0.5, "supply": "vehicle"},
+    {"name": ["aev_front_plough", "aev_front_roller"], "ic": "module", "ic_multiplier": 10, "supply": "vehicle"},
     {"category": ["*"], "ic": "module", "supply": "vehicle"},
 ]
 
 # Stats whose NEGATIVE values never reduce build_cost_ic (treated as 0).
-# Positive values still add cost as usual.
+# "*" = every stat. Positive values still add cost as usual.
 # RU: статы, отрицательные значения которых НЕ уменьшают стоимость (считаются 0).
-#     Положительные значения увеличивают стоимость как обычно.
-IC_IGNORE_NEGATIVE = ["reliability"]
+#     "*" = все статы. Положительные значения увеличивают стоимость как обычно.
+IC_IGNORE_NEGATIVE = ["*"]
 
 # Names (wildcards ok) that are never touched - hand-balanced items.
 # RU: имена (можно с *), которые калькулятор никогда не меняет - ручной баланс.
