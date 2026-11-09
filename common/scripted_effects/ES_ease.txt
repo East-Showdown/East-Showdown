@@ -1373,3 +1373,52 @@ increase_military_academy = {
 		}
 	}
 }
+
+RUS_ministry_next_case = {
+	if = {
+		limit = { has_completed_focus = RUS_mo_rear_corruption }
+		country_event = { id = $next$ days = 7 }
+	}
+	else = {
+		country_event = { id = $next$ days = 14 }
+	}
+}
+
+# The daily corruption check uses open intervals. Keep the score inside the new tier.
+RUS_ministry_reduce_corruption_tier = {
+	if = {
+		limit = { has_idea = miserable_corruption_level }
+		custom_effect_tooltip = RUS_mo_lowest_tier_tt
+	}
+	else = {
+		custom_effect_tooltip = RUS_mo_one_tier_tt
+		hidden_effect = {
+			decrease_corruption_many = yes
+			if = {
+				limit = { has_idea = low_corruption_level }
+				clamp_variable = { var = corruption_level min = 0 max = 49 }
+				add_ideas = miserable_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = medium_corruption_level }
+				clamp_variable = { var = corruption_level min = 51 max = 99 }
+				add_ideas = low_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = high_corruption_level }
+				clamp_variable = { var = corruption_level min = 101 max = 149 }
+				add_ideas = medium_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = destructive_corruption_level }
+				clamp_variable = { var = corruption_level min = 151 max = 199 }
+				add_ideas = high_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = total_corruption_level }
+				clamp_variable = { var = corruption_level min = 201 max = 249 }
+				add_ideas = destructive_corruption_level
+			}
+		}
+	}
+}
