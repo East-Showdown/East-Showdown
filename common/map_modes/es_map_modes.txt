@@ -867,6 +867,9 @@ scripted_map_modes = {
 	}
 
 	more_mapmodes_blackout_map_mode = {
+		# Reads energy_blackout_status (set weekly in postcalculate_energy_in_country),
+		# never dynamic modifiers: the map is redrawn on another thread and reading
+		# modifiers while the weekly energy update changes them crashes the game.
 		top = {
 			type = state
 
@@ -876,18 +879,14 @@ scripted_map_modes = {
 					set_temp_variable = { thickness = 1.0 }
 					if = {
 						limit = {
-							has_dynamic_modifier = {
-								modifier = energy_global_blackout
-							}
+							check_variable = { energy_blackout_status = 2 }
 						}
 						set_temp_variable = { red = 0.9 }
 						set_temp_variable = { green = 0.9 }
 						set_temp_variable = { blue = 0.0 }
 					} else_if = {
 						limit = {
-							has_dynamic_modifier = {
-								modifier = energy_local_blackout
-							}
+							check_variable = { energy_blackout_status = 1 }
 						}
 						set_temp_variable = { red = 1.0 }
 						set_temp_variable = { green = 0.0 }
