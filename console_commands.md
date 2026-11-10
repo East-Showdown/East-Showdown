@@ -30,3 +30,11 @@ substation_add <state> [amount] - настоящий вызов ESAPI_add_state_
 
 blackout_set <state> <0|1|2> - задать статус блэкаута; после одного дня карта должна сменить цвет / set the blackout status; after one day the map should change color
 blackout_info <state> - статус, обеспеченность энергией, потребление и пропускная способность подстанций / status, supply factor, consumption and substation capacity
+
+## Удары по полевым складам (тесты) / Field depot strikes (testing)
+Вывод — в консоль и game.log, строки начинаются с DEPOT TEST. / Output goes to the console and game.log, lines start with DEPOT TEST.
+
+depot_mod_test <state> - повесить на область штраф 3 ступени (-15%) сразу для RUS, DPR, LPR и WGN на 30 дней и вывести, какие из них держатся / put the level 3 penalty (-15%) on the state for RUS, DPR, LPR and WGN at once for 30 days and print which ones stick
+depot_mod_clear <state> - снять эти тестовые модификаторы / remove those test modifiers
+depot_front_info - сколько областей помечено как линия фронта для ударов по полевым складам / how many states are flagged as front line for field depot strikes
+depot_front_mark - пометить линию фронта сейчас и вывести число / mark the front line now and print the count

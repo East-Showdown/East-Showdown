@@ -448,3 +448,85 @@ d_blackout_info = {
 		}
 	}
 }
+
+# =====================================================================
+# Field depot strike test commands (see console_commands.md)
+# Question: can one state hold the same scoped dynamic modifier for
+# several countries at once (ammo_depot_strike_N with scope = RUS, DPR...)?
+# Output is written to the console and to game.log.
+# =====================================================================
+
+# --- helpers (not commands) ---
+es_depot_test_print = {
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = RUS } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for RUS" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for RUS" }
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = DPR } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for DPR" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for DPR" }
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = LPR } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for LPR" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for LPR" }
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = WGN } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for WGN" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for WGN" }
+}
+
+# depot_mod_test <state> - put the level 3 depot strike penalty (-15%) on the state for RUS, DPR, LPR and WGN at once (30 days)
+d_depot_mod_test = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "DEPOT TEST: usage: depot_mod_test <state id>"
+	}
+	else = {
+		set_temp_variable = { ds = args^0 }
+		# The modifier reads ammo_depot_penalty_3 from the scoped country
+		RUS = { ammo_depot_update_penalties = yes }
+		DPR = { ammo_depot_update_penalties = yes }
+		LPR = { ammo_depot_update_penalties = yes }
+		WGN = { ammo_depot_update_penalties = yes }
+		var:ds = {
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = RUS days = 30 }
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = DPR days = 30 }
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = LPR days = 30 }
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = WGN days = 30 }
+			es_depot_test_print = yes
+		}
+	}
+}
+
+# depot_mod_clear <state> - remove the test modifiers again
+d_depot_mod_clear = {
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "DEPOT TEST: usage: depot_mod_clear <state id>"
+	}
+	else = {
+		set_temp_variable = { ds = args^0 }
+		var:ds = {
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = RUS }
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = DPR }
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = LPR }
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = WGN }
+			es_depot_test_print = yes
+		}
+	}
+}
+
+# depot_front_info - count the states flagged as front line for field depot strikes (ammo_depot_front)
+d_depot_front_info = {
+	set_temp_variable = { dft_all = 0 }
+	set_temp_variable = { dft_rus = 0 }
+	set_temp_variable = { dft_ukr = 0 }
+	every_state = {
+		limit = { has_state_flag = ammo_depot_front }
+		add_to_temp_variable = { dft_all = 1 }
+		if = { limit = { controller = { tag = RUS } } add_to_temp_variable = { dft_rus = 1 } }
+		if = { limit = { controller = { tag = UKR } } add_to_temp_variable = { dft_ukr = 1 } }
+	}
+	log = "DEPOT TEST: front-line states flagged: [?dft_all|0] (controlled by RUS [?dft_rus|0], UKR [?dft_ukr|0])"
+}
+
+# depot_front_mark - run the weekly front-line marking now for every country at war, then print the count
+d_depot_front_mark = {
+	every_country = {
+		limit = { has_war = yes }
+		ammo_depot_mark_front = yes
+	}
+	d_depot_front_info = yes
+}
