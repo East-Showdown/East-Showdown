@@ -1,0 +1,123 @@
+# All effects in this file run in RUS country scope.
+ES_bakhmut_start_monitor = {
+	if = {
+		limit = {
+			NOT = { has_global_flag = ES_bakhmut_campaign_started }
+			NOT = { has_country_flag = ES_bakhmut_monitor_running }
+		}
+		set_country_flag = ES_bakhmut_monitor_running
+		country_event = { id = bakhmut.705 }
+	}
+}
+
+# First observation starts at zero; only subsequent hourly ticks count.
+# A lost province loses all progress, even if two other provinces are held.
+ES_bakhmut_hourly_tick = {
+	if = {
+		limit = { controls_province = 18310 }
+		if = {
+			limit = { has_country_flag = ES_bakhmut_holding_18310 }
+			add_to_variable = { ES_bakhmut_hours_18310 = 1 }
+		}
+		else = {
+			set_country_flag = ES_bakhmut_holding_18310
+			set_variable = { ES_bakhmut_hours_18310 = 0 }
+		}
+	}
+	else = {
+		clr_country_flag = ES_bakhmut_holding_18310
+		clear_variable = ES_bakhmut_hours_18310
+	}
+	if = {
+		limit = { controls_province = 18624 }
+		if = {
+			limit = { has_country_flag = ES_bakhmut_holding_18624 }
+			add_to_variable = { ES_bakhmut_hours_18624 = 1 }
+		}
+		else = {
+			set_country_flag = ES_bakhmut_holding_18624
+			set_variable = { ES_bakhmut_hours_18624 = 0 }
+		}
+	}
+	else = {
+		clr_country_flag = ES_bakhmut_holding_18624
+		clear_variable = ES_bakhmut_hours_18624
+	}
+	if = {
+		limit = { controls_province = 18602 }
+		if = {
+			limit = { has_country_flag = ES_bakhmut_holding_18602 }
+			add_to_variable = { ES_bakhmut_hours_18602 = 1 }
+		}
+		else = {
+			set_country_flag = ES_bakhmut_holding_18602
+			set_variable = { ES_bakhmut_hours_18602 = 0 }
+		}
+	}
+	else = {
+		clr_country_flag = ES_bakhmut_holding_18602
+		clear_variable = ES_bakhmut_hours_18602
+	}
+	if = {
+		limit = { controls_province = 18620 }
+		if = {
+			limit = { has_country_flag = ES_bakhmut_holding_18620 }
+			add_to_variable = { ES_bakhmut_hours_18620 = 1 }
+		}
+		else = {
+			set_country_flag = ES_bakhmut_holding_18620
+			set_variable = { ES_bakhmut_hours_18620 = 0 }
+		}
+	}
+	else = {
+		clr_country_flag = ES_bakhmut_holding_18620
+		clear_variable = ES_bakhmut_hours_18620
+	}
+	if = {
+		limit = { controls_province = 18613 }
+		if = {
+			limit = { has_country_flag = ES_bakhmut_holding_18613 }
+			add_to_variable = { ES_bakhmut_hours_18613 = 1 }
+		}
+		else = {
+			set_country_flag = ES_bakhmut_holding_18613
+			set_variable = { ES_bakhmut_hours_18613 = 0 }
+		}
+	}
+	else = {
+		clr_country_flag = ES_bakhmut_holding_18613
+		clear_variable = ES_bakhmut_hours_18613
+	}
+	if = {
+		limit = { ES_bakhmut_two_provinces_held_for_week = yes }
+		ES_bakhmut_start_campaign = yes
+	}
+}
+
+ES_bakhmut_start_campaign = {
+	if = {
+		limit = { NOT = { has_global_flag = ES_bakhmut_campaign_started } }
+		# Unlock the category and replace the state modifier before opening events.
+		set_global_flag = ES_bakhmut_campaign_started
+		165 = {
+			remove_dynamic_modifier = unplanned_offensive
+			add_dynamic_modifier = { modifier = ES_battle_for_bakhmut }
+		}
+		UKR = { country_event = { id = bakhmut.700 } }
+		RUS = { country_event = { id = bakhmut.701 } }
+		WGN = { country_event = { id = bakhmut.702 } }
+		DPR = { country_event = { id = bakhmut.703 } }
+		LPR = { country_event = { id = bakhmut.704 } }
+		clr_country_flag = ES_bakhmut_monitor_running
+		clr_country_flag = ES_bakhmut_holding_18310
+		clear_variable = ES_bakhmut_hours_18310
+		clr_country_flag = ES_bakhmut_holding_18624
+		clear_variable = ES_bakhmut_hours_18624
+		clr_country_flag = ES_bakhmut_holding_18602
+		clear_variable = ES_bakhmut_hours_18602
+		clr_country_flag = ES_bakhmut_holding_18620
+		clear_variable = ES_bakhmut_hours_18620
+		clr_country_flag = ES_bakhmut_holding_18613
+		clear_variable = ES_bakhmut_hours_18613
+	}
+}
