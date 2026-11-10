@@ -1412,3 +1412,24 @@ RUS_ministry_reduce_corruption_tier = {
 		}
 	}
 }
+
+RUS_recalculate_crisis_pressure = {
+	clamp_variable = { var = RUS_political_crisis_risk min = 0 max = 100 }
+	# Only complete 20-point steps count towards the penalties.
+	set_temp_variable = { crisis_remainder = { value = RUS_political_crisis_risk mod = 20 } }
+	set_temp_variable = { crisis_tier = { value = RUS_political_crisis_risk subtract = crisis_remainder divide = 20 } }
+	set_variable = { RUS_political_crisis_stability = { value = crisis_tier multiply = -0.05 } }
+	set_variable = { RUS_political_crisis_war_support = { value = crisis_tier multiply = -0.02 } }
+	if = {
+		limit = { check_variable = { crisis_tier > 0 } }
+		if = {
+			limit = { NOT = { has_dynamic_modifier = { modifier = RUS_political_crisis_pressure } } }
+			add_dynamic_modifier = { modifier = RUS_political_crisis_pressure }
+		}
+	}
+	else_if = {
+		limit = { has_dynamic_modifier = { modifier = RUS_political_crisis_pressure } }
+		remove_dynamic_modifier = { modifier = RUS_political_crisis_pressure }
+	}
+	force_update_dynamic_modifier = yes
+}
