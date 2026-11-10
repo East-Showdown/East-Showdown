@@ -1,0 +1,433 @@
+# Схема — docs/RAIDS.md
+# 2026-11-10: army experience costs replaced by command power (50 XP -> 30 CP, 25 XP -> 15 CP); depot air defense takes 100 SP AA vehicles instead of MANPADS; AI skips the command power, political power (final decision) and equipment costs
+ammo_depot_protection_category = {
+
+	ammo_depot_protection_mission = {
+		icon = generic_army_support
+		priority = 100
+		activation = { always = no }
+		available = {
+			check_variable = { ammo_depot_decisions_taken > 6 }
+		}
+		days_mission_timeout = 60
+		fire_only_once = yes
+		is_good = no
+		selectable_mission = no
+		timeout_effect = {
+			country_event = ammo_depot.2
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_dispersal = {
+		icon = generic_army_support
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		custom_cost_trigger = { OR = { is_ai = yes command_power > 29.9 } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_cp_30
+		days_remove = 14
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_command_power = -30 }	# AI bypass
+		}
+		remove_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 25 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.25 }
+				ammo_depot_add_resist = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_relocation = {
+		icon = generic_trucks
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		custom_cost_trigger = { OR = { is_ai = yes command_power > 29.9 } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_cp_30
+		days_remove = 10
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_command_power = -30 }	# AI bypass
+			add_dynamic_modifier = { modifier = ammo_depot_relocation days = 60 }
+		}
+		remove_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 18 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.18 }
+				ammo_depot_add_resist = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_wheeled_delivery = {
+		icon = generic_motorized
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = ammo_depot_need_trucks_tt
+				OR = {
+					is_ai = yes	# AI bypass
+					has_equipment = { motorized_equipment > 299 }
+				}
+			}
+		}
+		days_remove = 7
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_equipment_to_stockpile = { type = motorized_equipment amount = -300 } }	# AI bypass
+			add_dynamic_modifier = { modifier = ammo_depot_wheeled_delivery days = 60 }
+		}
+		remove_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 12 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.12 }
+				ammo_depot_add_resist = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_bunkers = {
+		icon = generic_fortification
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		custom_cost_trigger = { OR = { is_ai = yes command_power > 29.9 } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_cp_30
+		days_remove = 14
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_command_power = -30 }	# AI bypass
+			add_dynamic_modifier = { modifier = ammo_depot_bunkers days = 60 }
+		}
+		remove_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 10 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.10 }
+				ammo_depot_add_resist = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_separate_storage = {
+		icon = generic_army_support
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		custom_cost_trigger = { OR = { is_ai = yes command_power > 14.9 } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_cp_15
+		days_remove = 10
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_command_power = -15 }	# AI bypass
+		}
+		remove_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 6 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.06 }
+				ammo_depot_add_resist = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_fire_protection = {
+		icon = generic_civil_support
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		cost = 50
+		days_remove = 7
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 4 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.04 }
+				ammo_depot_add_resist = yes
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_camouflage = {
+		icon = generic_operation
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		cost = 75
+		days_remove = 10
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cm_camouflage }
+			custom_effect_tooltip = ammo_depot_chance_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_camouflage
+				add_to_variable = { ammo_depot_strike_chance_malus = constant:ammo_depot.cm_camouflage }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_air_defense = {
+		icon = generic_air
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		custom_cost_trigger = { OR = { is_ai = yes command_power > 14.9 } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_cp_15
+		available = {
+			# Players see only the SP AA requirement; AI bypass is hidden in the tooltip
+			custom_trigger_tooltip = {
+				tooltip = ammo_depot_need_sp_aa_tt
+				OR = {
+					is_ai = yes	# AI bypass
+					has_equipment = { sp_aa_chassis > 99 }	# SP AA vehicles (Tor, Pantsir, Buk, Gepard...), not MANPADS
+				}
+			}
+		}
+		days_remove = 10
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_command_power = -15 }	# AI bypass
+			if = { limit = { is_ai = no } add_equipment_to_stockpile = { type = sp_aa_chassis amount = -100 } }	# AI bypass
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cm_air_defense }
+			custom_effect_tooltip = ammo_depot_chance_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_air_defense
+				add_to_variable = { ammo_depot_strike_chance_malus = constant:ammo_depot.cm_air_defense }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_electronic_warfare = {
+		icon = generic_research
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = ammo_depot_need_comms_tt
+				OR = {
+					is_ai = yes	# AI bypass
+					has_equipment = { communication_equipment > 149 }
+				}
+			}
+		}
+		days_remove = 10
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_equipment_to_stockpile = { type = communication_equipment amount = -150 } }	# AI bypass
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cm_electronic_warfare }
+			custom_effect_tooltip = ammo_depot_chance_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_electronic_warfare
+				add_to_variable = { ammo_depot_strike_chance_malus = constant:ammo_depot.cm_electronic_warfare }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_counterintelligence = {
+		icon = generic_intelligence_operation
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		cost = 50
+		days_remove = 14
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cm_counterintelligence }
+			custom_effect_tooltip = ammo_depot_chance_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_counterintelligence
+				add_to_variable = { ammo_depot_strike_chance_malus = constant:ammo_depot.cm_counterintelligence }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_restricted_zone = {
+		icon = generic_police_action
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		days_remove = 7
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			add_stability = -0.02
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cm_restricted_zone }
+			custom_effect_tooltip = ammo_depot_chance_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_restricted_zone
+				add_to_variable = { ammo_depot_strike_chance_malus = constant:ammo_depot.cm_restricted_zone }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_launcher_hunt = {
+		icon = generic_military
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		custom_cost_trigger = { OR = { is_ai = yes command_power > 29.9 } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_cp_30
+		days_remove = 14
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_command_power = -30 }	# AI bypass
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cb_launcher_hunt }
+			custom_effect_tooltip = ammo_depot_counter_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_launcher_hunt
+				add_to_variable = { ammo_depot_counter_chance = constant:ammo_depot.cb_launcher_hunt }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_drone_recon = {
+		icon = generic_air
+		fire_only_once = yes
+		visible = {
+			has_country_flag = ammo_depot_strikes_noticed
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = ammo_depot_need_recon_uav_tt
+				OR = {
+					is_ai = yes	# AI bypass
+					has_equipment = { uav_recon_equipment > 99 }
+				}
+			}
+		}
+		days_remove = 7
+		complete_effect = {
+			hidden_effect = {
+				add_to_variable = { ammo_depot_decisions_taken = 1 }
+			}
+			if = { limit = { is_ai = no } add_equipment_to_stockpile = { type = uav_recon_equipment amount = -100 } }	# AI bypass
+		}
+		remove_effect = {
+			set_temp_variable = { ammo_depot_tt_value = constant:ammo_depot.cb_drone_recon }
+			custom_effect_tooltip = ammo_depot_counter_tt
+			hidden_effect = {
+				set_country_flag = ammo_depot_drone_recon
+				add_to_variable = { ammo_depot_counter_chance = constant:ammo_depot.cb_drone_recon }
+			}
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	ammo_depot_logistics_protection = {
+		icon = generic_army_support
+		fire_only_once = yes
+		visible = {
+			check_variable = { ammo_depot_decisions_taken > 12 }
+		}
+		# 100 political power moved into the custom cost so the AI can skip it
+		custom_cost_trigger = { OR = { is_ai = yes AND = { has_political_power > 99.9 command_power > 29.9 } } }	# AI bypass
+		custom_cost_text = ammo_depot_cost_pp_100_cp_30
+		complete_effect = {
+			custom_effect_tooltip = { localization_key = ammo_depot_resist_tt VALUE = 15 }
+			hidden_effect = {
+				set_temp_variable = { ammo_depot_resist_delta = 0.15 }
+				ammo_depot_add_resist = yes	# also copies the resistance to the rest of the side
+			}
+			if = { limit = { is_ai = no } add_political_power = -100 }	# AI bypass
+			if = { limit = { is_ai = no } add_command_power = -30 }	# AI bypass
+			add_ideas = ammo_depot_logistics_protection
+			country_event = ammo_depot.3
+		}
+		ai_will_do = {
+			base = 1
+		}
+	}
+}

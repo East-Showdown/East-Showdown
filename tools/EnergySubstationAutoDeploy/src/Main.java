@@ -7,7 +7,10 @@ public class Main {
         StateUpdater stateUpdater = new StateUpdater();
 
         System.out.print("Enter the path to the history/states: ");
-        String path = scanner.nextLine();
+        String path = scanner.nextLine().trim();
+        if (path.length() >= 2 && path.startsWith("\"") && path.endsWith("\"")) {
+            path = path.substring(1, path.length() - 1);
+        }
         File folder = new File(path);
 
         if (!folder.exists() || !folder.isDirectory()) {
@@ -20,7 +23,13 @@ public class Main {
             System.out.println("1: Deploy substations");
             System.out.println("2: Delete electrical_substation_big; electrical_substation substations");
             System.out.println("3: Exit");
-            int input = scanner.nextInt();
+            if (!scanner.hasNextLine()) return;
+            int input;
+            try {
+                input = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                input = -1;
+            }
 
             switch (input) {
                 case 1:
@@ -46,6 +55,7 @@ public class Main {
             return;
         }
 
+        java.util.Arrays.sort(files);
         int totalFiles = files.length;
         int filesUpdated = 0;
 
