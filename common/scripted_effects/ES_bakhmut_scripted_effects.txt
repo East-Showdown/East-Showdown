@@ -1,12 +1,47 @@
-# All effects in this file run in RUS country scope.
-ES_bakhmut_start_monitor = {
+# RUS scope. Schedule exactly 24 non-recursive hourly checks per daily pulse.
+ES_bakhmut_schedule_day = {
 	if = {
-		limit = {
-			NOT = { has_global_flag = ES_bakhmut_campaign_started }
-			NOT = { has_country_flag = ES_bakhmut_monitor_running }
+		limit = { NOT = { has_global_flag = ES_bakhmut_campaign_started } }
+		if = {
+			limit = { NOT = { has_country_flag = ES_bakhmut_monitor_v2 } }
+			# Discard legacy counters once: they may come from a broken event loop.
+			set_country_flag = ES_bakhmut_monitor_v2
+			clr_country_flag = ES_bakhmut_monitor_running
+			clr_country_flag = ES_bakhmut_holding_18310
+			clear_variable = ES_bakhmut_hours_18310
+			clr_country_flag = ES_bakhmut_holding_18624
+			clear_variable = ES_bakhmut_hours_18624
+			clr_country_flag = ES_bakhmut_holding_18602
+			clear_variable = ES_bakhmut_hours_18602
+			clr_country_flag = ES_bakhmut_holding_18620
+			clear_variable = ES_bakhmut_hours_18620
+			clr_country_flag = ES_bakhmut_holding_18613
+			clear_variable = ES_bakhmut_hours_18613
 		}
-		set_country_flag = ES_bakhmut_monitor_running
-		country_event = { id = bakhmut.705 }
+		country_event = { id = bakhmut.706 hours = 1 }
+		country_event = { id = bakhmut.706 hours = 2 }
+		country_event = { id = bakhmut.706 hours = 3 }
+		country_event = { id = bakhmut.706 hours = 4 }
+		country_event = { id = bakhmut.706 hours = 5 }
+		country_event = { id = bakhmut.706 hours = 6 }
+		country_event = { id = bakhmut.706 hours = 7 }
+		country_event = { id = bakhmut.706 hours = 8 }
+		country_event = { id = bakhmut.706 hours = 9 }
+		country_event = { id = bakhmut.706 hours = 10 }
+		country_event = { id = bakhmut.706 hours = 11 }
+		country_event = { id = bakhmut.706 hours = 12 }
+		country_event = { id = bakhmut.706 hours = 13 }
+		country_event = { id = bakhmut.706 hours = 14 }
+		country_event = { id = bakhmut.706 hours = 15 }
+		country_event = { id = bakhmut.706 hours = 16 }
+		country_event = { id = bakhmut.706 hours = 17 }
+		country_event = { id = bakhmut.706 hours = 18 }
+		country_event = { id = bakhmut.706 hours = 19 }
+		country_event = { id = bakhmut.706 hours = 20 }
+		country_event = { id = bakhmut.706 hours = 21 }
+		country_event = { id = bakhmut.706 hours = 22 }
+		country_event = { id = bakhmut.706 hours = 23 }
+		country_event = { id = bakhmut.706 hours = 24 }
 	}
 }
 
@@ -100,7 +135,7 @@ ES_bakhmut_start_campaign = {
 		# Unlock the category and replace the state modifier before opening events.
 		set_global_flag = ES_bakhmut_campaign_started
 		165 = {
-			remove_dynamic_modifier = unplanned_offensive
+			remove_dynamic_modifier = { modifier = unplanned_offensive }
 			add_dynamic_modifier = { modifier = ES_battle_for_bakhmut }
 		}
 		UKR = { country_event = { id = bakhmut.700 } }

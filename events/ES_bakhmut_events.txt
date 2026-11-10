@@ -61,9 +61,17 @@ country_event = {
 	option = { name = bakhmut.704.a }
 }
 
-# Internal hourly monitor. The persistent flag prevents duplicate loops.
+# Compatibility sink: queued legacy events from older saves must not restart a loop.
 country_event = {
 	id = bakhmut.705
+	hidden = yes
+	is_triggered_only = yes
+	immediate = { }
+}
+
+# One check only. All scheduling belongs to on_daily_RUS, never to this event.
+country_event = {
+	id = bakhmut.706
 	hidden = yes
 	is_triggered_only = yes
 	immediate = {
@@ -73,10 +81,6 @@ country_event = {
 				NOT = { has_global_flag = ES_bakhmut_campaign_started }
 			}
 			ES_bakhmut_hourly_tick = yes
-			if = {
-				limit = { NOT = { has_global_flag = ES_bakhmut_campaign_started } }
-				country_event = { id = bakhmut.705 hours = 1 }
-			}
 		}
 	}
 }
