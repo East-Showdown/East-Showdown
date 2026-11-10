@@ -1,60 +1,14 @@
 # Схема — docs/RAIDS.md
 
-# Эффект исхода рейда ammo_depot_strike, scope — экземпляр рейда.
-# Требует temp ammo_depot_loss_min, ammo_depot_loss_max (доля полевого склада области), ammo_depot_steps (ступени штрафа)
+# Эффект исхода рейда ammo_depot_strike_*, scope — экземпляр рейда.
+# Требует temp ammo_depot_loss_min, ammo_depot_loss_max (доля полевого склада области), ammo_depot_steps (ступени штрафа).
+# 2026-11-10: бьёт по всем странам в войне с атакующим, у которых есть дивизии в области (не только по контролёру):
+# каждая теряет боеприпасы из своего запаса по своей артиллерии в области и получает свой штраф.
+# Доля потерь бросается один раз на удар. Защита (стойкость) — от лидера стороны (RUS/UKR), см. ammo_depot_find_leader.
 ammo_depot_strike_hit = {
 	hidden_effect = {
 		set_temp_variable = { ammo_depot_state = var:target_state }
-		var:victim_country = { ammo_depot_destroy_field_stock = yes }
-		set_variable = { ammo_depot_raid_loss_k = ammo_depot_loss_k }
-		set_variable = { ammo_depot_raid_loss_disp = ammo_depot_loss_k }
-		if = {
-			limit = { check_variable = { ammo_depot_loss_k < 1 } }
-			multiply_variable = { ammo_depot_raid_loss_disp = 1000 }
-		}
-		else_if = {
-			limit = { check_variable = { ammo_depot_loss_k > 999.999 } }
-			divide_variable = { ammo_depot_raid_loss_disp = 1000 }
-		}
-		var:target_state = { ammo_depot_raise_penalty = yes }
-	}
-	# Окно итога строит текст после эффектов: ветка выбирается по уже записанной потере
-	if = {
-		limit = { check_variable = { ammo_depot_raid_loss_k < 1 } }
-		custom_effect_tooltip = ammo_depot_strike_victim_u_tt
-	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_raid_loss_k < 1000 } }
-		custom_effect_tooltip = ammo_depot_strike_victim_k_tt
-	}
-	else = {
-		custom_effect_tooltip = ammo_depot_strike_victim_m_tt
-	}
-}
-
-# Scope — страна-жертва; требует temp ammo_depot_state, ammo_depot_loss_min, ammo_depot_loss_max
-ammo_depot_destroy_field_stock = {
-	ammo_depot_update_penalties = yes
-	set_temp_variable = { ammo_depot_loss_k = 0 }
-
-	set_temp_variable = { ammo_depot_rate_sum_k = 0 }
-	for_loop_effect = {
-		start = 1
-		end = 11
-		value = ammo_depot_type
-		ammo_depot_count_type = yes
-		if = {
-			limit = { check_variable = { ammo_depot_n > 0 } }
-			ammo_depot_type_rate = yes
-			add_to_temp_variable = { ammo_depot_rate_sum_k = { value = ammo_depot_n multiply = ammo_depot_k } }
-		}
-	}
-
-	if = {
-		limit = {
-			check_variable = { ammo_depot_rate_sum_k > 0 }
-			check_variable = { ammunition_max_storage_capacity_k > 0 }
-		}
+		var:actor_country = { set_temp_variable = { ammo_depot_actor = THIS } }
 		set_temp_variable_to_random = { var = ammo_depot_share min = 0 max = 1 }
 		set_temp_variable = {
 			ammo_depot_share = {
@@ -63,6 +17,137 @@ ammo_depot_destroy_field_stock = {
 				multiply = ammo_depot_share
 				add = ammo_depot_loss_min
 			}
+		}
+		set_temp_variable = { ammo_depot_total_k = 0 }
+		clear_temp_array = ammo_depot_t_countries
+		clear_temp_array = ammo_depot_t_losses
+		every_country = {
+			limit = {
+				has_war_with = var:ammo_depot_actor
+				divisions_in_state = { state = var:ammo_depot_state size > 0 }
+			}
+			ammo_depot_hit_country = yes
+		}
+		set_temp_variable = { ammo_depot_loss_k = ammo_depot_total_k }
+
+		# Окно итога строит текст после эффектов, поэтому список потерь хранится в переменных экземпляра рейда
+		clear_array = ammo_depot_hit_countries
+		clear_array = ammo_depot_hit_disp
+		clear_array = ammo_depot_hit_unit
+		for_each_loop = {
+			array = ammo_depot_t_countries
+			index = ammo_depot_i
+			value = ammo_depot_c
+			add_to_array = { ammo_depot_hit_countries = ammo_depot_c }
+			set_temp_variable = { ammo_depot_l = ammo_depot_t_losses^ammo_depot_i }
+			if = {
+				limit = { check_variable = { ammo_depot_l < 1 } }
+				multiply_temp_variable = { ammo_depot_l = 1000 }
+				add_to_array = { ammo_depot_hit_unit = 0 }
+			}
+			else_if = {
+				limit = { check_variable = { ammo_depot_l < 1000 } }
+				add_to_array = { ammo_depot_hit_unit = 1 }
+			}
+			else = {
+				divide_temp_variable = { ammo_depot_l = 1000 }
+				add_to_array = { ammo_depot_hit_unit = 2 }
+			}
+			add_to_array = { ammo_depot_hit_disp = ammo_depot_l }
+		}
+		set_variable = { ammo_depot_hit_more_n = ammo_depot_hit_countries^num }
+		subtract_from_variable = { ammo_depot_hit_more_n = 5 }
+	}
+	# Ветки выбираются по уже записанным массивам; до 5 стран, остальные — одной строкой
+	if = {
+		limit = { check_variable = { ammo_depot_hit_countries^num > 0 } }
+		custom_effect_tooltip = ammo_depot_strike_victims_tt
+	}
+	else = {
+		custom_effect_tooltip = ammo_depot_strike_no_loss_tt
+	}
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 0 } check_variable = { ammo_depot_hit_unit^0 = 0 } } custom_effect_tooltip = ammo_depot_hit_row_0_u }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 0 } check_variable = { ammo_depot_hit_unit^0 = 1 } } custom_effect_tooltip = ammo_depot_hit_row_0_k }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 0 } check_variable = { ammo_depot_hit_unit^0 = 2 } } custom_effect_tooltip = ammo_depot_hit_row_0_m }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 1 } check_variable = { ammo_depot_hit_unit^1 = 0 } } custom_effect_tooltip = ammo_depot_hit_row_1_u }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 1 } check_variable = { ammo_depot_hit_unit^1 = 1 } } custom_effect_tooltip = ammo_depot_hit_row_1_k }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 1 } check_variable = { ammo_depot_hit_unit^1 = 2 } } custom_effect_tooltip = ammo_depot_hit_row_1_m }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 2 } check_variable = { ammo_depot_hit_unit^2 = 0 } } custom_effect_tooltip = ammo_depot_hit_row_2_u }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 2 } check_variable = { ammo_depot_hit_unit^2 = 1 } } custom_effect_tooltip = ammo_depot_hit_row_2_k }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 2 } check_variable = { ammo_depot_hit_unit^2 = 2 } } custom_effect_tooltip = ammo_depot_hit_row_2_m }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 3 } check_variable = { ammo_depot_hit_unit^3 = 0 } } custom_effect_tooltip = ammo_depot_hit_row_3_u }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 3 } check_variable = { ammo_depot_hit_unit^3 = 1 } } custom_effect_tooltip = ammo_depot_hit_row_3_k }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 3 } check_variable = { ammo_depot_hit_unit^3 = 2 } } custom_effect_tooltip = ammo_depot_hit_row_3_m }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 4 } check_variable = { ammo_depot_hit_unit^4 = 0 } } custom_effect_tooltip = ammo_depot_hit_row_4_u }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 4 } check_variable = { ammo_depot_hit_unit^4 = 1 } } custom_effect_tooltip = ammo_depot_hit_row_4_k }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 4 } check_variable = { ammo_depot_hit_unit^4 = 2 } } custom_effect_tooltip = ammo_depot_hit_row_4_m }
+	if = { limit = { check_variable = { ammo_depot_hit_countries^num > 5 } } custom_effect_tooltip = ammo_depot_hit_more_tt }
+	custom_effect_tooltip = ammo_depot_strike_penalty_tt
+}
+
+# Scope — страна под ударом; требует temp ammo_depot_state, ammo_depot_share, ammo_depot_steps.
+# Добавляет страну в temp-массивы ammo_depot_t_countries / ammo_depot_t_losses, если она потеряла боеприпасы
+ammo_depot_hit_country = {
+	# Стойкость — лидера стороны (решения есть только у RUS и UKR)
+	ammo_depot_find_leader = yes
+	if = {
+		limit = { check_variable = { ammo_depot_has_leader = 1 } }
+		var:ammo_depot_leader = { set_temp_variable = { ammo_depot_r = ammo_depot_strike_resist } }
+		set_variable = { ammo_depot_strike_resist = ammo_depot_r }
+	}
+	ammo_depot_destroy_field_stock = yes
+	if = {
+		limit = { check_variable = { ammo_depot_loss_k > 0 } }
+		add_to_temp_array = { ammo_depot_t_countries = THIS }
+		add_to_temp_array = { ammo_depot_t_losses = ammo_depot_loss_k }
+		add_to_temp_variable = { ammo_depot_total_k = ammo_depot_loss_k }
+	}
+	set_temp_variable = { ammo_depot_pen_country = THIS }
+	var:ammo_depot_state = { ammo_depot_raise_penalty = yes }
+}
+
+# Scope — страна. Лидер стороны: RUS для RUS и всех, кто воюет с UKR; UKR для UKR и всех, кто воюет с RUS.
+# Пишет temp ammo_depot_has_leader (0/1) и ammo_depot_leader
+ammo_depot_find_leader = {
+	set_temp_variable = { ammo_depot_has_leader = 0 }
+	if = {
+		limit = { ammo_depot_rus_side = yes RUS = { exists = yes } }
+		RUS = { set_temp_variable = { ammo_depot_leader = THIS } }
+		set_temp_variable = { ammo_depot_has_leader = 1 }
+	}
+	else_if = {
+		limit = { ammo_depot_ukr_side = yes UKR = { exists = yes } }
+		UKR = { set_temp_variable = { ammo_depot_leader = THIS } }
+		set_temp_variable = { ammo_depot_has_leader = 1 }
+	}
+}
+
+# Scope — страна под ударом; требует temp ammo_depot_state, ammo_depot_share (доля, бросается раз на удар в ammo_depot_strike_hit)
+ammo_depot_destroy_field_stock = {
+	ammo_depot_update_penalties = yes
+	set_temp_variable = { ammo_depot_loss_k = 0 }
+
+	set_temp_variable = { ammo_depot_rate_sum_k = 0 }
+	# Сначала одна проверка на любую артиллерию; подсчёт по 4 группам — только если она есть
+	if = {
+		limit = { ammo_depot_has_consumers_in_hit_state = yes }
+		for_loop_effect = {
+			start = 1
+			end = 5
+			value = ammo_depot_type
+			ammo_depot_count_type = yes
+			if = {
+				limit = { check_variable = { ammo_depot_n > 0 } }
+				ammo_depot_type_rate = yes
+				add_to_temp_variable = { ammo_depot_rate_sum_k = { value = ammo_depot_n multiply = ammo_depot_k } }
+			}
+		}
+	}
+
+	if = {
+		limit = {
+			check_variable = { ammo_depot_rate_sum_k > 0 }
+			check_variable = { ammunition_max_storage_capacity_k > 0 }
 		}
 		set_temp_variable = {
 			ammo_depot_loss_k = {
@@ -112,7 +197,7 @@ ammo_depot_count_type = {
 	}
 }
 
-# Расход субюнита типа ammo_depot_type — в temp ammo_depot_k; номера типов — как в ammo_depot_more_than_probe
+# Расход субюнита группы ammo_depot_type — в temp ammo_depot_k; группы — как в ammo_depot_more_than_probe (расход внутри группы одинаковый)
 ammo_depot_type_rate = {
 	if = {
 		limit = { check_variable = { ammo_depot_type = 1 } }
@@ -120,89 +205,66 @@ ammo_depot_type_rate = {
 	}
 	else_if = {
 		limit = { check_variable = { ammo_depot_type = 2 } }
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_artillery }
-	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_type = 3 } }
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_sp_art }
-	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_type = 4 } }
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_spa }
-	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_type = 5 } }
 		set_temp_variable = { ammo_depot_k = constant:ammunition.k_sp_heavy_art }
 	}
 	else_if = {
-		limit = { check_variable = { ammo_depot_type = 6 } }
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_heavy_spa }
-	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_type = 7 } }
+		limit = { check_variable = { ammo_depot_type = 3 } }
 		set_temp_variable = { ammo_depot_k = constant:ammunition.k_MRLS }
 	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_type = 8 } }
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_mlrs }
-	}
-	else_if = {
-		limit = { check_variable = { ammo_depot_type = 9 } }
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_TOS }
-	}
 	else = {
-		set_temp_variable = { ammo_depot_k = constant:ammunition.k_support_tos }
+		set_temp_variable = { ammo_depot_k = constant:ammunition.k_TOS }
 	}
 }
 
-# Scope — область, ROOT — экземпляр рейда; требует temp ammo_depot_steps
+# Scope — область; требует temp ammo_depot_steps и ammo_depot_pen_country (страна, чьим дивизиям вешается штраф)
+# Длительность ступеней удвоена 2026-11-10 (было 7/12/15/18/21 дн.): штраф держался слишком недолго
 ammo_depot_raise_penalty = {
 	set_temp_variable = { ammo_depot_level = 0 }
 	if = {
-		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ROOT.victim_country } }
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ammo_depot_pen_country } }
 		set_temp_variable = { ammo_depot_level = 5 }
-		remove_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ROOT.victim_country }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ammo_depot_pen_country }
 	}
 	else_if = {
-		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ROOT.victim_country } }
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ammo_depot_pen_country } }
 		set_temp_variable = { ammo_depot_level = 4 }
-		remove_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ROOT.victim_country }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ammo_depot_pen_country }
 	}
 	else_if = {
-		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ROOT.victim_country } }
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ammo_depot_pen_country } }
 		set_temp_variable = { ammo_depot_level = 3 }
-		remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ROOT.victim_country }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ammo_depot_pen_country }
 	}
 	else_if = {
-		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ROOT.victim_country } }
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ammo_depot_pen_country } }
 		set_temp_variable = { ammo_depot_level = 2 }
-		remove_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ROOT.victim_country }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ammo_depot_pen_country }
 	}
 	else_if = {
-		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ROOT.victim_country } }
+		limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ammo_depot_pen_country } }
 		set_temp_variable = { ammo_depot_level = 1 }
-		remove_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ROOT.victim_country }
+		remove_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ammo_depot_pen_country }
 	}
 	add_to_temp_variable = { ammo_depot_level = ammo_depot_steps }
 
 	if = {
 		limit = { check_variable = { ammo_depot_level > 4 } }
-		add_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ROOT.victim_country days = 21 }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_5 scope = var:ammo_depot_pen_country days = 42 }
 	}
 	else_if = {
 		limit = { check_variable = { ammo_depot_level = 4 } }
-		add_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ROOT.victim_country days = 18 }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_4 scope = var:ammo_depot_pen_country days = 36 }
 	}
 	else_if = {
 		limit = { check_variable = { ammo_depot_level = 3 } }
-		add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ROOT.victim_country days = 15 }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = var:ammo_depot_pen_country days = 30 }
 	}
 	else_if = {
 		limit = { check_variable = { ammo_depot_level = 2 } }
-		add_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ROOT.victim_country days = 12 }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_2 scope = var:ammo_depot_pen_country days = 24 }
 	}
 	else = {
-		add_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ROOT.victim_country days = 7 }
+		add_dynamic_modifier = { modifier = ammo_depot_strike_1 scope = var:ammo_depot_pen_country days = 14 }
 	}
 }
 
@@ -216,16 +278,30 @@ ammo_depot_update_penalties = {
 }
 
 # Эффект исхода рейда ammo_depot_strike, scope — экземпляр рейда.
-# Требует temp ammo_depot_outcome (1 failure, 2 limited_success, 3 success, 4 critical_success) и ammo_depot_loss_k
+# Требует temp ammo_depot_outcome (1 failure, 2 limited_success, 3 success, 4 critical_success) и ammo_depot_loss_k (сумма по всем странам)
 ammo_depot_log_raid = {
 	hidden_effect = {
 		set_temp_variable = { ammo_depot_state = var:target_state }
+		# Журнал ведут лидеры сторон (RUS/UKR): удары DPR видит RUS и т. д.; без лидера — сама страна
 		set_temp_variable = { ammo_depot_other = var:victim_country }
-		var:actor_country = { ammo_depot_log_out = yes }
+		var:actor_country = {
+			ammo_depot_find_leader = yes
+			if = {
+				limit = { check_variable = { ammo_depot_has_leader = 1 } }
+				var:ammo_depot_leader = { ammo_depot_log_out = yes }
+			}
+			else = { ammo_depot_log_out = yes }
+		}
 		set_temp_variable = { ammo_depot_other = var:actor_country }
 		var:victim_country = {
-			ammo_depot_log_in = yes
-			ammo_depot_check_strikes_noticed = yes
+			ammo_depot_find_leader = yes
+			if = {
+				limit = { check_variable = { ammo_depot_has_leader = 1 } }
+				var:ammo_depot_leader = {
+					ammo_depot_log_in = yes
+					ammo_depot_check_strikes_noticed = yes
+				}
+			}
 		}
 	}
 }
@@ -284,7 +360,10 @@ ammo_depot_log_out = {
 # ammo_depot_event_loss_threshold_k страны (задаётся в on_actions; 0 — не действует), без неё — константа
 ammo_depot_check_strikes_noticed = {
 	if = {
-		limit = { NOT = { has_country_flag = ammo_depot_strikes_noticed } }
+		limit = {
+			OR = { tag = RUS tag = UKR }	# decisions only for the side leaders
+			NOT = { has_country_flag = ammo_depot_strikes_noticed }
+		}
 		set_temp_variable = { ammo_depot_loss_limit_k = ammunition_max_storage_capacity_k }
 		multiply_temp_variable = { ammo_depot_loss_limit_k = constant:ammo_depot.event_loss_share }
 		set_temp_variable = { ammo_depot_threshold_k = constant:ammo_depot.event_loss_threshold_k }
@@ -312,6 +391,28 @@ ammo_depot_add_resist = {
 	add_to_variable = { ammo_depot_strike_resist = ammo_depot_resist_delta }
 	clamp_variable = { var = ammo_depot_strike_resist min = 0 max = 1 }
 	ammo_depot_update_penalties = yes
+	ammo_depot_share_resist = yes
+}
+
+# Scope — RUS или UKR. Копирует стойкость лидера всем странам его стороны, чтобы уже висящие штрафы пересчитались
+ammo_depot_share_resist = {
+	set_temp_variable = { ammo_depot_r = ammo_depot_strike_resist }
+	if = {
+		limit = { tag = RUS }
+		every_country = {
+			limit = { ammo_depot_rus_side = yes NOT = { tag = RUS } }
+			set_variable = { ammo_depot_strike_resist = ammo_depot_r }
+			ammo_depot_update_penalties = yes
+		}
+	}
+	else_if = {
+		limit = { tag = UKR }
+		every_country = {
+			limit = { ammo_depot_ukr_side = yes NOT = { tag = UKR } }
+			set_variable = { ammo_depot_strike_resist = ammo_depot_r }
+			ammo_depot_update_penalties = yes
+		}
+	}
 }
 
 ammo_depot_mission_timeout = {
@@ -327,5 +428,34 @@ ammo_depot_mission_timeout = {
 	}
 	else = {
 		add_timed_idea = { idea = ammo_depot_logistics_failure_1 days = 90 }
+	}
+}
+
+# Scope — страна (on_weekly и on_startup). Помечает подконтрольные области на линии фронта:
+# граничат с областью, которую контролирует враг. Только такие области — цели ударов по полевым складам.
+# Каждая страна сначала снимает флаг со своих областей, потом ставит заново (2026-11-10: страна берётся из temp-переменной,
+# ROOT при вызове из on_startup и консоли — не та страна; флаг без срока)
+ammo_depot_mark_front = {
+	if = {
+		limit = { has_war = yes }
+		set_temp_variable = { ammo_depot_mf = THIS }
+		every_controlled_state = {
+			clr_state_flag = ammo_depot_front
+			if = {
+				limit = {
+					any_neighbor_state = {
+						controller = { has_war_with = var:ammo_depot_mf }
+					}
+				}
+				set_state_flag = ammo_depot_front
+			}
+		}
+	}
+	else = {
+		# Не воюет — снять оставшиеся флаги
+		every_controlled_state = {
+			limit = { has_state_flag = ammo_depot_front }
+			clr_state_flag = ammo_depot_front
+		}
 	}
 }

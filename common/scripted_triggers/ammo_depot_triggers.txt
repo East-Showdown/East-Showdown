@@ -15,13 +15,15 @@ ammo_depot_state_has_consumers = {
 	}
 }
 
-# Требует temp ammo_depot_state, ammo_depot_type (1-10), ammo_depot_probe; scope — страна-жертва
+# Требует temp ammo_depot_state, ammo_depot_type (1-4), ammo_depot_probe; scope — страна-жертва.
+# 2026-11-10: 4 группы с одинаковым расходом вместо 10 типов (каждая проверка перебирает всю армию страны)
+# 1 — towed_art, artillery, sp_art, support_spa; 2 — sp_heavy_art, support_heavy_spa; 3 — MRLS, support_mlrs; 4 — TOS, support_tos
 ammo_depot_more_than_probe = {
 	OR = {
 		AND = {
 			check_variable = { ammo_depot_type = 1 }
 			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { towed_art } } }
+				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { towed_art artillery sp_art support_spa } } }
 				COUNT = "[?ammo_depot_probe|0]"
 				STATE = "[?ammo_depot_state.GetID]"
 			}
@@ -29,7 +31,7 @@ ammo_depot_more_than_probe = {
 		AND = {
 			check_variable = { ammo_depot_type = 2 }
 			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { artillery } } }
+				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { sp_heavy_art support_heavy_spa } } }
 				COUNT = "[?ammo_depot_probe|0]"
 				STATE = "[?ammo_depot_state.GetID]"
 			}
@@ -37,7 +39,7 @@ ammo_depot_more_than_probe = {
 		AND = {
 			check_variable = { ammo_depot_type = 3 }
 			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { sp_art } } }
+				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { MRLS support_mlrs } } }
 				COUNT = "[?ammo_depot_probe|0]"
 				STATE = "[?ammo_depot_state.GetID]"
 			}
@@ -45,58 +47,97 @@ ammo_depot_more_than_probe = {
 		AND = {
 			check_variable = { ammo_depot_type = 4 }
 			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { support_spa } } }
+				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { TOS support_tos } } }
 				COUNT = "[?ammo_depot_probe|0]"
 				STATE = "[?ammo_depot_state.GetID]"
 			}
 		}
-		AND = {
-			check_variable = { ammo_depot_type = 5 }
-			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { sp_heavy_art } } }
-				COUNT = "[?ammo_depot_probe|0]"
-				STATE = "[?ammo_depot_state.GetID]"
+	}
+}
+
+# Стороны войны для ударов по полевым складам: решения и защита есть только у RUS и UKR,
+# остальные участники войны пользуются защитой своего лидера (2026-11-10). Scope — страна
+ammo_depot_rus_side = {
+	OR = {
+		tag = RUS
+		has_war_with = UKR
+	}
+}
+ammo_depot_ukr_side = {
+	NOT = { ammo_depot_rus_side = yes }
+	OR = {
+		tag = UKR
+		has_war_with = RUS
+	}
+}
+
+# Решение защиты принято лидером стороны этой страны (scope — страна, обычно контролёр области-цели)
+ammo_depot_side_has_camouflage = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_camouflage } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_camouflage } }
+	}
+}
+ammo_depot_side_has_air_defense = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_air_defense } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_air_defense } }
+	}
+}
+ammo_depot_side_has_electronic_warfare = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_electronic_warfare } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_electronic_warfare } }
+	}
+}
+ammo_depot_side_has_counterintelligence = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_counterintelligence } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_counterintelligence } }
+	}
+}
+ammo_depot_side_has_restricted_zone = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_restricted_zone } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_restricted_zone } }
+	}
+}
+ammo_depot_side_has_launcher_hunt = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_launcher_hunt } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_launcher_hunt } }
+	}
+}
+ammo_depot_side_has_drone_recon = {
+	OR = {
+		AND = { ammo_depot_rus_side = yes RUS = { has_country_flag = ammo_depot_drone_recon } }
+		AND = { ammo_depot_ukr_side = yes UKR = { has_country_flag = ammo_depot_drone_recon } }
+	}
+}
+
+# В триггерах рейда; scope — атакующий, требует temp target_state.
+# Сначала дешёвая проверка контролёра (FROM), полный перебор стран — только если у него нет артиллерии в области
+ammo_depot_enemy_consumers_in_target = {
+	OR = {
+		FROM = { ammo_depot_state_has_consumers = yes }
+		any_country = {
+			has_war_with = ROOT
+			divisions_in_state = { state = var:target_state size > 0 }
+			ammo_depot_state_has_consumers = yes
+		}
+	}
+}
+
+# Есть ли у страны (scope) артиллерия, расходующая боеприпасы, в области temp ammo_depot_state — одна проверка
+ammo_depot_has_consumers_in_hit_state = {
+	meta_trigger = {
+		text = {
+			num_battalions_in_states = {
+				count > 0
+				states = { [STATE] }
+				types = { towed_art artillery sp_art support_spa sp_heavy_art support_heavy_spa MRLS support_mlrs TOS support_tos }
 			}
 		}
-		AND = {
-			check_variable = { ammo_depot_type = 6 }
-			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { support_heavy_spa } } }
-				COUNT = "[?ammo_depot_probe|0]"
-				STATE = "[?ammo_depot_state.GetID]"
-			}
-		}
-		AND = {
-			check_variable = { ammo_depot_type = 7 }
-			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { MRLS } } }
-				COUNT = "[?ammo_depot_probe|0]"
-				STATE = "[?ammo_depot_state.GetID]"
-			}
-		}
-		AND = {
-			check_variable = { ammo_depot_type = 8 }
-			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { support_mlrs } } }
-				COUNT = "[?ammo_depot_probe|0]"
-				STATE = "[?ammo_depot_state.GetID]"
-			}
-		}
-		AND = {
-			check_variable = { ammo_depot_type = 9 }
-			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { TOS } } }
-				COUNT = "[?ammo_depot_probe|0]"
-				STATE = "[?ammo_depot_state.GetID]"
-			}
-		}
-		AND = {
-			check_variable = { ammo_depot_type = 10 }
-			meta_trigger = {
-				text = { num_battalions_in_states = { count > [COUNT] states = { [STATE] } types = { support_tos } } }
-				COUNT = "[?ammo_depot_probe|0]"
-				STATE = "[?ammo_depot_state.GetID]"
-			}
-		}
+		STATE = "[?ammo_depot_state.GetID]"
 	}
 }
