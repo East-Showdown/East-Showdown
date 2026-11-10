@@ -2942,3 +2942,165 @@ RASHET_OF_SUCCES_MARCH_JUSTACHE = {
 		set_variable = { WGN_March_power_balance_SUCCES_var = 50 }
 	}
 }
+
+WGN_update_march_focuses = {
+	# A timer inherited from parallel preparations must start fresh when its turn arrives.
+	set_temp_variable = { WGN_previous_march_focus_finished = 0 }
+	if = {
+		limit = {
+			has_global_flag = WGN_shell_hunger_flag_worse
+			NOT = { has_completed_focus = WGN_never_give_up }
+			NOT = { focus_progress = { focus = WGN_never_give_up progress > 0 } }
+		}
+		if = {
+			limit = { NOT = { has_country_flag = WGN_never_give_up_in_progress_flag } }
+			set_country_flag = WGN_never_give_up_in_progress_flag
+			activate_shine_on_focus = WGN_never_give_up
+		}
+		else_if = {
+			limit = {
+				NOT = { has_country_flag = { flag = WGN_never_give_up_in_progress_flag days < 4 } }
+			}
+			clr_country_flag = WGN_never_give_up_in_progress_flag
+			deactivate_shine_on_focus = WGN_never_give_up
+			complete_national_focus = { focus = WGN_never_give_up use_side_message = yes }
+			set_temp_variable = { WGN_previous_march_focus_finished = 1 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = WGN_never_give_up_in_progress_flag }
+		clr_country_flag = WGN_never_give_up_in_progress_flag
+		deactivate_shine_on_focus = WGN_never_give_up
+	}
+
+	if = {
+		limit = {
+			has_global_flag = WGN_shell_hunger_flag_worse
+			has_completed_focus = WGN_never_give_up
+			NOT = { has_completed_focus = WGN_loyalist_help }
+			NOT = { focus_progress = { focus = WGN_loyalist_help progress > 0 } }
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_country_flag = WGN_loyalist_help_in_progress_flag }
+					check_variable = { WGN_previous_march_focus_finished = 1 }
+				}
+			}
+			clr_country_flag = WGN_loyalist_help_in_progress_flag
+			set_country_flag = WGN_loyalist_help_in_progress_flag
+			activate_shine_on_focus = WGN_loyalist_help
+		}
+		else_if = {
+			limit = {
+				NOT = { has_country_flag = { flag = WGN_loyalist_help_in_progress_flag days < 4 } }
+			}
+			clr_country_flag = WGN_loyalist_help_in_progress_flag
+			deactivate_shine_on_focus = WGN_loyalist_help
+			complete_national_focus = { focus = WGN_loyalist_help use_side_message = yes }
+			set_temp_variable = { WGN_previous_march_focus_finished = 1 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = WGN_loyalist_help_in_progress_flag }
+		clr_country_flag = WGN_loyalist_help_in_progress_flag
+		deactivate_shine_on_focus = WGN_loyalist_help
+	}
+
+	if = {
+		limit = {
+			has_global_flag = WGN_shell_hunger_flag_worse
+			has_completed_focus = WGN_never_give_up
+			has_completed_focus = WGN_loyalist_help
+			NOT = { has_completed_focus = WGN_military_improvisation }
+			NOT = { focus_progress = { focus = WGN_military_improvisation progress > 0 } }
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_country_flag = WGN_military_improvisation_in_progress_flag }
+					check_variable = { WGN_previous_march_focus_finished = 1 }
+				}
+			}
+			clr_country_flag = WGN_military_improvisation_in_progress_flag
+			set_country_flag = WGN_military_improvisation_in_progress_flag
+			activate_shine_on_focus = WGN_military_improvisation
+		}
+		else_if = {
+			limit = {
+				NOT = { has_country_flag = { flag = WGN_military_improvisation_in_progress_flag days < 4 } }
+			}
+			clr_country_flag = WGN_military_improvisation_in_progress_flag
+			deactivate_shine_on_focus = WGN_military_improvisation
+			complete_national_focus = { focus = WGN_military_improvisation use_side_message = yes }
+			set_temp_variable = { WGN_previous_march_focus_finished = 1 }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = WGN_military_improvisation_in_progress_flag }
+		clr_country_flag = WGN_military_improvisation_in_progress_flag
+		deactivate_shine_on_focus = WGN_military_improvisation
+	}
+
+	if = {
+		limit = {
+			has_global_flag = WGN_shell_hunger_flag_worse
+			has_completed_focus = WGN_never_give_up
+			has_completed_focus = WGN_loyalist_help
+			has_completed_focus = WGN_military_improvisation
+			NOT = { has_completed_focus = WGN_fight_against_military_bureaucracy }
+			NOT = { focus_progress = { focus = WGN_fight_against_military_bureaucracy progress > 0 } }
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag }
+					check_variable = { WGN_previous_march_focus_finished = 1 }
+				}
+			}
+			clr_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag
+			set_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag
+			activate_shine_on_focus = WGN_fight_against_military_bureaucracy
+		}
+		else_if = {
+			limit = {
+				NOT = { has_country_flag = { flag = WGN_fight_against_military_bureaucracy_in_progress_flag days < 4 } }
+			}
+			clr_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag
+			deactivate_shine_on_focus = WGN_fight_against_military_bureaucracy
+			complete_national_focus = { focus = WGN_fight_against_military_bureaucracy use_side_message = yes }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag }
+		clr_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag
+		deactivate_shine_on_focus = WGN_fight_against_military_bureaucracy
+	}
+
+	if = {
+		limit = {
+			has_global_flag = WGN_shell_hunger_flag_worse
+			NOT = { has_completed_focus = WGN_march }
+			NOT = { focus_progress = { focus = WGN_march progress > 0 } }
+			WGN_ready_for_march = yes
+		}
+		if = {
+			limit = { NOT = { has_country_flag = WGN_march_in_progress_flag } }
+			set_country_flag = WGN_march_in_progress_flag
+			activate_shine_on_focus = WGN_march
+		}
+		else_if = {
+			limit = {
+				NOT = { has_country_flag = { flag = WGN_march_in_progress_flag days < 26 } }
+			}
+			clr_country_flag = WGN_march_in_progress_flag
+			deactivate_shine_on_focus = WGN_march
+			complete_national_focus = { focus = WGN_march use_side_message = yes }
+		}
+	}
+	else_if = {
+		limit = { has_country_flag = WGN_march_in_progress_flag }
+		clr_country_flag = WGN_march_in_progress_flag
+		deactivate_shine_on_focus = WGN_march
+	}
+}

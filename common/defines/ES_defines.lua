@@ -63,6 +63,7 @@ NDefines.NProduction.BASE_FACTORY_SPEED = 2 				-- Base factory speed multiplier
 NDefines.NProduction.MAX_EQUIPMENT_RESOURCES_NEED = 6 -- vanila 3 Max number of different strategic resources an equipment can be dependent on.
 NDefines.NProduction.MAX_MIL_FACTORIES_PER_LINE = 75 -- vanilla 150, max number of military factories on one production line
 NDefines.NProduction.BASE_LAND_EQUIPMENT_CONVERSION_IC_COST_FACTOR = 0.1 -- vanilla 0.9, Fraction of the chassis industry cost which is always included in the conversion cost.
+NDefines.NProduction.CONVERSION_SPEED_BONUS = 0.5 -- vanilla 0, Modifier to the production speed when converting equipment
 NDefines.NPolitics.BASE_POLITICAL_POWER_INCREASE = 5	-- Weekly increase of PP.
 NDefines.NBuildings.MAX_BUILDING_LEVELS = 50			-- Max levels a building can have.
 NDefines.NBuildings.AIRBASE_CAPACITY_MULT = 50		-- Each level of airbase building multiplied by this gives capacity (max operational value). Value is int. 1 for each airplane.
@@ -172,7 +173,7 @@ NDefines.NAir.COMBAT_DAMAGE_SCALE = 0.15 -- 1 vanilla Higher value = more shot d
 NDefines.NAir.AIR_WING_XP_TRAINING_MISSION_ACCIDENT_FACTOR = 0.01 -- 0.20
 NDefines.NAir.DISRUPTION_FACTOR = 1 -- 4.0
 NDefines.NAir.THRUST_WEIGHT_AGILITY_FACTOR = 0.5								-- For plane designs additive agility bonus per point of thrust exceeding weight
-NDefines.NAir.AIR_WING_MAX_SIZE = 20 							-- Max amount of airplanes in wing
+NDefines.NAir.AIR_WING_MAX_SIZE = 100 							-- Max amount of airplanes in wing
 NDefines.NAir.AIR_WING_AVERAGE_SIZE = 20 						-- Eyeballed average amount of airplanes in wing. Used when calculating air volunteer.
 NDefines.NAir.AIR_WING_BOMB_DAMAGE_FACTOR = 0.5					-- Used to balance the damage done while bombing.
 NDefines.NAir.BIGGEST_AGILITY_FACTOR_DIFF = 3.0					-- biggest factor difference in agility for doing damage (caps to this)

@@ -131,6 +131,32 @@ ammunition_on_daily = {
 	ammunition_update_display = yes
 }
 
+# 2026-11-10: расчёт при старте игры (on_startup), чтобы окно боеприпасов, идея и эффекты не показывали нули
+# до первого дня. Ничего не тратит и не срезает запас по вместимости складов: модификаторы складов-зданий
+# на старте могут быть ещё не посчитаны, обрезка — в первом ammunition_on_daily. Боёв нет, поэтому обеспечение = уровень
+ammunition_refresh_on_start = {
+	ammunition_calculate_generation = yes
+	ammunition_calculate_need = yes
+	ammunition_calculate_auto_level = yes
+	if = {
+		limit = {
+			OR = {
+				is_ai = yes
+				NOT = { has_country_flag = ammunition_supply_factor_ai_disable }
+			}
+		}
+		set_variable = { ammunition_level = ammunition_level_auto }
+	}
+	ammunition_clamp_level = yes
+	set_variable = { ammunition_cover = 1 }
+	set_variable = { ammunition_supply = ammunition_level }
+	ammunition_calculate_capacity = yes
+	ammunition_calculate_storage_stats = yes
+	ammunition_calculate_effects = yes
+	ammunition_update_idea = yes
+	ammunition_update_display = yes
+}
+
 ammunition_calculate_generation = {
 	# modifier daily_ammunition_gain — в единицах, не в тысячах
 	set_variable = { ammunition_plans_production_base_value = { value = modifier@daily_ammunition_gain divide = 1000 } }
@@ -365,10 +391,7 @@ ammunition_spend = {
 }
 
 ammunition_calculate_storage = {
-	ammunition_calculate_base_consumption = yes
-	set_variable = { ammunition_field_storage_capacity_k = { value = ammunition_base_k multiply = constant:ammunition.field_storage_days } }
-	set_variable = { ammunition_silos_capacity_k = modifier@ammunition_capacity_k }
-	set_variable = { ammunition_max_storage_capacity_k = { value = ammunition_silos_capacity_k add = ammunition_field_storage_capacity_k } }
+	ammunition_calculate_capacity = yes
 
 	set_temp_variable = {
 		ammunition_excess_k = {
@@ -389,6 +412,19 @@ ammunition_calculate_storage = {
 		}
 	}
 
+	ammunition_calculate_storage_stats = yes
+}
+
+# Вместимость складов: полевые (по расходу субюнитов) + склады-здания
+ammunition_calculate_capacity = {
+	ammunition_calculate_base_consumption = yes
+	set_variable = { ammunition_field_storage_capacity_k = { value = ammunition_base_k multiply = constant:ammunition.field_storage_days } }
+	set_variable = { ammunition_silos_capacity_k = modifier@ammunition_capacity_k }
+	set_variable = { ammunition_max_storage_capacity_k = { value = ammunition_silos_capacity_k add = ammunition_field_storage_capacity_k } }
+}
+
+# Заполненность, свободное место, дни до опустошения/заполнения (запас не меняет)
+ammunition_calculate_storage_stats = {
 	set_variable = { sum_ammunition_value_k = { value = ammunition_value_k add = ammunition_old_value_k } }
 	set_variable = { ammunition_storage_free_value_k = { value = ammunition_max_storage_capacity_k subtract = sum_ammunition_value_k } }
 	if = {
