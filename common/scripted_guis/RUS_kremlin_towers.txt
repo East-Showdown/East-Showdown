@@ -1,0 +1,61 @@
+scripted_gui = {
+	RUS_kt_launcher = {
+		context_type = player_context
+		parent_window_token = politics_tab
+		window_name = "RUS_kt_launcher"
+		visible = { tag = RUS }
+		ai_enabled = { always = no }
+
+		triggers = {
+			RUS_kt_open_visible = {
+				set_temp_variable = { RUS_kt_button_dx = 0 }
+				set_temp_variable = { RUS_kt_button_dy = 0 }
+				if = {
+					limit = { has_power_balance = { id = RUS_power_balance } }
+					# Leave the active balance-of-power control accessible.
+					set_temp_variable = { RUS_kt_button_dx = 90 }
+					set_temp_variable = { RUS_kt_button_dy = 49 }
+				}
+				always = yes
+			}
+		}
+
+		properties = {
+			RUS_kt_open = { x = RUS_kt_button_dx y = RUS_kt_button_dy }
+		}
+
+		effects = {
+			RUS_kt_open_click = {
+				RUS_kt_prepare_groups = yes
+				set_country_flag = RUS_kt_opened
+				RUS_kt_initialize = yes
+			}
+		}
+	}
+
+	RUS_kt_window = {
+		context_type = player_context
+		window_name = "RUS_kt_window"
+		dirty = RUS_kt_revision
+		visible = {
+			tag = RUS
+			has_country_flag = RUS_kt_opened
+		}
+		ai_enabled = { always = no }
+
+		properties = {
+			RUS_kt_security_bar = { frame = RUS_kt_bar_levels^0 }
+			RUS_kt_defence_bar = { frame = RUS_kt_bar_levels^1 }
+			RUS_kt_technocrats_bar = { frame = RUS_kt_bar_levels^2 }
+			RUS_kt_administration_bar = { frame = RUS_kt_bar_levels^3 }
+			RUS_kt_generals_bar = { frame = RUS_kt_bar_levels^4 }
+			RUS_kt_oligarchs_bar = { frame = RUS_kt_bar_levels^5 }
+		}
+		effects = {
+			RUS_kt_close_click = {
+				clr_country_flag = RUS_kt_opened
+				add_to_variable = { RUS_kt_revision = 1 }
+			}
+		}
+	}
+}

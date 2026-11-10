@@ -1,0 +1,157 @@
+RUS_kt_record_group = {
+	clamp_variable = { var = RUS_kt_loyalty^RUS_kt_slot min = 0 max = 100 }
+	clamp_variable = { var = RUS_kt_influence^RUS_kt_slot min = 0 max = 100 }
+	clamp_variable = { var = RUS_kt_mood^RUS_kt_slot min = 0 max = 100 }
+	set_temp_variable = { RUS_kt_points = RUS_kt_influence^RUS_kt_slot }
+	set_temp_variable = { RUS_kt_share = 0 }
+	if = {
+		limit = { NOT = { check_variable = { RUS_kt_slot = 3 } } } # administration
+		set_temp_variable = { RUS_kt_share = RUS_kt_loyalty^RUS_kt_slot }
+		multiply_temp_variable = { RUS_kt_share = 0.2 }
+		add_to_variable = { RUS_kt_authority = RUS_kt_share }
+
+		set_temp_variable = { RUS_kt_loyalty_delta = RUS_kt_loyalty^RUS_kt_slot }
+		subtract_from_temp_variable = { RUS_kt_loyalty_delta = 50 }
+		set_temp_variable = { RUS_kt_mood_delta = RUS_kt_mood^RUS_kt_slot }
+		subtract_from_temp_variable = { RUS_kt_mood_delta = 50 }
+
+		set_temp_variable = { RUS_kt_weighted_loyalty = RUS_kt_loyalty_delta }
+		multiply_temp_variable = { RUS_kt_weighted_loyalty = 0.3 }
+		set_temp_variable = { RUS_kt_weighted_mood = RUS_kt_mood_delta }
+		multiply_temp_variable = { RUS_kt_weighted_mood = 0.7 }
+		add_to_temp_variable = { RUS_kt_weighted_mood = RUS_kt_weighted_loyalty }
+		multiply_temp_variable = { RUS_kt_weighted_mood = RUS_kt_points }
+		add_to_variable = { RUS_kt_stability_factor = RUS_kt_weighted_mood }
+
+		set_temp_variable = { RUS_kt_weighted_loyalty = RUS_kt_loyalty_delta }
+		multiply_temp_variable = { RUS_kt_weighted_loyalty = 0.7 }
+		set_temp_variable = { RUS_kt_weighted_mood = RUS_kt_mood_delta }
+		multiply_temp_variable = { RUS_kt_weighted_mood = 0.3 }
+		add_to_temp_variable = { RUS_kt_weighted_mood = RUS_kt_weighted_loyalty }
+		multiply_temp_variable = { RUS_kt_weighted_mood = RUS_kt_points }
+		add_to_variable = { RUS_kt_political_power_factor = RUS_kt_weighted_mood }
+		if = {
+			limit = { check_variable = { RUS_kt_points > RUS_kt_influence^RUS_kt_leader_index } }
+			set_variable = { RUS_kt_leader_index = RUS_kt_slot }
+		}
+	}
+	add_to_array = { RUS_kt_contributions = RUS_kt_share }
+	if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 100 } } }
+		add_to_array = { RUS_kt_bar_levels = 100 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 90 } } }
+		add_to_array = { RUS_kt_bar_levels = 90 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 80 } } }
+		add_to_array = { RUS_kt_bar_levels = 80 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 70 } } }
+		add_to_array = { RUS_kt_bar_levels = 70 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 60 } } }
+		add_to_array = { RUS_kt_bar_levels = 60 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 50 } } }
+		add_to_array = { RUS_kt_bar_levels = 50 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 40 } } }
+		add_to_array = { RUS_kt_bar_levels = 40 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 30 } } }
+		add_to_array = { RUS_kt_bar_levels = 30 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 20 } } }
+		add_to_array = { RUS_kt_bar_levels = 20 }
+	}
+	else_if = {
+		limit = { NOT = { check_variable = { RUS_kt_points < 10 } } }
+		add_to_array = { RUS_kt_bar_levels = 10 }
+	}
+	else = { add_to_array = { RUS_kt_bar_levels = 0 } }
+}
+
+# After changing RUS_kt_influence, call this once to redraw all six groups.
+RUS_kt_initialize = {
+	set_variable = { RUS_kt_influence^3 = 100 } # administration
+	if = {
+		limit = { check_variable = { RUS_kt_mood^num = 0 } }
+		add_to_array = { RUS_kt_mood = 82 } # security
+		add_to_array = { RUS_kt_mood = 73 } # defence
+		add_to_array = { RUS_kt_mood = 65 } # technocrats
+		add_to_array = { RUS_kt_mood = 86 } # administration
+		add_to_array = { RUS_kt_mood = 75 } # generals
+		add_to_array = { RUS_kt_mood = 57 } # oligarchs
+	}
+	if = {
+		limit = { check_variable = { RUS_kt_loyalty^num = 0 } }
+		add_to_array = { RUS_kt_loyalty = 100 } # security
+		add_to_array = { RUS_kt_loyalty = 94 } # defence
+		add_to_array = { RUS_kt_loyalty = 93 } # technocrats
+		add_to_array = { RUS_kt_loyalty = 100 } # administration
+		add_to_array = { RUS_kt_loyalty = 95 } # generals
+		add_to_array = { RUS_kt_loyalty = 90 } # oligarchs
+	}
+	clear_array = RUS_kt_contributions
+	set_variable = { RUS_kt_authority = 0 }
+	set_variable = { RUS_kt_stability_factor = 0 }
+	set_variable = { RUS_kt_political_power_factor = 0 }
+	clear_array = RUS_kt_bar_levels
+	set_variable = { RUS_kt_leader_index = 0 }
+	set_temp_variable = { RUS_kt_slot = 0 }
+	RUS_kt_record_group = yes
+	set_temp_variable = { RUS_kt_slot = 1 }
+	RUS_kt_record_group = yes
+	set_temp_variable = { RUS_kt_slot = 2 }
+	RUS_kt_record_group = yes
+	set_temp_variable = { RUS_kt_slot = 3 }
+	RUS_kt_record_group = yes
+	set_temp_variable = { RUS_kt_slot = 4 }
+	RUS_kt_record_group = yes
+	set_temp_variable = { RUS_kt_slot = 5 }
+	RUS_kt_record_group = yes
+	multiply_variable = { RUS_kt_stability_factor = 0.15 }
+	divide_variable = { RUS_kt_stability_factor = 25000 }
+	multiply_variable = { RUS_kt_political_power_factor = 0.15 }
+	divide_variable = { RUS_kt_political_power_factor = 25000 }
+	force_update_dynamic_modifier = yes
+	add_to_variable = { RUS_kt_revision = 1 }
+}
+
+RUS_kt_prepare_groups = {
+	if = {
+		limit = { NOT = { check_variable = { RUS_kt_influence^num = 6 } } }
+		clear_array = RUS_kt_influence
+		if = {
+			limit = { check_variable = { global.SCENARIO_SELECTED = 1 } }
+			add_to_array = { RUS_kt_influence = 60 } # security
+			add_to_array = { RUS_kt_influence = 42 } # defence
+			add_to_array = { RUS_kt_influence = 40 } # technocrats
+			add_to_array = { RUS_kt_influence = 100 } # administration
+			add_to_array = { RUS_kt_influence = 48 } # generals
+			add_to_array = { RUS_kt_influence = 35 } # oligarchs
+		}
+		else_if = {
+			limit = {
+				OR = {
+					check_variable = { global.SCENARIO_SELECTED = 2 }
+					check_variable = { global.SCENARIO_SELECTED = 3 }
+				}
+			}
+			add_to_array = { RUS_kt_influence = 65 } # security
+			add_to_array = { RUS_kt_influence = 47 } # defence
+			add_to_array = { RUS_kt_influence = 37 } # technocrats
+			add_to_array = { RUS_kt_influence = 100 } # administration
+			add_to_array = { RUS_kt_influence = 55 } # generals
+			add_to_array = { RUS_kt_influence = 27 } # oligarchs
+		}
+	}
+}
