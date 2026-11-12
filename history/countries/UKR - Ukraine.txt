@@ -294,11 +294,18 @@ add_ideas = {
 	
 	UKR_air_forces
 	Worker_in_Poland
-	UKR_VPK
 	Big_bud
 	USAID
 	UKR_Russophile_opposition
 }
+
+set_variable = { UKR_VPK_production_factory_max_efficiency_factor = -0.25 }
+set_variable = { UKR_VPK_production_factory_efficiency_gain_factor = -0.15 }
+set_variable = { UKR_VPK_ammunition_plants_efficiency_factor = -0.45 }
+set_variable = { UKR_VPK_production_speed_arms_factory_factor = -0.40 }
+set_variable = { UKR_VPK_production_speed_ammunition_plant_factor = -0.50 }
+set_variable = { UKR_VPK_industrial_capacity_factory = 0.00 }
+add_dynamic_modifier = { modifier = UKR_VPK }
 
 add_dynamic_modifier = { modifier = UKR_Ukraines_ground_forces }
 set_variable = { UKR_Ukraines_ground_forces_army_org_factor = 0.05 }
@@ -732,8 +739,6 @@ create_equipment_variant_tank_sov_t_62agm = yes
 create_equipment_variant_tank_sov_t_72 = yes
 create_equipment_variant_tank_sov_t_72a = yes
 create_equipment_variant_tank_sov_t_72av = yes
-create_equipment_variant_tank_sov_t_72B_obr_85 = yes
-create_equipment_variant_tank_sov_t_72av_2022 = yes
 create_equipment_variant_tank_sov_t_72b_obr_85 = yes
 create_equipment_variant_tank_sov_t_72_amt = yes
 create_equipment_variant_tank_sov_t_72_amt_2022 = yes
@@ -1846,28 +1851,34 @@ add_equipment_production = {
 		add_defense = 1
 	}
 
-	character:mikola_balan = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = mikola_balan }
+		mikola_balan = { remove_unit_leader_role = yes }
 	}
 
-	character:serhiy_stanislavovych = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = serhiy_stanislavovych }
+		serhiy_stanislavovych = { remove_unit_leader_role = yes }
 	}
 
-	character:andriy_gnatov = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = andriy_gnatov }
+		andriy_gnatov = { remove_unit_leader_role = yes }
 	}
 
-	character:skibyuk_igor = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = skibyuk_igor }
+		skibyuk_igor = { remove_unit_leader_role = yes }
 	}
 
-	character:bohdan_krotevych = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = bohdan_krotevych }
+		bohdan_krotevych = { remove_unit_leader_role = yes }
 	}
 
-	character:yuriy_halushkyn = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = yuriy_halushkyn }
+		yuriy_halushkyn = { remove_unit_leader_role = yes }
 	}
 	
 	#Армия
@@ -2537,12 +2548,14 @@ add_equipment_production = {
 		add_planning = 1
 	}
 
-	character:gregory_galagan = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = gregory_galagan }
+		gregory_galagan = { remove_unit_leader_role = yes }
 	}
 
-	character:denys_prokopenko = {
-		remove_unit_leader_role  = yes
+	if = {
+		limit = { has_character = denys_prokopenko }
+		denys_prokopenko = { remove_unit_leader_role = yes }
 	}
 
 	anatoliy_bargilevich = {
@@ -3063,6 +3076,8 @@ add_equipment_production = {
 	set_stability = 0.9515
 	set_war_support = 1.0
 	set_political_power = 1489
+	add_political_power = -50
+	set_country_flag = UKR_ministry_deep_reactivation_unlocked
 	set_variable = { UKR_Economic_Collapse = 286 }
 	set_variable = { UKR_Ukraines_army_speed = 0.05 }
 	set_variable = { UKR_Ukraines_ground_forces_army_core_attack_factor = 0.05 }
@@ -3107,6 +3122,32 @@ add_equipment_production = {
 
 2023.6.1 = {
 	set_oob = "UKR_2023_06_01_land"
+	add_equipment_to_stockpile = {
+		type = nto_light_guided_missile_equipment_shtormshadow
+		amount = 200
+		producer = UKR
+	}
+	add_equipment_to_stockpile = {
+		type = ger_infantry_hk_g41_equipment
+		amount = 50000
+		producer = NTO
+	}
+	add_equipment_to_stockpile = {
+		type = ger_mbav_armor_equipment
+		amount = 15000
+		producer = NTO
+	}
+	add_equipment_to_stockpile = {
+		type = amv_equipment_0
+		amount = 100
+		producer = NTO
+	}
+	add_equipment_to_stockpile = {
+		type = ger_rsg60_equipment
+		amount = 200
+		producer = NTO
+	}
+	add_to_variable = { ammunition_value_k = 100 }
 
 	add_offsite_building = { type = industrial_complex level = 10 }
 	add_offsite_building = { type = arms_factory level = 10 }
@@ -3218,8 +3259,6 @@ add_equipment_production = {
 		UKR_mobilize_industry_for_defense_idea
 		UKR_exploit_operational_surprise_idea
 		UKR_exhausted_army_idea
-		UKR_VPK
-		UKR_VPK2
 	}
 
 	add_ideas = {
@@ -3230,7 +3269,6 @@ add_equipment_production = {
 		society_very_high
 		UKR_cross_border_fuel_supplies_improved
 		eu_candidate
-		UKR_VPK3
 		UKR_Centers_for_the_restoration_of_Western_equipment
 		pro_government_media
 	}
@@ -3242,6 +3280,14 @@ add_equipment_production = {
 
 	#Динамические идеи и числовые значения
 	
+	set_variable = { UKR_VPK_production_factory_max_efficiency_factor = -0.15 }
+	set_variable = { UKR_VPK_production_factory_efficiency_gain_factor = -0.05 }
+	set_variable = { UKR_VPK_ammunition_plants_efficiency_factor = -0.20 }
+	set_variable = { UKR_VPK_production_speed_arms_factory_factor = -0.20 }
+	set_variable = { UKR_VPK_production_speed_ammunition_plant_factor = -0.20 }
+	set_variable = { UKR_VPK_industrial_capacity_factory = 0.10 }
+	force_update_dynamic_modifier = yes
+
 	set_variable = { IFV_SENDING_VARIABLE = 22 }
 	set_variable = { TANKS_SENDING_VARIABLE = 24 }
 
@@ -3266,6 +3312,8 @@ add_equipment_production = {
 	set_stability = 1.0
 	set_war_support = 1.0
 	set_political_power = 1964
+	add_political_power = -50
+	set_country_flag = UKR_ministry_deep_reactivation_unlocked
 	set_variable = { Energy_production_speed_electrical_substation_big_factor = 0.55 }
 	set_variable = { Energy_production_speed_electrical_substation_factor = 0.55 }
 	set_variable = { Energy_production_speed_solar_power_plant_factor = 0.15 }
@@ -3333,6 +3381,8 @@ add_equipment_production = {
 		set_value = 0
 	}
 	retire_character = Denis_Monastirsky
+	activate_advisor = UKR_igor_klimenko
+	add_political_power = -150
 	army_experience = 100
 	add_manpower = -11500
 	add_mastery = { amount = 230 track = tier_1_armour }
