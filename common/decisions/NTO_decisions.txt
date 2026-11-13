@@ -641,14 +641,6 @@ NTO_AID_category = {
 
 	#APC 
 
-	open_APCIFV_folder = { fire_only_once = no  visible = { has_completed_focus = nto_sending_ifv_and_apc NOT = { has_country_flag = open_APCIFV_folder_OPEN } }
-	ai_will_do = {  factor = 5000 } complete_effect  = {  set_country_flag = open_APCIFV_folder_OPEN log = "[GetDateText]: [Root.GetName]: Decision open_APCIFV_folder"}
-	}
-
-	close_APCIFV_folder = { fire_only_once = no  visible = { has_country_flag = open_APCIFV_folder_OPEN }
-		complete_effect  = {  clr_country_flag = open_APCIFV_folder_OPEN log = "[GetDateText]: [Root.GetName]: Decision close_APCIFV_folder"}
-	}
-
 	send_m113_USA_equipment = {
 		cancel_trigger = { has_global_flag = NTO_trump_is_president }
 		icon = usa_flag_ll fire_only_once = no cost = 20 days_remove = 22 days_re_enable = 2
@@ -658,7 +650,7 @@ NTO_AID_category = {
 		has_equipment  = { apc_usa_m113_equipment > 1000 }
 			NOT = { custom_trigger_tooltip = { tooltip = JONSON_AXYEL_TT
 			has_country_flag = JONSON_AXYEL } } }
-	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_APCIFV_folder_OPEN has_completed_focus = nto_sending_ifv_and_apc }
+	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_vechicle_folder_OPEN has_completed_focus = nto_sending_afv }
 	ai_will_do = { 
 		factor = 800
 			modifier = { 
@@ -680,7 +672,7 @@ NTO_AID_category = {
 		has_equipment  = { apc_usa_lav25_equipment > 1000 }
 			NOT = { custom_trigger_tooltip = { tooltip = JONSON_AXYEL_TT
 			has_country_flag = JONSON_AXYEL } } }
-	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_APCIFV_folder_OPEN has_completed_focus = nto_sending_ifv_and_apc }
+	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_vechicle_folder_OPEN has_completed_focus = nto_sending_afv }
 	ai_will_do = { 
 		factor = 850
 			modifier = { 
@@ -702,7 +694,7 @@ NTO_AID_category = {
 		has_equipment  = { apc_usa_stryker_equipment > 250 }
 			NOT = { custom_trigger_tooltip = { tooltip = JONSON_AXYEL_TT
 			has_country_flag = JONSON_AXYEL } } }
-	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_APCIFV_folder_OPEN has_completed_focus = nto_sending_ifv_and_apc }
+	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_vechicle_folder_OPEN has_completed_focus = nto_sending_afv }
 	ai_will_do = { 
 		factor = 900
 			modifier = { 
@@ -710,11 +702,22 @@ NTO_AID_category = {
 				UKR = { has_equipment = { apc_chassis < 1 } }
 			}
 	}
-	remove_effect = { add_equipment_to_stockpile = { type = apc_usa_stryker_equipment variant_name = "Stryker" amount = -50 producer = NTO }
-	UKR = { 
-		if = { limit = { has_country_flag = NTO_APCIFV_WITH_MANGALS } add_equipment_to_stockpile = { type = apc_usa_stryker_equipment variant_name = "Stryker-UA" amount = 50 producer = NTO } } 
-		else = { add_equipment_to_stockpile = { type = apc_usa_stryker_equipment variant_name = "Stryker" amount = 50 producer = NTO }} }
-			log = "[GetDateText]: [Root.GetName]: Decision send_Stryker_USA_equipment" }
+	remove_effect = {
+		add_equipment_to_stockpile = { type = apc_usa_stryker_equipment variant_name = "Stryker" amount = -50 producer = NTO }
+		UKR = {
+			if = {
+				limit = { has_country_flag = NTO_APCIFV_WITH_MANGALS }
+				UKR_prepare_western_aid_variants = yes
+				add_equipment_to_stockpile = { type = apc_usa_stryker_equipment variant_name = "Stryker-UA" amount = 50 producer = UKR }
+				log = "[GetDateText]: [This.GetName]: Received 50 Stryker-UA from NATO aid"
+			}
+			else = {
+				add_equipment_to_stockpile = { type = apc_usa_stryker_equipment variant_name = "Stryker" amount = 50 producer = NTO }
+				log = "[GetDateText]: [This.GetName]: Received 50 regular Stryker from NATO aid (upgrade not selected)"
+			}
+		}
+		log = "[GetDateText]: [Root.GetName]: Decision send_Stryker_USA_equipment"
+	}
 	}	
 
 	send_AAV7_USA_equipment = {
@@ -726,7 +729,7 @@ NTO_AID_category = {
 		has_equipment  = { apc_usa_aav7_equipment > 700 }
 			NOT = { custom_trigger_tooltip = { tooltip = JONSON_AXYEL_TT
 			has_country_flag = JONSON_AXYEL } } }
-	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_APCIFV_folder_OPEN has_completed_focus = nto_sending_ifv_and_apc }
+	visible = { NTO_american_aid_allowed_trigger = yes has_country_flag = open_vechicle_folder_OPEN has_completed_focus = nto_sending_afv }
 	ai_will_do = { 
 		factor = 925
 			modifier = { 
@@ -745,7 +748,7 @@ NTO_AID_category = {
 		custom_trigger_tooltip = { tooltip = EU_MORE_THAN_250_SUPPORT  check_variable = { EU_parliament_support > 250 } } 
 		has_equipment  = { apc_ger_boxer_equipment > 250 }
 		has_completed_focus = nto_pressure_on_germany }
-	visible = { has_country_flag = open_APCIFV_folder_OPEN has_completed_focus = nto_sending_ifv_and_apc }
+	visible = { has_country_flag = open_vechicle_folder_OPEN has_completed_focus = nto_sending_afv }
 	ai_will_do = { 
 		factor = 950
 			modifier = { 
@@ -762,7 +765,7 @@ NTO_AID_category = {
 	available = { 
 		custom_trigger_tooltip = { tooltip = EU_MORE_THAN_250_SUPPORT  check_variable = { EU_parliament_support > 250 } } 
 		has_equipment  = { apc_ita_freccia_equipment > 150 } }
-	visible = { has_country_flag = open_APCIFV_folder_OPEN has_completed_focus = nto_sending_ifv_and_apc }
+	visible = { has_country_flag = open_vechicle_folder_OPEN has_completed_focus = nto_sending_afv }
 	ai_will_do = { 
 		factor = 800
 			modifier = { 
@@ -775,6 +778,14 @@ NTO_AID_category = {
 			log = "[GetDateText]: [Root.GetName]: Decision send_ITA_apc_equipment" }
 	}	
 
+
+	open_APCIFV_folder = { fire_only_once = no  visible = { has_completed_focus = nto_sending_ifv_and_apc NOT = { has_country_flag = open_APCIFV_folder_OPEN } }
+	ai_will_do = {  factor = 5000 } complete_effect  = {  set_country_flag = open_APCIFV_folder_OPEN log = "[GetDateText]: [Root.GetName]: Decision open_APCIFV_folder"}
+	}
+
+	close_APCIFV_folder = { fire_only_once = no  visible = { has_country_flag = open_APCIFV_folder_OPEN }
+		complete_effect  = {  clr_country_flag = open_APCIFV_folder_OPEN log = "[GetDateText]: [Root.GetName]: Decision close_APCIFV_folder"}
+	}
 
 	#IFV
 
@@ -795,11 +806,22 @@ NTO_AID_category = {
 				UKR = { has_equipment = { ifv_sov_chassis < 1 } }
 			}
 	}
-	remove_effect = { add_equipment_to_stockpile = { type = ifv_usa_bradley_equipment variant_name = "M2A3 Bradley" amount = -60 producer = NTO }
-	UKR = { 
-		if = { limit = { has_country_flag = NTO_APCIFV_WITH_MANGALS } add_equipment_to_stockpile = { type = ifv_usa_bradley_equipment variant_name = "M2A3 Bradley-UA" amount = 60 producer = NTO } } 
-		else = { add_equipment_to_stockpile = { type = ifv_usa_bradley_equipment variant_name = "M2A3 Bradley" amount = 60 producer = NTO }} }
-			log = "[GetDateText]: [Root.GetName]: Decision send_bradley_USA_equipment" }
+	remove_effect = {
+		add_equipment_to_stockpile = { type = ifv_usa_bradley_equipment variant_name = "M2A3 Bradley" amount = -60 producer = NTO }
+		UKR = {
+			if = {
+				limit = { has_country_flag = NTO_APCIFV_WITH_MANGALS }
+				UKR_prepare_western_aid_variants = yes
+				add_equipment_to_stockpile = { type = ifv_usa_bradley_equipment variant_name = "M2A3 Bradley-UA" amount = 60 producer = UKR }
+				log = "[GetDateText]: [This.GetName]: Received 60 M2A3 Bradley-UA from NATO aid"
+			}
+			else = {
+				add_equipment_to_stockpile = { type = ifv_usa_bradley_equipment variant_name = "M2A3 Bradley" amount = 60 producer = NTO }
+				log = "[GetDateText]: [This.GetName]: Received 60 regular M2A3 Bradley from NATO aid (upgrade not selected)"
+			}
+		}
+		log = "[GetDateText]: [Root.GetName]: Decision send_bradley_USA_equipment"
+	}
 	}
 
 	send_GER_ifv_marder_equipment = { icon = ger_flag_ll fire_only_once = no cost = 20 days_remove = 22 days_re_enable = 2
