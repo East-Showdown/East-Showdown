@@ -39,6 +39,26 @@ on_actions = {
 				}
 				
 				calculate_energy_in_country = yes
+
+				# Check the freshly calculated production penalty only for Ukraine.
+				if = {
+					limit = {
+						tag = UKR
+						NOT = { has_country_flag = UKR_EnergyNightmare }
+					}
+					if = {
+						limit = {
+							check_variable = {
+								var = energy_blackout_industrial_capacity_factory_factor
+								value = -0.20
+								compare = less_than_or_equals
+							}
+						}
+						set_country_flag = UKR_EnergyNightmare
+						mark_focus_tree_layout_dirty = yes
+						news_event = { id = news.194 }
+					}
+				}
 			}
 		}
 	}
