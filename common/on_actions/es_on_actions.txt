@@ -1,4 +1,212 @@
 on_actions = {
+
+	# вызван, когда шпион, выполняющий активную миссию в стране, был засечен
+	# SCOPE: шпион; ROOT: страна, где выполнялась миссия; FROM: страна, на которую работает шпион
+	on_operative_on_mission_spotted = {
+
+		effect = {
+			set_temp_variable = {
+				var = capture_chance
+				value = 40
+			}
+			set_temp_variable = {
+				var = kill_chance
+				value = 5
+			}
+			set_temp_variable = {
+				var = hiding_chance
+				value = 55
+			}
+
+			if = {
+				limit = {
+					OR = {
+						operative_leader_mission = control_trade
+						operative_leader_mission = diplomatic_pressure
+					}
+				}
+				set_temp_variable = {
+					var = kill_chance
+					value = 0
+				}
+				add_to_temp_variable = {
+					var = hiding_chance
+					value = 5
+				}
+			}
+
+			random_list = {
+				temp_var:capture_chance = {
+					capture_operative = {
+						captured_by = ROOT
+					}
+				}
+				temp_var:kill_chance = {
+					kill_operative = {
+						killed_by = ROOT
+					}
+				}
+				temp_var:hiding_chance = {
+					set_unit_leader_flag = es_oper_compromised
+					force_operative_leader_into_hiding = 28
+				}
+			}
+		}
+	}
+
+	# SCOPE: шпион; ROOT: страна, где выполнялась миссия; FROM: страна, на которую работает шпион
+	on_operative_captured = {
+		effect = {
+			operative_leader_event = {
+				id = lar_operative_event.6
+				recipient = ROOT
+				originator = ROOT
+				set_from_from = ROOT
+				set_from = FROM
+				days = 1
+			}
+			if = {
+				limit = {
+					NOT = { has_unit_leader_flag = le_clerc1 }
+				}
+				set_unit_leader_flag = le_clerc1
+			}
+			else_if = {
+				limit = {
+					has_unit_leader_flag = le_clerc1
+				}
+				set_unit_leader_flag = le_clerc2
+			}
+			random_list = {
+				90 = {
+					operative_leader_event = {
+						id = lar_operative_event.1
+						set_from_from = ROOT
+					}
+				}
+				10 = {
+					modifier = {
+						has_trait = operative_tough
+						factor = 0
+					}
+					modifier = {
+						has_trait = operative_double_agent
+						factor = 0
+					}
+					turn_operative = { turned_by = ROOT }
+					add_nationality = FROM
+					operative_leader_event = {
+						id = lar_operative_event.5
+						set_from_from = FROM
+					}
+				}
+			}
+		}
+	}
+
+	# SCOPE: шпион; ROOT: убившая страна (опционально); FROM: страна, на которую работает шпион
+	on_operative_death = {
+		effect = {
+			if = {
+				limit = {
+					country_exists = ROOT
+				}
+				operative_leader_event = {
+					id = lar_operative_event.3
+					set_from_from = ROOT
+				}
+			}
+			if = {
+				limit = {
+					FROM = {
+						NOT = { is_ai = yes }
+						has_done_agency_upgrade = upgrade_suicide_pills
+					}
+				}
+				set_global_flag = kill_me_alive_flag
+			}
+		}
+	}
+
+	# SCOPE_UNIT_LEADER; FROM.FROM - состояние (если у операции был выбор цели)
+	on_operative_detected_during_operation = {
+		effect = {
+			random_list = {
+				45 = {
+				force_operative_leader_into_hiding = 45
+				set_unit_leader_flag = es_oper_compromised
+				operative_leader_event = {
+					id = lar_operative_event.2
+					set_from_from = FROM
+				}
+			}
+				25 = {
+					capture_operative = {
+						captured_by = FROM
+					}
+				}
+				25 = {
+					harm_operative_leader = 90
+					operative_leader_event = {
+						id = lar_operative_event.4
+						set_from_from = FROM
+					}
+				}
+				5 = {
+					kill_operative = {
+						killed_by = FROM
+					}
+				}
+			}
+		}
+	}
+
+	# THIS: операция; ROOT: инициирующая страна; FROM: целевая страна
+	on_operation_completed = {
+		effect = {
+			if = {
+				limit = {
+					ROOT = { has_country_flag = just_freed_operative_flag }
+				}
+				every_operative = {
+					if = {
+						limit = {
+							NOT = { has_trait = operative_escape_artist }
+						}
+						random_list = {
+							15 = { add_unit_leader_trait = operative_escape_artist }
+							85 = {}
+						}
+					}
+				}
+				ROOT = { clr_country_flag = just_freed_operative_flag }
+			}
+			every_operative = {
+				if = {
+					limit = {
+						has_trait = operative_linguist
+						NOT = { has_nationality = FROM }
+					}
+					random_list = {
+						20 = { add_nationality = FROM }
+						80 = {}
+					}
+				}
+			}
+			# vanilla "Listen Carefully" achievement check (FRA/ENG operatives) removed: those tags do not exist in the mod
+		}
+	}
+
+	# scope: целевая страна, чей шифр полностью расшифрован; from: расшифровывающая страна
+	on_fully_decrypted_cipher = {
+
+	}
+
+	# scope: целевая страна; from: страна, активирующая бонусы шифрования
+	on_activated_active_decryption_bonuses = {
+
+	}
+
 	on_startup = {
         effect = {
 			if = { 
@@ -31,6 +239,17 @@ on_actions = {
 				}				
 			}						
 		
+			if = {
+				limit = {
+					has_start_date > 2023.05.31
+					has_start_date < 2023.06.02
+				}
+				set_variable = {
+					var = SCENARIO_SELECTED
+					value = 4
+				}	
+			}
+
 			#Pictures of the provinces
 			BOR = {
 				add_province_picture = yes 
@@ -664,6 +883,21 @@ on_actions = {
 					damage_building = { type = arms_factory damage = 1 }
 				}
 			}
+			if = { limit = { check_variable = { global.SCENARIO_SELECTED = 4 } }
+				237 = {
+					damage_building = { type = infrastructure damage = 2 }
+					damage_building = { type = industrial_complex damage = 1 }
+					damage_building = { type = arms_factory damage = 2 }
+					damage_building = { type = air_base damage = 2 }
+					damage_building = { type = radar_station damage = 2 }
+					damage_building = { type = electrical_substation damage = 1 }
+					damage_building = { type = arms_factory damage = 2 }
+					damage_building = { type = dockyard damage = 1 }
+					damage_building = { type = air_base damage = 2 }
+					damage_building = { type = supply_node damage = 2 }
+					damage_building = { type = rail_way damage = 3 }
+				}
+			}
 			set_variable = { global.mod_version = 062 }
 			
 			if = { 
@@ -910,8 +1144,16 @@ on_actions = {
 					check_variable = { global.SCENARIO_SELECTED = 1 }
 				}
 				every_country = {
-					limit = { NOT = { tag = RUS } }
+					limit = {
+						NOT = { tag = RUS }
+						NOT = { tag = UKR }
+					}
 					add_timed_idea = { idea = coronavires_idea months = 5 }
+				}
+				UKR = {
+					add_ideas = coronavires_idea
+					set_variable = { UKR_covid_idea_end_day = global.num_days }
+					add_to_variable = { UKR_covid_idea_end_day = 150 }
 				}
 			}
 			else_if = {
@@ -937,7 +1179,7 @@ on_actions = {
 				set_variable = { global.ukr_information_war_var_sum = 50 }
 				set_variable = { global.rus_information_war_var_sum = 50 }
 				UKR = { 
-					country_event = ukr_petliura_content.11
+					country_event = ukr_petliura_content.1
 				}
 				RUS = { 
 					country_event = rus.8
@@ -948,8 +1190,9 @@ on_actions = {
 			set_variable = { RUS.RUS_redoubt_form_spetnaz_var = 60 } 
 			set_variable = { RUS.RUS_redoubt_form_spetnaz_small_var = 50 } 
 			set_variable = { RUS.corruption_level = 240} 
-			set_variable = { BLR.corruption_level = 220} 
-			set_variable = { KAZ.corruption_level = 210}
+			set_variable = { UKR.corruption_level = 220} 
+			set_variable = { BLR.corruption_level = 180} 
+			set_variable = { KAZ.corruption_level = 300}
 			set_variable = { ABK.corruption_level = 140}
 			set_variable = { CHE.corruption_level = 333} 
 			set_variable = { DPR.corruption_level = 310} 
@@ -964,13 +1207,12 @@ on_actions = {
 			set_variable = { SER.corruption_level = 200} 
 			set_variable = { CRO.corruption_level = 140} 
 			set_variable = { BOS.corruption_level = 150} 
-			set_variable = { UKR.corruption_level = 170} 
 			set_variable = { POL.corruption_level = 110} 
 			set_variable = { LIT.corruption_level = 95} 
 			set_variable = { LAT.corruption_level = 95} 
 			set_variable = { WGN.corruption_level = 0} 
 			set_variable = { NTO.corruption_level = 100} 
-			set_variable = { BOR.corruption_level = 1488} 
+			set_variable = { BOR.corruption_level = 1000} 
 			#set_variable = { global.ukr_information_war_var_sum = 50 }
 			#set_variable = { global.rus_information_war_var_sum = 50 }
 			set_variable = { global.putins_age = 70 }
@@ -991,7 +1233,7 @@ on_actions = {
 			set_variable = { RUS.RUS_circumvention_of_sanctions_production_speed_buildings_factor = 0.05 }
 			set_variable = { RUS.RUS_circumvention_of_sanctions_industry_repair_factor = 0.02 }
 			set_variable = { RUS.economic_stagnation_neutrality_drift = -0.01 }
-			set_variable = { RUS.economic_stagnation_stability_factor = -0.05 }
+			set_variable = { RUS.economic_stagnation_stability_factor = -0.1 }
 			set_variable = { RUS.economic_stagnation_consumer_goods_factor = 0.1 }
 			set_variable = { RUS.economic_stagnation_production_speed_electronic_factory_factor = -0.3 }
 			set_variable = { RUS.economic_stagnation_production_factory_efficiency_gain_factor = -0.3 }
@@ -1359,6 +1601,23 @@ on_actions = {
 						id = ukr_election.1
 						days = 790
 					}
+					
+					country_event = {
+						id = ukr_petliura_content.2
+						days = 1
+					}
+					country_event = {
+						id = ukr_petliura_content.3
+						days = 2
+					}
+					country_event = {
+						id = ukr_petliura_content.4
+						days = 5
+					}
+					country_event = {
+						id = ukr_petliura_content.5
+						days = 16
+					}
 
                     country_event = { id = ukr_nabu_skandal.1 days = 1220 }  #1220
                     country_event = { id = ukr_nabu_skandal.2 days = 1298 } #1298
@@ -1372,7 +1631,7 @@ on_actions = {
                     country_event = { id = ukr_nabu_skandal.11 days = 1417 } #бунт 1417
                     country_event = { id = ukr_nabu_skandal.5 days = 1419 } #арахамия 1419
 
-                    country_event = { id = ukr_advisors_events.8 days = 198 } #малюк сбу 198
+             
 				    country_event = { id = ukr_advisors_events.3 days = 134 } #харьков 134
 				    country_event = { id = ukr_advisors_events.1 days = 382 } #бровары 382
                     country_event = { id = ukr_advisors_events.6 days = 78 } #ким 78
@@ -1425,7 +1684,11 @@ on_actions = {
 
 				}	
 				if = { limit = { check_variable = { global.SCENARIO_SELECTED = 3 } } # С 15 апреля-5 сентября прошло 143 дня
-					ES_research_oil_tech_2 = yes
+					set_technology = {
+						oil_refining_0 = 1
+						oil_refining_1 = 1
+						popup = no
+					}
 					add_manpower = -570000
 					country_event = {
 						id = smo.20
@@ -1540,6 +1803,23 @@ on_actions = {
 				set_variable = { global.var_SMO_landing_Vasilkov_fail = 50 }
 				set_variable = { WGN.WGN_Andrey_Troshev_Redoubt_var = 50 }
 			}
+
+			UKR = {
+				set_variable = { UKR_Ukraines_ground_forces_army_core_defence_factor = 0.08 }
+				force_update_dynamic_modifier = yes
+			}
+
+			if = {
+				limit = { has_start_date = 2022.1.1 }
+				UKR = {
+					set_fuel_ratio = 1
+					add_ideas = UKR_cross_border_fuel_supplies
+					if = {
+						limit = { has_war_with = RUS }
+						UKR_disrupt_cross_border_fuel_supplies = yes
+					}
+				}
+			}
 		}
 	}
 	on_declare_war = {
@@ -1557,6 +1837,7 @@ on_actions = {
 						}
 					}
 					remove_ideas = Big_bud
+					remove_ideas = Big_bud_reduced
 				}
 				RUS = {
 					set_portraits = {
@@ -1604,10 +1885,13 @@ on_actions = {
 				limit = {
 					tag = RUS
 					FROM = { tag = UKR }
+					NOT = { UKR = { has_country_flag = UKR_Economic_is_collasped } }
 				}
 				UKR = {
-				set_variable = { UKR_Economic_Collapse = 500 }
-				set_country_flag = UKR_Economic_is_collasped
+					set_variable = { UKR_Economic_Collapse = 500 }
+					set_country_flag = UKR_Economic_is_collasped
+					UKR_economy_status_scripted_effects = yes
+					add_dynamic_modifier = { modifier = UKR_economy_status }
 				}
 			}
 
@@ -1623,60 +1907,18 @@ on_actions = {
 					}
 
 				}
-				75 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}
-				90 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}	
-				137 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}
 				135 = {
 				damage_building = {
 					type = air_base 
 					damage = 1
 				}
 				}
-				119 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}	
 				131 = {
 				damage_building = {
 					type = air_base 
 					damage = 1
 				}
 				}			
-				104 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}
-				158 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}
-				209 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}
 				233 = {
 				damage_building = {
 					type = air_base 
@@ -1719,12 +1961,6 @@ on_actions = {
 					damage = 1
 				}
 				}
-				149 = {
-				damage_building = {
-					type = air_base 
-					damage = 1
-				}
-				}
 				76 = {
 				damage_building = {
 					type = radar_station 
@@ -1734,6 +1970,16 @@ on_actions = {
 
 			}
 
+
+			if = {
+				limit = {
+					OR = {
+						AND = { tag = RUS FROM = { tag = UKR } }
+						AND = { tag = UKR FROM = { tag = RUS } }
+					}
+				}
+				UKR = { UKR_disrupt_cross_border_fuel_supplies = yes }
+			}
 		}
 	}
 	on_monthly_RBZ = {
@@ -1743,65 +1989,29 @@ on_actions = {
 	}
 	on_daily = {
 		effect = {
+			NTO = {
+				if = {
+					limit = {
+						NOT = { date < 2025.1.20 }
+						NOT = { has_global_flag = NTO_trump_is_president }
+					}
+					news_event = { id = news.1025 }
+				}
+			}
 		        UKR = {
 				if = {
-				limit = {
-					UKR = {
-		    			has_war_with = RUS
+					limit = {
+						date > 2022.02.28
+						NOT = {
+							has_country_flag = war_is_not_started
+						}
 					}
-					check_variable = {
-					var = level_of_ukrainization_var
-					value = 100
-					compare = less_than
-				}
-				}
-				add_ideas = UKR_ukrainizacia_1
-				remove_ideas = UKR_ukrainizacia_2
-				remove_ideas = UKR_ukrainizacia_3			
-				
-				}
-
-				if = {
-				limit = {
 					UKR = {
-		    			has_war_with = RUS
+						set_country_flag = war_is_not_started
+						mark_focus_tree_layout_dirty = yes
 					}
-					check_variable = {
-					var = level_of_ukrainization_var
-					value = 100
-					compare = greater_than_or_equals
-				}
-					check_variable = {
-					var = level_of_ukrainization_var
-					value = 300
-					compare = less_than
-				}
 				}
 
-				add_ideas = UKR_ukrainizacia_2
-				remove_ideas = UKR_ukrainizacia_1
-				remove_ideas = UKR_ukrainizacia_3				
-				
-				}
-
-				if = {
-				limit = {
-					UKR = {
-		    			has_war_with = RUS
-					}
-					check_variable = {
-					var = level_of_ukrainization_var
-					value = 300
-					compare = greater_than_or_equals
-				}
-
-				}
-
-				add_ideas = UKR_ukrainizacia_3
-				remove_ideas = UKR_ukrainizacia_1
-				remove_ideas = UKR_ukrainizacia_2		
-				
-				}
 
 			}
 			if = {
@@ -2027,6 +2237,7 @@ on_actions = {
 				limit = {
 				    date > 2022.12.27
 					has_global_flag = RUS_WGN_Shell_def_started
+					NOT = { check_variable = { global.SCENARIO_SELECTED > 3 } }
 				}
 				RUS = {
 					country_event = { id = rus.238 hours = 12 }
@@ -2062,70 +2273,6 @@ on_actions = {
 				}
 				WGN = {
 					country_event = { id = WGN.33 hours = 12 }
-				}
-			}
-			if = {
-				limit = {
-					UKR = {
-						has_completed_focus = UKR_million_ammo_per_year
-					}
-				}
-				add_to_variable = {
-					UKR_million_ammo_per_year_var = ammunition_produce_value_k
-				}
-				add_to_variable = {
-					UKR_million_ammo_per_year_var = ammunition_recovery_value_k
-				}
-			}
-
-			
-			#для некоторых ивентов
-			if = {
-				limit = {
-					original_tag = UKR
-					NOT = {
-						has_completed_focus = start_developing_an_analogue_of_shahed
-					}
-					focus_progress = {
-						focus = start_developing_an_analogue_of_shahed
-						progress > 0
-					}
-				}
-				country_event = {
-					id = ukr_petliura_content.6
-					days = 0
-				}
-			}
-			if = {
-				limit = {
-					original_tag = UKR
-					NOT = {
-						has_completed_focus = UKR_smoking_gg
-					}
-					focus_progress = {
-						focus = UKR_smoking_gg
-						progress > 0
-					}
-				}
-				country_event = {
-					id = ukr_petliura_content.8
-					days = 0
-				}
-			}
-			if = {
-				limit = {
-					original_tag = UKR
-					NOT = {
-						has_completed_focus = UKR_naval_invasions
-					}
-					focus_progress = {
-						focus = UKR_naval_invasions
-						progress > 0
-					}
-				}
-				country_event = {
-					id = ukr_petliura_content.10
-					days = 0
 				}
 			}
 			if = { 
@@ -2177,6 +2324,26 @@ on_actions = {
 				news_event = {
 					id = holy_news.4
 					days = 1
+				}
+			}
+
+			#естественное восстановление разведывательной сети
+			if = {
+				limit = {
+					check_variable = {
+						var = ES_intel_network_loss
+						value = 0
+						compare = greater_than
+					}
+				}
+				subtract_from_variable = { ES_intel_network_loss = 1 }
+			}
+
+			UKR = {
+				# Also covers joining an ongoing war while already fighting another country.
+				if = {
+					limit = { has_idea = UKR_cross_border_fuel_supplies has_war_with = RUS }
+					UKR_disrupt_cross_border_fuel_supplies = yes
 				}
 			}
 		}
@@ -2408,7 +2575,7 @@ on_actions = {
 							producer = UKR
 						}
 						add_equipment_to_stockpile = {
-							type = sp_mlrs_imv_heavy_1_equipment
+							type = sp_mlrs_mrv_wheeled_1_equipment
 							variant_name = "9П140 Ураган"
 							amount = 200
 							producer = UKR
@@ -2702,6 +2869,27 @@ on_actions = {
 		}
 	}
 
+	on_daily_WGN = {
+		effect = {
+			if = {
+				limit = {
+					has_focus_tree = WGN
+					NOT = { has_completed_focus = WGN_march }
+					OR = {
+						has_completed_focus = WGN_appeal_to_putin
+						has_completed_focus = WGN_continue_the_battle
+					}
+				}
+				WGN_update_march_focuses = yes
+			}
+			# Also offer the choice in saves that already completed the appeal.
+			else_if = {
+				limit = { WGN_march_choice_pending = yes }
+				country_event = WGN.71
+			}
+		}
+	}
+
 	on_daily_RUS = {
 		effect = {
 			if = {
@@ -2851,13 +3039,32 @@ on_actions = {
 					}
 				}
 			}
+
+			# обновление ИИ-операций агентств (ванильная логика)
+			if = {
+				limit = {
+					has_intelligence_agency = yes
+					is_ai = yes
+				}
+				update_operation_ai = yes
+			}
 		}
 	}
+
 	on_weekly_UKR = {
 		effect = {
+			if = {
+				limit = {
+					has_country_flag = UKR_army_politics_confrontation
+				}
+				add_power_balance_value = {
+					id = UKR_power_balance
+					value = 0.1
+				}
+			}
 		    if = {
 				limit = {
-					has_completed_focus = Volunteer_movement
+					has_completed_focus = UKR_volunteer_movement
 					check_variable = { UKR_volunteerACT > 19 }
 				}
 				add_to_variable = { UKR_volunteerACT = UKR_volunteerACT_m }
@@ -2892,9 +3099,24 @@ on_actions = {
 		    add_to_variable = { UKR_volunteerACT_m = UKR_volunteerACT_monthly }
 		}
 		effect = {
-			add_power_balance_value = {
-				id = UKR_power_balance
-				value = 0.05
+			# Slow politicization without changing the drift on the army-loyal side.
+			if = {
+				limit = {
+					power_balance_value = {
+						id = UKR_power_balance
+						value > 0
+					}
+				}
+				add_power_balance_value = {
+					id = UKR_power_balance
+					value = 0.025
+				}
+			}
+			else = {
+				add_power_balance_value = {
+					id = UKR_power_balance
+					value = 0.05
+				}
 			}
 		}
 	}
@@ -3099,4 +3321,12 @@ on_actions = {
 
 
 
+	on_war = {
+		effect = {
+			if = {
+				limit = { tag = UKR has_war_with = RUS }
+				UKR_disrupt_cross_border_fuel_supplies = yes
+			}
+		}
+	}
 }

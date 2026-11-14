@@ -1,0 +1,845 @@
+# Схема — docs/RAIDS.md
+# Field depot strikes: three types by weapon (cruise / ballistic / drone), same rules otherwise.
+types = {
+	# Field depot strike, cruise missiles. Wing size, missile loss and success factors copy the matching
+	# critical military infrastructure strike (arms_industry_strike_rc); base chance kept higher (0.6)
+	# because the victim's countermeasures can take up to 0.6 off it.
+	ammo_depot_strike_rc = {
+		category = ammo_depot_strikes
+		custom_map_icon = GFX_raid_type_icon_arms_industry_strike_rc	# no own icon; reuses the matching military industry strike icon
+		days_to_prepare = 2
+		days_re_enable = 7
+		command_power = 0.4	# same cost for all three types
+
+		# Only NATO, Ukraine and Russia can launch field depot strikes (2026-11-10)
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+				original_tag = RUS
+			}
+		}
+
+		# Only front-line states: flag set weekly by ammo_depot_mark_front (ammo_on_actions.txt) on states that
+		# border a state of an enemy. Keeps the per-state show_target check off the rest of the map.
+		target_type = {
+			state = {
+				has_state_flag = ammo_depot_front
+			}
+		}
+
+		# Any country at war with us that has divisions here; the controller is checked first (cheap),
+		# the loop over all countries only runs when the controller has none
+		show_target = {
+			has_war_with = FROM
+			OR = {
+				FROM = { divisions_in_state = { state = var:target_state size > 0 } }
+				any_country = {
+					has_war_with = ROOT
+					divisions_in_state = { state = var:target_state size > 0 }
+				}
+			}
+		}
+
+		available = {
+			has_war_with = FROM
+			ammo_depot_enemy_consumers_in_target = yes
+		}
+
+		# Re-checked at launch: the artillery may leave the state during preparation
+		launchable = {
+			has_war_with = FROM
+			ammo_depot_enemy_consumers_in_target = yes
+		}
+
+		ai_will_do = {
+			base = 1
+			# Same timing as the other missile strikes
+			modifier = {
+				factor = 5
+				date > 2022.5.1
+			}
+			modifier = {
+				factor = 0
+				FROM = { check_variable = { ammo_ratio_var < 10 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 2 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 5 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 10 } }
+			}
+		}
+		# Low on purpose: a strike that misses the success roll still ends as limited success and destroys stock
+		ai_min_success_chance = 0.1
+
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+
+		arrow = {
+			type = air
+		}
+
+		unit_model = {
+		}
+
+		unit_requirements = {
+			equipment = {
+				type = { rus_sea_guided_missile_equipment ukr_light_guided_missile_equipment ukr_sea_guided_missile_equipment nto_light_guided_missile_equipment nto_medium_guided_missile_equipment nto_sea_guided_missile_equipment rus_light_guided_missile_equipment rus_medium_guided_missile_equipment }
+				amount = { min = 10 }
+			}
+		}
+
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 1
+					reference = 1000
+					start_weight = -0.4
+				}
+				air_agility = {
+					reference = 200
+					weight = 0.4
+					start_weight = -0.4
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.5
+				}
+				interception = {
+					reference = 12
+					weight = -0.15
+				}
+				intel = {
+					reference = 100
+					weight = 0.1
+				}
+				# Depot protection decisions of the victim's side leader: RUS for RUS and everyone at war with UKR,
+				# UKR for UKR and everyone at war with RUS (ammo_depot_side_has_*). Controller = raid victim.
+				# Values live in script_constants/ammo_depot_constants.txt and are shared with the decisions.
+				ammo_depot_countermeasures = {
+					formula = {
+						base = 0
+						modifier = { add = constant:ammo_depot.cm_camouflage controller = { ammo_depot_side_has_camouflage = yes } }
+						modifier = { add = constant:ammo_depot.cm_air_defense controller = { ammo_depot_side_has_air_defense = yes } }
+						modifier = { add = constant:ammo_depot.cm_electronic_warfare controller = { ammo_depot_side_has_electronic_warfare = yes } }
+						modifier = { add = constant:ammo_depot.cm_counterintelligence controller = { ammo_depot_side_has_counterintelligence = yes } }
+						modifier = { add = constant:ammo_depot.cm_restricted_zone controller = { ammo_depot_side_has_restricted_zone = yes } }
+					}
+					weight = -1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					reference = 200
+					start_reference = 100
+					weight = 0.05
+				}
+				strategic_bomber = {
+					weight = 0.50
+					reference = 3000
+					start_reference = 1100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				interception = {
+					reference = 12
+					weight = 0.15
+				}
+				air_agility = {
+					reference = 200
+					weight = -0.30
+				}
+				# Side leader's launcher hunt: raises the chance of a failed strike (no damage dealt)
+				ammo_depot_counter_battery = {
+					formula = {
+						base = 0
+						modifier = { add = constant:ammo_depot.cb_launcher_hunt controller = { ammo_depot_side_has_launcher_hunt = yes } }
+						modifier = { add = constant:ammo_depot.cb_drone_recon controller = { ammo_depot_side_has_drone_recon = yes } }
+					}
+					weight = 1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+		}
+
+		# The whole wing is expended on every outcome, as in the other strikes (raid_planes_lost = wing size)
+		success_levels = {
+			failure = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 10 }
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_outcome = 1 }
+					set_temp_variable = { ammo_depot_loss_k = 0 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			limited_success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 10 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.1 }
+					set_temp_variable = { ammo_depot_loss_max = 0.3 }
+					set_temp_variable = { ammo_depot_steps = 1 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 2 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 10 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.3 }
+					set_temp_variable = { ammo_depot_loss_max = 0.5 }
+					set_temp_variable = { ammo_depot_steps = 2 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 3 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			critical_success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 10 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.5 }
+					set_temp_variable = { ammo_depot_loss_max = 0.9 }
+					set_temp_variable = { ammo_depot_steps = 3 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 4 }
+					ammo_depot_log_raid = yes
+				}
+			}
+		}
+	}
+
+	# Field depot strike, ballistic missiles. Wing size, missile loss and success factors copy the matching
+	# critical military infrastructure strike (arms_industry_strike_bl); base chance kept higher (0.6)
+	# because the victim's countermeasures can take up to 0.6 off it.
+	ammo_depot_strike_bl = {
+		category = ammo_depot_strikes
+		custom_map_icon = GFX_raid_type_icon_arms_industry_strike_bl	# no own icon; reuses the matching military industry strike icon
+		days_to_prepare = 2
+		days_re_enable = 7
+		command_power = 0.4	# same cost for all three types
+
+		# Only NATO, Ukraine and Russia can launch field depot strikes (2026-11-10)
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+				original_tag = RUS
+			}
+		}
+
+		# Only front-line states: flag set weekly by ammo_depot_mark_front (ammo_on_actions.txt) on states that
+		# border a state of an enemy. Keeps the per-state show_target check off the rest of the map.
+		target_type = {
+			state = {
+				has_state_flag = ammo_depot_front
+			}
+		}
+
+		# Any country at war with us that has divisions here; the controller is checked first (cheap),
+		# the loop over all countries only runs when the controller has none
+		show_target = {
+			has_war_with = FROM
+			OR = {
+				FROM = { divisions_in_state = { state = var:target_state size > 0 } }
+				any_country = {
+					has_war_with = ROOT
+					divisions_in_state = { state = var:target_state size > 0 }
+				}
+			}
+		}
+
+		available = {
+			has_war_with = FROM
+			ammo_depot_enemy_consumers_in_target = yes
+		}
+
+		# Re-checked at launch: the artillery may leave the state during preparation
+		launchable = {
+			has_war_with = FROM
+			ammo_depot_enemy_consumers_in_target = yes
+		}
+
+		ai_will_do = {
+			base = 1
+			# Same timing as the other missile strikes
+			modifier = {
+				factor = 5
+				date > 2022.5.1
+			}
+			modifier = {
+				factor = 0
+				FROM = { check_variable = { ammo_ratio_var < 10 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 2 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 5 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 10 } }
+			}
+		}
+		# Low on purpose: a strike that misses the success roll still ends as limited success and destroys stock
+		ai_min_success_chance = 0.1
+
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+
+		arrow = {
+			type = ballistic
+		}
+
+		unit_model = {
+		}
+
+		unit_requirements = {
+			equipment = {
+				type = { ballistic_missile_equipment rus_heavy_guided_missile_equipment }
+				amount = { min = 6 }
+			}
+		}
+
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 1
+					reference = 1000
+					start_weight = -0.4
+				}
+				air_agility = {
+					reference = 200
+					weight = 0.4
+					start_weight = -0.4
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.5
+				}
+				intel = {
+					reference = 100
+					weight = 0.1
+				}
+				# Depot protection decisions of the victim's side leader: RUS for RUS and everyone at war with UKR,
+				# UKR for UKR and everyone at war with RUS (ammo_depot_side_has_*). Controller = raid victim.
+				# Values live in script_constants/ammo_depot_constants.txt and are shared with the decisions.
+				ammo_depot_countermeasures = {
+					formula = {
+						base = 0
+						modifier = { add = constant:ammo_depot.cm_camouflage controller = { ammo_depot_side_has_camouflage = yes } }
+						modifier = { add = constant:ammo_depot.cm_air_defense controller = { ammo_depot_side_has_air_defense = yes } }
+						modifier = { add = constant:ammo_depot.cm_electronic_warfare controller = { ammo_depot_side_has_electronic_warfare = yes } }
+						modifier = { add = constant:ammo_depot.cm_counterintelligence controller = { ammo_depot_side_has_counterintelligence = yes } }
+						modifier = { add = constant:ammo_depot.cm_restricted_zone controller = { ammo_depot_side_has_restricted_zone = yes } }
+					}
+					weight = -1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					reference = 200
+					start_reference = 100
+					weight = 0.05
+				}
+				strategic_bomber = {
+					weight = 0.50
+					reference = 3000
+					start_reference = 1100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				air_agility = {
+					reference = 200
+					weight = -0.30
+				}
+				# Side leader's launcher hunt: raises the chance of a failed strike (no damage dealt)
+				ammo_depot_counter_battery = {
+					formula = {
+						base = 0
+						modifier = { add = constant:ammo_depot.cb_launcher_hunt controller = { ammo_depot_side_has_launcher_hunt = yes } }
+						modifier = { add = constant:ammo_depot.cb_drone_recon controller = { ammo_depot_side_has_drone_recon = yes } }
+					}
+					weight = 1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+		}
+
+		# The whole wing is expended on every outcome, as in the other strikes (raid_planes_lost = wing size)
+		success_levels = {
+			failure = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 6 }
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_outcome = 1 }
+					set_temp_variable = { ammo_depot_loss_k = 0 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			limited_success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 6 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.1 }
+					set_temp_variable = { ammo_depot_loss_max = 0.3 }
+					set_temp_variable = { ammo_depot_steps = 1 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 2 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 6 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.3 }
+					set_temp_variable = { ammo_depot_loss_max = 0.5 }
+					set_temp_variable = { ammo_depot_steps = 2 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 3 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			critical_success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 6 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.5 }
+					set_temp_variable = { ammo_depot_loss_max = 0.9 }
+					set_temp_variable = { ammo_depot_steps = 3 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 4 }
+					ammo_depot_log_raid = yes
+				}
+			}
+		}
+	}
+
+	# Field depot strike, strike drones. Wing size, missile loss and success factors copy the matching
+	# critical military infrastructure strike (arms_industry_strike_drone); base chance kept higher (0.6)
+	# because the victim's countermeasures can take up to 0.6 off it.
+	ammo_depot_strike_drone = {
+		category = ammo_depot_strikes
+		custom_map_icon = GFX_raid_type_icon_arms_industry_strike_drone	# no own icon; reuses the matching military industry strike icon
+		days_to_prepare = 2
+		days_re_enable = 7
+		command_power = 0.4	# same cost for all three types
+
+		# Only NATO, Ukraine and Russia can launch field depot strikes (2026-11-10)
+		allowed = {
+			has_dlc = "Gotterdammerung"
+			OR = {
+				original_tag = NTO
+				original_tag = UKR
+				original_tag = RUS
+			}
+		}
+
+		# Only front-line states: flag set weekly by ammo_depot_mark_front (ammo_on_actions.txt) on states that
+		# border a state of an enemy. Keeps the per-state show_target check off the rest of the map.
+		target_type = {
+			state = {
+				has_state_flag = ammo_depot_front
+			}
+		}
+
+		# Any country at war with us that has divisions here; the controller is checked first (cheap),
+		# the loop over all countries only runs when the controller has none
+		show_target = {
+			has_war_with = FROM
+			OR = {
+				FROM = { divisions_in_state = { state = var:target_state size > 0 } }
+				any_country = {
+					has_war_with = ROOT
+					divisions_in_state = { state = var:target_state size > 0 }
+				}
+			}
+		}
+
+		available = {
+			has_war_with = FROM
+			ammo_depot_enemy_consumers_in_target = yes
+		}
+
+		# Re-checked at launch: the artillery may leave the state during preparation
+		launchable = {
+			has_war_with = FROM
+			ammo_depot_enemy_consumers_in_target = yes
+		}
+
+		ai_will_do = {
+			base = 1
+			# Same timing as the other missile strikes
+			modifier = {
+				factor = 5
+				date > 2022.5.1
+			}
+			modifier = {
+				factor = 0
+				FROM = { check_variable = { ammo_ratio_var < 10 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 2 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 5 } }
+			}
+			modifier = {
+				factor = 2
+				FROM = { divisions_in_state = { state = var:target_state size > 10 } }
+			}
+		}
+		# Low on purpose: a strike that misses the success roll still ends as limited success and destroys stock
+		ai_min_success_chance = 0.1
+
+		target_icon = GFX_other_target_icon
+		launch_sound = raid_launch_air
+
+		arrow = {
+			type = air
+		}
+
+		unit_model = {
+		}
+
+		unit_requirements = {
+			equipment = {
+				type = { ukr_drone_missile_equipment nto_guided_uav_equipment ukr_guided_uav_equipment rus_guided_uav_equipment }
+				amount = { min = 100 }
+			}
+		}
+
+		starting_point = {
+			types = { rocket_site }
+			allow_faction_buildings = yes
+		}
+
+		success_factors = {
+			success = {
+				base = 0.1
+				strategic_bomber = {
+					weight = 0.6
+					reference = 100
+					start_weight = -0.1
+				}
+				air_agility = {
+					reference = 20
+					weight = 0.4
+					start_weight = -0.1
+				}
+				anti_air = {
+					reference = 6
+					weight = -0.5
+				}
+				interception = {
+					reference = 12
+					weight = -0.15
+				}
+				intel = {
+					reference = 100
+					weight = 0.1
+				}
+				# Depot protection decisions of the victim's side leader: RUS for RUS and everyone at war with UKR,
+				# UKR for UKR and everyone at war with RUS (ammo_depot_side_has_*). Controller = raid victim.
+				# Values live in script_constants/ammo_depot_constants.txt and are shared with the decisions.
+				ammo_depot_countermeasures = {
+					formula = {
+						base = 0
+						modifier = { add = constant:ammo_depot.cm_camouflage controller = { ammo_depot_side_has_camouflage = yes } }
+						modifier = { add = constant:ammo_depot.cm_air_defense controller = { ammo_depot_side_has_air_defense = yes } }
+						modifier = { add = constant:ammo_depot.cm_electronic_warfare controller = { ammo_depot_side_has_electronic_warfare = yes } }
+						modifier = { add = constant:ammo_depot.cm_counterintelligence controller = { ammo_depot_side_has_counterintelligence = yes } }
+						modifier = { add = constant:ammo_depot.cm_restricted_zone controller = { ammo_depot_side_has_restricted_zone = yes } }
+					}
+					weight = -1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+			}
+
+			critical = {
+				base = 0.01
+				air_agility = {
+					reference = 30
+					start_reference = 10
+					weight = 0.10
+				}
+				strategic_bomber = {
+					weight = 0.15
+					reference = 150
+					start_reference = 100
+				}
+			}
+
+			disaster = {
+				base = 0.05
+				anti_air = {
+					reference = 6
+					weight = 0.30
+				}
+				interception = {
+					reference = 12
+					weight = 0.15
+				}
+				# Side leader's launcher hunt: raises the chance of a failed strike (no damage dealt)
+				ammo_depot_counter_battery = {
+					formula = {
+						base = 0
+						modifier = { add = constant:ammo_depot.cb_launcher_hunt controller = { ammo_depot_side_has_launcher_hunt = yes } }
+						modifier = { add = constant:ammo_depot.cb_drone_recon controller = { ammo_depot_side_has_drone_recon = yes } }
+					}
+					weight = 1
+					can_actor_affect = no
+					can_target_affect = yes
+				}
+				# Faster drones are harder to intercept (2026-11-10)
+				air_agility = {
+					reference = 50
+					weight = -0.30
+				}
+			}
+		}
+
+		# The whole wing is expended on every outcome, as in the other strikes (raid_planes_lost = wing size)
+		success_levels = {
+			failure = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 100 }
+					custom_effect_tooltip = {
+						localization_key = plane_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_outcome = 1 }
+					set_temp_variable = { ammo_depot_loss_k = 0 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			limited_success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 100 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.1 }
+					set_temp_variable = { ammo_depot_loss_max = 0.3 }
+					set_temp_variable = { ammo_depot_steps = 1 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 2 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 100 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.3 }
+					set_temp_variable = { ammo_depot_loss_max = 0.5 }
+					set_temp_variable = { ammo_depot_steps = 2 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 3 }
+					ammo_depot_log_raid = yes
+				}
+			}
+
+			critical_success = {
+				actor_effects = {
+					set_temp_variable = { raid_planes_lost = 100 }
+					custom_effect_tooltip = {
+						localization_key = missiles_raid_losses_tt
+						LOSSES = [?raid_planes_lost]
+					}
+					hidden_effect = {
+						raid_damage_units = {
+							plane_loss = raid_planes_lost
+							ratio = no
+						}
+					}
+				}
+				victim_effects = {
+					set_temp_variable = { ammo_depot_loss_min = 0.5 }
+					set_temp_variable = { ammo_depot_loss_max = 0.9 }
+					set_temp_variable = { ammo_depot_steps = 3 }
+					ammo_depot_strike_hit = yes
+					set_temp_variable = { ammo_depot_outcome = 4 }
+					ammo_depot_log_raid = yes
+				}
+			}
+		}
+	}
+}

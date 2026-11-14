@@ -1,10 +1,18 @@
 on_actions = {
-	on_weekly = {
+	# Runs once per week (BOR is the dummy tag), not once per country.
+	on_weekly_BOR = {
+		effect = {
+			more_mapmodes_update_custom_map_modes_effects = yes
+			clr_global_flag = more_mapmodes_update_pending
+		}
+	}
+
+	# Captures only mark the map modes as stale; at most one refresh per day.
+	on_daily_BOR = {
 		effect = {
 			if = {
-				limit = {
-					owns_state = 1
-				}
+				limit = { has_global_flag = more_mapmodes_update_pending }
+				clr_global_flag = more_mapmodes_update_pending
 				more_mapmodes_update_custom_map_modes_effects = yes
 			}
 		}
@@ -27,7 +35,7 @@ on_actions = {
 	# ROOT is new controller, FROM is old controller, FROM.FROM is state ID
 	on_state_control_changed = {
 		effect = {
-			more_mapmodes_update_custom_map_modes_effects = yes
+			set_global_flag = more_mapmodes_update_pending
 		}
 	}
 

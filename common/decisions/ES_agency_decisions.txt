@@ -1,0 +1,151 @@
+WGN_intelligence_service = {
+
+	### Развитие отдела
+	WGN_agency_establish_psyops = {
+		icon = GFX_agency_psychological_warfare
+		fire_only_once = yes
+		cost = 50
+
+		ai_will_do = {
+			factor = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_intelligence_agency = yes
+		}
+
+		available = {
+			original_tag = WGN
+			has_intelligence_agency = yes
+		}
+
+		complete_effect = {
+			upgrade_intelligence_agency = upgrade_ES_wgn_psyops
+		}
+	}
+
+	WGN_agency_establish_influence = {
+		icon = GFX_agency_diplomatic_training
+		fire_only_once = yes
+		cost = 50
+
+		ai_will_do = {
+			factor = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_intelligence_agency = yes
+		}
+
+		available = {
+			original_tag = WGN
+			has_intelligence_agency = yes
+		}
+
+		complete_effect = {
+			upgrade_intelligence_agency = upgrade_ES_wgn_influence
+		}
+	}
+
+	### Информационное давление
+	WGN_agency_information_campaign = {
+		icon = GFX_agency_psychological_warfare
+		fire_only_once = no
+		days_re_enable = 60
+		cost = 60
+
+		ai_will_do = {
+			factor = 40
+		}
+
+		visible = {
+			original_tag = WGN
+			has_done_agency_upgrade = upgrade_ES_wgn_psyops
+		}
+
+		available = {
+			original_tag = WGN
+		}
+
+		complete_effect = {
+			add_to_variable = {
+				var = global.rus_information_war_var_sum
+				value = 3
+				tooltip = IW_3_var_add_tt
+			}
+			hidden_effect = {
+				clamp_variable = { var = global.rus_information_war_var_sum min = 0 max = 100 }
+			}
+		}
+	}
+
+	WGN_agency_political_consolidation = {
+		icon = GFX_agency_diplomatic_training
+		fire_only_once = yes
+		cost = 60
+
+		ai_will_do = {
+			factor = 30
+		}
+
+		visible = {
+			original_tag = WGN
+			has_done_agency_upgrade = upgrade_ES_wgn_influence
+		}
+
+		available = {
+			original_tag = WGN
+		}
+
+		complete_effect = {
+			add_political_power = 100
+			add_to_variable = {
+				var = WGN_political_power_factor
+				value = 0.05
+			}
+		}
+	}
+}
+
+### Рейды против ячеек
+DPR_intelligence_service = {
+
+	DPR_agency_cell_raid = {
+		icon = GFX_MGB_decision
+		fire_only_once = no
+		days_re_enable = 75
+		custom_cost_trigger = {
+			command_power > 39
+		}
+		custom_cost_text = decision_cost_CP_40
+		days_remove = 30
+
+		ai_will_do = {
+			factor = 40
+		}
+
+		visible = {
+			original_tag = DPR
+			has_done_agency_upgrade = upgrade_ES_dpr_capture
+		}
+
+		available = {
+			original_tag = DPR
+		}
+
+		modifier = {
+			enemy_operative_detection_chance = 0.1
+			enemy_operative_capture_chance_factor = 0.25
+			root_out_resistance_effectiveness_factor = 0.25
+			stability_factor = 0.02
+		}
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -40
+			}
+		}
+	}
+}

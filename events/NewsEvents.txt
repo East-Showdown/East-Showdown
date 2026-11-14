@@ -2807,7 +2807,7 @@ news_event = {
 		hidden_effect = {
 			UKR = {
 				delete_unit_template_and_units = {
-					division_template = "Batalyon NGU Spetsilnogo naznacheniya «Azov»"
+					division_template = "Polk spetsialnoho pryznachennya NHU «Azov»"
 				}
 			}
 		}
@@ -3793,7 +3793,7 @@ news_event = {
 		name = news.82.n
 		#log = "[GetDateText]: [This.GetName]: news.82.n executed"
 		trigger = {
-			has_country_flag = news_neutral_flag
+			NOT = { has_country_flag = news_pro_ukrainian_flag }
 		}
 	}
 }
@@ -3919,6 +3919,9 @@ news_event = {
 		trigger = {
 			has_country_flag = news_pro_ukrainian_flag
 		}
+		hidden_effect = {
+			DPR = { set_country_flag = DPR_news_86_seen }
+		}
 	}
 
 	option = {
@@ -3927,6 +3930,9 @@ news_event = {
 		trigger = {
 			has_country_flag = news_pro_russian_flag
 		}
+		hidden_effect = {
+			DPR = { set_country_flag = DPR_news_86_seen }
+		}
 	}
 
 	option = {
@@ -3934,6 +3940,9 @@ news_event = {
 		#log = "[GetDateText]: [This.GetName]: news.86.c executed"
 		trigger = {
 			has_country_flag = news_neutral_flag
+		}
+		hidden_effect = {
+			DPR = { set_country_flag = DPR_news_86_seen }
 		}
 	}	
 }
@@ -4206,7 +4215,7 @@ news_event = {
 		name = news.115.o
 		#log = "[GetDateText]: [This.GetName]: news.115.o executed"
 		trigger = {
-			has_country_flag = news_pro_ukrainian_flag
+			has_country_flag = news_neutral_flag
 		}
 	}
 }
@@ -6540,7 +6549,7 @@ news_event = {
 		name = news.182.a
 		#log = "[GetDateText]: [This.GetName]: news.180.u executed"
 		trigger = {
-			has_country_flag = news_pro_ukrainian_flag
+			NOT = { has_country_flag = news_pro_russian_flag }
 		}
 	}
 
@@ -6567,7 +6576,7 @@ news_event = {
 		name = news.183.u
 		log = "[GetDateText]: [This.GetName]: news.183.u executed"
 		trigger = {
-			has_country_flag = news_pro_ukrainian_flag
+			NOT = { has_country_flag = news_pro_russian_flag }
 		}
 	}
 	option	= {
@@ -6854,47 +6863,13 @@ news_event = {
 	fire_only_once = yes
 	picture = GFX_news_event_193
 	major = yes
-
-    trigger = {
-		has_completed_focus = Crimea_bridge_should_be_destoyed
-		NOT = {
-			has_global_flag = CRIMEA_STRAIT_BLOCKED
-			has_global_flag = CRIMEA_GET_SLIGHTLY_DAMAGED
-		}
-
-		UKR = {
-			has_war_with = RUS
-		}
-		
-	}
+	is_triggered_only = yes
 
 
 	immediate = { 
+		log = "[GetDateText]: [Root.GetName]: Event news.193 fired"
 		set_global_flag = CRIMEA_STRAIT_BLOCKED
 		set_global_flag = CRIMEA_GET_BADLY_DAMAGED
-		hidden_effect = {
-			if = { 
-				limit = { 
-					94 = { is_controlled_by = UKR }
-					95 = { is_controlled_by = UKR }
-					118 = { is_controlled_by = UKR }
-					256 = { is_controlled_by = UKR }
-					131 = { is_controlled_by = UKR }
-					88 = { is_controlled_by = UKR }
-					119 = { is_controlled_by = UKR }
-					108 = { is_controlled_by = UKR }
-					135 = { is_controlled_by = UKR }
-					121 = { is_controlled_by = UKR }
-					509 = { is_controlled_by = RUS }
-				}
-
-				news_event = {
-					id = news.194
-					days = 2
-					hours = 6
-				}
-			}
-		}
 	} 
 
 
@@ -6962,23 +6937,8 @@ news_event = {
 	
 	is_triggered_only = yes
 
-    trigger = {
-		has_global_flag = CRIMEA_STRAIT_BLOCKED
-
-		94 = { is_controlled_by = UKR } 
-		95 = { is_controlled_by = UKR } 
-		137 = { is_controlled_by = UKR } 
-		103 = { is_controlled_by = UKR } 
-		197 = { is_controlled_by = UKR } 
-		233 = { is_controlled_by = UKR } 
-		256 = { is_controlled_by = UKR } 		
-		
-		UKR = {
-			has_war_with = RUS
-		}
-	}
-
 	immediate = {
+		log = "[GetDateText]: [Root.GetName]: Event news.194 fired after UKR energy branch unlocked"
 		hidden_effect = {
 
 			if = { limit = { 103 = { is_controlled_by = UKR thermal_power_plant > 0 electrical_substation > 0 }}
@@ -7127,10 +7087,6 @@ news_event = {
 			}
 
 			UKR = { calculate_energy_in_country = yes }
-			UKR = { mark_focus_tree_layout_dirty = yes }
-
-			UKR = { complete_national_focus = UKR_new_nightmare }
-			UKR = { set_country_flag = UKR_EnergyNightmare }
 
 
 			news_event = {
@@ -7659,6 +7615,7 @@ news_event = {# Трамп выжил
 	major = yes
 	
 	is_triggered_only = yes
+	fire_only_once = yes
 
 	immediate = {
 		hidden_effect = {
@@ -8022,7 +7979,12 @@ news_event = {
 	option = {
 		name = news.307.c
 		trigger = {
-			has_country_flag = news_neutral_flag
+			NOT = {
+				tag = RUS
+				tag = DPR
+				tag = LPR
+				tag = UKR
+			}
 		}
 	}
 }
@@ -8055,7 +8017,10 @@ news_event = {
 	option = {
 		name = news.308.c
 		trigger = {
-			has_country_flag = news_neutral_flag
+			NOT = {
+				tag = UKR
+				has_country_flag = news_pro_russian_flag
+			}
 		}
 	}
 }
@@ -8083,7 +8048,10 @@ news_event = {
 	option = {
 		name = news.309.c
 		trigger = {
-			has_country_flag = news_neutral_flag
+			NOT = {
+				tag = UKR
+				has_country_flag = news_pro_russian_flag
+			}
 		}
 	}
 }
@@ -8111,7 +8079,10 @@ news_event = {
 	option = {
 		name = news.310.c
 		trigger = {
-			has_country_flag = news_neutral_flag
+			NOT = {
+				tag = UKR
+				has_country_flag = news_pro_russian_flag
+			}
 		}
 	}
 }
@@ -11996,29 +11967,6 @@ news_event = {
 	immediate = {
 		set_global_flag = CRIMEA_STRAIT_BLOCKED
 		set_global_flag = CRIMEA_GET_BADLY_DAMAGED
-		hidden_effect = {
-			if = { 
-				limit = { 
-					94 = { is_controlled_by = UKR }
-					95 = { is_controlled_by = UKR }
-					118 = { is_controlled_by = UKR }
-					256 = { is_controlled_by = UKR }
-					131 = { is_controlled_by = UKR }
-					88 = { is_controlled_by = UKR }
-					119 = { is_controlled_by = UKR }
-					108 = { is_controlled_by = UKR }
-					135 = { is_controlled_by = UKR }
-					121 = { is_controlled_by = UKR }
-					509 = { is_controlled_by = RUS }
-				}
-
-				news_event = {
-					id = news.194
-					days = 2
-					hours = 6
-				}
-			}
-		}
 	}
 
 	option = {
@@ -12106,5 +12054,34 @@ news_event = {
 		trigger = {
 			has_country_flag = news_neutral_flag
 		}
+	}
+}
+
+news_event = {
+	id = news.1025
+	title = news.1025.t
+	desc = news.1025.d
+	picture = GFX_news_event_trump_return
+	major = yes
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_global_flag = NTO_trump_is_president } }
+				set_global_flag = NTO_trump_is_president
+				NTO = {
+					remove_advisor_role = {
+						character = NTO_joe_biden
+						slot = political_advisor
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = news.1025.a
 	}
 }

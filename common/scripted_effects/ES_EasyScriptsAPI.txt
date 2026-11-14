@@ -68,6 +68,8 @@ ESAPI_transfer_state_building = {
 ESAPI_transfer_area_building = {
 	set_temp_variable = { method_version = 062 }
 	ESAPI_int_check_version = yes
+	clear_temp_array = esapi_valid_targets
+	set_temp_variable = { api_trg_state_id = 0 }
 
 	set_temp_variable = { loc_sugar_api_src_state_id = api_src_state_id }
 	set_temp_variable = { loc_sugar_api_building_type = api_building_type }
@@ -90,6 +92,7 @@ ESAPI_transfer_area_building = {
 				limit = {
 					var:api_state_candidates^i = { 
 						is_fully_controlled_by = ROOT
+						is_owned_by = ROOT
 					} 
 					NOT = {
 						check_variable = {
@@ -105,7 +108,7 @@ ESAPI_transfer_area_building = {
 			limit = { 
 				NOT = { check_variable = { esapi_valid_targets^0 < 1 } } 
 			}
-			set_temp_variable = { api_trg_state_id = global.esapi_valid_targets^0 }
+			set_temp_variable = { api_trg_state_id = esapi_valid_targets^0 }
 
 			hidden_effect = {
 				ROOT = { ESAPI_int_transfer_state_building = yes }
@@ -263,6 +266,7 @@ ESAPI_add_state_population = { }
 
 
 ESAPI_generate_western_ukraine_state_candidates = { 
+	clear_temp_array = api_state_candidates
 	add_to_temp_array = { api_state_candidates = 88 }
 	add_to_temp_array = { api_state_candidates = 114 }
 	add_to_temp_array = { api_state_candidates = 124 }

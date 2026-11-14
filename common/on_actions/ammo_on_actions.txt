@@ -1,0 +1,55 @@
+on_actions = {
+
+	on_startup = {
+		effect = {
+			# on_startup has no scope, and a scripted effect needs one ("Invalid Scope ... provided: None" in error.log);
+			# the effect only sets global variables, so any country works as the scope
+			random_country = { ammunition_init_globals = yes }
+			# Front-line states for field depot strikes, so they can be targeted before the first weekly update
+			every_country = {
+				limit = { has_war = yes }
+				ammo_depot_mark_front = yes
+			}
+
+			every_country = {
+				set_variable = { ammunition_value_k = 5000 }
+				set_variable = { ammunition_old_value_k = 3200 }
+				ammunition_init_country = yes
+			}
+			NTO = {
+				add_to_variable = { ammunition_value_k = 900 }
+				set_variable = { ammunition_old_value_k = 400 }
+			}
+			UKR = { 
+				set_variable = { ammunition_value_k = 2400 } 
+				set_variable = { ammunition_old_value_k = 2520 }
+				# Field depot strikes: UKR gets event ammo_depot.1 (protection decisions + 60-day mission) after its first ~1k
+				# ammunition lost to depot strikes instead of the default 50k (constant ammo_depot.event_loss_threshold_k).
+				# Deliberate: Ukraine reacts to the depot strikes early; others only after ~10-25 successful strikes.
+				set_variable = { ammo_depot_event_loss_threshold_k = 1 }
+			}
+			RUS = {
+				set_variable = { ammunition_value_k = 6800 }
+				set_variable = { ammunition_old_value_k = 3600 }
+			}
+
+			# Fill the ammunition window, idea and effects now instead of after the first day
+			every_country = { ammunition_refresh_on_start = yes }
+
+		}
+	}
+
+	on_daily = {
+		effect = {
+			ammunition_on_daily = yes
+		}
+	}
+
+	# Runs for every country: refreshes its front-line state flags for field depot strikes
+	on_weekly = {
+		effect = {
+			ammo_depot_mark_front = yes
+		}
+	}
+
+}

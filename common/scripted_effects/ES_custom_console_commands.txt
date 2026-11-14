@@ -4,7 +4,529 @@ d_start_smo = {
 	}
 }
 d_add_ammunition = {
-	add_to_variable = {
-		FROM.ammunition_value_k = args^0
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "usage: add_ammunition <amount>"
 	}
+	else = {
+		add_to_variable = {
+			FROM.ammunition_value_k = args^0
+		}
+	}
+}
+
+# =====================================================================
+# Bridge / dam test commands (see console_commands.md)
+# <pos> = object position 0-28, the same number used in raids and
+# decisions. Output is written to the console and to game.log.
+# Run bridge_list first to see every position.
+# =====================================================================
+
+# --- helpers (not commands) ---
+es_bridge_console_check_pos = {
+	set_temp_variable = { b_ok = 0 }
+	if = {
+		limit = {
+			check_variable = { bpos > -1 }
+			check_variable = { bpos < global.dnipro_obj_max_hp^num }
+		}
+		set_temp_variable = { b_ok = 1 }
+	}
+	else = {
+		log = "BRIDGE TEST: position [?bpos|.0] does not exist, use 0 - [?global.dnipro_obj_max_hp^num|.0] minus one"
+	}
+}
+
+es_bridge_console_print = {
+	set_temp_variable = { b_tok = global.dnipro_objects^bpos }
+	set_temp_variable = { b_flag = global.dnipro_obj_strait^bpos }
+	set_temp_variable = { b_hp = global.dnipro_obj_current_hp^bpos }
+	set_temp_variable = { b_max = global.dnipro_obj_max_hp^bpos }
+	set_temp_variable = { b_crit = global.dnipro_obj_critical_hp^bpos }
+	set_temp_variable = { b_start = global.dnipro_obj_start_loss_hp^bpos }
+	set_temp_variable = { b_loss = global.dnipro_obj_damage^bpos }
+	set_temp_variable = { b_dead = global.dnipro_obj_is_destroyed^bpos }
+	set_temp_variable = { b_owner = global.bridges_province_controllers^bpos }
+	set_temp_variable = { b_blocked = 0 }
+	meta_effect = {
+		F = "[?b_flag.GetTokenKey]"
+		text = {
+			if = { limit = { has_global_flag = [F] } set_temp_variable = { b_blocked = 1 } }
+		}
+	}
+	log = "BRIDGE TEST: [?bpos|.0] [?b_tok.GetTokenKey] - HP [?b_hp|.1] / [?b_max|.0], blocks below [?b_crit|.1], blocked [?b_blocked|.0], destroyed [?b_dead|.0], erodes below [?b_start|.0] by [?b_loss|.1] per week, owner [?b_owner|.0] (1 UKR, 2 RUS), flag [?b_flag.GetTokenKey]"
+}
+
+# Apply the instant part of a weekly tick: clamp HP, blocking flags, destruction news.
+# No erosion and no repair, so the HP you set stays exact.
+es_bridge_console_apply = {
+	for_each_loop = {
+		array = global.dnipro_obj_max_hp
+		index = i
+		clamp_variable = { var = global.dnipro_obj_current_hp^i min = 0 max = global.dnipro_obj_max_hp^i }
+	}
+	BOR = {
+		autoblocking_all_dnipro_straits_objects = yes
+		execute_destruction_scenario_dnipro_objects = yes
+	}
+}
+
+# --- commands ---
+
+# bridge_list - print every bridge/dam
+d_bridge_list = {
+	log = "BRIDGE TEST: ---- [?global.dnipro_obj_max_hp^num|.0] objects ----"
+	for_each_loop = {
+		array = global.dnipro_obj_max_hp
+		index = list_i
+		set_temp_variable = { bpos = list_i }
+		es_bridge_console_print = yes
+	}
+}
+
+# bridge_info <pos> - print one bridge/dam
+d_bridge_info = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "BRIDGE TEST: usage: bridge_info <pos>  (pos 0-28, run bridge_list to see them)"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			es_bridge_console_print = yes
+		}
+	}
+}
+
+# bridge_hp <pos> <hp> - set HP and apply blocking/destruction immediately
+d_bridge_hp = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 2 } }
+		log = "BRIDGE TEST: usage: bridge_hp <pos> <hp>"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		set_temp_variable = { b_new = args^1 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			set_variable = { global.dnipro_obj_current_hp^bpos = b_new }
+			es_bridge_console_apply = yes
+			es_bridge_console_print = yes
+		}
+	}
+}
+
+# bridge_damage <pos> <amount> - subtract HP exactly like a raid does (no update until the weekly tick)
+d_bridge_damage = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 2 } }
+		log = "BRIDGE TEST: usage: bridge_damage <pos> <amount>"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		set_temp_variable = { b_amount = args^1 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			subtract_from_variable = { global.dnipro_obj_current_hp^bpos = b_amount }
+			es_bridge_console_print = yes
+		}
+	}
+}
+
+# bridge_week [n] - run the full weekly update n times (default 1): erosion, ownership, repair, blocking, news
+d_bridge_week = {
+	set_temp_variable = { b_weeks = 1 }
+	if = { limit = { check_variable = { args^num > 0 } } set_temp_variable = { b_weeks = args^0 } }
+	if = { limit = { check_variable = { b_weeks < 1 } } set_temp_variable = { b_weeks = 1 } }
+	for_loop_effect = {
+		end = b_weeks
+		value = week_i
+		BOR = { update_all_dnipro_objects = yes }
+	}
+	log = "BRIDGE TEST: ran [?b_weeks|.0] weekly update(s)"
+}
+
+# bridge_reset <pos> - full HP, clear the destroyed mark (news can fire again), reapply blocking
+d_bridge_reset = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "BRIDGE TEST: usage: bridge_reset <pos>"
+	}
+	else = {
+		set_temp_variable = { bpos = args^0 }
+		es_bridge_console_check_pos = yes
+		if = { limit = { check_variable = { b_ok = 1 } }
+			set_variable = { global.dnipro_obj_current_hp^bpos = global.dnipro_obj_max_hp^bpos }
+			set_variable = { global.dnipro_obj_is_destroyed^bpos = 0 }
+			es_bridge_console_apply = yes
+			es_bridge_console_print = yes
+		}
+	}
+}
+
+# bridge_unlock - unlock and open the blow-up decisions for the player
+d_bridge_unlock = {
+	UKR = { set_country_flag = UKR_Blow_up_the_bridges }
+	FROM = { set_variable = { blowing_bridges_decisions_is_open = 1 } }
+	log = "BRIDGE TEST: blow-up decisions unlocked for [FROM.GetName]"
+}
+
+
+# =====================================================================
+# Raid target test commands (see console_commands.md)
+# <state> = state ID (hover a state with the "debug" console command on)
+# =====================================================================
+
+# --- helpers (state scope, not commands) ---
+es_raid_test_print_state = {
+	set_temp_variable = { rs_u0 = THIS.non_damaged_building_level@arms_factory }
+	set_temp_variable = { rs_t0 = THIS.building_level@arms_factory }
+	set_temp_variable = { rs_u1 = THIS.non_damaged_building_level@ammunition_plant }
+	set_temp_variable = { rs_t1 = THIS.building_level@ammunition_plant }
+	set_temp_variable = { rs_u2 = THIS.non_damaged_building_level@ammunition_silo }
+	set_temp_variable = { rs_t2 = THIS.building_level@ammunition_silo }
+	set_temp_variable = { rs_u3 = THIS.non_damaged_building_level@thermal_power_plant }
+	set_temp_variable = { rs_t3 = THIS.building_level@thermal_power_plant }
+	set_temp_variable = { rs_u4 = THIS.non_damaged_building_level@electrical_substation }
+	set_temp_variable = { rs_t4 = THIS.building_level@electrical_substation }
+	set_temp_variable = { rs_u5 = THIS.non_damaged_building_level@electrical_substation_big }
+	set_temp_variable = { rs_t5 = THIS.building_level@electrical_substation_big }
+	set_temp_variable = { rs_u6 = THIS.non_damaged_building_level@synthetic_refinery }
+	set_temp_variable = { rs_t6 = THIS.building_level@synthetic_refinery }
+	set_temp_variable = { rs_u7 = THIS.non_damaged_building_level@fuel_silo }
+	set_temp_variable = { rs_t7 = THIS.building_level@fuel_silo }
+	set_temp_variable = { rs_u8 = THIS.non_damaged_building_level@air_base }
+	set_temp_variable = { rs_t8 = THIS.building_level@air_base }
+	set_temp_variable = { rs_u9 = THIS.non_damaged_building_level@radar_station }
+	set_temp_variable = { rs_t9 = THIS.building_level@radar_station }
+	set_temp_variable = { rs_u10 = THIS.non_damaged_building_level@anti_air_building }
+	set_temp_variable = { rs_t10 = THIS.building_level@anti_air_building }
+	log = "RAID TEST: [THIS.GetName] undamaged / total - arms [?rs_u0|.1]/[?rs_t0|.1], ammo plant [?rs_u1|.1]/[?rs_t1|.1], ammo silo [?rs_u2|.1]/[?rs_t2|.1], thermal [?rs_u3|.1]/[?rs_t3|.1], subst [?rs_u4|.1]/[?rs_t4|.1], subst big [?rs_u5|.1]/[?rs_t5|.1], refinery [?rs_u6|.1]/[?rs_t6|.1], fuel silo [?rs_u7|.1]/[?rs_t7|.1], airbase [?rs_u8|.1]/[?rs_t8|.1], radar [?rs_u9|.1]/[?rs_t9|.1], AA [?rs_u10|.1]/[?rs_t10|.1]"
+}
+es_raid_test_wreck_state = {
+	if = { limit = { arms_factory > 0 } damage_building = { type = arms_factory damage = 50 } }
+	if = { limit = { ammunition_plant > 0 } damage_building = { type = ammunition_plant damage = 50 } }
+	if = { limit = { ammunition_silo > 0 } damage_building = { type = ammunition_silo damage = 50 } }
+	if = { limit = { thermal_power_plant > 0 } damage_building = { type = thermal_power_plant damage = 50 } }
+	if = { limit = { electrical_substation > 0 } damage_building = { type = electrical_substation damage = 50 } }
+	if = { limit = { electrical_substation_big > 0 } damage_building = { type = electrical_substation_big damage = 50 } }
+	if = { limit = { synthetic_refinery > 0 } damage_building = { type = synthetic_refinery damage = 50 } }
+	if = { limit = { fuel_silo > 0 } damage_building = { type = fuel_silo damage = 50 } }
+	if = { limit = { air_base > 0 } damage_building = { type = air_base damage = 50 } }
+	if = { limit = { radar_station > 0 } damage_building = { type = radar_station damage = 50 } }
+	if = { limit = { anti_air_building > 0 } damage_building = { type = anti_air_building damage = 50 } }
+}
+
+# raid_state_info <state> - print undamaged / total levels of every raid-target building
+d_raid_state_info = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "RAID TEST: usage: raid_state_info <state id>"
+	}
+	else = {
+		set_temp_variable = { rs = args^0 }
+		meta_effect = {
+			S = "[?rs|.0]"
+			text = { [S] = { es_raid_test_print_state = yes } }
+		}
+	}
+}
+
+# raid_wreck <state> - fully damage every raid-target building in the state, then print it
+d_raid_wreck = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "RAID TEST: usage: raid_wreck <state id>"
+	}
+	else = {
+		set_temp_variable = { rs = args^0 }
+		meta_effect = {
+			S = "[?rs|.0]"
+			text = { [S] = { es_raid_test_wreck_state = yes es_raid_test_print_state = yes } }
+		}
+	}
+}
+
+
+# =====================================================================
+# Substation test commands (see console_commands.md)
+# Output is written to the console and to game.log.
+# Expected results use 0.8 per big and 0.13 per small substation
+# (global.energy_substation_*_transfer_capacity_power).
+# =====================================================================
+
+# --- helpers (not commands) ---
+
+# In: t_demand, t_big, t_small, trg_state. Runs the real calculation without building anything.
+es_substation_test_case = {
+	set_temp_variable = { shortage = t_demand }
+	set_temp_variable = { substation_dry_run = 1 }
+	ESAPI_int_add_substations_for_demand = yes
+	set_temp_variable = { substation_dry_run = 0 }
+
+	if = {
+		limit = {
+			check_variable = { big_needed = t_big }
+			check_variable = { small_needed = t_small }
+		}
+		add_to_temp_variable = { t_pass = 1 }
+		log = "SUBSTATION TEST: PASS demand [?t_demand|.3] -> [?big_needed|.0] big + [?small_needed|.0] small"
+	}
+	else = {
+		add_to_temp_variable = { t_fail = 1 }
+		log = "SUBSTATION TEST: FAIL demand [?t_demand|.3] -> [?big_needed|.0] big + [?small_needed|.0] small, expected [?t_big|.0] big + [?t_small|.0] small"
+	}
+}
+
+# --- commands ---
+
+# round_test - show how round_temp_variable rounds (the substation formulas expect nearest)
+d_round_test = {
+	set_temp_variable = { r1 = 0.4 }
+	round_temp_variable = r1
+	set_temp_variable = { r2 = 0.5 }
+	round_temp_variable = r2
+	set_temp_variable = { r3 = 0.6 }
+	round_temp_variable = r3
+	set_temp_variable = { r4 = 1.5 }
+	round_temp_variable = r4
+	# floor pattern: x - 0.499, ceil pattern: x + 0.499
+	set_temp_variable = { r5 = 0.501 }
+	round_temp_variable = r5
+	set_temp_variable = { r6 = 2.499 }
+	round_temp_variable = r6
+	set_temp_variable = { r7 = 2.5 }
+	round_temp_variable = r7
+	log = "SUBSTATION TEST: round 0.4=[?r1|.0] 0.5=[?r2|.0] 0.6=[?r3|.0] 1.5=[?r4|.0] | floor(1.0)=[?r5|.0] (want 1), ceil(2.0)=[?r6|.0] (want 2), ceil(2.001)=[?r7|.0] (want 3, 2 only matters for demands 0.001 above a whole substation)"
+
+	if = {
+		limit = {
+			check_variable = { r1 = 0 }
+			check_variable = { r3 = 1 }
+			check_variable = { r5 = 1 }
+			check_variable = { r6 = 2 }
+		}
+		log = "SUBSTATION TEST: PASS - round_temp_variable rounds to nearest, the substation formulas are correct"
+	}
+	else_if = {
+		limit = { check_variable = { r3 = 0 } }
+		log = "SUBSTATION TEST: FAIL - round_temp_variable rounds DOWN, the substation formulas must be changed"
+	}
+	else = {
+		log = "SUBSTATION TEST: FAIL - unexpected rounding, see the values above"
+	}
+}
+
+# substation_selftest [state] - run the substation calculation for fixed demands and compare with
+# the expected result. Builds nothing. Uses your capital unless a state ID is given
+# (the state needs free substation slots, otherwise the slot fallback changes the result).
+d_substation_selftest = {
+	if = {
+		limit = { check_variable = { args^num > 0 } }
+		set_temp_variable = { trg_state = args^0 }
+	}
+	else = {
+		FROM = { capital_scope = { set_temp_variable = { trg_state = THIS } } }
+	}
+	set_temp_variable = { t_pass = 0 }
+	set_temp_variable = { t_fail = 0 }
+	log = "SUBSTATION TEST: ---- selftest, big = [?global.energy_substation_big_transfer_capacity_power|.3], small = [?global.energy_substation_transfer_capacity_power|.3] ----"
+	var:trg_state = { log = "SUBSTATION TEST: slot checks use state [THIS.GetName]" }
+
+	# 1 arms factory
+	set_temp_variable = { t_demand = 0.075 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 1 }
+	es_substation_test_case = yes
+	# exactly one small
+	set_temp_variable = { t_demand = 0.13 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 1 }
+	es_substation_test_case = yes
+	# just above one small
+	set_temp_variable = { t_demand = 0.131 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 2 }
+	es_substation_test_case = yes
+	# 3 arms factories
+	set_temp_variable = { t_demand = 0.225 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 2 }
+	es_substation_test_case = yes
+	# 5 dockyards
+	set_temp_variable = { t_demand = 0.5 }
+	set_temp_variable = { t_big = 0 }
+	set_temp_variable = { t_small = 4 }
+	es_substation_test_case = yes
+	# 7 small would give 0.91 >= 0.8, so one big instead
+	set_temp_variable = { t_demand = 0.79 }
+	set_temp_variable = { t_big = 1 }
+	set_temp_variable = { t_small = 0 }
+	es_substation_test_case = yes
+	# exactly one big
+	set_temp_variable = { t_demand = 0.8 }
+	set_temp_variable = { t_big = 1 }
+	set_temp_variable = { t_small = 0 }
+	es_substation_test_case = yes
+	set_temp_variable = { t_demand = 1.0 }
+	set_temp_variable = { t_big = 1 }
+	set_temp_variable = { t_small = 2 }
+	es_substation_test_case = yes
+	set_temp_variable = { t_demand = 1.6 }
+	set_temp_variable = { t_big = 2 }
+	set_temp_variable = { t_small = 0 }
+	es_substation_test_case = yes
+	set_temp_variable = { t_demand = 2.1 }
+	set_temp_variable = { t_big = 2 }
+	set_temp_variable = { t_small = 4 }
+	es_substation_test_case = yes
+
+	log = "SUBSTATION TEST: ---- [?t_pass|.0] passed, [?t_fail|.0] failed ----"
+}
+
+# substation_add <state> [amount] - real ESAPI_add_state_building call: queue [amount] arms factories
+# (default 1) with energy check on, and print the substations it queued.
+# 1 arms factory should queue 0 big + 1 small. Check the construction queue afterwards.
+d_substation_add = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "SUBSTATION TEST: usage: substation_add <state id> [amount of arms factories]"
+	}
+	else = {
+		set_temp_variable = { api_state_id = args^0 }
+		set_temp_variable = { api_amount = 1 }
+		if = { limit = { check_variable = { args^num > 1 } }
+			set_temp_variable = { api_amount = args^1 }
+		}
+		set_temp_variable = { api_building_type = token:arms_factory }
+		set_temp_variable = { api_consider_energy_opt = 1 }
+		set_temp_variable = { api_put_extra_slots_opt = 0 }
+		set_temp_variable = { big_needed = 0 }
+		set_temp_variable = { small_needed = 0 }
+
+		ESAPI_add_state_building = yes
+
+		log = "SUBSTATION TEST: state [?api_state_id|.0]: queued [?api_amount|.0] arms factory, demand [?shortage|.3] -> [?big_needed|.0] big + [?small_needed|.0] small substations queued (1 arms factory should give 0 big + 1 small)"
+	}
+}
+
+
+# =====================================================================
+# Energy map mode test commands (see console_commands.md)
+# The blackout map mode reads energy_blackout_status on each state:
+# 0 = OK (green), 1 = local blackout (red), 2 = global blackout (yellow).
+# The weekly energy calculation overwrites it, so a value set here
+# lasts until that country's next weekly tick.
+# =====================================================================
+
+# blackout_set <state> <0|1|2> - set the blackout status shown on the map
+d_blackout_set = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 2 } }
+		log = "BLACKOUT TEST: usage: blackout_set <state id> <0 ok | 1 local | 2 global>"
+	}
+	else = {
+		set_temp_variable = { bs = args^0 }
+		set_temp_variable = { bv = args^1 }
+		var:bs = {
+			set_variable = { energy_blackout_status = bv }
+			log = "BLACKOUT TEST: [THIS.GetName] status set to [?bv|.0]. Unpause for one day: the map should change color (1 red, 2 yellow, 0 green)."
+		}
+	}
+}
+
+# blackout_info <state> - print the status and the energy numbers behind it
+d_blackout_info = {
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "BLACKOUT TEST: usage: blackout_info <state id>"
+	}
+	else = {
+		set_temp_variable = { bs = args^0 }
+		var:bs = {
+			log = "BLACKOUT TEST: [THIS.GetName] status [?energy_blackout_status|.0] (0 ok, 1 local, 2 global), supply factor [?energy_netto_factor|.2], consumption [?energy_consumption|.3], substation capacity [?energy_transfer_capacity|.3]"
+		}
+	}
+}
+
+# =====================================================================
+# Field depot strike test commands (see console_commands.md)
+# Question: can one state hold the same scoped dynamic modifier for
+# several countries at once (ammo_depot_strike_N with scope = RUS, DPR...)?
+# Output is written to the console and to game.log.
+# =====================================================================
+
+# --- helpers (not commands) ---
+es_depot_test_print = {
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = RUS } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for RUS" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for RUS" }
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = DPR } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for DPR" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for DPR" }
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = LPR } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for LPR" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for LPR" }
+	if = { limit = { has_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = WGN } } log = "DEPOT TEST: [THIS.GetName] has ammo_depot_strike_3 for WGN" }
+	else = { log = "DEPOT TEST: [THIS.GetName] NO ammo_depot_strike_3 for WGN" }
+}
+
+# depot_mod_test <state> - put the level 3 depot strike penalty (-15%) on the state for RUS, DPR, LPR and WGN at once (30 days)
+d_depot_mod_test = {
+	# Reading args^N when that argument was not typed aborts the command silently, so check first.
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "DEPOT TEST: usage: depot_mod_test <state id>"
+	}
+	else = {
+		set_temp_variable = { ds = args^0 }
+		# The modifier reads ammo_depot_penalty_3 from the scoped country
+		RUS = { ammo_depot_update_penalties = yes }
+		DPR = { ammo_depot_update_penalties = yes }
+		LPR = { ammo_depot_update_penalties = yes }
+		WGN = { ammo_depot_update_penalties = yes }
+		var:ds = {
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = RUS days = 30 }
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = DPR days = 30 }
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = LPR days = 30 }
+			add_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = WGN days = 30 }
+			es_depot_test_print = yes
+		}
+	}
+}
+
+# depot_mod_clear <state> - remove the test modifiers again
+d_depot_mod_clear = {
+	if = { limit = { check_variable = { args^num < 1 } }
+		log = "DEPOT TEST: usage: depot_mod_clear <state id>"
+	}
+	else = {
+		set_temp_variable = { ds = args^0 }
+		var:ds = {
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = RUS }
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = DPR }
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = LPR }
+			remove_dynamic_modifier = { modifier = ammo_depot_strike_3 scope = WGN }
+			es_depot_test_print = yes
+		}
+	}
+}
+
+# depot_front_info - count the states flagged as front line for field depot strikes (ammo_depot_front)
+d_depot_front_info = {
+	set_temp_variable = { dft_all = 0 }
+	set_temp_variable = { dft_rus = 0 }
+	set_temp_variable = { dft_ukr = 0 }
+	every_state = {
+		limit = { has_state_flag = ammo_depot_front }
+		add_to_temp_variable = { dft_all = 1 }
+		if = { limit = { controller = { tag = RUS } } add_to_temp_variable = { dft_rus = 1 } }
+		if = { limit = { controller = { tag = UKR } } add_to_temp_variable = { dft_ukr = 1 } }
+	}
+	log = "DEPOT TEST: front-line states flagged: [?dft_all|0] (controlled by RUS [?dft_rus|0], UKR [?dft_ukr|0])"
+}
+
+# depot_front_mark - run the weekly front-line marking now for every country at war, then print the count
+d_depot_front_mark = {
+	every_country = {
+		limit = { has_war = yes }
+		ammo_depot_mark_front = yes
+	}
+	d_depot_front_info = yes
 }

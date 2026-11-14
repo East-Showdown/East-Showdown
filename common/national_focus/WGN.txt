@@ -429,20 +429,18 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_redeployment"
 			add_manpower = 1500
+			load_oob = WGN_2022_air_molkino
 			add_equipment_to_stockpile = {
 				type = RUS_cas_equipment_su24m
-				amount = 12
-				producer = RUS
-			}
-			add_equipment_to_stockpile = {
-				type = RUS_fighter_equipment_mig29
-				amount = 6
-				producer = RUS
+				variant_name = "Су-24М"
+				amount = 8
+				producer = WGN
 			}
 			add_equipment_to_stockpile = {
 				type = RUS_cas_equipment_su25	
-				amount = 12
-				producer = RUS
+				variant_name = "Су-25"
+				amount = 8
+				producer = WGN
 			}
 			custom_effect_tooltip = WGN_redeployment_tooltip
 			add_timed_idea = {
@@ -1321,7 +1319,8 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_appeal"
 			custom_effect_tooltip = WGN_appeal_tooltip
 			hidden_effect = {
-			    country_event = { id = WGN.47 days = 1 }
+				country_event = { id = WGN.71 days = 4 }
+				country_event = { id = WGN.47 days = 1 }
 			}
 		}
 		x = 32
@@ -1339,11 +1338,10 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = WGN_continue_the_battle
 		}
-		ai_will_do = {
-			factor = 0
-			modifier = {
-				add = 100
-				is_historical_focus_on = no
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_only_events
+				focus_progress = { focus = WGN_appeal_to_putin progress > 0 }
 			}
 		}
 		completion_reward = {
@@ -1372,14 +1370,10 @@ focus_tree = {
 		prerequisite = {
 			focus = WGN_appeal
 		}
-		ai_will_do = {
-			factor = 100
-		}
-		select_effect = {
-			hidden_effect = {
-				mikhail_mizintsev = {
-					unit_leader_event = { id = wgn_unit_leader_event.3 hours = 12 }
-				}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_only_events
+				focus_progress = { focus = WGN_continue_the_battle progress > 0 }
 			}
 		}
 		completion_reward = {
@@ -1392,6 +1386,9 @@ focus_tree = {
 			add_to_variable = { WGN_hunger_political_power_factor = 0.2 }
 			add_to_variable = { WGN_hunger_command_power_gain_mult = 0.15 }
 			hidden_effect = {
+				mikhail_mizintsev = {
+					unit_leader_event = { id = wgn_unit_leader_event.3 hours = 12 }
+				}
 			    add_power_balance_value = {
 					id = RUS_power_balance
 					value = -0.05
@@ -1416,6 +1413,30 @@ focus_tree = {
 		}
 		ai_will_do = {
 			factor = 100
+		}
+		available = {
+			has_completed_focus = WGN_military_improvisation
+			if = {
+				limit = { focus_progress = { focus = WGN_fight_against_military_bureaucracy progress > 0 } }
+				always = yes
+			}
+			else_if = {
+				limit = { has_country_flag = WGN_fight_against_military_bureaucracy_in_progress_flag }
+				set_temp_variable = { temp_focus_days = 4 }
+				custom_override_tooltip = {
+					tooltip = {
+						localization_key = RUS_auto_focus_in_progress_tt
+						FLAG_DAYS = [?WGN_fight_against_military_bureaucracy_in_progress_flag:days]
+					}
+					always = no
+				}
+			}
+			else = {
+				custom_override_tooltip = {
+					tooltip = RUS_auto_focus_only_tt
+					always = no
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_fight_against_military_bureaucracy"
@@ -1457,9 +1478,27 @@ focus_tree = {
 			factor = 100
 		}
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = WGN_mikhail_mizintsev_PMC_commander_cet
-				has_country_flag = WGN_mikhail_mizintsev_PMC_commander
+			has_completed_focus = WGN_loyalist_help
+			if = {
+				limit = { focus_progress = { focus = WGN_military_improvisation progress > 0 } }
+				always = yes
+			}
+			else_if = {
+				limit = { has_country_flag = WGN_military_improvisation_in_progress_flag }
+				set_temp_variable = { temp_focus_days = 4 }
+				custom_override_tooltip = {
+					tooltip = {
+						localization_key = RUS_auto_focus_in_progress_tt
+						FLAG_DAYS = [?WGN_military_improvisation_in_progress_flag:days]
+					}
+					always = no
+				}
+			}
+			else = {
+				custom_override_tooltip = {
+					tooltip = RUS_auto_focus_only_tt
+					always = no
+				}
 			}
 		}
 		completion_reward = {
@@ -1478,11 +1517,6 @@ focus_tree = {
 			add_to_variable = { WGN_hunger_org_loss_when_moving = -0.05 }
 			add_to_variable = { WGN_shell_hunger_modifier_army_attack_factor = 0.05 }
 			add_to_variable = { WGN_shell_hunger_modifier_breakthrough_factor = 0.1 }
-
-			random_army_leader = {
-			    limit = { is_field_marshal = yes NOT = { has_trait = logistics_wizard } }
-				add_unit_leader_trait = logistics_wizard
-			}
 			if = {
 				limit = { has_country_flag = WGN_mikhail_mizintsev_PMC_commander }
 				mikhail_mizintsev = {
@@ -1520,6 +1554,30 @@ focus_tree = {
 		ai_will_do = {
 			factor = 100
 		}
+		available = {
+			has_completed_focus = WGN_never_give_up
+			if = {
+				limit = { focus_progress = { focus = WGN_loyalist_help progress > 0 } }
+				always = yes
+			}
+			else_if = {
+				limit = { has_country_flag = WGN_loyalist_help_in_progress_flag }
+				set_temp_variable = { temp_focus_days = 4 }
+				custom_override_tooltip = {
+					tooltip = {
+						localization_key = RUS_auto_focus_in_progress_tt
+						FLAG_DAYS = [?WGN_loyalist_help_in_progress_flag:days]
+					}
+					always = no
+				}
+			}
+			else = {
+				custom_override_tooltip = {
+					tooltip = RUS_auto_focus_only_tt
+					always = no
+				}
+			}
+		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_loyalist_help"
 			custom_effect_tooltip = WGN_loyalist_help_tooltip
@@ -1543,6 +1601,29 @@ focus_tree = {
 		}
 		ai_will_do = {
 			factor = 100
+		}
+		available = {
+			if = {
+				limit = { focus_progress = { focus = WGN_never_give_up progress > 0 } }
+				always = yes
+			}
+			else_if = {
+				limit = { has_country_flag = WGN_never_give_up_in_progress_flag }
+				set_temp_variable = { temp_focus_days = 4 }
+				custom_override_tooltip = {
+					tooltip = {
+						localization_key = RUS_auto_focus_in_progress_tt
+						FLAG_DAYS = [?WGN_never_give_up_in_progress_flag:days]
+					}
+					always = no
+				}
+			}
+			else = {
+				custom_override_tooltip = {
+					tooltip = RUS_auto_focus_only_tt
+					always = no
+				}
+			}
 		}
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus WGN_never_give_up"
@@ -1581,16 +1662,26 @@ focus_tree = {
 			focus = WGN_never_give_up
 		}
 		available = {
-			custom_trigger_tooltip = {
-				tooltip = WGN_march_trigger_1_tt
-				check_variable = { global.bz_russian_border_is_breached = 0 }		
+			WGN_march_conditions = yes
+			if = {
+				limit = { focus_progress = { focus = WGN_march progress > 0 } }
+				always = yes
 			}
-			custom_trigger_tooltip = {
-				tooltip = WGN_march_trigger_2_tt
-				UKR = {
-					NOT = {
-						surrender_progress > 74
+			else_if = {
+				limit = { has_country_flag = WGN_march_in_progress_flag }
+				set_temp_variable = { temp_focus_days = 26 }
+				custom_override_tooltip = {
+					tooltip = {
+						localization_key = RUS_auto_focus_in_progress_tt
+						FLAG_DAYS = [?WGN_march_in_progress_flag:days]
 					}
+					always = no
+				}
+			}
+			else = {
+				custom_override_tooltip = {
+					tooltip = RUS_auto_focus_only_tt
+					always = no
 				}
 			}
 		}
