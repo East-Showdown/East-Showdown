@@ -1,0 +1,291 @@
+# Обновление при запуске, ежедневно и сразу после наград соответствующих фокусов.
+# Повторное обновление состояния не должно заново запускать сроки временных нацдухов.
+ES_UKR_initialize_ai_autoplan = {
+	# В сентябрьском сценарии фокус начала кампании выполнен без выдачи награды.
+	# Период наступления ИИ выдаётся один раз на дату старта и не повторяется при загрузках.
+	if = {
+		limit = {
+			is_ai = yes
+			has_start_date = 2022.09.06
+			date < 2022.09.07
+			NOT = { has_country_flag = UKR_ai_autumn_bookmark_initialized }
+			NOT = { has_idea = UKR_autumn_storm_spirit }
+			NOT = { has_idea = UKR_autumn_storm_spirit_ai }
+		}
+		set_country_flag = UKR_ai_autumn_bookmark_initialized
+		add_timed_idea = {
+			idea = UKR_autumn_storm_spirit_ai
+			days = 90
+		}
+	}
+}
+
+ES_RUS_update_ai_autoplan = {
+	ES_update_ai_preferred_equipment = yes
+	ES_RUS_update_summer_aifc_stages = yes
+	if = {
+		limit = { original_tag = RUS is_ai = yes }
+		if = {
+			limit = { NOT = { has_idea = ES_RUS_ai_political_power_support } }
+			add_ideas = ES_RUS_ai_political_power_support
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_RUS_ai_political_power_support }
+		remove_ideas = ES_RUS_ai_political_power_support
+	}
+	ES_update_ai_assault_infantry_technology = yes
+	ES_update_ai_assault_recruitment = yes
+	if = {
+		limit = {
+			is_ai = yes
+			has_war_with = UKR
+			NOT = { ES_RUS_january_2022_autoplan = yes }
+			date < 2023.10.01
+			OR = {
+				has_idea = RUS_disruption_of_the_operation_3_singleplayer
+				has_completed_focus = RUS_begin_partial_mobilization
+			}
+		}
+		if = {
+			limit = { NOT = { has_idea = ES_ai_autoplan_paused } }
+			add_ideas = ES_ai_autoplan_paused
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_ai_autoplan_paused }
+		remove_ideas = ES_ai_autoplan_paused
+	}
+}
+
+ES_UKR_update_ai_autoplan = {
+	ES_UKR_start_parallel_tro_deployment = yes
+	ES_update_ai_preferred_equipment = yes
+	ES_UKR_update_summer_aifc_stages = yes
+	ES_update_ai_assault_infantry_technology = yes
+	ES_update_ai_assault_recruitment = yes
+	# Дополнительный лимит спецназа действует только у Украины под управлением ИИ.
+	if = {
+		limit = { original_tag = UKR is_ai = yes }
+		if = {
+			limit = { NOT = { has_idea = ES_UKR_ai_special_forces_support } }
+			add_ideas = ES_UKR_ai_special_forces_support
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_UKR_ai_special_forces_support }
+		remove_ideas = ES_UKR_ai_special_forces_support
+	}
+	# Летние приоритеты AIFC завершаются после первого фактического периода истощения.
+	if = {
+		limit = {
+			is_ai = yes
+			has_start_date > 2023.05.31
+			has_start_date < 2023.06.02
+		}
+		if = {
+			limit = {
+				OR = {
+					has_idea = UKR_exhausted_army_idea_ai
+					has_idea = UKR_exhausted_army_idea
+				}
+			}
+			set_country_flag = ES_UKR_summer_2023_exhaustion_seen
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_country_flag = ES_UKR_summer_2023_exhaustion_seen
+					# Совместимость с сохранением после окончания духа; обход успешной кампании исключён.
+					AND = {
+						has_completed_focus = UKR_positional_deadlock
+						NOT = { has_country_flag = UKR_final_push_mission_succeeded }
+					}
+				}
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_priorities_finished
+		}
+	}
+	# Запоминаем осенний бонус, чтобы его окончание закрывало раннее окно автоплана.
+	if = {
+		limit = {
+			is_ai = yes
+			OR = {
+				has_idea = UKR_autumn_storm_spirit_ai
+				has_idea = UKR_autumn_storm_spirit
+			}
+		}
+		set_country_flag = ES_UKR_ai_autumn_storm_seen
+	}
+	# После начала «Финального рывка» общий автоплан включён до «Позиционного тупика»,
+	# даже если 90-дневный боевой бонус закончится раньше задания.
+	if = {
+		limit = {
+			is_ai = yes
+			NOT = { has_country_flag = UKR_ai_final_push_started }
+			OR = {
+				has_idea = UKR_final_push_spirit
+				has_idea = UKR_final_push_spirit_ai
+				has_completed_focus = UKR_launch_summer_campaign
+			}
+		}
+		set_country_flag = UKR_ai_final_push_started
+	}
+	if = {
+		limit = {
+			is_ai = yes
+			has_war_with = RUS
+			OR = {
+				has_idea = UKR_exhausted_army_idea_ai
+				# Совместимость с уже действующим вариантом для игрока или старого сохранения.
+				AND = {
+					has_completed_focus = UKR_positional_deadlock
+					has_idea = UKR_exhausted_army_idea
+				}
+				AND = {
+					NOT = { has_completed_focus = UKR_positional_deadlock }
+					NOT = { has_country_flag = UKR_ai_final_push_started }
+					NOT = { ES_UKR_early_balanced_autoplan_window = yes }
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { has_idea = ES_ai_autoplan_paused } }
+			add_ideas = ES_ai_autoplan_paused
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_ai_autoplan_paused }
+		remove_ideas = ES_ai_autoplan_paused
+	}
+}
+
+# Скрытая недельная выдача 500 тысяч боеприпасов только при разрешённом общем автоплане.
+ES_ai_weekly_autoplan_ammunition = {
+	if = {
+		limit = {
+			is_ai = yes
+			OR = { original_tag = RUS original_tag = UKR }
+		}
+		# Обновляем состояние до выдачи независимо от порядка ежедневных и недельных обработчиков.
+		if = {
+			limit = { original_tag = RUS }
+			ES_RUS_update_ai_autoplan = yes
+		}
+		else = {
+			ES_UKR_update_ai_autoplan = yes
+		}
+		if = {
+			limit = {
+				NOT = { has_idea = ES_ai_autoplan_paused }
+				OR = {
+					AND = { original_tag = RUS has_war_with = UKR }
+					AND = { original_tag = UKR has_war_with = RUS }
+				}
+			}
+			hidden_effect = {
+				add_to_variable = { ammunition_value_k = 500 }
+				ammunition_calculate_storage = yes
+				ammunition_update_display = yes
+			}
+		}
+	}
+}
+
+# Завершённые этапы сохраняются: потеря штата не откатывает очередь направлений.
+ES_UKR_update_summer_aifc_stages = {
+	if = {
+		limit = {
+			original_tag = UKR
+			is_ai = yes
+			has_start_date > 2023.05.31
+			has_start_date < 2023.06.02
+			has_war_with = RUS
+			NOT = { has_country_flag = ES_UKR_summer_2023_aifc_priorities_finished }
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_UKR_summer_2023_aifc_stage_1_completed }
+				ES_UKR_summer_2023_aifc_stage_1_controlled = yes
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_stage_1_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_UKR_summer_2023_aifc_stage_2_completed }
+				has_country_flag = ES_UKR_summer_2023_aifc_stage_1_completed
+				ES_UKR_summer_2023_aifc_stage_2_controlled = yes
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_stage_2_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_UKR_summer_2023_aifc_stage_3_completed }
+				has_country_flag = ES_UKR_summer_2023_aifc_stage_2_completed
+				ES_UKR_summer_2023_aifc_stage_3_controlled = yes
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_stage_3_completed
+		}
+	}
+}
+
+# Захваченные цели РФ завершают этап навсегда; уже пройденные этапы не возвращаются.
+ES_RUS_update_summer_aifc_stages = {
+	if = {
+		limit = {
+			original_tag = RUS
+			is_ai = yes
+			has_start_date > 2023.05.31
+			has_start_date < 2023.06.02
+			has_war_with = UKR
+			UKR = { ES_UKR_summer_2023_campaign_exhausted = yes }
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_1_completed }
+				has_full_control_of_state = 893
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_1_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_2_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_1_completed
+				has_full_control_of_state = 715
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_2_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_3_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_2_completed
+				has_full_control_of_state = 714
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_3_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_4_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_3_completed
+				has_full_control_of_state = 890
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_4_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_5_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_4_completed
+				has_full_control_of_state = 182
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_5_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_6_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_5_completed
+				has_full_control_of_state = 908
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_6_completed
+		}
+	}
+}

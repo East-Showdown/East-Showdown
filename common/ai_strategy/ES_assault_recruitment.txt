@@ -1,0 +1,71 @@
+# Вес роли управляет желаемым составом армии и набором, а не производством снаряжения.
+ES_UKR_recruit_assault_battalions = {
+	allowed = { original_tag = UKR }
+	enable = {
+		is_ai = yes
+		has_template = "Shturmovoy batalion (BTR)"
+		has_country_flag = UKR_assault_template_editing_unlocked
+		has_tech = assault_infantry
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = role_ratio
+		id = ES_assault_recruitment
+		value = 40
+	}
+}
+
+ES_RUS_recruit_assault_battalions = {
+	allowed = { original_tag = RUS }
+	enable = {
+		is_ai = yes
+		has_template = "Shturmovoy batalion"
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = role_ratio
+		id = ES_assault_recruitment
+		value = 40
+	}
+}
+
+# Временная политика: ИИ Украины набирает только отдельные штурмовую и стрелковую роли.
+# Отрицательная поправка обнуляет их суммарную потребность, включая общие стратегии.
+# Штурмовая роль включается отдельно только после решения и технологии.
+ES_UKR_only_recruit_assault_battalions = {
+	allowed = { original_tag = UKR }
+	enable = { is_ai = yes }
+	abort_when_not_enabled = yes
+	ai_strategy = { type = role_ratio id = armor value = -10000 }
+	ai_strategy = { type = role_ratio id = artillery value = -10000 }
+	ai_strategy = { type = role_ratio id = garrison value = -10000 }
+	ai_strategy = { type = role_ratio id = infantry value = -10000 }
+	ai_strategy = { type = role_ratio id = marines value = -10000 }
+	ai_strategy = { type = role_ratio id = mechanized value = -10000 }
+	ai_strategy = { type = role_ratio id = mobile value = -10000 }
+	ai_strategy = { type = role_ratio id = mountaineers value = -10000 }
+	ai_strategy = { type = role_ratio id = paratroopers value = -10000 }
+	ai_strategy = { type = role_ratio id = special_forces value = -10000 }
+	ai_strategy = { type = role_ratio id = suppression value = -10000 }
+}
+
+ES_UKR_recruit_rifle_battalions = {
+	allowed = { original_tag = UKR }
+	enable = {
+		is_ai = yes
+		has_template = "Strilets'kyy batal'yon"
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = role_ratio
+		id = ES_UKR_rifle_recruitment
+		value = 400
+	}
+	# Explicit recruitment demand supplements the army-composition weight.
+	ai_strategy = {
+		type = build_army
+		id = ES_UKR_rifle_recruitment
+		value = 200
+	}
+}
+

@@ -227,6 +227,7 @@ UKR_hold_battleplans_during_unexpected_strike = {
 		OR = {
 			has_idea = ukr_unexpected_strike
 			has_idea = ukr_unexpected_strike_singleplayer
+			has_idea = ukr_unexpected_strike_ai
 		}
 	}
 	abort = {
@@ -235,6 +236,7 @@ UKR_hold_battleplans_during_unexpected_strike = {
 			AND = {
 				NOT = { has_idea = ukr_unexpected_strike }
 				NOT = { has_idea = ukr_unexpected_strike_singleplayer }
+				NOT = { has_idea = ukr_unexpected_strike_ai }
 			}
 		}
 	}
@@ -674,7 +676,7 @@ UKR_operations_in_Russia = {
 	}
 }
 
-# Restrict the share of surplus Ukrainian divisions assigned to AIFC while at war with Russia.
+# Доля свободных дивизий Украины для AIFC: 15% базы минус 6 пунктов, итого 9%.
 UKR_limit_force_concentration = {
 	allowed = {
 		original_tag = UKR
@@ -692,6 +694,21 @@ UKR_limit_force_concentration = {
 
 	ai_strategy = {
 		type = force_concentration_factor
-		value = -8
+		value = -6
+	}
+}
+
+# Постоянное усиление Донбасса после начала войны, независимо от календарных этапов.
+UKR_reinforce_donbass_during_war = {
+	allowed = { original_tag = UKR }
+	enable = {
+		is_ai = yes
+		has_war_with = RUS
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_unit_request
+		area = donbass
+		value = 200
 	}
 }

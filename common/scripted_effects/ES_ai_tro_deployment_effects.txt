@@ -1,0 +1,93 @@
+# ИИ Украины начинает все четыре направления одним вызовом сразу после объявления войны.
+# Стоимость списывается без ожидания накопления ПВ; обычные условия игрока не меняются.
+ES_UKR_start_parallel_tro_deployment = {
+	if = {
+		limit = {
+			original_tag = UKR
+			is_ai = yes
+			has_start_date = 2022.1.1
+			OR = {
+				has_war_with = RUS
+				# on_declare_war может отработать до обновления has_war_with.
+				has_country_flag = ES_UKR_ai_tro_war_started
+			}
+		}
+		set_country_flag = UKR_create_territorial_defence_category_unlocked_flag
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_north = yes }
+			# Итоговая цена — 10 ПВ независимо от списания внутри activate_decision.
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_north
+			# Учитываем оплату и запуск только после подтверждения активации.
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_north
+						has_country_flag = ES_ai_started_UKR_create_units_north
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_north
+			}
+		}
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_Eastern = yes }
+			# Итоговая цена — 10 ПВ независимо от списания внутри activate_decision.
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_Eastern
+			# Учитываем оплату и запуск только после подтверждения активации.
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_Eastern
+						has_country_flag = ES_ai_started_UKR_create_units_Eastern
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_Eastern
+			}
+		}
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_southern_Ukraine = yes }
+			# Итоговая цена — 10 ПВ независимо от списания внутри activate_decision.
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_southern_Ukraine
+			# Учитываем оплату и запуск только после подтверждения активации.
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_southern_Ukraine
+						has_country_flag = ES_ai_started_UKR_create_units_southern_Ukraine
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_southern_Ukraine
+			}
+		}
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_western_Ukraine = yes }
+			# Итоговая цена — 10 ПВ независимо от списания внутри activate_decision.
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_western_Ukraine
+			# Учитываем оплату и запуск только после подтверждения активации.
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_western_Ukraine
+						has_country_flag = ES_ai_started_UKR_create_units_western_Ukraine
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_western_Ukraine
+			}
+		}
+	}
+}

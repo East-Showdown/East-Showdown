@@ -1,0 +1,140 @@
+# Разрешение набора выдаётся существующим шаблонам только при управлении ИИ.
+ES_update_ai_assault_recruitment = {
+	ES_UKR_ensure_ai_rifle_template = yes
+	if = {
+		limit = {
+			original_tag = UKR
+			has_template = "Shturmovoy batalion (BTR)"
+		}
+		# Блокировка редактирования также обновляется для существующих сохранений.
+		if = {
+			limit = {
+				has_country_flag = UKR_assault_template_editing_unlocked
+				has_tech = assault_infantry
+			}
+			set_division_template_lock = { division_template = "Shturmovoy batalion (BTR)" is_locked = no }
+		}
+		else = {
+			set_division_template_lock = { division_template = "Shturmovoy batalion (BTR)" is_locked = yes }
+		}
+		if = {
+			limit = {
+				is_ai = yes
+				has_country_flag = UKR_assault_template_editing_unlocked
+				has_tech = assault_infantry
+			}
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion (BTR)"
+				force_allow_recruiting = yes
+			}
+		}
+		else = {
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion (BTR)"
+				force_allow_recruiting = no
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			original_tag = RUS
+			has_template = "Shturmovoy batalion"
+		}
+		if = {
+			limit = { is_ai = yes }
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion"
+				force_allow_recruiting = yes
+			}
+		}
+		else = {
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion"
+				force_allow_recruiting = no
+			}
+		}
+	}
+}
+
+# Состав скопирован из UKR_2022_02_01_03 AI template save, шаблон 294.
+ES_UKR_ensure_ai_rifle_template = {
+	if = {
+		limit = { original_tag = UKR is_ai = yes }
+		if = {
+			limit = { NOT = { has_template = "Strilets'kyy batal'yon" } }
+			division_template = {
+				name = "Strilets'kyy batal'yon"
+				priority = 1
+				obsolete = no
+				is_locked = no
+				force_allow_recruiting = yes
+				regiments = {
+					opolchenie = {
+						x = 0
+						y = 0
+					}
+					opolchenie = {
+						x = 0
+						y = 1
+					}
+					opolchenie = {
+						x = 0
+						y = 2
+					}
+					infantry = {
+						x = 1
+						y = 0
+					}
+					infantry = {
+						x = 1
+						y = 1
+					}
+				}
+				support = {
+					signal_company = {
+						x = 0
+						y = 0
+					}
+					field_hospital = {
+						x = 0
+						y = 1
+					}
+					logistics_company = {
+						x = 0
+						y = 2
+					}
+					engineer = {
+						x = 1
+						y = 0
+					}
+					maintenance_company = {
+						x = 1
+						y = 1
+					}
+					imv_light_recon = {
+						x = 1
+						y = 2
+					}
+				}
+				regimental_support = {
+					atgm = {
+						x = 0
+						y = 0
+					}
+					sniper = {
+						x = 0
+						y = 1
+					}
+					atgm = {
+						x = 1
+						y = 0
+					}
+				}
+			}
+		}
+		set_division_force_allow_recruiting = {
+			division_template = "Strilets'kyy batal'yon"
+			force_allow_recruiting = yes
+		}
+	}
+}
