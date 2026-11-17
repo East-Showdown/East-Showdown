@@ -1,8 +1,4 @@
-# Обновление при запуске, ежедневно и сразу после наград соответствующих фокусов.
-# Повторное обновление состояния не должно заново запускать сроки временных нацдухов.
 ES_UKR_initialize_ai_autoplan = {
-	# В сентябрьском сценарии фокус начала кампании выполнен без выдачи награды.
-	# Период наступления ИИ выдаётся один раз на дату старта и не повторяется при загрузках.
 	if = {
 		limit = {
 			is_ai = yes
@@ -64,7 +60,6 @@ ES_UKR_update_ai_autoplan = {
 	ES_UKR_update_summer_aifc_stages = yes
 	ES_update_ai_assault_infantry_technology = yes
 	ES_update_ai_assault_recruitment = yes
-	# Дополнительный лимит спецназа действует только у Украины под управлением ИИ.
 	if = {
 		limit = { original_tag = UKR is_ai = yes }
 		if = {
@@ -76,7 +71,6 @@ ES_UKR_update_ai_autoplan = {
 		limit = { has_idea = ES_UKR_ai_special_forces_support }
 		remove_ideas = ES_UKR_ai_special_forces_support
 	}
-	# Летние приоритеты AIFC завершаются после первого фактического периода истощения.
 	if = {
 		limit = {
 			is_ai = yes
@@ -96,7 +90,6 @@ ES_UKR_update_ai_autoplan = {
 			limit = {
 				OR = {
 					has_country_flag = ES_UKR_summer_2023_exhaustion_seen
-					# Совместимость с сохранением после окончания духа; обход успешной кампании исключён.
 					AND = {
 						has_completed_focus = UKR_positional_deadlock
 						NOT = { has_country_flag = UKR_final_push_mission_succeeded }
@@ -106,7 +99,6 @@ ES_UKR_update_ai_autoplan = {
 			set_country_flag = ES_UKR_summer_2023_aifc_priorities_finished
 		}
 	}
-	# Запоминаем осенний бонус, чтобы его окончание закрывало раннее окно автоплана.
 	if = {
 		limit = {
 			is_ai = yes
@@ -117,8 +109,6 @@ ES_UKR_update_ai_autoplan = {
 		}
 		set_country_flag = ES_UKR_ai_autumn_storm_seen
 	}
-	# После начала «Финального рывка» общий автоплан включён до «Позиционного тупика»,
-	# даже если 90-дневный боевой бонус закончится раньше задания.
 	if = {
 		limit = {
 			is_ai = yes
@@ -137,7 +127,6 @@ ES_UKR_update_ai_autoplan = {
 			has_war_with = RUS
 			OR = {
 				has_idea = UKR_exhausted_army_idea_ai
-				# Совместимость с уже действующим вариантом для игрока или старого сохранения.
 				AND = {
 					has_completed_focus = UKR_positional_deadlock
 					has_idea = UKR_exhausted_army_idea
@@ -160,14 +149,12 @@ ES_UKR_update_ai_autoplan = {
 	}
 }
 
-# Скрытая недельная выдача 500 тысяч боеприпасов только при разрешённом общем автоплане.
 ES_ai_weekly_autoplan_ammunition = {
 	if = {
 		limit = {
 			is_ai = yes
 			OR = { original_tag = RUS original_tag = UKR }
 		}
-		# Обновляем состояние до выдачи независимо от порядка ежедневных и недельных обработчиков.
 		if = {
 			limit = { original_tag = RUS }
 			ES_RUS_update_ai_autoplan = yes
@@ -192,7 +179,6 @@ ES_ai_weekly_autoplan_ammunition = {
 	}
 }
 
-# Завершённые этапы сохраняются: потеря штата не откатывает очередь направлений.
 ES_UKR_update_summer_aifc_stages = {
 	if = {
 		limit = {
@@ -229,7 +215,6 @@ ES_UKR_update_summer_aifc_stages = {
 	}
 }
 
-# Захваченные цели РФ завершают этап навсегда; уже пройденные этапы не возвращаются.
 ES_RUS_update_summer_aifc_stages = {
 	if = {
 		limit = {
