@@ -144,8 +144,9 @@ IC_PROFILES = {
             "reliability": 0.005,
         },
     },
+    # base -0.4: hull base speed (4) moved onto every engine on 2026-11-17; offsets 4 x 0.10 so engine IC is unchanged
     "engine": {
-        "base": 0, "round": 2,
+        "base": -0.4, "round": 2,
         "weights": {
             "breakthrough": 0.5,
             "reliability": 0.25,
