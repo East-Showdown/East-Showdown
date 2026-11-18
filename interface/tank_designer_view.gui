@@ -2,8 +2,8 @@ guiTypes = {
 
 	containerWindowType = {
 		name = "tank_designer_view"
-		position = { x=0 y=0 }
-		size = { width = 1091 height = 580 }	# ES: 38px taller bottom bar so 6 resources fit
+		position = { x=0 y=-50 }
+		size = { width = 1091 height = 680 }	# ES: 38px taller bottom bar so 6 resources fit; +100 so module rows sit above/below the blueprint
 		moveable = yes
 		fade_time = 500
 		fade_type = linear
@@ -14,19 +14,19 @@ guiTypes = {
 		
 		background = {
 			name = "Background"
-			spriteType ="GFX_ES_tank_designer_popup_bg_tall"	# ES
+			spriteType ="GFX_ES_tank_designer_popup_bg_xtall"	# ES: 100px taller (module rows above/below the blueprint)
 		}
 
 		iconType ={
 			name ="experience_bg"
 			spriteType = "GFX_generic_box_smallest"
-			position = { x = 298 y = 526 }	# ES
+			position = { x = 298 y = 626 }	# ES
 			alwaystransparent = yes
 		}
 
 		instantTextboxType = {
 			name = "experience"
-			position = { x = 295 y = 529 }	# ES
+			position = { x = 295 y = 629 }	# ES
 			font = "hoi_18mbs"
 			maxWidth = 70
 			maxHeight = 20
@@ -51,7 +51,7 @@ guiTypes = {
 		containerWindowType = {
 			name = "equipment_modules"
 			position = { x=13 y=146 }
-			size = { width=512 height= 350}
+			size = { width=512 height= 450}
 
 			background = {
 				name = "background"
@@ -61,7 +61,7 @@ guiTypes = {
 
 			containerWindowType = {
 				name = "equipment_preview"
-				position = { x=3 y=50 }
+				position = { x=3 y=100 }
 				size = { width=508 height=248 }
 
 				background = {
@@ -82,12 +82,12 @@ guiTypes = {
 			@fixed_btn_mod_col_6 = 438
 			@fixed_btn_mod_col_7 = 511
 
-			@fixed_btn_mod_row_0 = 1
-			@fixed_btn_mod_row_1 = 300
-			@fixed_btn_mod_row_2 = 50
-			@fixed_btn_mod_row_3 = 150
+			@fixed_btn_mod_row_0 = 1     # top row
+			@fixed_btn_mod_row_2 = 50    # 2nd row
+			@fixed_btn_mod_row_3 = 100   # blueprint starts here (equipment_preview y)
+			@fixed_btn_mod_row_4 = 350   # 2nd row from the bottom (under the blueprint)
+			@fixed_btn_mod_row_1 = 400   # bottom row
 
-									
 			# Code checks this position to know if module is in upper or low row to
 			# give the tooltip the correct anchor 
 
@@ -100,116 +100,161 @@ guiTypes = {
 			# defines the position of an instance of the window
 			# equipment_designer_module_slot_entry.
 			# N = index of the slot in the archetype's module_slots block.
-			# ES fixed layout: every vehicle lists its slots in this index order
-			# (empty_<cell>_slot fills unused indices), so each module type
-			# always sits in the same cell. The designer shows max 20 slots;
-			# indices past a vehicle's last slot are drawn locked by the game.
-			#   top row    (row_0): main gun, extra armament, MG, ATGM/radar, electronics, panoramic sight, fire control
-			#   middle row (row_2): turret, autoloader/IMV special, active defence/survivability, armour/hull, extra armour, DP, blowout/mine bottom
-			#   bottom row (row_1): engine, gearbox/transmission, APU/tyres, smoke, troop bay/antifire, EW
+			# ES layout (2026-11-18): weapons block top-left, sensors/EW top-right,
+			# drivetrain bottom-left, protection bottom-right. Cell positions are shared
+			# by every vehicle; a vehicle picks which module sits in which cell by the
+			# order of its module_slots (empty_<cell>_slot fills unused indices).
+			# Max 20 slots; indices past a vehicle's last slot are drawn locked.
+			# Locks only show on indices past a vehicle's last slot, so cells that short lists
+			# leave unused have the highest indices: 19 ATGM, 18 MG (IMV/BRDM: 18 slots), 17 troop
+			# bay (AEV: 17), 16 active defence (SP AA: 16), 15 extra armour, 14 smoke (artillery: 14 slots), 13 turret (MLRS/TOS: 13).
+			#   cols:        0            1                 2         |    4           5                6
+			#   row 0 :  main gun     extra armament     MG          |              electronics      fire control
+			#   row 2 :  turret       autoloader         ATGM/radar  |              active defence   EW
+			#   row 4 :  APU          fire suppression               |  troop bay   extra armour     anti-drone
+			#   row 1 :  engine       gearbox                        |  smoke       DP/ERA           armour
 
-			positionType = {	# T0: main gun
+			positionType = {	# main gun
 				name = "pos_custom_module_slot_window_0"
 				position = { x=@fixed_btn_mod_col_0 y=@fixed_btn_mod_row_0 }
 			}
 
-			positionType = {	# T4: smoke
+			positionType = {	# extra armament (artillery: MG)
 				name = "pos_custom_module_slot_window_1"
-				position = { x=@fixed_btn_mod_col_3 y=@fixed_btn_mod_row_1 }
-			}
-
-			positionType = {	# M1: armour / hull
-				name = "pos_custom_module_slot_window_2"
-				position = { x=@fixed_btn_mod_col_3 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# M5: electronics
-				name = "pos_custom_module_slot_window_3"
-				position = { x=@fixed_btn_mod_col_4 y=@fixed_btn_mod_row_0 }
-			}
-
-			positionType = {	# B0: engine
-				name = "pos_custom_module_slot_window_4"
-				position = { x=@fixed_btn_mod_col_0 y=@fixed_btn_mod_row_1 }
-			}
-
-			positionType = {	# B1: gearbox / transmission
-				name = "pos_custom_module_slot_window_5"
-				position = { x=@fixed_btn_mod_col_1 y=@fixed_btn_mod_row_1 }
-			}
-
-			positionType = {	# B2: APU / tyres
-				name = "pos_custom_module_slot_window_6"
-				position = { x=@fixed_btn_mod_col_2 y=@fixed_btn_mod_row_1 }
-			}
-
-			positionType = {	# M4: autoloader / IMV special
-				name = "pos_custom_module_slot_window_7"
-				position = { x=@fixed_btn_mod_col_1 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# T5: fire control
-				name = "pos_custom_module_slot_window_8"
-				position = { x=@fixed_btn_mod_col_6 y=@fixed_btn_mod_row_0 }
-			}
-
-			positionType = {	# B5: troop bay / antifire
-				name = "pos_custom_module_slot_window_9"
-				position = { x=@fixed_btn_mod_col_4 y=@fixed_btn_mod_row_1 }
-			}
-
-			positionType = {	# T2: machine gun
-				name = "pos_custom_module_slot_window_10"
-				position = { x=@fixed_btn_mod_col_2 y=@fixed_btn_mod_row_0 }
-			}
-
-			positionType = {	# M0: turret
-				name = "pos_custom_module_slot_window_11"
-				position = { x=@fixed_btn_mod_col_0 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# T1: extra armament
-				name = "pos_custom_module_slot_window_12"
 				position = { x=@fixed_btn_mod_col_1 y=@fixed_btn_mod_row_0 }
 			}
 
-			positionType = {	# B3: blowout / mine-protected bottom
-				name = "pos_custom_module_slot_window_13"
-				position = { x=@fixed_btn_mod_col_6 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# B4: active defence / survivability
-				name = "pos_custom_module_slot_window_14"
-				position = { x=@fixed_btn_mod_col_2 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# M2: extra armour
-				name = "pos_custom_module_slot_window_15"
-				position = { x=@fixed_btn_mod_col_4 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# T3: ATGM / radar
-				name = "pos_custom_module_slot_window_16"
-				position = { x=@fixed_btn_mod_col_3 y=@fixed_btn_mod_row_0 }
-			}
-
-			positionType = {	# M3: DP armour
-				name = "pos_custom_module_slot_window_17"
-				position = { x=@fixed_btn_mod_col_5 y=@fixed_btn_mod_row_2 }
-			}
-
-			positionType = {	# T6: panoramic sight
-				name = "pos_custom_module_slot_window_18"
+			positionType = {	# electronics
+				name = "pos_custom_module_slot_window_2"
 				position = { x=@fixed_btn_mod_col_5 y=@fixed_btn_mod_row_0 }
 			}
 
-			positionType = {	# M6: EW
-				name = "pos_custom_module_slot_window_19"
+			positionType = {	# fire control
+				name = "pos_custom_module_slot_window_3"
+				position = { x=@fixed_btn_mod_col_6 y=@fixed_btn_mod_row_0 }
+			}
+
+			positionType = {	# autoloader / IMV special
+				name = "pos_custom_module_slot_window_4"
+				position = { x=@fixed_btn_mod_col_1 y=@fixed_btn_mod_row_2 }
+			}
+
+			positionType = {	# EW
+				name = "pos_custom_module_slot_window_5"
+				position = { x=@fixed_btn_mod_col_6 y=@fixed_btn_mod_row_2 }
+			}
+
+			positionType = {	# APU / tyres
+				name = "pos_custom_module_slot_window_6"
+				position = { x=@fixed_btn_mod_col_0 y=@fixed_btn_mod_row_4 }
+			}
+
+			positionType = {	# fire suppression (IMV: smoke)
+				name = "pos_custom_module_slot_window_7"
+				position = { x=@fixed_btn_mod_col_1 y=@fixed_btn_mod_row_4 }
+			}
+
+			positionType = {	# anti-drone
+				name = "pos_custom_module_slot_window_8"
+				position = { x=@fixed_btn_mod_col_6 y=@fixed_btn_mod_row_4 }
+			}
+
+			positionType = {	# engine
+				name = "pos_custom_module_slot_window_9"
+				position = { x=@fixed_btn_mod_col_0 y=@fixed_btn_mod_row_1 }
+			}
+
+			positionType = {	# gearbox / transmission
+				name = "pos_custom_module_slot_window_10"
+				position = { x=@fixed_btn_mod_col_1 y=@fixed_btn_mod_row_1 }
+			}
+
+			positionType = {	# DP/ERA (artillery: smoke, IMV: mine bottom)
+				name = "pos_custom_module_slot_window_11"
 				position = { x=@fixed_btn_mod_col_5 y=@fixed_btn_mod_row_1 }
+			}
+
+			positionType = {	# armour / hull
+				name = "pos_custom_module_slot_window_12"
+				position = { x=@fixed_btn_mod_col_6 y=@fixed_btn_mod_row_1 }
+			}
+
+			positionType = {	# turret
+				name = "pos_custom_module_slot_window_13"
+				position = { x=@fixed_btn_mod_col_0 y=@fixed_btn_mod_row_2 }
+			}
+
+			positionType = {	# smoke (IMV: survivability)
+				name = "pos_custom_module_slot_window_14"
+				position = { x=@fixed_btn_mod_col_4 y=@fixed_btn_mod_row_1 }
+			}
+
+			positionType = {	# extra armour
+				name = "pos_custom_module_slot_window_15"
+				position = { x=@fixed_btn_mod_col_5 y=@fixed_btn_mod_row_4 }
+			}
+
+			positionType = {	# active defence (IMV/AEV: EW)
+				name = "pos_custom_module_slot_window_16"
+				position = { x=@fixed_btn_mod_col_5 y=@fixed_btn_mod_row_2 }
+			}
+
+			positionType = {	# troop bay
+				name = "pos_custom_module_slot_window_17"
+				position = { x=@fixed_btn_mod_col_4 y=@fixed_btn_mod_row_4 }
+			}
+
+			positionType = {	# machine gun
+				name = "pos_custom_module_slot_window_18"
+				position = { x=@fixed_btn_mod_col_2 y=@fixed_btn_mod_row_0 }
+			}
+
+			positionType = {	# ATGM / radar
+				name = "pos_custom_module_slot_window_19"
+				position = { x=@fixed_btn_mod_col_2 y=@fixed_btn_mod_row_2 }
 			}
 
 
 
+
+			# ES: module group labels in the free cells (localised: ES_designer_l_*.yml)
+
+			instantTextboxType = {
+				name = "es_label_armament"
+				position = { x = 224 y = 14 }
+				font = "hoi_18mbs"
+				maxWidth = 140
+				maxHeight = 20
+				format = left
+				text = "ES_TD_GROUP_ARMAMENT"
+			}
+			instantTextboxType = {
+				name = "es_label_electronics"
+				position = { x = 220 y = 64 }
+				font = "hoi_18mbs"
+				maxWidth = 140
+				maxHeight = 20
+				format = right
+				text = "ES_TD_GROUP_ELECTRONICS"
+			}
+			instantTextboxType = {
+				name = "es_label_protection"
+				position = { x = 147 y = 364 }
+				font = "hoi_18mbs"
+				maxWidth = 140
+				maxHeight = 20
+				format = right
+				text = "ES_TD_GROUP_PROTECTION"
+			}
+			instantTextboxType = {
+				name = "es_label_mobility"
+				position = { x = 151 y = 414 }
+				font = "hoi_18mbs"
+				maxWidth = 140
+				maxHeight = 20
+				format = left
+				text = "ES_TD_GROUP_MOBILITY"
+			}
 
 			######################################################################
 			# Equipment upgrades
@@ -217,7 +262,7 @@ guiTypes = {
 
 			containerWindowType = {
 				name = "equipment_upgrade_0"
-				position = { x = 220 y = 297 }
+				position = { x = 220 y = 397 }
 				size = { width = 130 height = 50 } 
 			
 				buttonType = {
@@ -260,7 +305,7 @@ guiTypes = {
 
 			containerWindowType = {
 				name = "equipment_upgrade_1"
-				position = { x = 380 y = 297 }
+				position = { x = 380 y = 397 }
 				size = { width = 130 height = 50 } 
 
 				buttonType = {
@@ -319,7 +364,7 @@ guiTypes = {
 		
 		ButtonType = {
 			name = "save_to_file_button"
-			position = { x=18 y=380 }
+			position = { x=18 y=430 }
 			quadTextureSprite ="GFX_preset_button_save"
 			buttonFont = "hoi_18mbs"
 			clicksound = "ui_ship_designer_save"
@@ -328,7 +373,7 @@ guiTypes = {
 		
 		ButtonType = {
 			name = "historical_design_button"
-			position = { x=18 y=412 }
+			position = { x=18 y=462 }
 			quadTextureSprite ="GFX_preset_button_open"
 			buttonFont = "hoi_18mbs"
 			#clicksound = "ui_tank_designer_save"
@@ -338,12 +383,12 @@ guiTypes = {
 		iconType = {
 			name = "design_company_icon"
 			spriteType = "GFX_idea_porsche"
-			position = { x = 461 y = 382 }
+			position = { x = 461 y = 432 }
 		}
 
 		buttonType = {
 			name = "upgrade_assigned_industrial_org"
-			position = { x = 425 y = 397 }
+			position = { x = 425 y = 447 }
 			scale = 1.4
 			spriteType = "GFX_prod_line_target_strip"
 			frame = 2
@@ -352,7 +397,7 @@ guiTypes = {
 		buttonType = {
 			name = "design_team_button"
 			spriteType = "GFX_idea_slot_tank_manufacturer"
-			position = { x = 461 y = 382 }
+			position = { x = 461 y = 432 }
 		}
 
 		# right hand side stats
@@ -473,7 +518,7 @@ guiTypes = {
 		containerWindowType = {
 			name = "border_container"
 			position = { x=538 y=263 }
-			size = { width = 524 height = 229 }
+			size = { width = 524 height = 329 }
 			
 			background = {
 				name ="bg_tech_button"
@@ -521,7 +566,7 @@ guiTypes = {
 		containerWindowType = {
 			name = "equipment_select_model"
 			position = { x=538 y=40 }
-			size = { width=567 height=460 }
+			size = { width=567 height=560 }
 			
 			background = {
 				name = "Background"		
@@ -551,7 +596,7 @@ guiTypes = {
 				
 			buttonType = {
 				name = "back_button"
-				position = { x=395 y=412 }
+				position = { x=395 y=512 }
 				size = { x=504 y=22 }
 				font = "hoi_16mbs"				
 				buttontext = "BACK"
@@ -562,7 +607,7 @@ guiTypes = {
 			containerWindowType = {
 				name = "grid_container"
 				position = { x=5 y=235}	
-				size = { width=533 height=176 }
+				size = { width=533 height=276 }
 				verticalScrollbar = "right_vertical_slider"
 				scroll_wheel_factor = 42
 				smooth_scrolling = yes
@@ -588,7 +633,7 @@ guiTypes = {
 		containerWindowType = {
 			name = "equipment_select_sprite"
 			position = { x=538 y=40 }
-			size = { width=567 height=460 }
+			size = { width=567 height=560 }
 			
 			
 			background = {
@@ -599,7 +644,7 @@ guiTypes = {
 
 			buttonType = {
 				name = "back_button"
-				position = { x=395 y=412 }
+				position = { x=395 y=512 }
 				size = { x=504 y=22 }
 				font = "hoi_16mbs"				
 				buttontext = "BACK"
@@ -610,7 +655,7 @@ guiTypes = {
 			containerWindowType = {
 				name = "border_container"
 				position = { x=20 y=20 }
-				size = { width = 495 height = 380 }
+				size = { width = 495 height = 480 }
 				
 				background = {
 					name ="bg_tech_button"
@@ -623,7 +668,7 @@ guiTypes = {
 			containerWindowType = {
 				name = "grid_container"
 				position = { x=65 y=30}	
-				size = { width=430 height=360 }
+				size = { width=430 height=460 }
 				verticalScrollbar = "right_vertical_slider"
 				scroll_wheel_factor = 80
 				smooth_scrolling = yes
@@ -649,7 +694,7 @@ guiTypes = {
 		containerWindowType = {
 			name = "historical_select_design"
 			position = { x=538 y=40 }
-			size = { width=567 height=460 }
+			size = { width=567 height=560 }
 			
 			background = {
 				name = "Background"		
@@ -659,7 +704,7 @@ guiTypes = {
 			
 			ButtonType = {
 				name = "import_preset_button"
-				position = { x=34 y=408 }
+				position = { x=34 y=508 }
 				quadTextureSprite ="GFX_preset_button_import"
 				buttonFont = "hoi_18mbs"
 				clicksound = "ui_ship_designer_save"
@@ -668,7 +713,7 @@ guiTypes = {
 			
 			ButtonType = {
 				name = "export_preset_folder_button"
-				position = { x=2 y=408 }
+				position = { x=2 y=508 }
 				quadTextureSprite ="GFX_preset_button_export"
 				buttonFont = "hoi_18mbs"
 				clicksound = "ui_ship_designer_save"
@@ -677,7 +722,7 @@ guiTypes = {
 
 			buttonType = {
 				name = "back_button"
-				position = { x=395 y=406 }
+				position = { x=395 y=506 }
 				size = { x=504 y=22 }
 				font = "hoi_16mbs"				
 				buttontext = "BACK"
@@ -688,7 +733,7 @@ guiTypes = {
 			containerWindowType = {
 				name = "border_container"
 				position = { x=0 y=20 }
-				size = { width = 530 height = 380 }
+				size = { width = 530 height = 480 }
 				
 				background = {
 					name ="bg_tech_button"
@@ -701,7 +746,7 @@ guiTypes = {
 			containerWindowType = {
 				name = "grid_container"
 				position = { x=154 y=30}	
-				size = { width=370 height=360 }
+				size = { width=370 height=460 }
 				verticalScrollbar = "right_vertical_slider"
 				scroll_wheel_factor = 80
 				smooth_scrolling = yes
@@ -726,7 +771,7 @@ guiTypes = {
 			containerWindowType = {
 				name = "folder_container"
 				position = {x=3 y=28}
-				size = {width=148 height=370}
+				size = {width=148 height=470}
 				verticalScrollbar = "left_vertical_slider"
 				scroll_wheel_factor = 80
 				smooth_scrolling = yes
@@ -794,7 +839,7 @@ guiTypes = {
 
 		ButtonType = {
 			name = "reset_button"
-			position = { x=10 y=521 }	# ES
+			position = { x=10 y=621 }	# ES
 			quadTextureSprite ="GFX_button_reset_123x34"
 			buttonText = "EQUIPMENT_DESIGNER_RESET"
 			pdx_tooltip = "EQUIPMENT_DESIGNER_RESET_DESC"
@@ -804,7 +849,7 @@ guiTypes = {
 
 		ButtonType = {
 			name = "duplicate_button"
-			position = { x=145 y=523 }	# ES
+			position = { x=145 y=623 }	# ES
 			quadTextureSprite ="GFX_designer_button_duplicate_strip"
 			pdx_tooltip = "EQUIPMENT_DESIGNER_DUPLICATE_DESC"
 			clicksound = "ui_tank_designer_duplicate"
@@ -812,21 +857,21 @@ guiTypes = {
 
 		ButtonType = {
 			name = "auto_button"
-			position = { x=175 y=523 }	# ES
+			position = { x=175 y=623 }	# ES
 			quadTextureSprite ="GFX_designer_button_auto_strip"
 			clicksound = "ui_tank_designer_auto"
 		}
 
 		ButtonType = {
 			name = "auto_upgrade_button"
-			position = { x=205 y=523 }	# ES
+			position = { x=205 y=623 }	# ES
 			quadTextureSprite ="GFX_designer_button_upgrade_strip"
 			clicksound = "ui_tank_designer_auto_upgrade"
 		}
 
 		buttonType = {
 			name = "auto_upgraded_checkbox_button"
-			position = { x=240 y =527 }	# ES
+			position = { x=240 y =627 }	# ES
 			quadTextureSprite ="GFX_generic_checkbox3"
 			pdx_tooltip = "EQUIPMENT_DESIGNER_AUTO_UPGRADED_CHECKBOX_BUTTON_DESC"
 			clicksound = click_checkbox
@@ -851,7 +896,7 @@ guiTypes = {
 
 		ButtonType = {
 			name = "save_button"
-			position = { x=400 y=521 }	# ES
+			position = { x=400 y=621 }	# ES
 			quadTextureSprite ="GFX_button_123x34"
 			buttonText = "EQUIPMENT_DESIGNER_SAVE"
 			buttonFont = "hoi_18mbs"
@@ -947,7 +992,7 @@ guiTypes = {
 		# chassi name
 		instantTextboxType = {
 			name = "blueprint_type_name"
-			position = { x = 20 y = 420 }
+			position = { x = 20 y = 470 }
 			font = "hoi_18mbs"
 			maxWidth = 500
 			maxHeight = 16
@@ -1049,14 +1094,14 @@ guiTypes = {
 		
 		iconType = {
 			name = "resources_bg"
-			position = { x = 540 y = 500 }
+			position = { x = 540 y = 600 }
 			SpriteType = "GFX_ES_tank_resources_bg_tall"	# ES: 3 lines of resources
 			alwaystransparent = yes
 		}
 
 		instantTextboxType = {
 			name = "production_resources"
-			position = { x= 543 y= 503 }	# ES: fills the inside of the resource box
+			position = { x= 543 y= 603 }	# ES: fills the inside of the resource box
 			font = "hoi_18mbs"
 			maxWidth = 91
 			maxHeight = 68	# ES: was 25 (one line); 6 resources need 3 lines
@@ -1068,7 +1113,7 @@ guiTypes = {
 
 		instantTextboxType = {
 			name = "refit_cost"
-			position = { x= 650 y=529 }	# ES
+			position = { x= 650 y=629 }	# ES
 			font = "hoi_18mbs"
 			maxWidth = 200
 			maxHeight = 25
@@ -1078,7 +1123,7 @@ guiTypes = {
 
 		instantTextboxType = {
 			name = "production_value"
-			position = { x= 850 y=529 }	# ES
+			position = { x= 850 y=629 }	# ES
 			font = "hoi_18mbs"
 			maxWidth = 210
 			maxHeight = 25
@@ -1090,7 +1135,7 @@ guiTypes = {
 		containerWindowType = {
 			name = "module_selector_window"
 			position = { x=2 y=40 }
-			size = { width=538 height=464 }
+			size = { width=538 height=564 }
 			verticalScrollbar = "right_vertical_slider"
 			scroll_wheel_factor = 40
 			smooth_scrolling = yes
@@ -1148,7 +1193,7 @@ guiTypes = {
 		
 		containerWindowType = {
 			name = "designer_intel_container"
-			size = { width = 317 height = 540 }
+			size = { width = 317 height = 640 }
 			position = { x = 1088 y = 2 }
 			clipping = no
 			
@@ -1236,7 +1281,7 @@ guiTypes = {
 			
 			containerWindowType = {
 				name = "gridbox_container"
-				size = { width = 256 height = 444 }
+				size = { width = 256 height = 544 }
 				position = { x = 0 y = 84 }
 				clipping = yes 
 				#moveable = no
@@ -1266,7 +1311,7 @@ guiTypes = {
 			
 			containerWindowType = {
 				name = "country_filter_container"
-				size = { width = 70 height = 509 }
+				size = { width = 70 height = 609 }
 				position = { x = 247 y = 16 }
 				clipping = yes
 				#moveable = no
