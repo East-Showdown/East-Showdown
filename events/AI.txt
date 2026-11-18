@@ -12,7 +12,6 @@ country_event = {
 	fire_only_once = yes
 	
 	immediate = {
-		name = ai_technical.1.a
 		set_global_flag = RUS_STOP_RUS_more_army_crimea_kherson_strategy
 		set_global_flag = RUS_STOP_leave_north_after_failure_strategy
 		log = "[GetDateText]: [This.GetName]: ai_technical.1.a executed"
@@ -31,7 +30,6 @@ country_event = {
 	fire_only_once = yes
 	
 	immediate = {
-		name = ai_technical.2.a
 		set_global_flag = RUS_STOP_RUS_border_and_rbz_no_garrisons_strategy
 		log = "[GetDateText]: [This.GetName]: ai_technical.2.a executed"
 	}
@@ -51,17 +49,29 @@ country_event = {
 	fire_only_once = yes
 
 	immediate = {
-		set_autonomy = {
-			target = DPR
-			autonomous_state = autonomy_puppet_of_russia
-			end_wars = no
-			end_civil_wars = no
+		if = {
+			limit = {
+				DPR = { exists = yes has_country_flag = ES_ai_restore_russian_subject }
+			}
+			set_autonomy = {
+				target = DPR
+				autonomous_state = autonomy_puppet_of_russia
+				end_wars = no
+				end_civil_wars = no
+			}
+			DPR = { clr_country_flag = ES_ai_restore_russian_subject }
 		}
-		set_autonomy = {
-			target = LPR
-			autonomous_state = autonomy_puppet_of_russia
-			end_wars = no
-			end_civil_wars = no
+		if = {
+			limit = {
+				LPR = { exists = yes has_country_flag = ES_ai_restore_russian_subject }
+			}
+			set_autonomy = {
+				target = LPR
+				autonomous_state = autonomy_puppet_of_russia
+				end_wars = no
+				end_civil_wars = no
+			}
+			LPR = { clr_country_flag = ES_ai_restore_russian_subject }
 		}
 		log = "[GetDateText]: [This.GetName]: ai_technical.3 restored DPR/LPR Russian subject status"
 	}

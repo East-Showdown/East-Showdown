@@ -2,7 +2,7 @@ ES_UKR_initialize_ai_autoplan = {
 	if = {
 		limit = {
 			is_ai = yes
-			has_start_date = 2022.09.06
+			ES_is_september_2022_start = yes
 			date < 2022.09.07
 			NOT = { has_country_flag = UKR_ai_autumn_bookmark_initialized }
 			NOT = { has_idea = UKR_autumn_storm_spirit }
@@ -36,7 +36,6 @@ ES_RUS_update_ai_autoplan = {
 		limit = {
 			is_ai = yes
 			has_war_with = UKR
-			NOT = { ES_RUS_january_2022_autoplan = yes }
 			date < 2023.10.01
 			OR = {
 				has_idea = RUS_disruption_of_the_operation_3_singleplayer
@@ -63,13 +62,23 @@ ES_UKR_update_ai_autoplan = {
 	if = {
 		limit = { original_tag = UKR is_ai = yes }
 		if = {
+			limit = { NOT = { has_idea = ES_UKR_ai_political_power_support } }
+			add_ideas = ES_UKR_ai_political_power_support
+		}
+		if = {
 			limit = { NOT = { has_idea = ES_UKR_ai_special_forces_support } }
 			add_ideas = ES_UKR_ai_special_forces_support
 		}
 	}
 	else_if = {
-		limit = { has_idea = ES_UKR_ai_special_forces_support }
+		limit = {
+			OR = {
+				has_idea = ES_UKR_ai_special_forces_support
+				has_idea = ES_UKR_ai_political_power_support
+			}
+		}
 		remove_ideas = ES_UKR_ai_special_forces_support
+		remove_ideas = ES_UKR_ai_political_power_support
 	}
 	if = {
 		limit = {
@@ -171,7 +180,13 @@ ES_ai_weekly_autoplan_ammunition = {
 				}
 			}
 			hidden_effect = {
-				add_to_variable = { ammunition_value_k = 500 }
+				if = {
+					limit = { original_tag = UKR }
+					add_to_variable = { ammunition_value_k = 250 }
+				}
+				else = {
+					add_to_variable = { ammunition_value_k = 500 }
+				}
 				ammunition_calculate_storage = yes
 				ammunition_update_display = yes
 			}
