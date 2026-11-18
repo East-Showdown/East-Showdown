@@ -311,6 +311,7 @@ MODULE_RULES = [
     {"name": ["*_antidrone_cage"], "ic": "module", "ic_multiplier": 0.4, "supply": "vehicle"},
     {"name": ["*_antidrone_screen"], "ic": "module", "ic_multiplier": 0.7, "supply": "vehicle"},
     {"name": ["*_antidrone_turtle"], "ic": "module", "ic_multiplier": 0.5, "supply": "vehicle"},
+    {"name": ["*_antidrone_netting"], "ic": "module", "ic_multiplier": 0.5, "supply": "vehicle"},  # camouflage/anti-drone nets: cheapest drone protection, below cage
     {"name": ["*_addarm_applique"], "ic": "module", "ic_multiplier": 3, "supply": "vehicle"},
     {"name": ["*_addarm_combined"], "ic": "module", "ic_multiplier": 1.5, "supply": "vehicle"},
     # armoured engineer vehicle kits: keep engineering kits at 2-5 IC whatever stat they give
