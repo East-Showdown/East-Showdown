@@ -1,3 +1,9 @@
+# AI equipment and production
+
+# ============================================================================
+# Preferred equipment variants
+# ============================================================================
+
 ES_update_ai_preferred_equipment = {
 	if = {
 		limit = { is_ai = yes OR = { original_tag = RUS original_tag = UKR } }
@@ -912,5 +918,53 @@ ES_update_ai_preferred_equipment = {
 			}
 			set_country_flag = ES_UKR_production_imv_custom_created
 		}
+	}
+}
+
+# ============================================================================
+# Russian starting IMV production
+# ============================================================================
+
+ES_RUS_initialize_starting_imv_production = {
+	if = {
+		limit = {
+			original_tag = RUS
+			has_country_flag = ES_RUS_starting_imv_line_pending
+			NOT = { has_country_flag = ES_RUS_starting_imv_line_initialized }
+		}
+		ES_update_ai_preferred_equipment = yes
+		if = {
+			limit = {
+				is_ai = yes
+				OR = {
+					has_country_flag = ES_RUS_production_imv_custom_created
+					has_country_flag = ES_RUS_production_imv_custom_base_created
+				}
+			}
+			add_equipment_production = {
+				equipment = {
+					type = imv_medium_1_equipment
+					creator = "RUS"
+					version_name = "Тигр"
+				}
+				requested_factories = 10
+				progress = 0.6
+				efficiency = 50
+			}
+		}
+		else = {
+			add_equipment_production = {
+				equipment = {
+					type = imv_medium_1_equipment
+					creator = "RUS"
+					version_name = "\"Тигр\" с модулем \"Арбалет\""
+				}
+				requested_factories = 10
+				progress = 0.6
+				efficiency = 50
+			}
+		}
+		set_country_flag = ES_RUS_starting_imv_line_initialized
+		clr_country_flag = ES_RUS_starting_imv_line_pending
 	}
 }
