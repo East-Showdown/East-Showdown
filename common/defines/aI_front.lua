@@ -40,7 +40,7 @@ NDefines.NAI.MIN_MANPOWER_TO_BUILD_UNITS = 0.9	--default 0.7				-- Cancel unit p
 NDefines.NMilitary.PLAN_SPREAD_ATTACK_WEIGHT = 300 -- 1.0 -- (was 12.0)	-- The higher the value, the less it should crowd provinces with multiple attacks.		#WICHTIG
 NDefines.NMilitary.PLAN_MIN_AUTOMATED_EMPTY_POCKET_SIZE = 20		-- (was 2) -- The battle plan system will only automatically attack provinces in pockets that has no resistance and are no bigger than these many provinces
 
-NDefines.NMilitary.FRONTLINE_EXPANSION_FACTOR = 0.0 -- #MOD was 0.0 remove if problematic -- was 0.6,				-- When attacking along a frontline, how much should units spread out as they advance. 0.0 means head (more or less) directly to the drawn frontline, with no distractions
+NDefines.NMilitary.FRONTLINE_EXPANSION_FACTOR = 0.3 -- #MOD was 0.0 remove if problematic -- was 0.6,				-- When attacking along a frontline, how much should units spread out as they advance. 0.0 means head (more or less) directly to the drawn frontline, with no distractions
 
 NDefines.NAI.MAIN_ENEMY_FRONT_IMPORTANCE = 20.0			-- How much extra focus the AI should put on who it considers to be its current main enemy.
 NDefines.NAI.EASY_TARGET_FRONT_IMPORTANCE = 7.5 --MOD was 10.0			-- How much extra focus the AI should put on who it considers to be the easiest target.
@@ -132,6 +132,38 @@ NDefines.NAI.COMMAND_POWER_BEFORE_SPEND_ON_TRAITS = 65.0
 --------------------------------------------------------------------------------------------------------------
 -- LAND AI
 --------------------------------------------------------------------------------------------------------------
+
+NDefines.NAI.MAX_DEPLOYED_ARMY_HQS = 20 -- vanilla 5; maximum number of Army HQs the AI may have deployed at once
+NDefines.NAI.AIFC_UPDATE_FREQUENCY_DAYS = 5 -- vanilla 5; frequency of AIFC decision updates; lower values cost more performance
+NDefines.NAI.AIFC_FRESHNESS_BASE_VALUE = 20.0 -- Начальная актуальность плана AIFC; при истощении движок пересматривает цель (ваниль: 45).
+NDefines.NAI.AIFC_REFRESH_NEED_PER_DAY = 1.0 -- vanilla 1.0; daily AIFC freshness decay
+NDefines.NAI.AIFC_REFRESH_NEED_SUPPLY_FACTOR_PER_DAY = 2.0 -- vanilla 0.8; supply-related daily AIFC freshness decay
+NDefines.NAI.AIFC_FRESHNESS_ADD_ON_PROGRESS = 25.0 -- vanilla 25.0; freshness restored when AIFC advances along its target path
+NDefines.NAI.AIFC_ACTIVATE_AVG_ORG_RATIO_THRESHOLD = 0.5 -- vanilla 0.2; minimum average organisation ratio before AIFC activates its offensive order
+NDefines.NAI.AIFC_ACTIVATE_IN_POSITION_RATIO_THRESHOLD = 0.7 -- vanilla 0.3; minimum ratio of AIFC divisions in position before activating the offensive order
+NDefines.NAI.AIFC_OFFENSIVE_DEACTIVATION_DAYS_THRESHOLD = 3 -- vanilla 5; days of unmet conditions before AIFC deactivates its offensive order
+NDefines.NAI.AIFC_UNIT_NUDGE_FREQUENCY_DAYS = 15 -- vanilla 15; average interval for replacing an AIFC division with a higher-scoring unit on the same front
+
+
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_BREAKTHROUGH = 30.0 -- Вес прорыва: ванильные 11 плюс 19, перенесённые с противопехотной атаки.
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_SOFT_ATTACK = 6.0 -- Ванильный вес противопехотной атаки; прибавка перенесена на прорыв.
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_HARD_ATTACK = 8.0 -- vanilla 8.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_ARMOR = 15.0 -- vanilla 30.0; reduced tank armour contribution
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_PIERCING = 4.0 -- vanilla 4.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_HARDNESS = 100.0 -- vanilla 300.0; reduced tank hardness contribution
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_SPEED = 10.0 -- vanilla 15.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_INITIATIVE = 5.0 -- vanilla 5.0
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_ORGANISATION = 0.3 -- vanilla 0.3
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_HITPOINTS = 0.3 -- vanilla 0.3
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_DEFENSE = -0.2 -- vanilla -0.2
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_ENTRENCHMENT = -0.5 -- vanilla -0.5
+NDefines.NAI.AIFC_UNIT_OFFENSIVE_SCORE_FACTOR_EXPERIENCE = 300.0 -- vanilla 300.0
+
+NDefines.NAI.AIFC_TARGET_SUPPLY_HUB_BASE_SCORE = 35.0 -- vanilla 20.0; base target score assigned to enemy supply hubs
+NDefines.NAI.AIFC_PATH_MAX_COST = 6.0 -- Максимальная стоимость пути AIFC: сокращает глубину допустимых целей (ваниль: 7).
+NDefines.NAI.AIFC_PATH_COST_HAS_SUPPLY_HUB = 0.35 -- Стоимость входа в провинцию с узлом снабжения (ваниль: 0.5).
+NDefines.NAI.AIFC_PATH_COST_RAILWAY_CONNECTION = 0.5 -- Стоимость перехода по железной дороге (ваниль: 0.75).
+NDefines.NAITheatre.AI_THEATRE_SUPPLY_CRISIS_LIMIT = 0.6 
 
 NDefines.NAI.MIN_AI_UNITS_PER_TILE_FOR_STANDARD_COHESION = 2.0	-- How many units should we have for each tile along a front in order to switch to standard cohesion (less moving around)
 NDefines.NAI.MIN_FRONT_SIZE_TO_CONSIDER_STANDARD_COHESION = 2000	-- How long should fronts be before we consider switching to standard cohesion (under this, standard cohesion fronts will switch back to relaxed)
@@ -432,7 +464,7 @@ NDefines.NAI.DIPLOMACY_ACCEPT_ATTACHE_OPINION_TRASHHOLD = 0
 	
 	NDefines.NAI.MAX_MICRO_ATTACKS_PER_ORDER = 8					-- affects performance; AI goes through its orders and checks if there are situations to take advantage of
 
-	NDefines.NAI.FRONT_EVAL_UNIT_SUPPLY_AND_ORG_LACK_IMPACT = 0.2			-- scale how painful the AI thinks a combined lack of supply and organization is for units
+	NDefines.NAI.FRONT_EVAL_UNIT_SUPPLY_AND_ORG_LACK_IMPACT = 10			-- scale how painful the AI thinks a combined lack of supply and organization is for units
 
 
 	NDefines.NAI.AGGRESSIVENESS_CHECK_BASE = 2.0                            -- front comparison where ai will consider aggressive stance, unless it is already then the number above is used

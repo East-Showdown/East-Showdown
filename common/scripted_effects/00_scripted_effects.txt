@@ -3778,9 +3778,10 @@ RUS_retreat_from_sumy_effect = {
 
 UKR_Volunteer_movement_scripted_effects = {
     #Находим множитель для количества снаряжения от общего количества очков
-	set_temp_variable = { UKR_volunteerACT_divider = UKR_volunteerACT }
-	divide_temp_variable = { UKR_volunteerACT_divider = 100 }
-	set_variable = { UKR_multiplier_volunteer_movement_var = UKR_volunteerACT_divider }
+	# Shared activity limit: preserve late-scenario starts while bounding every collection.
+	clamp_variable = { var = UKR_volunteerACT min = 0 max = 400 }
+	set_variable = { UKR_multiplier_volunteer_movement_var = UKR_volunteerACT }
+	divide_variable = { UKR_multiplier_volunteer_movement_var = 100 }
 	
 	#Устанавливаем количество снаряжения по умолчанию
 	set_variable = { UKR_volunteer_movement_infantry_weapons_d_var = 500 }
@@ -3826,9 +3827,8 @@ UKR_Volunteer_movement_scripted_effects = {
 	round_variable = UKR_volunteer_movement_motorized_equipment_1_d_var
 	
 	#Переменная боеприпасов для локи
-	set_temp_variable = { UKR_volunteer_movement_ammunition_d_divider_var = UKR_volunteer_movement_ammunition_d_var }
-	multiply_variable = { UKR_volunteer_movement_ammunition_d_divider_var = 10 }
-	set_variable = { UKR_volunteer_movement_ammunition_d_var_for_loc = UKR_volunteer_movement_ammunition_d_divider_var }
+	# ammunition_value_k and its tooltip both use thousands of rounds.
+	set_variable = { UKR_volunteer_movement_ammunition_d_var_for_loc = UKR_volunteer_movement_ammunition_d_var }
 }
 
 UKR_economy_status_scripted_effects = {

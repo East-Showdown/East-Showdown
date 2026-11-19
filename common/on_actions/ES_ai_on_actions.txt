@@ -1,6 +1,18 @@
 on_actions = {
     on_startup = {
         effect = {
+            RUS = {
+                ES_RUS_update_ai_autoplan = yes
+                ES_RUS_initialize_starting_imv_production = yes
+            }
+            UKR = {
+                ES_UKR_initialize_ai_autoplan = yes
+                if = {
+                    limit = { has_war_with = RUS }
+                    ES_UKR_initialize_eastern_fortified_region = yes
+                }
+                ES_UKR_update_ai_autoplan = yes
+            }
             if = { 
                 limit = { 
                     UKR = { 
@@ -16,7 +28,7 @@ on_actions = {
             }
             if = {
                 limit = { 
-                    has_start_date = 2022.04.15
+                    ES_is_april_2022_start = yes
                     RUS = { 
                         is_ai = yes
                     }
@@ -31,6 +43,16 @@ on_actions = {
                     is_ai = yes
                 }
                 add_ideas = ai_fix
+            }
+
+            RUS = {
+                if = {
+                    limit = {
+                        original_tag = RUS
+                        is_ai = yes
+                    }
+                    add_ideas = RUS_ai_supply_range
+                }
             }
 
             if = {
@@ -61,7 +83,20 @@ on_actions = {
                         transfer_troops = yes
                     }                   
                     release_puppet_on_controlled = DPR
+
+                    # Diagnostic: DPR remains in CSTO, but must be a direct
+                    # faction member rather than a Russian subject. This lets
+                    # us test whether the subject relation suppresses UKR's
+                    # peacetime DPR frontline generation.
+                    set_autonomy = {
+                        target = DPR
+                        autonomous_state = autonomy_free
+                        end_wars = no
+                        end_civil_wars = no
+                    }
+                    add_to_faction = DPR
                 }
+                DPR = { set_country_flag = ES_ai_restore_russian_subject }
 
             }
 
@@ -82,8 +117,36 @@ on_actions = {
                         transfer_troops = yes
                     }                   
                     release_puppet_on_controlled = LPR
-                }
 
+                    # See the equivalent DPR diagnostic above.
+                    set_autonomy = {
+                        target = LPR
+                        autonomous_state = autonomy_free
+                        end_wars = no
+                        end_civil_wars = no
+                    }
+                    add_to_faction = LPR
+                }
+                LPR = { set_country_flag = ES_ai_restore_russian_subject }
+
+            }
+
+            # Let UKR AI form its pre-war frontier while DPR/LPR are direct
+            # CSTO members, then restore their normal Russian subject status.
+            if = {
+                limit = {
+                    RUS = { is_ai = yes }
+                    OR = {
+                        DPR = { has_country_flag = ES_ai_restore_russian_subject }
+                        LPR = { has_country_flag = ES_ai_restore_russian_subject }
+                    }
+                }
+                RUS = {
+                    country_event = {
+                        id = ai_technical.3
+                        days = 1
+                    }
+                }
             }
 
 
@@ -95,8 +158,46 @@ on_actions = {
 
 
 
+    on_declare_war = {
+        effect = {
+            if = {
+                limit = {
+                    OR = {
+                        AND = { tag = RUS FROM = { tag = UKR } }
+                        AND = { tag = UKR FROM = { tag = RUS } }
+                    }
+                }
+                RUS = { ES_RUS_update_ai_autoplan = yes }
+                UKR = {
+                    if = {
+                        limit = {
+                            ES_is_january_2022_start = yes
+                            NOT = { has_country_flag = ES_UKR_south_avoidance_war_started }
+                        }
+                        set_country_flag = ES_UKR_south_avoidance_war_started
+                    }
+                    if = {
+                        limit = { is_ai = yes ES_is_january_2022_start = yes }
+                        set_country_flag = ES_UKR_ai_tro_war_started
+                    }
+                    ES_UKR_update_ai_autoplan = yes
+                    ES_UKR_initialize_eastern_fortified_region = yes
+                }
+            }
+        }
+    }
+
 	on_weekly_RUS = {
 		effect = {	
+			ES_ai_weekly_autoplan_ammunition = yes
+			if = {
+				limit = {
+					original_tag = RUS
+					is_ai = yes
+					NOT = { has_idea = RUS_ai_supply_range }
+				}
+				add_ideas = RUS_ai_supply_range
+			}
 			set_temp_variable = { temp_manpower_k = manpower_k }
 			if = {
 				limit = { 
@@ -122,6 +223,7 @@ on_actions = {
     on_weekly_UKR = {
         effect = {
         UKR = {
+			ES_ai_weekly_autoplan_ammunition = yes
 			UKR_calculate_ai_exclusive_equipment_pool = yes
 		}
       }
@@ -139,14 +241,29 @@ on_actions = {
 		}
 	}
 
+    on_daily_UKR = {
+        effect = {
+            ES_UKR_update_ai_autoplan = yes
+        }
+    }
+
     on_daily_RUS = {
         effect = {
+            ES_RUS_update_ai_autoplan = yes
+			if = {
+				limit = {
+					is_ai = no
+					has_idea = RUS_ai_supply_range
+				}
+				remove_ideas = RUS_ai_supply_range
+			}
             if = { 
                 limit = {
                     NOT = {
                         check_variable = { global.dnipro_obj_current_hp^21 = 0 }
                     }
                     is_ai = yes
+                    NOT = { ES_is_september_2022_start = yes }
                     has_war_with = UKR
                     RUS = { 
                         controls_province = 18396
@@ -163,6 +280,7 @@ on_actions = {
                         check_variable = { global.dnipro_obj_current_hp^22 = 0 }
                     }                    
                     is_ai = yes
+                    NOT = { ES_is_september_2022_start = yes }
                     has_war_with = UKR
                     RUS = { 
                         controls_province = 16450
@@ -179,6 +297,7 @@ on_actions = {
                         check_variable = { global.dnipro_obj_current_hp^23 = 0 }
                     }                    
                     is_ai = yes
+                    NOT = { ES_is_september_2022_start = yes }
                     has_war_with = UKR
                     RUS = { 
                         controls_province = 5568
