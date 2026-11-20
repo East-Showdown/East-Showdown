@@ -1,0 +1,107 @@
+ES_ai_pause_general_battleplans = {
+	allowed = {
+		OR = {
+			original_tag = RUS
+			original_tag = UKR
+		}
+	}
+	enable = {
+		is_ai = yes
+		has_idea = ES_ai_autoplan_paused
+		OR = {
+			AND = { original_tag = RUS has_war_with = UKR }
+			AND = { original_tag = UKR has_war_with = RUS }
+		}
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_control
+		country_trigger = { has_war_with = FROM }
+		ordertype = front
+		priority = 2000
+		execute_order = no
+		manual_attack = no
+	}
+}
+
+ES_ai_execute_general_battleplans_careful = {
+	allowed = {
+		OR = {
+			original_tag = RUS
+			original_tag = UKR
+		}
+	}
+	enable = {
+		is_ai = yes
+		NOT = { has_idea = ES_ai_autoplan_paused }
+		OR = {
+			AND = {
+				original_tag = RUS
+				has_war_with = UKR
+				OR = {
+					AND = { ES_RUS_january_2022_autoplan = yes ES_RUS_post_mobilization_autoplan = yes }
+					AND = { NOT = { ES_RUS_january_2022_autoplan = yes } UKR = { is_ai = yes } }
+				}
+			}
+			AND = { original_tag = UKR has_war_with = RUS NOT = { ES_UKR_early_balanced_autoplan_window = yes } RUS = { is_ai = yes } }
+		}
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_control
+		country_trigger = { has_war_with = FROM }
+		ordertype = front
+		priority = 2000
+		execution_type = careful
+		execute_order = yes
+		manual_attack = yes
+	}
+}
+
+ES_ai_execute_general_battleplans_balanced = {
+	allowed = {
+		OR = {
+			original_tag = RUS
+			original_tag = UKR
+		}
+	}
+	enable = {
+		is_ai = yes
+		NOT = { has_idea = ES_ai_autoplan_paused }
+		OR = {
+			AND = { original_tag = RUS has_war_with = UKR NOT = { ES_RUS_january_2022_autoplan = yes } UKR = { is_ai = no } }
+			AND = { original_tag = UKR has_war_with = RUS OR = { ES_UKR_early_balanced_autoplan_window = yes RUS = { is_ai = no } } }
+		}
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_control
+		country_trigger = { has_war_with = FROM }
+		ordertype = front
+		priority = 2000
+		execution_type = balanced
+		execute_order = yes
+		manual_attack = yes
+	}
+}
+
+ES_RUS_execute_january_2022_battleplans_aggressive = {
+	allowed = { original_tag = RUS }
+	enable = {
+		is_ai = yes
+		has_war_with = UKR
+		ES_RUS_january_2022_autoplan = yes
+		NOT = { ES_RUS_post_mobilization_autoplan = yes }
+		NOT = { has_idea = ES_ai_autoplan_paused }
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_control
+		country_trigger = { has_war_with = FROM }
+		ordertype = front
+		priority = 2000
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+	}
+}

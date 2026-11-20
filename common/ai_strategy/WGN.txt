@@ -75,61 +75,93 @@ WGN_border_setup = {
 }
 
 
-#########################################
-# 1) Общая логика: война на Донбассе
-#########################################
-# Простой вариант: пока WGN в войне с УКР -> дави Донбасс (Донецк=31, Луганск=63)
-# Это большой «фронтовой» блок, чтобы проверять, идёт ли война, а остальное уточнять.
-
 WGN_donbass_front = {
-	allowed = {
-		original_tag = WGN
-	}
-	enable = {
-		count_triggers = {
-			amount = 1
-			has_war_with = UKR
-			has_start_date > 2022.04.14
-		}
-	}
-	abort = {
-		OR = {
-			NOT = { has_war_with = UKR }
-		}
-	}
-
-
-
+	allowed = { original_tag = WGN }
+	enable = { is_ai = yes has_war_with = UKR }
+	abort_when_not_enabled = yes
 	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 118
-		value = 1500
-	}
-	ai_strategy = {
-		type = front_unit_request
-		strategic_region = 119  # Луганск
-		value = 1500
-	}
-
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 118
-		ordertype = front
-		execution_type = rush_weak
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
-	}
-	ai_strategy = {
-		type = front_control
-		tag = UKR
-		strategic_region = 119
-		ordertype = front
-		execution_type = rush_weak
-		execute_order = yes
-		manual_attack = yes
-		priority = 9999
+		type = force_concentration_factor
+		value = 75
 	}
 }
 
+WGN_strike_group_stage_1 = {
+	allowed = { original_tag = WGN }
+	enable = {
+		is_ai = yes
+		has_war_with = UKR
+		165 = { is_controlled_by = UKR }
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_unit_request
+		state = 165
+		value = 300
+	}
+	ai_strategy = {
+		type = force_concentration_front_factor
+		state = 165
+		ratio = 0.0
+		value = 100000
+	}
+	ai_strategy = {
+		type = force_concentration_target_weight
+		state = 165
+		value = 100000
+	}
+}
+
+WGN_strike_group_stage_2 = {
+	allowed = { original_tag = WGN }
+	enable = {
+		is_ai = yes
+		has_war_with = UKR
+		165 = { NOT = { is_controlled_by = UKR } }
+		981 = { is_controlled_by = UKR }
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_unit_request
+		state = 981
+		value = 300
+	}
+	ai_strategy = {
+		type = force_concentration_front_factor
+		state = 981
+		ratio = 0.0
+		value = 100000
+	}
+	ai_strategy = {
+		type = force_concentration_target_weight
+		state = 981
+		value = 100000
+	}
+}
+
+WGN_strike_group_stage_3 = {
+	allowed = { original_tag = WGN }
+	enable = {
+		is_ai = yes
+		has_war_with = UKR
+		165 = { NOT = { is_controlled_by = UKR } }
+		981 = { NOT = { is_controlled_by = UKR } }
+		911 = { is_controlled_by = UKR }
+	}
+	abort_when_not_enabled = yes
+	ai_strategy = {
+		type = front_unit_request
+		state = 911
+		value = 300
+	}
+	ai_strategy = {
+		type = force_concentration_front_factor
+		state = 911
+		ratio = 0.0
+		value = 100000
+	}
+	ai_strategy = {
+		type = force_concentration_target_weight
+		state = 911
+		value = 100000
+	}
+}

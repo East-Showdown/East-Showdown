@@ -89,7 +89,20 @@ An AI country is always automated. The player turns automation on and off with a
 The automation level is computed daily for every country and stored in `ammunition_level_auto`.
 It is copied to `ammunition_level` only for the AI and when automation is on.
 
-Rule:
+**AI:** uses ready ammunition (`ammunition_value_k`), excluding stock awaiting recovery.
+At or above `ai_stock_threshold_k = 500` thousand, it selects the current legal maximum `cap`.
+Below the threshold, the target follows a continuous stock-dependent curve:
+
+`r = clamp(stock / 500, 0, 1)`; `floor = min(ai_level_min, cap)`; `level = floor + (cap - floor) * r`.
+
+For a 125% cap: 500k → 125%, 250k → 72.5%, 100k → 41%, empty stock → a 20% target.
+This follows remaining stock rather than a daily step-down timer. Recovery raises the level using the same curve.
+Daily income and demand no longer cause AI conservation above the threshold. AI ignores `ammunition_level_target`;
+`ammunition_level_cap` still controls the maximum. Russia's General Staff limitation remains: 1.25 minus 0.75 gives a 50% cap.
+Actual coverage can fall below the selected target if stock plus daily income cannot cover consumption.
+The national spirit still rounds actual coverage to 5% increments.
+
+**Player automation:** retains the previous days-of-stock rule:
 
 1. `need_ref` - need at level 1. If it is 0 (no combat), the defensive consumption of all the country's consuming
    sub-units is used.
@@ -99,7 +112,7 @@ Rule:
 4. The modifier `ammunition_level_target` is added.
 5. The result is clamped to `[level_min; cap]`.
 
-With default settings: stock for less than 120 days lowers the level; more than 365 days raises it;
+With default settings: stock for less than 30 days lowers the level; more than 200 days raises it;
 in between it is 100 %. If `need_ref` is 0, the automation level is 1 + `ammunition_level_target`.
 
 ### Storage
@@ -137,9 +150,10 @@ Block `ammunition`. Script reads a constant as `constant:ammunition.<name>`.
 | `level_min` | lower bound of the level | share | 0 |
 | `level_max_base` | level cap without modifiers | share | 1.25 |
 | `level_max_abs` | absolute level maximum and end of the curves | share | 2 |
-| `ai_days_low` | below this stock automation lowers the level | days | 120 |
-| `ai_days_high` | above this stock automation raises the level | days | 365 |
-| `ai_level_min` | lower bound of the automation level before `ammunition_level_target` | share | 0.2 |
+| `ai_days_low` | below this stock player automation lowers the level | days | 30 |
+| `ai_days_high` | above this stock player automation raises the level | days | 200 |
+| `ai_level_min` | AI target at empty stock, bounded by cap; previous player automation minimum | share | 0.2 |
+| `ai_stock_threshold_k` | ready stock at which AI selects the legal maximum | thousand rounds | 500 |
 | `field_storage_days` | field depot capacity | days of consumption | 7 |
 | `recovery_efficiency_base` | units recovered per unit of capacity | multiplier | 2 |
 | `produce_share_start` | starting share of capacity for production | share | 0.7 |
@@ -195,7 +209,7 @@ They work in any country modifier block: idea, dynamic modifier, advisor and so 
 | Modifier | Effect | Unit |
 | --- | --- | --- |
 | `ammunition_level_cap` | shifts the level cap `cap` | level share: 0.25 = +25 % |
-| `ammunition_level_target` | added to the automation and AI level; no effect on a manual level | level share |
+| `ammunition_level_target` | added to player automation; no effect on AI or a manual level | level share |
 | `ammunition_consumption_offensive_factor` | attack consumption · (1 + x), floored at 0 | share |
 | `ammunition_consumption_defensive_factor` | defence consumption · (1 + x), floored at 0 | share |
 | `daily_ammunition_gain` | nominal plant capacity | units per day (not thousands) |
@@ -221,8 +235,8 @@ Both effects take their input from the temporary variable `temp_delta` (level sh
 
 `ammunition_raise_level` - for events. For a player on manual control it refreshes dynamic modifiers,
 adds `temp_delta` to the level and clamps it to the cap. So the cap from a modifier added by the same event
-applies at once. Under automation and for the AI it does nothing: there `ammunition_level_target` shifts the level.
-An event that changes the level should also set a target modifier.
+applies at once. Under automation and for the AI it does nothing. Player automation uses
+`ammunition_level_target`; AI uses stock and the maximum set by `ammunition_level_cap`.
 
 `ammunition_change_level` - adds `temp_delta` and clamps the level. It has no checks; the window buttons call it.
 Under automation and for the AI the next day overwrites the level.

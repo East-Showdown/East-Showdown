@@ -1,0 +1,146 @@
+###########################################################################
+# ES focus queue - queue panel and open button (hand-written).
+# Tree overlay buttons are generated into es_focus_queue_tree_generated.txt.
+###########################################################################
+scripted_gui = {
+	es_fq_open_gui = {
+		context_type = national_focus_context
+		window_name = es_fq_open_window
+		parent_window_name = nationalfocusview
+		dirty = es_fq_ui_revision
+
+		ai_enabled = { always = no }
+
+		visible = {
+			is_ai = no
+			tag = ROOT
+			es_fq_supported = yes
+		}
+
+		effects = {
+			es_fq_open_click = {
+				if = {
+					limit = { has_country_flag = es_fq_open }
+					clr_country_flag = es_fq_open
+					clr_country_flag = es_fq_moving
+				}
+				else = {
+					es_fq_reindex = yes
+					set_country_flag = es_fq_open
+				}
+				add_to_variable = { es_fq_ui_revision = 1 }
+			}
+		}
+	}
+
+	es_fq_panel_gui = {
+		context_type = national_focus_context
+		window_name = es_fq_panel
+		parent_window_name = nationalfocusview
+		dirty = es_fq_ui_revision
+
+		ai_enabled = { always = no }
+
+		visible = {
+			is_ai = no
+			tag = ROOT
+			es_fq_supported = yes
+			has_country_flag = es_fq_open
+		}
+
+		triggers = {
+			es_fq_first_visible = {
+				check_variable = { i = 0 }
+				NOT = {
+					AND = {
+						has_country_flag = es_fq_moving
+						check_variable = { es_fq_picked = v }
+					}
+				}
+			}
+			es_fq_selected_visible = {
+				has_country_flag = es_fq_moving
+				check_variable = { es_fq_picked = v }
+			}
+			es_fq_running_visible = {
+				check_variable = { es_fq_running = v }
+				es_fq_idle = no
+			}
+		}
+
+		properties = {
+			es_fq_icon = {
+				image = "[es_fq_focus_icon]"
+			}
+		}
+
+		effects = {
+			es_fq_pick_click = {
+				if = {
+					limit = { has_country_flag = es_fq_moving }
+					if = {
+						limit = {
+							NOT = { check_variable = { es_fq_picked = v } }
+						}
+						set_temp_variable = { es_fq_target = i }
+						es_fq_move = yes
+					}
+					clr_country_flag = es_fq_moving
+				}
+				else = {
+					set_variable = { es_fq_picked = v }
+					set_country_flag = es_fq_moving
+				}
+				add_to_variable = { es_fq_ui_revision = 1 }
+			}
+
+			es_fq_remove_click = {
+				set_temp_variable = { es_fq_remove_index = i }
+				set_temp_variable = { es_fq_remove_id = v }
+				es_fq_remove_at = yes
+			}
+
+			es_fq_close_click = {
+				clr_country_flag = es_fq_moving
+				clr_country_flag = es_fq_open
+				add_to_variable = { es_fq_ui_revision = 1 }
+			}
+
+			es_fq_clear_click = {
+				es_fq_clear_all = yes
+			}
+
+			es_fq_pause_click = {
+				if = {
+					limit = { has_country_flag = es_fq_paused }
+					clr_country_flag = es_fq_paused
+				}
+				else = {
+					set_country_flag = es_fq_paused
+				}
+				add_to_variable = { es_fq_ui_revision = 1 }
+			}
+
+			es_fq_buttons_click = {
+				if = {
+					limit = { has_country_flag = es_fq_hide_tree }
+					clr_country_flag = es_fq_hide_tree
+				}
+				else = {
+					set_country_flag = es_fq_hide_tree
+				}
+				add_to_variable = { es_fq_ui_revision = 1 }
+			}
+		}
+
+		dynamic_lists = {
+			es_fq_queue_grid = {
+				array = es_fq_queue
+				country_scope_entry_container = es_fq_queue_entry
+				change_scope = no
+				value = v
+				index = i
+			}
+		}
+	}
+}

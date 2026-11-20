@@ -1,0 +1,32 @@
+###########################################################################
+# ES focus queue - daily driver.
+# The day guard makes this run exactly once per day whether on_daily fires
+# once globally or once per country.
+###########################################################################
+on_actions = {
+	# The focus-tree buttons only re-evaluate when es_fq_ui_revision changes
+	# (scripted GUI "dirty"), so give every country a fresh value on game start
+	# and on load; otherwise the buttons stay unevaluated until the first day passes.
+	on_startup = {
+		effect = {
+			every_country = {
+				add_to_variable = { es_fq_ui_revision = 1 }
+			}
+		}
+	}
+
+	on_daily = {
+		effect = {
+			if = {
+				limit = {
+					NOT = { check_variable = { global.es_fq_last_day = global.num_days } }
+				}
+				set_variable = { global.es_fq_last_day = global.num_days }
+				every_country = {
+					limit = { is_ai = no }
+					es_fq_daily_update = yes
+				}
+			}
+		}
+	}
+}
