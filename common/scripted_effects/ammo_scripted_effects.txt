@@ -311,37 +311,64 @@ ammunition_calculate_need = {
 
 ammunition_calculate_auto_level = {
 	if = {
-		limit = { check_variable = { ammunition_need_reference_k > 0 } }
-		# На границах диапазона обе формулы дают 1, поэтому уровень непрерывен
-		set_variable = {
-			ammunition_level_auto_base = {
+		limit = { is_ai = yes }
+		ammunition_calculate_level_cap = yes
+		# Выше порога — разрешённый максимум; ниже — плавное снижение по готовому запасу.
+		set_temp_variable = {
+			ammunition_ai_stock_ratio = {
 				value = ammunition_value_k
-				divide = constant:ammunition.ai_days_low
-				add = ammunition_generation_value_k
-				divide = ammunition_need_reference_k
+				clamp = { min = 0 max = constant:ammunition.ai_stock_threshold_k }
+				divide = constant:ammunition.ai_stock_threshold_k
 			}
 		}
+		set_temp_variable = {
+			ammunition_ai_level_floor = {
+				value = constant:ammunition.ai_level_min
+				min = ammunition_level_max
+			}
+		}
+		set_variable = {
+			ammunition_level_auto_base = {
+				value = ammunition_ai_level_floor
+				lerp = { to = ammunition_level_max alpha = ammunition_ai_stock_ratio }
+			}
+		}
+		set_variable = { ammunition_level_auto = ammunition_level_auto_base }
+	}
+	else = {
 		if = {
-			limit = { check_variable = { ammunition_level_auto_base > 1 } }
+			limit = { check_variable = { ammunition_need_reference_k > 0 } }
+			# На границах диапазона обе формулы дают 1, поэтому уровень непрерывен
 			set_variable = {
 				ammunition_level_auto_base = {
 					value = ammunition_value_k
-					divide = constant:ammunition.ai_days_high
+					divide = constant:ammunition.ai_days_low
 					add = ammunition_generation_value_k
 					divide = ammunition_need_reference_k
-					max = 1
 				}
 			}
+			if = {
+				limit = { check_variable = { ammunition_level_auto_base > 1 } }
+				set_variable = {
+					ammunition_level_auto_base = {
+						value = ammunition_value_k
+						divide = constant:ammunition.ai_days_high
+						add = ammunition_generation_value_k
+						divide = ammunition_need_reference_k
+						max = 1
+					}
+				}
+			}
+			set_variable = { ammunition_level_auto_base = { value = ammunition_level_auto_base max = constant:ammunition.ai_level_min } }
 		}
-		set_variable = { ammunition_level_auto_base = { value = ammunition_level_auto_base max = constant:ammunition.ai_level_min } }
+		else = {
+			set_variable = { ammunition_level_auto_base = 1 }
+		}
+		set_variable = { ammunition_level_auto = { value = ammunition_level_auto_base add = modifier@ammunition_level_target } }
 	}
-	else = {
-		set_variable = { ammunition_level_auto_base = 1 }
-	}
-	set_variable = { ammunition_level_auto = { value = ammunition_level_auto_base add = modifier@ammunition_level_target } }
 }
 
-ammunition_clamp_level = {
+ammunition_calculate_level_cap = {
 	set_variable = {
 		ammunition_level_max = {
 			value = constant:ammunition.level_max_base
@@ -349,6 +376,10 @@ ammunition_clamp_level = {
 			clamp = { min = constant:ammunition.level_min max = constant:ammunition.level_max_abs }
 		}
 	}
+}
+
+ammunition_clamp_level = {
+	ammunition_calculate_level_cap = yes
 	set_variable = {
 		ammunition_level = {
 			value = ammunition_level
@@ -474,7 +505,7 @@ ammunition_change_level = {
 	ammunition_clamp_level = yes
 }
 
-# Требует temp_delta. Под автоматизацией и у ИИ уровень задаёт модификатор ammunition_level_target
+# Требует temp_delta. Автоматизация игрока использует ammunition_level_target; ИИ — запас и разрешённый максимум.
 ammunition_raise_level = {
 	if = {
 		limit = {
