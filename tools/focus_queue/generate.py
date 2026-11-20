@@ -36,8 +36,8 @@ import focus_model  # noqa: E402
 # ---- layout constants (pixels). Calibrate here if buttons sit off their focus.
 FOCUS_STEP_X = 96
 FOCUS_STEP_Y = 130
-TREE_ORIGIN_X = 182
-TREE_ORIGIN_Y = 65
+TREE_ORIGIN_X = 199  # +17 from 182: button sits on the top-right corner of the name bar
+TREE_ORIGIN_Y = 86   # +21 from 65
 TEXT_OFFSET_X = 0
 TEXT_OFFSET_Y = 1
 TEXT_FONT = "hoi_24header"   # queue number on the tree buttons (was hoi_16mbs)
@@ -92,12 +92,28 @@ def safe_name(s):
     return re.sub(r"[^A-Za-z0-9_]", "_", s)
 
 
+# Line endings for generated files. The repo uses "* text=auto", so a Windows
+# checkout has CRLF; writing LF there makes every file show as changed in git.
+NEWLINE = "\r\n" if os.name == "nt" else "\n"
+WRITE_STATS = {"written": 0, "unchanged": 0}
+
+
 def write(path, text, encoding="utf-8"):
+    """Write only when the bytes differ, so unchanged files keep their timestamp
+    and don't show up as modified."""
+    data = text.replace("\r\n", "\n").replace("\n", NEWLINE).encode(encoding)
+    if os.path.isfile(path):
+        with open(path, "rb") as f:
+            if f.read() == data:
+                WRITE_STATS["unchanged"] += 1
+                return False
     d = os.path.dirname(path)
     if d and not os.path.isdir(d):
         os.makedirs(d)
-    with io.open(path, "w", encoding=encoding, newline="\n") as f:
-        f.write(text)
+    with open(path, "wb") as f:
+        f.write(data)
+    WRITE_STATS["written"] += 1
+    return True
 
 
 class W(object):
@@ -140,9 +156,7 @@ class Generator(object):
             "next_id": self.next_id,
             "ids": dict(sorted(self.ids.items(), key=lambda kv: kv[1])),
         }
-        with io.open(self.ids_path, "w", encoding="utf-8", newline="\n") as f:
-            json.dump(data, f, indent=1, ensure_ascii=False)
-            f.write("\n")
+        write(self.ids_path, json.dumps(data, indent=1, ensure_ascii=False) + "\n")
 
     # ---- analysis ----------------------------------------------------------
     def analyse(self):
@@ -582,6 +596,7 @@ class Generator(object):
             L.append("  " + wmsg)
         write(os.path.join(HERE, "report.txt"), "\n".join(L) + "\n")
         print("\n".join(L[:6 + len(self.trees)]))
+        print("Files written: %d   unchanged (skipped): %d" % (WRITE_STATS["written"], WRITE_STATS["unchanged"]))
         print("Full report: tools/focus_queue/report.txt")
 
 
