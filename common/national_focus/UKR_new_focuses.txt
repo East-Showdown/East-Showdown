@@ -101,6 +101,7 @@ focus_tree = {
 			# custom_effect_tooltip = Meeting_of_the_countrys_high_command_cet
 			hidden_effect = {
 				mark_focus_tree_layout_dirty = yes
+				add_to_variable = { es_fq_ui_revision = 1 } # ES focus queue: refresh tree buttons
 			}
 			UKR_try_zaluzhny_plan = yes
 		}
@@ -1994,6 +1995,7 @@ focus_tree = {
  				var = UKR_volunteerACT
  				value = 50
 			}
+			hidden_effect = { UKR_Volunteer_movement_scripted_effects = yes }
 			UKR_try_rear_pryh_prod = yes
 		}
 	}
@@ -2045,6 +2047,7 @@ focus_tree = {
 				var = UKR_volunteerACT
 				value = 25
 			}
+			hidden_effect = { UKR_Volunteer_movement_scripted_effects = yes }
 				add_equipment_to_stockpile = {
 				type = imv_civil_1_equipment
 				amount = 1000
@@ -3210,6 +3213,7 @@ focus_tree = {
 				set_country_flag = UKR_start_battle_for_donbas
 				complete_national_focus = UKR_strategic_regrouping
 				mark_focus_tree_layout_dirty = yes
+				add_to_variable = { es_fq_ui_revision = 1 } # ES focus queue: refresh tree buttons
 			}
 		}
 	}
@@ -3380,6 +3384,7 @@ focus_tree = {
 					var = UKR_volunteerACT
 					value = 50
 			}
+			hidden_effect = { UKR_Volunteer_movement_scripted_effects = yes }
 		}
 	}
 
@@ -4025,6 +4030,7 @@ focus_tree = {
 			set_country_flag = UKR_autumn_storm_focus_completed
 			activate_mission = UKR_autumn_campaign_mission
 			mark_focus_tree_layout_dirty = yes
+			add_to_variable = { es_fq_ui_revision = 1 } # ES focus queue: refresh tree buttons
 			force_update_dynamic_modifier = yes
 		}
 	}
@@ -4895,10 +4901,21 @@ focus_tree = {
 		prerequisite = { focus = UKR_autumn_storm }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_launch_autumn_campaign"
-			add_timed_idea = {
-				idea = UKR_autumn_storm_spirit
-				days = 60
+			if = {
+				limit = { is_ai = yes }
+				remove_ideas = UKR_autumn_storm_spirit
+				add_timed_idea = {
+					idea = UKR_autumn_storm_spirit_ai
+					days = 90
+				}
 			}
+			else = {
+				add_timed_idea = {
+					idea = UKR_autumn_storm_spirit
+					days = 60
+				}
+			}
+			hidden_effect = { ES_UKR_update_ai_autoplan = yes }
 		}
 	}
 
@@ -5612,6 +5629,7 @@ focus_tree = {
 			}
 		}
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_operational_pause"
 			add_timed_idea = {
 				idea = UKR_exhausted_army_idea
@@ -5639,12 +5657,14 @@ focus_tree = {
 		prerequisite = { focus = UKR_consolidate_ukrainian_sovereignty }
 		prerequisite = { focus = UKR_operational_pause }
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_prepare_for_final_push"
 			add_political_power = 150
 			add_war_support = 0.1
 			set_country_flag = UKR_prepare_for_final_push_focus_completed
 			complete_national_focus = UKR_between_two_fires
 			mark_focus_tree_layout_dirty = yes
+			add_to_variable = { es_fq_ui_revision = 1 } # ES focus queue: refresh tree buttons
 		}
 	}
 
@@ -6347,12 +6367,16 @@ focus_tree = {
 		cost = 4
 		prerequisite = { focus = UKR_course_to_borders }
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_counteroffensive_guard"
+			add_timed_idea = {
+				idea = UKR_broad_volunteer_recruitment_campaign
+				days = 180
+			}
  			hidden_effect = {	
  				set_country_flag = UKR_gvardiyanastupa_cf
  			}
  				
- 			custom_effect_tooltip = UKR_gvardiyanastupa_ttf
  		}
  		search_filters = {
  			FOCUS_FILTER_POLITICAL
@@ -6591,13 +6615,14 @@ focus_tree = {
 			activate_mission = UKR_final_push_mission
 			set_country_flag = UKR_time_to_take_back_ours_focus_completed
 			mark_focus_tree_layout_dirty = yes
+			add_to_variable = { es_fq_ui_revision = 1 } # ES focus queue: refresh tree buttons
 		}
 	}
 
 	#промежуток июнь 2023 - начало 2024
 	focus = {
 		id = UKR_increase_defense_industry_funding
-		icon = GFX_UKR_final_push_placeholder
+		icon = GFX_UKR_increase_defense_industry_funding
 		allow_branch = {
 			has_country_flag = UKR_time_to_take_back_ours_focus_completed
 		}
@@ -6636,6 +6661,7 @@ focus_tree = {
  				var = UKR_volunteerACT
  				value = 50
  			}
+			hidden_effect = { UKR_Volunteer_movement_scripted_effects = yes }
 		}
 	}
 
@@ -6696,6 +6722,7 @@ focus_tree = {
  				var = UKR_volunteerACT
  				value = 20
  			}
+			hidden_effect = { UKR_Volunteer_movement_scripted_effects = yes }
 			add_equipment_to_stockpile = {
 				type = support_equipment
 				amount = 20000
@@ -6966,16 +6993,27 @@ focus_tree = {
 		prerequisite = { focus = UKR_time_to_take_back_ours }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_launch_summer_campaign"
-			add_timed_idea = {
-				idea = UKR_final_push_spirit
-				days = 90
+			if = {
+				limit = { is_ai = yes }
+				remove_ideas = UKR_final_push_spirit
+				add_timed_idea = {
+					idea = UKR_final_push_spirit_ai
+					days = 90
+				}
 			}
+			else = {
+				add_timed_idea = {
+					idea = UKR_final_push_spirit
+					days = 90
+				}
+			}
+			hidden_effect = { ES_UKR_update_ai_autoplan = yes }
 		}
 	}
 
 	focus = {
 		id = UKR_release_ammunition_reserve
-		icon = GFX_UKR_final_push_placeholder
+		icon = GFX_UKR_release_ammunition_reserve
 		x = -2
 		y = 2
 		relative_position_id = UKR_launch_summer_campaign
@@ -7073,7 +7111,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_disrupt_enemy_fire_system
-		icon = GFX_UKR_final_push_placeholder
+		icon = GFX_UKR_disrupt_enemy_fire_system
 		x = 0
 		y = 1
 		relative_position_id = UKR_release_ammunition_reserve
@@ -7118,7 +7156,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_disrupt_enemy_logistics
-		icon = GFX_UKR_final_push_placeholder
+		icon = GFX_UKR_disrupt_enemy_logistics
 		x = 0
 		y = 1
 		relative_position_id = UKR_increase_missile_strike_tempo
@@ -7137,7 +7175,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_small_assault_group_focus
-		icon = GFX_UKR_final_push_placeholder
+		icon = GFX_UKR_small_assault_group_focus
 		x = 0
 		y = 1
 		relative_position_id = UKR_adapt_offensive_tactics
@@ -7171,7 +7209,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_positional_deadlock
-		icon = GFX_UKR_final_push_placeholder
+		icon = GFX_UKR_positional_deadlock
 		x = 0
 		y = 5
 		relative_position_id = UKR_launch_summer_campaign
@@ -7192,11 +7230,23 @@ focus_tree = {
 			hidden_effect = {
 				set_country_flag = UKR_army_politics_confrontation
 				mark_focus_tree_layout_dirty = yes
+				add_to_variable = { es_fq_ui_revision = 1 } # ES focus queue: refresh tree buttons
 			}
-			add_timed_idea = {
-				idea = UKR_exhausted_army_idea
-				days = 90
+			if = {
+				limit = { is_ai = yes }
+				remove_ideas = UKR_exhausted_army_idea
+				add_timed_idea = {
+					idea = UKR_exhausted_army_idea_ai
+					days = 180
+				}
 			}
+			else = {
+				add_timed_idea = {
+					idea = UKR_exhausted_army_idea
+					days = 90
+				}
+			}
+			hidden_effect = { ES_UKR_update_ai_autoplan = yes }
 		}
 	}
 
@@ -7212,6 +7262,7 @@ focus_tree = {
 		prerequisite = { focus = UKR_reconsider_mobilization_policy }
 		prerequisite = { focus = UKR_positional_deadlock }
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_prepare_for_prolonged_war"
 		}
 	}
@@ -7684,7 +7735,7 @@ focus_tree = {
 
 	focus = {
 	id = UKR_zaluzhny_corps_division_brigade_model
-	icon = GFX_404
+	icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_zaluzhny_lessons_of_past_campaigns
@@ -7696,6 +7747,7 @@ focus_tree = {
 	cost = 28
 
 	completion_reward = {
+		custom_effect_tooltip = UKR_new_brigades_available_tt
 		log = "[GetDateText]: [Root.GetName]: Focus UKR_zaluzhny_corps_division_brigade_model"
 		add_timed_idea = {
 			idea = UKR_corps_reorganization_spirit
@@ -7718,7 +7770,7 @@ focus_tree = {
 
 	focus = {
 	id = UKR_zaluzhny_automated_troop_command
-	icon = GFX_404
+	icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_zaluzhny_corps_division_brigade_model
@@ -7743,7 +7795,7 @@ focus_tree = {
 
 	focus = {
 	id = UKR_zaluzhny_technological_exit_from_positional_deadlock
-	icon = GFX_404
+	icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_zaluzhny_automated_troop_command
@@ -7769,7 +7821,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_zaluzhny_unmanned_assets_of_maneuver_warfare
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_zaluzhny_technological_exit_from_positional_deadlock
@@ -8035,7 +8087,7 @@ focus_tree = {
 	# Открывается, если в ивенте ukr.800 поставлен флаг CIS_Sirskyy
 	focus = {
 	   id = UKR_sirskyy_branch_start
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	allow_branch = {
 	
@@ -8070,6 +8122,7 @@ focus_tree = {
 			set_variable = { UKR_sirskyy_doc_army_speed = -0.05 }
 			set_variable = { UKR_sirskyy_doc_supply_consumption = -0.05 }
 			set_variable = { UKR_sirskyy_doc_army_defence = 0.12 }
+			set_variable = { UKR_sirskyy_doc_army_attack = 0 }
 			set_variable = { UKR_sirskyy_doc_planning_speed = -0.15 }
 			set_variable = { UKR_sirskyy_doc_max_dig_in = 0.20 }
 			set_variable = { UKR_sirskyy_doc_bunker_construction_speed = 0.20 }
@@ -8111,7 +8164,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_gsh_reorganization
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_sirskyy_branch_start
@@ -8133,7 +8186,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_lessons_of_past_campaigns
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_sirskyy_gsh_reorganization
@@ -8173,7 +8226,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_sirskyy_expand_assault_regiments
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 		prerequisite = { focus = UKR_sirskyy_lessons_of_past_campaigns }
 		available = { always = no }
 		x = 0
@@ -8185,7 +8238,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_assault_training_centers
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_lessons_of_past_campaigns
@@ -8198,6 +8251,7 @@ focus_tree = {
 
 	completion_reward = {
 		log = "[GetDateText]: [Root.GetName]: Focus UKR_sirskyy_assault_training_centers"
+		custom_effect_tooltip = UKR_assault_training_decisions_tt
 		add_unit_bonus = {
 			category_assault_infantry = {
 				max_organisation = 10
@@ -8208,7 +8262,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_form_assault_troops
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_assault_training_centers
@@ -8234,7 +8288,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_fpv_saturation_assault_brigades
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_form_assault_troops
@@ -8263,7 +8317,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_assault_afv_support
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_fpv_saturation_assault_brigades
@@ -8293,7 +8347,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_corps_brigade_vertical
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_sirskyy_lessons_of_past_campaigns
@@ -8305,6 +8359,7 @@ focus_tree = {
 	cost = 28
 
 	completion_reward = {
+		custom_effect_tooltip = UKR_new_brigades_available_tt
 		log = "[GetDateText]: [Root.GetName]: Focus UKR_sirskyy_corps_brigade_vertical"
 		add_timed_idea = {
 			idea = UKR_corps_reorganization_spirit
@@ -8327,7 +8382,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_standardize_uav_experience
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_corps_brigade_vertical
@@ -8346,7 +8401,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_recon_strike_uav_operator_groups
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_standardize_uav_experience
@@ -8368,7 +8423,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_recon_fire_assault_loop
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_recon_strike_uav_operator_groups
@@ -8402,7 +8457,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_hold_front_at_any_cost
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_assault_afv_support
@@ -8432,7 +8487,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_fortress_cities_tactics
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	   prerequisite = {
 		focus = UKR_sirskyy_hold_front_at_any_cost
@@ -8458,7 +8513,7 @@ focus_tree = {
 
 	focus = {
 	   id = UKR_sirskyy_war_of_attrition
-	   icon = GFX_404
+	   icon = GFX_UKR_final_push_placeholder
 
 	prerequisite = {
 		focus = UKR_sirskyy_fortress_cities_tactics
@@ -8474,6 +8529,8 @@ focus_tree = {
 		custom_effect_tooltip = UKR_sirskyy_war_of_attrition_effect_tt
 
 		hidden_effect = {
+			set_variable = { UKR_sirskyy_doc_army_defence = -0.05 }
+			set_variable = { UKR_sirskyy_doc_army_attack = 0.12 }
 			add_to_variable = { UKR_sirskyy_doc_planning_speed = 0.075 }
 			add_to_variable = { UKR_sirskyy_doc_reinforce_rate = 0.03 }
 			add_to_variable = { UKR_sirskyy_doc_max_planning = 0.06 }
@@ -8658,6 +8715,7 @@ focus_tree = {
 		cost = 21
 
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_biletsky_corps_reform_donor_brigades"
 		add_timed_idea = {
 			idea = UKR_corps_reorganization_spirit
@@ -8950,7 +9008,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_branch_start
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 
@@ -9026,7 +9084,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_gsh_reorganization
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_branch_start
@@ -9049,7 +9107,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_lessons_of_past_campaigns
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_gsh_reorganization
@@ -9087,7 +9145,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_corpus_reform
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_lessons_of_past_campaigns
@@ -9099,6 +9157,7 @@ focus_tree = {
 		cost = 21
 
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_prokopenko_corpus_reform"
 			add_timed_idea = {
 				idea = UKR_corps_reorganization_spirit
@@ -9114,7 +9173,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_unity_of_command
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_corpus_reform
@@ -9139,7 +9198,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_unified_training_system
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_unity_of_command
@@ -9164,7 +9223,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_newest_technology
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_unified_training_system
@@ -9190,7 +9249,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_professional_nco_corps
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_lessons_of_past_campaigns
@@ -9216,7 +9275,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_junior_commanders_initiative
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_professional_nco_corps
@@ -9242,7 +9301,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_mission_command
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_junior_commanders_initiative
@@ -9268,7 +9327,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_motivated_soldier
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_mission_command
@@ -9295,7 +9354,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_rethinking_mobile_defense
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_newest_technology
@@ -9326,7 +9385,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_azov_standards
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_rethinking_mobile_defense
@@ -9351,7 +9410,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_prokopenko_professional_army
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_prokopenko_azov_standards
@@ -9378,7 +9437,7 @@ focus_tree = {
  # Открывается, если в ивенте поставлен флаг CIS_Drapatiy
 	focus = {
 		id = UKR_drapatiy_branch_start
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 
@@ -9447,7 +9506,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_gsh_reorganization
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_branch_start
@@ -9469,7 +9528,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_lessons_of_past_campaigns
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 		focus = UKR_drapatiy_gsh_reorganization
@@ -9506,7 +9565,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_corps_reform
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 		focus = UKR_drapatiy_lessons_of_past_campaigns
@@ -9518,6 +9577,7 @@ focus_tree = {
 		cost = 21
 
 		completion_reward = {
+			custom_effect_tooltip = UKR_new_brigades_available_tt
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_drapatiy_corps_reform"
 			add_timed_idea = {
 				idea = UKR_corps_reorganization_spirit
@@ -9532,7 +9592,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_decentralization_of_command
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 		focus = UKR_drapatiy_corps_reform
@@ -9556,7 +9616,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_tactical_echelon_autonomy
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 		focus = UKR_drapatiy_decentralization_of_command
@@ -9580,7 +9640,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_junior_commanders_initiative
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_tactical_echelon_autonomy
@@ -9604,7 +9664,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_army_technological_transformation
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_lessons_of_past_campaigns
@@ -9629,7 +9689,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_integration_of_unmanned_systems
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_army_technological_transformation
@@ -9649,7 +9709,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_digital_battlefield
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_integration_of_unmanned_systems
@@ -9674,7 +9734,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_technological_superiority
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_digital_battlefield
@@ -9699,7 +9759,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_automated_army_command
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_junior_commanders_initiative
@@ -9724,7 +9784,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_scaling_successful_solutions
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_automated_army_command
@@ -9748,7 +9808,7 @@ focus_tree = {
 
 	focus = {
 		id = UKR_drapatiy_army_of_continuous_adaptation
-		icon = GFX_404
+		icon = GFX_UKR_final_push_placeholder
 
 		prerequisite = {
 			focus = UKR_drapatiy_scaling_successful_solutions

@@ -1,0 +1,586 @@
+# AI behaviour and support
+
+# ============================================================================
+# Autoplans and campaign stages
+# ============================================================================
+
+ES_UKR_initialize_ai_autoplan = {
+	if = {
+		limit = {
+			is_ai = yes
+			ES_is_september_2022_start = yes
+			date < 2022.09.07
+			NOT = { has_country_flag = UKR_ai_autumn_bookmark_initialized }
+			NOT = { has_idea = UKR_autumn_storm_spirit }
+			NOT = { has_idea = UKR_autumn_storm_spirit_ai }
+		}
+		set_country_flag = UKR_ai_autumn_bookmark_initialized
+		add_timed_idea = {
+			idea = UKR_autumn_storm_spirit_ai
+			days = 90
+		}
+	}
+}
+
+ES_RUS_update_ai_autoplan = {
+	ES_update_ai_preferred_equipment = yes
+	ES_RUS_update_summer_aifc_stages = yes
+	if = {
+		limit = { original_tag = RUS is_ai = yes }
+		if = {
+			limit = { NOT = { has_idea = ES_RUS_ai_political_power_support } }
+			add_ideas = ES_RUS_ai_political_power_support
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_RUS_ai_political_power_support }
+		remove_ideas = ES_RUS_ai_political_power_support
+	}
+	ES_update_ai_assault_infantry_technology = yes
+	ES_update_ai_assault_recruitment = yes
+	if = {
+		limit = {
+			is_ai = yes
+			has_war_with = UKR
+			date < 2023.10.01
+			OR = {
+				has_idea = RUS_disruption_of_the_operation_3_singleplayer
+				has_completed_focus = RUS_begin_partial_mobilization
+			}
+		}
+		if = {
+			limit = { NOT = { has_idea = ES_ai_autoplan_paused } }
+			add_ideas = ES_ai_autoplan_paused
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_ai_autoplan_paused }
+		remove_ideas = ES_ai_autoplan_paused
+	}
+}
+
+ES_UKR_update_ai_autoplan = {
+	ES_UKR_start_parallel_tro_deployment = yes
+	ES_update_ai_preferred_equipment = yes
+	ES_UKR_update_summer_aifc_stages = yes
+	ES_update_ai_assault_infantry_technology = yes
+	ES_update_ai_assault_recruitment = yes
+	if = {
+		limit = { original_tag = UKR is_ai = yes }
+		if = {
+			limit = { NOT = { has_idea = ES_UKR_ai_political_power_support } }
+			add_ideas = ES_UKR_ai_political_power_support
+		}
+		if = {
+			limit = { NOT = { has_idea = ES_UKR_ai_special_forces_support } }
+			add_ideas = ES_UKR_ai_special_forces_support
+		}
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_idea = ES_UKR_ai_special_forces_support
+				has_idea = ES_UKR_ai_political_power_support
+			}
+		}
+		remove_ideas = ES_UKR_ai_special_forces_support
+		remove_ideas = ES_UKR_ai_political_power_support
+	}
+	if = {
+		limit = {
+			is_ai = yes
+			has_start_date > 2023.05.31
+			has_start_date < 2023.06.02
+		}
+		if = {
+			limit = {
+				OR = {
+					has_idea = UKR_exhausted_army_idea_ai
+					has_idea = UKR_exhausted_army_idea
+				}
+			}
+			set_country_flag = ES_UKR_summer_2023_exhaustion_seen
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_country_flag = ES_UKR_summer_2023_exhaustion_seen
+					AND = {
+						has_completed_focus = UKR_positional_deadlock
+						NOT = { has_country_flag = UKR_final_push_mission_succeeded }
+					}
+				}
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_priorities_finished
+		}
+	}
+	if = {
+		limit = {
+			is_ai = yes
+			OR = {
+				has_idea = UKR_autumn_storm_spirit_ai
+				has_idea = UKR_autumn_storm_spirit
+			}
+		}
+		set_country_flag = ES_UKR_ai_autumn_storm_seen
+	}
+	if = {
+		limit = {
+			is_ai = yes
+			NOT = { has_country_flag = UKR_ai_final_push_started }
+			OR = {
+				has_idea = UKR_final_push_spirit
+				has_idea = UKR_final_push_spirit_ai
+				has_completed_focus = UKR_launch_summer_campaign
+			}
+		}
+		set_country_flag = UKR_ai_final_push_started
+	}
+	if = {
+		limit = {
+			is_ai = yes
+			has_war_with = RUS
+			OR = {
+				has_idea = UKR_exhausted_army_idea_ai
+				AND = {
+					has_completed_focus = UKR_positional_deadlock
+					has_idea = UKR_exhausted_army_idea
+				}
+				AND = {
+					NOT = { has_completed_focus = UKR_positional_deadlock }
+					NOT = { has_country_flag = UKR_ai_final_push_started }
+					NOT = { ES_UKR_early_balanced_autoplan_window = yes }
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { has_idea = ES_ai_autoplan_paused } }
+			add_ideas = ES_ai_autoplan_paused
+		}
+	}
+	else_if = {
+		limit = { has_idea = ES_ai_autoplan_paused }
+		remove_ideas = ES_ai_autoplan_paused
+	}
+}
+
+ES_ai_weekly_autoplan_ammunition = {
+	if = {
+		limit = {
+			is_ai = yes
+			OR = { original_tag = RUS original_tag = UKR }
+		}
+		if = {
+			limit = { original_tag = RUS }
+			ES_RUS_update_ai_autoplan = yes
+		}
+		else = {
+			ES_UKR_update_ai_autoplan = yes
+		}
+		if = {
+			limit = {
+				NOT = { has_idea = ES_ai_autoplan_paused }
+				OR = {
+					AND = { original_tag = RUS has_war_with = UKR }
+					AND = { original_tag = UKR has_war_with = RUS }
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { original_tag = UKR }
+					add_to_variable = { ammunition_value_k = 250 }
+				}
+				else = {
+					add_to_variable = { ammunition_value_k = 500 }
+				}
+				ammunition_calculate_storage = yes
+				ammunition_update_display = yes
+			}
+		}
+	}
+}
+
+ES_UKR_update_summer_aifc_stages = {
+	if = {
+		limit = {
+			original_tag = UKR
+			is_ai = yes
+			has_start_date > 2023.05.31
+			has_start_date < 2023.06.02
+			has_war_with = RUS
+			NOT = { has_country_flag = ES_UKR_summer_2023_aifc_priorities_finished }
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_UKR_summer_2023_aifc_stage_1_completed }
+				ES_UKR_summer_2023_aifc_stage_1_controlled = yes
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_stage_1_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_UKR_summer_2023_aifc_stage_2_completed }
+				has_country_flag = ES_UKR_summer_2023_aifc_stage_1_completed
+				ES_UKR_summer_2023_aifc_stage_2_controlled = yes
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_stage_2_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_UKR_summer_2023_aifc_stage_3_completed }
+				has_country_flag = ES_UKR_summer_2023_aifc_stage_2_completed
+				ES_UKR_summer_2023_aifc_stage_3_controlled = yes
+			}
+			set_country_flag = ES_UKR_summer_2023_aifc_stage_3_completed
+		}
+	}
+}
+
+ES_RUS_update_summer_aifc_stages = {
+	if = {
+		limit = {
+			original_tag = RUS
+			is_ai = yes
+			has_start_date > 2023.05.31
+			has_start_date < 2023.06.02
+			has_war_with = UKR
+			UKR = { ES_UKR_summer_2023_campaign_exhausted = yes }
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_1_completed }
+				has_full_control_of_state = 893
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_1_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_2_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_1_completed
+				has_full_control_of_state = 715
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_2_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_3_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_2_completed
+				has_full_control_of_state = 714
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_3_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_4_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_3_completed
+				has_full_control_of_state = 890
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_4_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_5_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_4_completed
+				has_full_control_of_state = 182
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_5_completed
+		}
+		if = {
+			limit = {
+				NOT = { has_country_flag = ES_RUS_summer_2023_aifc_stage_6_completed }
+				has_country_flag = ES_RUS_summer_2023_aifc_stage_5_completed
+				has_full_control_of_state = 908
+			}
+			set_country_flag = ES_RUS_summer_2023_aifc_stage_6_completed
+		}
+	}
+}
+
+# ============================================================================
+# Assault infantry technology
+# ============================================================================
+
+ES_update_ai_assault_infantry_technology = {
+	if = {
+		limit = {
+			is_ai = yes
+			OR = { original_tag = RUS original_tag = UKR }
+		}
+		if = {
+			limit = { NOT = { has_tech = ES_ai_assault_infantry_breakthrough } }
+			hidden_effect = {
+				set_technology = {
+					ES_ai_assault_infantry_breakthrough = 1
+					popup = no
+				}
+			}
+		}
+	}
+	else_if = {
+		limit = { has_tech = ES_ai_assault_infantry_breakthrough }
+		hidden_effect = {
+			set_technology = {
+				ES_ai_assault_infantry_breakthrough = 0
+				popup = no
+			}
+		}
+	}
+}
+
+# ============================================================================
+# Territorial defence deployment
+# ============================================================================
+
+ES_UKR_start_parallel_tro_deployment = {
+	if = {
+		limit = {
+			original_tag = UKR
+			is_ai = yes
+			ES_is_january_2022_start = yes
+			OR = {
+				has_war_with = RUS
+				has_country_flag = ES_UKR_ai_tro_war_started
+			}
+		}
+		set_country_flag = UKR_create_territorial_defence_category_unlocked_flag
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_north = yes }
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_north
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_north
+						has_country_flag = ES_ai_started_UKR_create_units_north
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_north
+			}
+		}
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_Eastern = yes }
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_Eastern
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_Eastern
+						has_country_flag = ES_ai_started_UKR_create_units_Eastern
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_Eastern
+			}
+		}
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_southern_Ukraine = yes }
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_southern_Ukraine
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_southern_Ukraine
+						has_country_flag = ES_ai_started_UKR_create_units_southern_Ukraine
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_southern_Ukraine
+			}
+		}
+		if = {
+			limit = { ES_ai_can_start_UKR_create_units_western_Ukraine = yes }
+			set_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+			subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = 10 }
+			activate_decision = UKR_create_units_western_Ukraine
+			if = {
+				limit = {
+					OR = {
+						has_decision = UKR_create_units_western_Ukraine
+						has_country_flag = ES_ai_started_UKR_create_units_western_Ukraine
+					}
+				}
+				subtract_from_temp_variable = { ES_ai_tro_pp_after_cost = political_power }
+				add_political_power = var:ES_ai_tro_pp_after_cost
+				set_country_flag = ES_ai_started_UKR_create_units_western_Ukraine
+			}
+		}
+	}
+}
+
+# ============================================================================
+# Recruitment and template permissions
+# ============================================================================
+
+ES_update_ai_assault_recruitment = {
+	ES_UKR_ensure_ai_rifle_template = yes
+	if = {
+		limit = {
+			original_tag = UKR
+			has_template = "Shturmovoy batalion (BTR)"
+		}
+		if = {
+			limit = {
+				has_country_flag = UKR_assault_template_editing_unlocked
+				has_tech = assault_infantry
+			}
+			set_division_template_lock = { division_template = "Shturmovoy batalion (BTR)" is_locked = no }
+		}
+		else = {
+			set_division_template_lock = { division_template = "Shturmovoy batalion (BTR)" is_locked = yes }
+		}
+		if = {
+			limit = {
+				is_ai = yes
+				has_country_flag = UKR_assault_template_editing_unlocked
+				has_tech = assault_infantry
+			}
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion (BTR)"
+				force_allow_recruiting = yes
+			}
+		}
+		else = {
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion (BTR)"
+				force_allow_recruiting = no
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			original_tag = RUS
+			has_template = "Shturmovoy batalion"
+		}
+		if = {
+			limit = { is_ai = yes }
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion"
+				force_allow_recruiting = yes
+			}
+		}
+		else = {
+			set_division_force_allow_recruiting = {
+				division_template = "Shturmovoy batalion"
+				force_allow_recruiting = no
+			}
+		}
+	}
+}
+
+ES_UKR_ensure_ai_rifle_template = {
+	if = {
+		limit = { original_tag = UKR is_ai = yes }
+		if = {
+			limit = { NOT = { has_template = "Strilets'kyy batal'yon" } }
+			division_template = {
+				name = "Strilets'kyy batal'yon"
+				priority = 1
+				obsolete = no
+				is_locked = no
+				force_allow_recruiting = yes
+				regiments = {
+					opolchenie = {
+						x = 0
+						y = 0
+					}
+					opolchenie = {
+						x = 0
+						y = 1
+					}
+					opolchenie = {
+						x = 0
+						y = 2
+					}
+					infantry = {
+						x = 1
+						y = 0
+					}
+					infantry = {
+						x = 1
+						y = 1
+					}
+				}
+				support = {
+					signal_company = {
+						x = 0
+						y = 0
+					}
+					field_hospital = {
+						x = 0
+						y = 1
+					}
+					logistics_company = {
+						x = 0
+						y = 2
+					}
+					engineer = {
+						x = 1
+						y = 0
+					}
+					maintenance_company = {
+						x = 1
+						y = 1
+					}
+					imv_light_recon = {
+						x = 1
+						y = 2
+					}
+				}
+				regimental_support = {
+					atgm = {
+						x = 0
+						y = 0
+					}
+					sniper = {
+						x = 0
+						y = 1
+					}
+					atgm = {
+						x = 1
+						y = 0
+					}
+				}
+			}
+		}
+		set_division_force_allow_recruiting = {
+			division_template = "Strilets'kyy batal'yon"
+			force_allow_recruiting = yes
+		}
+	}
+}
+
+# ============================================================================
+# Ukrainian eastern fortified region
+# ============================================================================
+
+ES_UKR_initialize_eastern_fortified_region = {
+	if = {
+		limit = {
+			original_tag = UKR
+			is_ai = yes
+			date < 2022.8.23
+			NOT = { has_country_flag = ES_UKR_eastern_fortified_region_initialized }
+		}
+		set_variable = { ES_UKR_eastern_fortified_region_days = 180 }
+		if = {
+			limit = { ES_is_april_2022_start = yes }
+			set_variable = { ES_UKR_eastern_fortified_region_days = 130 }
+		}
+		715 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		893 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		890 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		165 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		900 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		981 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		911 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		912 = { add_dynamic_modifier = { modifier = ES_UKR_eastern_fortified_region scope = UKR days = UKR.ES_UKR_eastern_fortified_region_days } }
+		set_country_flag = ES_UKR_eastern_fortified_region_initialized
+	}
+}
