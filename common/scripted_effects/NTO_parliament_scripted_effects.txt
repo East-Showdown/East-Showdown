@@ -124,3 +124,83 @@ EU_parliament_support_remove_60 = { ### Use this when removing 60 support
 	clamp_variable = { var = EU_parliament_support max = EU_parliament_total min = 0 } ### Clamps the support value so it can't exceed the maximum
 	NTO_recalc_eu_parliament_icon_frames = yes ### Updates the GFX
 }
+
+# Paid campaigns shared by the parliament buttons and NATO AI.
+
+NTO_small_campaign_US = {
+	if = {
+		limit = {
+			has_political_power > 74
+			check_variable = { USA_parliament_support < 435 }
+		}
+		USA_parliament_support_add_10 = yes
+		add_political_power = -75
+	}
+}
+
+NTO_small_campaign_EU = {
+	if = {
+		limit = {
+			has_political_power > 74
+			check_variable = { EU_parliament_support < 720 }
+		}
+		EU_parliament_support_add_15 = yes
+		add_political_power = -75
+	}
+}
+
+NTO_big_campaign_US = {
+	if = {
+		limit = {
+			has_political_power > 124
+			check_variable = { USA_parliament_support < 435 }
+		}
+		USA_parliament_support_add_30 = yes
+		add_political_power = -125
+	}
+}
+
+NTO_big_campaign_EU = {
+	if = {
+		limit = {
+			has_political_power > 124
+			check_variable = { EU_parliament_support < 720 }
+		}
+		EU_parliament_support_add_45 = yes
+		add_political_power = -125
+	}
+}
+
+# Called only by on_weekly_NTO. Use the same paid actions as the GUI buttons.
+NTO_ai_buy_parliament_support_weekly = {
+	if = {
+		limit = {
+			tag = NTO
+			is_ai = yes
+			date < 2023.10.1
+		}
+		# At most one campaign per chamber per week; prefer the cheaper support per PP.
+		if = {
+			limit = { check_variable = { USA_parliament_support < 300 } }
+			if = {
+				limit = { has_political_power > 124 }
+				NTO_big_campaign_US = yes
+			}
+			else_if = {
+				limit = { has_political_power > 74 }
+				NTO_small_campaign_US = yes
+			}
+		}
+		if = {
+			limit = { check_variable = { EU_parliament_support < 600 } }
+			if = {
+				limit = { has_political_power > 124 }
+				NTO_big_campaign_EU = yes
+			}
+			else_if = {
+				limit = { has_political_power > 74 }
+				NTO_small_campaign_EU = yes
+			}
+		}
+	}
+}
