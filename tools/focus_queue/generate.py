@@ -231,7 +231,9 @@ class Generator(object):
         w(1, "}")
         w(0, "}")
         w(0)
-        # branch visibility (allow_branch of the focus and of hidden parent branches)
+        # An explicit allow_branch starts a new visibility gate. Later stages can
+        # remain visible after earlier stages have been hidden. Only focuses
+        # without their own gate inherit visibility from prerequisite branches.
         for fid in sorted(self._branch_memo):
             if not self._branch_memo[fid]:
                 continue
@@ -239,15 +241,16 @@ class Generator(object):
             w(0, "es_fq_branch_%s = {" % fid)
             if f.allow_branch_raw:
                 w.extend(indent_block(f.allow_branch_raw, 1))
-            for grp in f.prereq_groups:
-                if grp and all(self._branch_memo.get(p) for p in grp):
-                    if len(grp) == 1:
-                        w(1, "es_fq_branch_%s = yes" % grp[0])
-                    else:
-                        w(1, "OR = {")
-                        for p in grp:
-                            w(2, "es_fq_branch_%s = yes" % p)
-                        w(1, "}")
+            else:
+                for grp in f.prereq_groups:
+                    if grp and all(self._branch_memo.get(p) for p in grp):
+                        if len(grp) == 1:
+                            w(1, "es_fq_branch_%s = yes" % grp[0])
+                        else:
+                            w(1, "OR = {")
+                            for p in grp:
+                                w(2, "es_fq_branch_%s = yes" % p)
+                            w(1, "}")
             w(0, "}")
             w(0)
         for fid in self.queueable:

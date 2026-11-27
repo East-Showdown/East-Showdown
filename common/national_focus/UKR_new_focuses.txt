@@ -604,7 +604,7 @@ focus_tree = {
 	focus = {
 		id = UKR_Zaluzhny_plan
 		icon = GFX_UKR_Zaluzhny_plan
-		x = 14
+		x = 18
 		y = 2
 		allow_branch = {
 			has_completed_focus = Meeting_of_the_countrys_high_command
@@ -3937,6 +3937,7 @@ focus_tree = {
 		}
 		completion_reward = {	
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_operation_to_liberate_snake_island"
+			ensure_unit_template_UKR_SSO_batalyon = yes
 
     	403 = {
         	add_dynamic_modifier = {
@@ -3948,7 +3949,7 @@ focus_tree = {
         	}
 
         	create_unit = {
-            	division = "name = \"Batalyon SSO\" division_template = \"Batalyon SSO\" start_experience_factor = 0.15"
+					division = "name = \"Batalyon SSO\" division_template = \"Batal'yon spetsial'noho pryznachennya\" start_experience_factor = 0.15"
             	owner = UKR
             	count = 4
             	prioritize_location = 18232
@@ -7030,7 +7031,7 @@ focus_tree = {
 	focus = {
 		id = UKR_release_ammunition_reserve
 		icon = GFX_UKR_release_ammunition_reserve
-		x = -2
+		x = -4
 		y = 2
 		relative_position_id = UKR_launch_summer_campaign
 		cost = 3
@@ -7071,6 +7072,7 @@ focus_tree = {
 		relative_position_id = UKR_launch_summer_campaign
 		cost = 1
 		prerequisite = { focus = UKR_launch_summer_campaign }
+		mutually_exclusive = { focus = UKR_mass_infantry_offensive focus = UKR_rely_on_marine_corps }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_armored_assaults"
 			add_unit_bonus = {
@@ -7109,9 +7111,46 @@ focus_tree = {
 	}
 
 	focus = {
+		id = UKR_mass_infantry_offensive
+		icon = GFX_UKR_final_push_placeholder
+		x = -2
+		y = 1
+		relative_position_id = UKR_launch_summer_campaign
+		cost = 1
+		prerequisite = { focus = UKR_launch_summer_campaign }
+		mutually_exclusive = { focus = UKR_armored_assaults focus = UKR_rely_on_marine_corps }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus UKR_mass_infantry_offensive"
+			add_unit_bonus = {
+				infantry = { soft_attack = 0.20 hard_attack = 0.20 breakthrough = 0.20 max_strength = -2.50 }
+				opolchenie = { soft_attack = 0.20 hard_attack = 0.20 breakthrough = 0.20 max_strength = -2.50 }
+			}
+			activate_mission = UKR_mass_infantry_offensive_mission
+		}
+	}
+
+	focus = {
+		id = UKR_rely_on_marine_corps
+		icon = GFX_UKR_final_push_placeholder
+		x = 2
+		y = 1
+		relative_position_id = UKR_launch_summer_campaign
+		cost = 1
+		prerequisite = { focus = UKR_launch_summer_campaign }
+		mutually_exclusive = { focus = UKR_mass_infantry_offensive focus = UKR_armored_assaults }
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus UKR_rely_on_marine_corps"
+			add_unit_bonus = {
+				marine = { soft_attack = 0.20 hard_attack = 0.20 breakthrough = 0.20 max_strength = -2.50 }
+			}
+			activate_mission = UKR_rely_on_marine_corps_mission
+		}
+	}
+
+	focus = {
 		id = UKR_increase_missile_strike_tempo
 		icon = GFX_UKR_increase_missile_strike_tempo
-		x = 2
+		x = 4
 		y = 2
 		relative_position_id = UKR_launch_summer_campaign
 		cost = 7
@@ -7149,14 +7188,14 @@ focus_tree = {
 		y = 1
 		relative_position_id = UKR_armored_assaults
 		cost = 7
-		prerequisite = { focus = UKR_armored_assaults }
+		prerequisite = { focus = UKR_mass_infantry_offensive focus = UKR_armored_assaults focus = UKR_rely_on_marine_corps }
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = UKR_armored_assaults_mission_failed_tt
-				has_country_flag = UKR_armored_assaults_mission_failed
+				tooltip = UKR_summer_assault_mission_failed_tt
+				OR = { has_country_flag = UKR_mass_infantry_offensive_mission_failed has_country_flag = UKR_armored_assaults_mission_failed has_country_flag = UKR_rely_on_marine_corps_mission_failed }
 			}
 		}
-		bypass = { has_country_flag = UKR_armored_assaults_mission_succeeded }
+		bypass = { OR = { has_country_flag = UKR_mass_infantry_offensive_mission_succeeded has_country_flag = UKR_armored_assaults_mission_succeeded has_country_flag = UKR_rely_on_marine_corps_mission_succeeded } }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_adapt_offensive_tactics"
 			custom_effect_tooltip = UKR_adapt_offensive_tactics_mod_tt
@@ -7197,7 +7236,7 @@ focus_tree = {
 		relative_position_id = UKR_adapt_offensive_tactics
 		cost = 7
 		prerequisite = { focus = UKR_adapt_offensive_tactics }
-		bypass = { has_country_flag = UKR_armored_assaults_mission_succeeded }
+		bypass = { OR = { has_country_flag = UKR_mass_infantry_offensive_mission_succeeded has_country_flag = UKR_armored_assaults_mission_succeeded has_country_flag = UKR_rely_on_marine_corps_mission_succeeded } }
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus UKR_small_assault_group_focus"
 			add_unit_bonus = {
@@ -7630,8 +7669,8 @@ focus_tree = {
 		has_country_flag = CIS_Zalyuzhny
 	}
 
-	x = 16
-	y = 0
+	x = 18
+	y = 1
 	relative_position_id = Eastern_crisis
 	cost = 0
 
@@ -8116,8 +8155,8 @@ focus_tree = {
 		has_country_flag = CIS_Sirskyy
 	}
 
-	x = 16
-	y = 0
+	x = 18
+	y = 1
 	relative_position_id = Eastern_crisis
 	cost = 0
 
@@ -8745,8 +8784,8 @@ focus_tree = {
 		has_country_flag = CIS_Biletsky
 	}
 
-	x = 16
-	y = 0
+	x = 18
+	y = 1
 	relative_position_id = Eastern_crisis
 	cost = 0
 
@@ -9197,8 +9236,8 @@ focus_tree = {
 			has_country_flag = CIS_Prokopenko
 		}
 
-		x = 16
-		y = 0
+		x = 18
+		y = 1
 		relative_position_id = Eastern_crisis
 		cost = 0
 		completion_reward = {
@@ -9626,8 +9665,8 @@ focus_tree = {
 			has_country_flag = CIS_Drapatiy
 		}
 
-		x = 16
-		y = 0
+		x = 18
+		y = 1
 		relative_position_id = Eastern_crisis
 		cost = 0
 
