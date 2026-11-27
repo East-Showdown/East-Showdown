@@ -3087,13 +3087,18 @@ WGN_update_march_focuses = {
 		if = {
 			limit = { NOT = { has_country_flag = WGN_march_in_progress_flag } }
 			set_country_flag = WGN_march_in_progress_flag
+			set_variable = { WGN_march_progress_days = 0 }
 			activate_shine_on_focus = WGN_march
 		}
-		else_if = {
+		else = {
+			add_to_variable = { WGN_march_progress_days = 1 }
+		}
+		if = {
 			limit = {
-				NOT = { has_country_flag = { flag = WGN_march_in_progress_flag days < 26 } }
+				check_variable = { var = WGN_march_progress_days value = 26 compare = greater_than_or_equals }
 			}
 			clr_country_flag = WGN_march_in_progress_flag
+			set_variable = { WGN_march_progress_days = 0 }
 			deactivate_shine_on_focus = WGN_march
 			complete_national_focus = { focus = WGN_march use_side_message = yes }
 		}
@@ -3101,6 +3106,7 @@ WGN_update_march_focuses = {
 	else_if = {
 		limit = { has_country_flag = WGN_march_in_progress_flag }
 		clr_country_flag = WGN_march_in_progress_flag
+		set_variable = { WGN_march_progress_days = 0 }
 		deactivate_shine_on_focus = WGN_march
 	}
 }

@@ -1373,3 +1373,63 @@ increase_military_academy = {
 		}
 	}
 }
+
+# The daily corruption check uses open intervals. Keep the score inside the new tier.
+RUS_ministry_reduce_corruption_tier = {
+	if = {
+		limit = { has_idea = miserable_corruption_level }
+		custom_effect_tooltip = RUS_mo_lowest_tier_tt
+	}
+	else = {
+		custom_effect_tooltip = RUS_mo_one_tier_tt
+		hidden_effect = {
+			decrease_corruption_many = yes
+			if = {
+				limit = { has_idea = low_corruption_level }
+				clamp_variable = { var = corruption_level min = 0 max = 49 }
+				add_ideas = miserable_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = medium_corruption_level }
+				clamp_variable = { var = corruption_level min = 51 max = 99 }
+				add_ideas = low_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = high_corruption_level }
+				clamp_variable = { var = corruption_level min = 101 max = 149 }
+				add_ideas = medium_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = destructive_corruption_level }
+				clamp_variable = { var = corruption_level min = 151 max = 199 }
+				add_ideas = high_corruption_level
+			}
+			else_if = {
+				limit = { has_idea = total_corruption_level }
+				clamp_variable = { var = corruption_level min = 201 max = 249 }
+				add_ideas = destructive_corruption_level
+			}
+		}
+	}
+}
+
+RUS_recalculate_crisis_pressure = {
+	clamp_variable = { var = RUS_political_crisis_risk min = 0 max = 100 }
+	# Only complete 20-point steps count towards the penalties.
+	set_temp_variable = { crisis_remainder = { value = RUS_political_crisis_risk mod = 20 } }
+	set_temp_variable = { crisis_tier = { value = RUS_political_crisis_risk subtract = crisis_remainder divide = 20 } }
+	set_variable = { RUS_political_crisis_stability = { value = crisis_tier multiply = -0.05 } }
+	set_variable = { RUS_political_crisis_war_support = { value = crisis_tier multiply = -0.02 } }
+	if = {
+		limit = { check_variable = { crisis_tier > 0 } }
+		if = {
+			limit = { NOT = { has_dynamic_modifier = { modifier = RUS_political_crisis_pressure } } }
+			add_dynamic_modifier = { modifier = RUS_political_crisis_pressure }
+		}
+	}
+	else_if = {
+		limit = { has_dynamic_modifier = { modifier = RUS_political_crisis_pressure } }
+		remove_dynamic_modifier = { modifier = RUS_political_crisis_pressure }
+	}
+	force_update_dynamic_modifier = yes
+}
