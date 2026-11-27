@@ -144,8 +144,9 @@ IC_PROFILES = {
             "reliability": 0.005,
         },
     },
+    # base -0.4: hull base speed (4) moved onto every engine on 2026-11-17; offsets 4 x 0.10 so engine IC is unchanged
     "engine": {
-        "base": 0, "round": 2,
+        "base": -0.4, "round": 2,
         "weights": {
             "breakthrough": 0.5,
             "reliability": 0.25,
@@ -310,6 +311,7 @@ MODULE_RULES = [
     {"name": ["*_antidrone_cage"], "ic": "module", "ic_multiplier": 0.4, "supply": "vehicle"},
     {"name": ["*_antidrone_screen"], "ic": "module", "ic_multiplier": 0.7, "supply": "vehicle"},
     {"name": ["*_antidrone_turtle"], "ic": "module", "ic_multiplier": 0.5, "supply": "vehicle"},
+    {"name": ["*_antidrone_netting"], "ic": "module", "ic_multiplier": 0.5, "supply": "vehicle"},  # camouflage/anti-drone nets: cheapest drone protection, below cage
     {"name": ["*_addarm_applique"], "ic": "module", "ic_multiplier": 3, "supply": "vehicle"},
     {"name": ["*_addarm_combined"], "ic": "module", "ic_multiplier": 1.5, "supply": "vehicle"},
     # armoured engineer vehicle kits: keep engineering kits at 2-5 IC whatever stat they give
